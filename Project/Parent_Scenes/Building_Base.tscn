@@ -1,0 +1,32 @@
+[gd_scene load_steps=5 format=3 uid="uid://ccoruw5j562l7"]
+
+[ext_resource type="Script" path="res://Parent_Scenes/Scripts/Building_Base.gd" id="1_y54u3"]
+
+[sub_resource type="BoxMesh" id="BoxMesh_8pvv5"]
+
+[sub_resource type="StandardMaterial3D" id="StandardMaterial3D_xyfiq"]
+albedo_color = Color(0.384314, 0.541176, 0.996078, 1)
+
+[sub_resource type="BoxShape3D" id="BoxShape3D_ibp2k"]
+
+[node name="Building_Base" type="Node3D"]
+transform = Transform3D(5, 0, 0, 0, 5, 0, 0, 0, 5, 0, 2.5, 0)
+script = ExtResource("1_y54u3")
+
+[node name="MeshInstance3D" type="MeshInstance3D" parent="."]
+transparency = 0.55
+cast_shadow = 0
+mesh = SubResource("BoxMesh_8pvv5")
+surface_material_override/0 = SubResource("StandardMaterial3D_xyfiq")
+
+[node name="StaticBody3D" type="StaticBody3D" parent="."]
+collision_layer = 2
+input_ray_pickable = false
+
+[node name="CollisionShape3D" type="CollisionShape3D" parent="StaticBody3D"]
+shape = SubResource("BoxShape3D_ibp2k")
+
+[node name="SpawnPoint" type="Node3D" parent="."]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, -0.462508, 1.16514)
+
+[connection signal="input_event" from="StaticBody3D" to="." method="_on_static_body_3d_input_event"]

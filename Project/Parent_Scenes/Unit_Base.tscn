@@ -1,0 +1,22 @@
+[gd_scene load_steps=4 format=3 uid="uid://cs2p3v3o53aki"]
+
+[ext_resource type="Script" path="res://Parent_Scenes/Scripts/Unit.gd" id="1_xwgnb"]
+
+[sub_resource type="CylinderShape3D" id="CylinderShape3D_603ul"]
+
+[sub_resource type="CylinderMesh" id="CylinderMesh_ggawr"]
+
+[node name="Unit_Base" type="CharacterBody3D"]
+script = ExtResource("1_xwgnb")
+
+[node name="CollisionShape3D" type="CollisionShape3D" parent="."]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, 0.995465, 0)
+shape = SubResource("CylinderShape3D_603ul")
+
+[node name="MeshInstance3D" type="MeshInstance3D" parent="."]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, 1.00365, 0)
+mesh = SubResource("CylinderMesh_ggawr")
+
+[node name="NavigationAgent3D" type="NavigationAgent3D" parent="."]
+
+[connection signal="input_event" from="." to="." method="_on_input_event"]

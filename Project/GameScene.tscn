@@ -1,0 +1,250 @@
+[gd_scene load_steps=15 format=3 uid="uid://cjf012xbk6rdn"]
+
+[ext_resource type="Script" path="res://GameScene.gd" id="1_1tj7h"]
+[ext_resource type="Script" path="res://GameCamera.gd" id="1_u3pif"]
+[ext_resource type="Script" path="res://UI_Builder.gd" id="2_5ttem"]
+[ext_resource type="Script" path="res://NavMeshManager.gd" id="3_q6gew"]
+
+[sub_resource type="PanoramaSkyMaterial" id="PanoramaSkyMaterial_rgxp7"]
+
+[sub_resource type="Sky" id="Sky_s4hba"]
+sky_material = SubResource("PanoramaSkyMaterial_rgxp7")
+
+[sub_resource type="Environment" id="Environment_ih53v"]
+background_mode = 1
+background_color = Color(0.611765, 1, 0.956863, 1)
+background_energy_multiplier = 1.23
+sky = SubResource("Sky_s4hba")
+sky_custom_fov = 24.6
+ambient_light_source = 2
+ambient_light_color = Color(1, 0.972549, 0.890196, 1)
+ambient_light_energy = 0.2
+ssr_enabled = true
+ssao_enabled = true
+ssil_enabled = true
+fog_enabled = true
+fog_light_color = Color(0.807843, 0.807843, 0.807843, 1)
+fog_light_energy = 0.33
+fog_sun_scatter = 0.35
+fog_sky_affect = 0.936
+fog_height = 225.59
+volumetric_fog_density = 0.0079
+adjustment_enabled = true
+adjustment_saturation = 2.6
+
+[sub_resource type="CameraAttributesPractical" id="CameraAttributesPractical_d3i0u"]
+
+[sub_resource type="CanvasItemMaterial" id="CanvasItemMaterial_onle8"]
+
+[sub_resource type="CanvasItemMaterial" id="CanvasItemMaterial_fbdp7"]
+
+[sub_resource type="NavigationMesh" id="NavigationMesh_0hmmo"]
+vertices = PackedVector3Array(-29.75, 0.5, -39.5, -39.5, 0.5, -39.5, -39.5, 0.5, -29.75, -39.5, 0.5, 29.5, -39.5, 0.5, 39.5, -29.75, 0.5, 39.5, 39.5, 0.5, -29.75, 39.5, 0.5, -39.5, 29.5, 0.5, -39.5, 29.5, 0.5, 39.5, 39.5, 0.5, 39.5, 39.5, 0.5, 29.5, -39.5, 0.5, 19.75, -39.5, 0.5, 29.5, -29.75, 0.5, 39.5, -19.75, 0.5, 39.5, 39.5, 0.5, -29.75, 29.5, 0.5, -39.5, 19.75, 0.5, -39.5, 39.5, 0.5, -19.75, -19.75, 0.5, -39.5, -29.75, 0.5, -39.5, -39.5, 0.5, -29.75, -39.5, 0.5, -19.75, 19.75, 0.5, 39.5, 29.5, 0.5, 39.5, 39.5, 0.5, 29.5, 9.75, 0.5, 39.5, 39.5, 0.5, 19.75, 39.5, 0.5, 9.75, 0, 0.5, 39.5, 19.75, 0.5, 39.5, 39.5, 0.5, 29.5, 39.5, 0.5, 19.75, 9.75, 0.5, 39.5, 0, 0.5, -39.5, -10, 0.5, -39.5, -39.5, 0.5, -10, -39.5, 0.5, 0, 39.5, 0.5, 0, 0, 0.5, -39.5, -39.5, 0.5, 0, -10, 0.5, 39.5, 0, 0.5, 39.5, 39.5, 0.5, 9.75, -39.5, 0.5, 19.75, -19.75, 0.5, 39.5, -10, 0.5, 39.5, -39.5, 0.5, 9.75, 39.5, 0.5, -10, 39.5, 0.5, -19.75, 19.75, 0.5, -39.5, 9.75, 0.5, -39.5, -10, 0.5, -39.5, -19.75, 0.5, -39.5, -39.5, 0.5, -19.75, -39.5, 0.5, -10, -39.5, 0.5, 0, -39.5, 0.5, 9.75, -10, 0.5, 39.5, 39.5, 0.5, -10, 9.75, 0.5, -39.5, 0, 0.5, -39.5, 39.5, 0.5, 0)
+polygons = [PackedInt32Array(2, 1, 0), PackedInt32Array(5, 4, 3), PackedInt32Array(8, 7, 6), PackedInt32Array(11, 10, 9), PackedInt32Array(13, 12, 14), PackedInt32Array(14, 12, 15), PackedInt32Array(17, 16, 18), PackedInt32Array(18, 16, 19), PackedInt32Array(21, 20, 22), PackedInt32Array(22, 20, 23), PackedInt32Array(26, 25, 24), PackedInt32Array(28, 27, 29), PackedInt32Array(29, 27, 30), PackedInt32Array(32, 31, 33), PackedInt32Array(33, 31, 34), PackedInt32Array(36, 35, 37), PackedInt32Array(37, 35, 38), PackedInt32Array(44, 43, 39), PackedInt32Array(39, 43, 42), PackedInt32Array(39, 42, 41), PackedInt32Array(39, 41, 40), PackedInt32Array(46, 45, 47), PackedInt32Array(47, 45, 48), PackedInt32Array(50, 49, 51), PackedInt32Array(51, 49, 52), PackedInt32Array(54, 53, 55), PackedInt32Array(55, 53, 56), PackedInt32Array(59, 58, 57), PackedInt32Array(61, 60, 62), PackedInt32Array(62, 60, 63)]
+
+[sub_resource type="PlaneMesh" id="PlaneMesh_gxwvh"]
+size = Vector2(80, 80)
+
+[sub_resource type="StandardMaterial3D" id="StandardMaterial3D_au8jj"]
+
+[sub_resource type="BoxShape3D" id="BoxShape3D_f6q77"]
+size = Vector3(80, 1, 80)
+
+[node name="GameScene" type="Node3D"]
+script = ExtResource("1_1tj7h")
+
+[node name="WorldEnvironment" type="WorldEnvironment" parent="."]
+environment = SubResource("Environment_ih53v")
+camera_attributes = SubResource("CameraAttributesPractical_d3i0u")
+
+[node name="UI_Node" type="Control" parent="."]
+layout_mode = 3
+anchors_preset = 15
+anchor_right = 1.0
+anchor_bottom = 1.0
+grow_horizontal = 2
+grow_vertical = 2
+mouse_filter = 2
+script = ExtResource("2_5ttem")
+
+[node name="Viewport_Sectons" type="Panel" parent="UI_Node"]
+modulate = Color(1, 1, 1, 0)
+layout_mode = 1
+anchors_preset = -1
+anchor_right = 1.0
+anchor_bottom = 1.0
+offset_right = 1.0
+offset_bottom = 1.0
+grow_horizontal = 2
+grow_vertical = 2
+mouse_filter = 2
+
+[node name="LeftBar" type="Panel" parent="UI_Node/Viewport_Sectons"]
+use_parent_material = true
+layout_mode = 1
+anchors_preset = -1
+anchor_right = 0.05
+anchor_bottom = 1.0
+grow_vertical = 2
+
+[node name="RightBar" type="Panel" parent="UI_Node/Viewport_Sectons"]
+use_parent_material = true
+layout_mode = 1
+anchors_preset = -1
+anchor_left = 0.95
+anchor_right = 1.0
+anchor_bottom = 1.0
+grow_vertical = 2
+
+[node name="TopBar" type="Panel" parent="UI_Node/Viewport_Sectons"]
+use_parent_material = true
+layout_mode = 1
+anchors_preset = -1
+anchor_right = 1.0
+anchor_bottom = 0.05
+grow_vertical = 2
+
+[node name="BottomBar" type="Panel" parent="UI_Node/Viewport_Sectons"]
+use_parent_material = true
+layout_mode = 1
+anchors_preset = -1
+anchor_top = 0.95
+anchor_right = 1.0
+anchor_bottom = 1.0
+grow_vertical = 2
+
+[node name="Time_Bar" type="Panel" parent="UI_Node"]
+layout_mode = 1
+anchors_preset = -1
+anchor_left = 0.7
+anchor_right = 1.0
+anchor_bottom = 0.05
+grow_horizontal = 0
+
+[node name="Date" type="RichTextLabel" parent="UI_Node/Time_Bar"]
+layout_mode = 1
+anchors_preset = -1
+anchor_right = 1.0
+anchor_bottom = 1.0
+offset_left = 10.0
+offset_top = 5.0
+text = "3rd Corvusan Mal"
+
+[node name="Build_Button" type="Button" parent="UI_Node/Time_Bar"]
+layout_mode = 1
+anchors_preset = -1
+anchor_left = 0.018
+anchor_top = 1.0
+anchor_right = 0.148
+anchor_bottom = 2.444
+offset_left = 0.0880003
+offset_top = 1.0
+offset_right = 0.167999
+offset_bottom = -0.984001
+toggle_mode = true
+keep_pressed_outside = true
+text = "Build"
+
+[node name="Units_Button" type="Button" parent="UI_Node/Time_Bar"]
+layout_mode = 1
+anchors_preset = -1
+anchor_left = 0.018
+anchor_top = 1.0
+anchor_right = 0.148
+anchor_bottom = 2.444
+offset_left = 52.088
+offset_top = 1.0
+offset_right = -2.192
+offset_bottom = -0.984001
+keep_pressed_outside = true
+text = "Units"
+
+[node name="Minimap" type="Panel" parent="UI_Node"]
+layout_mode = 1
+anchors_preset = -1
+anchor_left = 0.75
+anchor_top = 0.681
+anchor_right = 1.0
+anchor_bottom = 1.0
+offset_top = -0.320038
+
+[node name="Snap" type="Button" parent="UI_Node/Minimap"]
+layout_mode = 1
+anchors_preset = -1
+anchor_right = 0.06
+anchor_bottom = 0.08
+offset_right = 8.0
+offset_bottom = 8.0
+text = "None"
+
+[node name="Build_Menu" type="Panel" parent="UI_Node"]
+material = SubResource("CanvasItemMaterial_onle8")
+layout_mode = 0
+offset_left = 521.0
+offset_top = 91.0
+offset_right = 721.0
+offset_bottom = 591.0
+
+[node name="Building_Buttons" type="MenuButton" parent="UI_Node/Build_Menu"]
+material = SubResource("CanvasItemMaterial_fbdp7")
+layout_mode = 1
+anchors_preset = -1
+anchor_right = 1.0
+anchor_bottom = 0.12
+text = "Buildings"
+switch_on_hover = true
+item_count = 1
+popup/item_0/text = "Barracks"
+popup/item_0/id = 0
+
+[node name="Barracks_Menu" type="Panel" parent="UI_Node"]
+visible = false
+layout_mode = 0
+offset_left = 463.0
+offset_top = 191.0
+offset_right = 696.0
+offset_bottom = 432.0
+
+[node name="Unit_Test_Button" type="Button" parent="UI_Node/Barracks_Menu"]
+layout_mode = 0
+offset_left = 26.0
+offset_top = 16.0
+offset_right = 210.0
+offset_bottom = 83.0
+text = "Unit_Test"
+
+[node name="World" type="NavigationRegion3D" parent="."]
+navigation_mesh = SubResource("NavigationMesh_0hmmo")
+script = ExtResource("3_q6gew")
+
+[node name="Floor" type="MeshInstance3D" parent="World"]
+mesh = SubResource("PlaneMesh_gxwvh")
+skeleton = NodePath("../..")
+surface_material_override/0 = SubResource("StandardMaterial3D_au8jj")
+
+[node name="Test_floor" type="StaticBody3D" parent="World/Floor"]
+
+[node name="FloorCollision" type="CollisionShape3D" parent="World/Floor/Test_floor"]
+shape = SubResource("BoxShape3D_f6q77")
+
+[node name="Player_camera" type="Node3D" parent="."]
+script = ExtResource("1_u3pif")
+
+[node name="Player_view" type="Camera3D" parent="Player_camera"]
+transform = Transform3D(1, 0, 0, 0, 0.707107, 0.707107, 0, -0.707107, 0.707107, 0, 15, 15)
+
+[connection signal="mouse_entered" from="UI_Node/Viewport_Sectons" to="Player_camera" method="_on_viewport_mouse_entered"]
+[connection signal="mouse_exited" from="UI_Node/Viewport_Sectons" to="Player_camera" method="_on_viewport_mouse_exited"]
+[connection signal="mouse_entered" from="UI_Node/Viewport_Sectons/LeftBar" to="Player_camera" method="_on_left_bar_mouse_entered"]
+[connection signal="mouse_exited" from="UI_Node/Viewport_Sectons/LeftBar" to="Player_camera" method="_on_left_bar_mouse_exited"]
+[connection signal="mouse_entered" from="UI_Node/Viewport_Sectons/RightBar" to="Player_camera" method="_on_right_bar_mouse_entered"]
+[connection signal="mouse_exited" from="UI_Node/Viewport_Sectons/RightBar" to="Player_camera" method="_on_right_bar_mouse_exited"]
+[connection signal="mouse_entered" from="UI_Node/Viewport_Sectons/TopBar" to="Player_camera" method="_on_top_bar_mouse_entered"]
+[connection signal="mouse_exited" from="UI_Node/Viewport_Sectons/TopBar" to="Player_camera" method="_on_top_bar_mouse_exited"]
+[connection signal="mouse_entered" from="UI_Node/Viewport_Sectons/BottomBar" to="Player_camera" method="_on_bottom_bar_mouse_entered"]
+[connection signal="mouse_exited" from="UI_Node/Viewport_Sectons/BottomBar" to="Player_camera" method="_on_bottom_bar_mouse_exited"]
+[connection signal="pressed" from="UI_Node/Time_Bar/Build_Button" to="UI_Node" method="_on_build_button_pressed"]
+[connection signal="pressed" from="UI_Node/Time_Bar/Units_Button" to="UI_Node" method="_on_units_button_pressed"]
+[connection signal="pressed" from="UI_Node/Minimap/Snap" to="UI_Node" method="_on_snap_pressed"]
+[connection signal="pressed" from="UI_Node/Barracks_Menu/Unit_Test_Button" to="." method="_on_unit_test_button_pressed"]
+[connection signal="input_event" from="World/Floor/Test_floor" to="." method="_on_static_body_3d_input_event"]

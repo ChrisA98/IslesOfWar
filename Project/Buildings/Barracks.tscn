@@ -1,0 +1,21 @@
+[gd_scene load_steps=4 format=3 uid="uid://bn1b878p8bt2x"]
+
+[ext_resource type="Script" path="res://Buildings/Barracks.gd" id="1_offj2"]
+[ext_resource type="PackedScene" uid="uid://ccoruw5j562l7" path="res://Parent_Scenes/Building_Base.tscn" id="1_rnfw4"]
+
+[sub_resource type="CylinderMesh" id="CylinderMesh_s6ad3"]
+height = 1.0
+
+[node name="Barracks" type="Node3D"]
+script = ExtResource("1_offj2")
+
+[node name="Building_Base" parent="." instance=ExtResource("1_rnfw4")]
+
+[node name="MeshInstance3D" parent="Building_Base" index="0"]
+transform = Transform3D(1, 0, 0, 0, -4.37114e-08, -1, 0, 1, -4.37114e-08, 0, -0.5, 0)
+mesh = SubResource("CylinderMesh_s6ad3")
+
+[node name="StaticBody3D" parent="Building_Base" index="1"]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, -0.49989, 0)
+
+[editable path="Building_Base"]
