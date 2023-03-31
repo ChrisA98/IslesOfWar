@@ -3,7 +3,7 @@ extends Node3D
 @onready var world = get_parent().get_parent()
 @onready var building = $Building_Base
 @onready var spawn = $Building_Base/SpawnPoint
-var units = [preload("res://Parent_Scenes/Unit_Base.tscn")]
+var units = [preload("res://Units/Infantry.tscn")]
 
 # Called when the node enters the scene tree for the first time.
 func _ready():

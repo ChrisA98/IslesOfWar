@@ -31,6 +31,11 @@ func unpress_button(id):
 func show_menu(menu_id):
 	menus[menu_id].visible = true
 
+func close_menus():
+	for m in menus:
+		if m.visible:
+			m.visible = false
+
 
 func _on_build_button_pressed():
 	show_menu(0)

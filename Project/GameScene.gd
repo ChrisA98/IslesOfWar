@@ -59,7 +59,9 @@ func place_building():
 func spawn_unit(unit):
 	add_child(unit)
 	units.push_back(unit)
-	unit.selected.connect(unit_selected)
+	unit.get_children()[0].selected.connect(unit_selected)
+	print(world.get_region_rid())
+
 
 #setup navigation
 func custom_nav_setup():
@@ -84,8 +86,15 @@ func custom_nav_setup():
 ###SIGNALS FUNCTIONS###
 
 func unit_selected(unit):
+	UI_controller.close_menus()
 	click_mode = "command_unit"
-	selected_units.push_back(unit)
+	if Input.is_action_pressed("multi-select"):
+		selected_units.push_back(unit)
+	else:
+		selected_units = [unit]
+	for i in selected_units:
+		print(i.name)
+	print("----------")
 
 
 #prepare new building
@@ -115,12 +124,16 @@ func _on_static_body_3d_input_event(_camera, event, position, _normal, _shape_id
 		"build":
 			preview_building.set_pos(position)
 			if event is InputEventMouseButton and Input.is_action_just_released("lmb"):
+				#Close all menus when clicking on the world	
+				UI_controller.close_menus()
 				if preview_building.is_valid == false:
 					return
 				else:
 					place_building()
 		"command_unit":
 			if event is InputEventMouseButton and Input.is_action_just_released("lmb"):
+				#Close all menus when clicking on the world	
+				UI_controller.close_menus()
 				for i in selected_units:
 					i.set_mov_target(position)
 		_:

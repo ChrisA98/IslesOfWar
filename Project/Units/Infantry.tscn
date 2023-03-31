@@ -1,0 +1,9 @@
+[gd_scene load_steps=2 format=3 uid="uid://dnmokrtywnp43"]
+
+[ext_resource type="PackedScene" uid="uid://cs2p3v3o53aki" path="res://Parent_Scenes/Unit_Base.tscn" id="1_qhglo"]
+
+[node name="Infantry" type="Node3D"]
+
+[node name="Unit_Base" parent="." instance=ExtResource("1_qhglo")]
+
+[editable path="Unit_Base"]
