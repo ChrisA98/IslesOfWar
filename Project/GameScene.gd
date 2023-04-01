@@ -60,7 +60,6 @@ func spawn_unit(unit):
 	add_child(unit)
 	units.push_back(unit)
 	unit.get_children()[0].unit_list = units
-	unit.get_children()[0].set_navigation_map(world.get_region_rid())
 	unit.get_children()[0].selected.connect(unit_selected)
 
 

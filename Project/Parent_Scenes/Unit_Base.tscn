@@ -21,6 +21,7 @@ mesh = SubResource("CylinderMesh_ggawr")
 [node name="NavigationAgent3D" type="NavigationAgent3D" parent="."]
 target_desired_distance = 0.1
 path_max_distance = 9.21
+debug_enabled = true
 
 [connection signal="input_event" from="." to="." method="_on_input_event"]
 [connection signal="navigation_finished" from="NavigationAgent3D" to="." method="_on_navigation_agent_3d_navigation_finished"]

@@ -1,12 +1,14 @@
 extends CharacterBody3D
 
 
-const SPEED = 5.0
+const MAX_SPEED = 10
+const ACCEL = 3
 @onready var nav_agent: NavigationAgent3D = $NavigationAgent3D
-@onready var nav_obs: NavigationObstacle3D = $NavigationObstacle3D
 @onready var unit_radius = $CollisionShape3D.shape.get_radius()
-var unit_list
 var rng = RandomNumberGenerator.new()
+
+var intial_path_dist = 0
+var unit_list
 
 
 #signals
@@ -21,14 +23,12 @@ func _ready():
 
 func actor_setup():
 	await get_tree().physics_frame
-	
+
+
 func set_mov_target(mov_tar: Vector3):
 	nav_agent.set_target_position(mov_tar+Vector3(0,.5,0))
+	intial_path_dist = nav_agent.distance_to_target()
 
-
-func set_navigation_map(rid):
-	pass
-	# nav_obs.set_navigation_map(rid)
 	
 func _physics_process(delta):	
 	
@@ -37,13 +37,31 @@ func _physics_process(delta):
 		
 	var current_agent_position: Vector3 = global_transform.origin
 	var next_path_position: Vector3 = nav_agent.get_next_path_position()
-	
 	var new_velocity: Vector3 = next_path_position - current_agent_position
-	new_velocity = new_velocity.normalized()
-	new_velocity = new_velocity * SPEED
-	
+	print(nav_agent.distance_to_target())
+	if nav_agent.distance_to_target() > intial_path_dist*.1:
+		new_velocity = lerp_start(new_velocity, delta)
+	else:
+		new_velocity = lerp_stop(new_velocity, delta)
+		
+		
 	set_velocity(new_velocity)
 	move_and_slide()
+
+
+#speed up when starting movement
+func lerp_start(nv, dx):
+	nv = nv.normalized()* MAX_SPEED
+	nv = lerp(velocity,nv,dx*ACCEL)
+	return nv
+	
+	
+#speed up when starting movement
+func lerp_stop(nv, dx):
+	nv = nv.normalized() * 0.2
+	nv = lerp(velocity,nv,dx*ACCEL)
+	return nv
+	
 
 #signal being selected on click
 func _on_input_event(camera, event, position, normal, shape_idx):
