@@ -41,6 +41,7 @@ adjustment_saturation = 2.6
 [sub_resource type="NavigationMesh" id="NavigationMesh_0hmmo"]
 vertices = PackedVector3Array(-29.75, 0.5, -39.5, -39.5, 0.5, -39.5, -39.5, 0.5, -29.75, -39.5, 0.5, 29.5, -39.5, 0.5, 39.5, -29.75, 0.5, 39.5, 39.5, 0.5, -29.75, 39.5, 0.5, -39.5, 29.5, 0.5, -39.5, 29.5, 0.5, 39.5, 39.5, 0.5, 39.5, 39.5, 0.5, 29.5, -39.5, 0.5, 19.75, -39.5, 0.5, 29.5, -29.75, 0.5, 39.5, -19.75, 0.5, 39.5, 39.5, 0.5, -29.75, 29.5, 0.5, -39.5, 19.75, 0.5, -39.5, 39.5, 0.5, -19.75, -19.75, 0.5, -39.5, -29.75, 0.5, -39.5, -39.5, 0.5, -29.75, -39.5, 0.5, -19.75, 19.75, 0.5, 39.5, 29.5, 0.5, 39.5, 39.5, 0.5, 29.5, 9.75, 0.5, 39.5, 39.5, 0.5, 19.75, 39.5, 0.5, 9.75, 0, 0.5, 39.5, 19.75, 0.5, 39.5, 39.5, 0.5, 29.5, 39.5, 0.5, 19.75, 9.75, 0.5, 39.5, 0, 0.5, -39.5, -10, 0.5, -39.5, -39.5, 0.5, -10, -39.5, 0.5, 0, 39.5, 0.5, 0, 0, 0.5, -39.5, -39.5, 0.5, 0, -10, 0.5, 39.5, 0, 0.5, 39.5, 39.5, 0.5, 9.75, -39.5, 0.5, 19.75, -19.75, 0.5, 39.5, -10, 0.5, 39.5, -39.5, 0.5, 9.75, 39.5, 0.5, -10, 39.5, 0.5, -19.75, 19.75, 0.5, -39.5, 9.75, 0.5, -39.5, -10, 0.5, -39.5, -19.75, 0.5, -39.5, -39.5, 0.5, -19.75, -39.5, 0.5, -10, -39.5, 0.5, 0, -39.5, 0.5, 9.75, -10, 0.5, 39.5, 39.5, 0.5, -10, 9.75, 0.5, -39.5, 0, 0.5, -39.5, 39.5, 0.5, 0)
 polygons = [PackedInt32Array(2, 1, 0), PackedInt32Array(5, 4, 3), PackedInt32Array(8, 7, 6), PackedInt32Array(11, 10, 9), PackedInt32Array(13, 12, 14), PackedInt32Array(14, 12, 15), PackedInt32Array(17, 16, 18), PackedInt32Array(18, 16, 19), PackedInt32Array(21, 20, 22), PackedInt32Array(22, 20, 23), PackedInt32Array(26, 25, 24), PackedInt32Array(28, 27, 29), PackedInt32Array(29, 27, 30), PackedInt32Array(32, 31, 33), PackedInt32Array(33, 31, 34), PackedInt32Array(36, 35, 37), PackedInt32Array(37, 35, 38), PackedInt32Array(44, 43, 39), PackedInt32Array(39, 43, 42), PackedInt32Array(39, 42, 41), PackedInt32Array(39, 41, 40), PackedInt32Array(46, 45, 47), PackedInt32Array(47, 45, 48), PackedInt32Array(50, 49, 51), PackedInt32Array(51, 49, 52), PackedInt32Array(54, 53, 55), PackedInt32Array(55, 53, 56), PackedInt32Array(59, 58, 57), PackedInt32Array(61, 60, 62), PackedInt32Array(62, 60, 63)]
+agent_height = 2.0
 
 [sub_resource type="PlaneMesh" id="PlaneMesh_gxwvh"]
 size = Vector2(80, 80)
@@ -214,6 +215,7 @@ offset_bottom = 83.0
 text = "Unit_Test"
 
 [node name="World" type="NavigationRegion3D" parent="."]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, -34.5539, 0, 0)
 navigation_mesh = SubResource("NavigationMesh_0hmmo")
 script = ExtResource("3_q6gew")
 
@@ -231,7 +233,7 @@ shape = SubResource("BoxShape3D_f6q77")
 script = ExtResource("1_u3pif")
 
 [node name="Player_view" type="Camera3D" parent="Player_camera"]
-transform = Transform3D(1, 0, 0, 0, 0.707107, 0.707107, 0, -0.707107, 0.707107, 0, 15, 15)
+transform = Transform3D(1, 0, 0, 0, 0.707107, 0.707107, 0, -0.707107, 0.707107, 0.078701, 15, 15.0158)
 
 [connection signal="mouse_entered" from="UI_Node/Viewport_Sectons" to="Player_camera" method="_on_viewport_mouse_entered"]
 [connection signal="mouse_exited" from="UI_Node/Viewport_Sectons" to="Player_camera" method="_on_viewport_mouse_exited"]

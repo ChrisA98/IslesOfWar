@@ -7,6 +7,7 @@
 [sub_resource type="CylinderMesh" id="CylinderMesh_ggawr"]
 
 [node name="Unit_Base" type="CharacterBody3D"]
+collision_mask = 0
 script = ExtResource("1_xwgnb")
 
 [node name="CollisionShape3D" type="CollisionShape3D" parent="."]
@@ -18,5 +19,8 @@ transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, 1.00365, 0)
 mesh = SubResource("CylinderMesh_ggawr")
 
 [node name="NavigationAgent3D" type="NavigationAgent3D" parent="."]
+target_desired_distance = 0.1
+path_max_distance = 9.21
 
 [connection signal="input_event" from="." to="." method="_on_input_event"]
+[connection signal="navigation_finished" from="NavigationAgent3D" to="." method="_on_navigation_agent_3d_navigation_finished"]
