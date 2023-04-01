@@ -38,7 +38,7 @@ func _physics_process(delta):
 	var current_agent_position: Vector3 = global_transform.origin
 	var next_path_position: Vector3 = nav_agent.get_next_path_position()
 	var new_velocity: Vector3 = next_path_position - current_agent_position
-	print(nav_agent.distance_to_target())
+	#Accelerate and decelerrate
 	if nav_agent.distance_to_target() > intial_path_dist*.1:
 		new_velocity = lerp_start(new_velocity, delta)
 	else:
@@ -75,3 +75,5 @@ func _on_navigation_agent_3d_navigation_finished():
 			break
 		if i.get_children()[0].position.distance_to(position) <= unit_radius*2:
 			set_mov_target(global_position + Vector3(rng.randf_range(-3,3),0,rng.randf_range(-3,3)))
+			return	
+	set_velocity(Vector3(0,0,0))

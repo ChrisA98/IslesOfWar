@@ -19,8 +19,6 @@ transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, 1.00365, 0)
 mesh = SubResource("CylinderMesh_ggawr")
 
 [node name="NavigationAgent3D" type="NavigationAgent3D" parent="."]
-target_desired_distance = 0.1
-path_max_distance = 9.21
 debug_enabled = true
 
 [connection signal="input_event" from="." to="." method="_on_input_event"]
