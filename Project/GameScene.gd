@@ -5,10 +5,13 @@ extends Node3D
 @onready var UI_controller = $UI_Node
 @onready var world = $World
 var buildings = [
+	preload("res://Buildings/Fort.tscn"),
 	preload("res://Buildings/Barracks.tscn")]
 var units = []
 var menu_buildings
 var world_buildings
+
+var rng = RandomNumberGenerator.new()
 
 #Game logic vars
 var building_snap = 0
@@ -94,11 +97,13 @@ func unit_selected(unit):
 		selected_units = [unit]
 	for i in selected_units:
 		print(i.name)
-	print("----------")
+	print("_______________")
 
 
 #prepare new building
 func prep_building(id):
+	print(id)
+	
 	#clear existing preview buildings
 	if(preview_building != null):
 		preview_building.queue_free()
@@ -115,7 +120,7 @@ func prep_building(id):
 #activate buildings
 func building_activated(building):
 	activated_building = building
-	var type = building.get_parent().name
+	var type = building.type
 	match type:
 		"Barracks":
 			UI_controller.show_menu(1)
@@ -123,6 +128,7 @@ func building_activated(building):
 			pass
 
 
+#Clicks on world
 func _on_static_body_3d_input_event(_camera, event, position, _normal, _shape_idx):	
 	match click_mode:
 		"build":
@@ -138,8 +144,13 @@ func _on_static_body_3d_input_event(_camera, event, position, _normal, _shape_id
 			if event is InputEventMouseButton and Input.is_action_just_released("lmb"):
 				#Close all menus when clicking on the world	
 				UI_controller.close_menus()
-				for i in selected_units:
-					i.set_mov_target(position)
+				if(selected_units.size() > 4):
+					var dist = selected_units.size()/2
+					for i in selected_units:
+						i.set_mov_target(position + Vector3(rng.randf_range(-dist,dist),0,rng.randf_range(-dist,dist)))
+				else:
+					for i in selected_units:
+						i.set_mov_target(position)
 		_:
 			pass
 

@@ -7,6 +7,7 @@ signal activated
 @onready var mesh = $MeshInstance3D
 @onready var collision_box = $StaticBody3D/CollisionShape3D
 @onready var static_body = $StaticBody3D
+var type
 var invalid_mat
 var valid_mat
 
@@ -44,6 +45,7 @@ func place():
 	mesh.transparency = 0
 	static_body.set_ray_pickable(true)
 	static_body.set_collision_layer_value(1,true)
+	$RallyPoint.visible = false
 	
 func make_valid():
 	is_valid = true

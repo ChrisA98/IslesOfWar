@@ -23,11 +23,12 @@ var cam
 var game_window
 var menu_buildings
 
+
 func _ready():
 	cam = $Player_view
 	game_window = $"../UI_Node/Viewport_Sectons"
 	Input.set_mouse_mode(Input.MOUSE_MODE_CONFINED) 
-	
+
 
 func _input(event):	
 	if event is InputEventMouseMotion:
@@ -47,15 +48,27 @@ func _input(event):
 				zoom -= .25
 	cam.position = Vector3(0,25-zoom,25-zoom)
 	
+	
 	#close game, TESTING ONLY
 	if event.is_action_pressed(("esc")):
-		get_tree().quit()
+		if(check_menus()):
+			$"../UI_Node".close_menus()
+		else:
+			get_tree().quit()
 	
 	if event.is_action_pressed(("sprint")):
 		maxSpeed = maxSpeed_run
 	if event.is_action_released(("sprint")):
 		maxSpeed = maxSpeed_norm
-		
+
+
+func check_menus():
+	for i in $"../UI_Node".menus:
+		if i.visible:
+			return true
+	return false
+
+
 func _physics_process(delta):
 			
 	if Input.is_action_pressed(("cam_move_forward")):
@@ -86,6 +99,7 @@ func _physics_process(delta):
 func _on_viewport_mouse_entered():
 	on_game_window = true
 
+
 func _on_viewport_mouse_exited():
 	on_game_window = false
 
@@ -94,23 +108,30 @@ func _on_viewport_mouse_exited():
 func _on_left_bar_mouse_entered():
 	mouse_direct.x = -1
 
+
 func _on_right_bar_mouse_entered():
 	mouse_direct.x = 1
+
 
 func _on_top_bar_mouse_entered():
 	mouse_direct.z = -1
 
+
 func _on_bottom_bar_mouse_entered():
 	mouse_direct.z = 1
+
 
 func _on_left_bar_mouse_exited():
 	mouse_direct.x = 0
 
+
 func _on_right_bar_mouse_exited():
 	mouse_direct.x = 0
 
+
 func _on_top_bar_mouse_exited():
 	mouse_direct.z = 0
+
 
 func _on_bottom_bar_mouse_exited():
 	mouse_direct.z = 0

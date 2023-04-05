@@ -28,6 +28,7 @@ func actor_setup():
 func set_mov_target(mov_tar: Vector3):
 	nav_agent.set_target_position(mov_tar+Vector3(0,.5,0))
 	intial_path_dist = nav_agent.distance_to_target()
+	
 
 	
 func _physics_process(delta):	
@@ -72,8 +73,8 @@ func _on_input_event(camera, event, position, normal, shape_idx):
 func _on_navigation_agent_3d_navigation_finished():
 	for i in unit_list:
 		if i.get_children()[0] == self:
-			break
-		if i.get_children()[0].position.distance_to(position) <= unit_radius*2:
+			pass
+		elif (i.get_children()[0].position.distance_to(position) <= unit_radius*2):
 			set_mov_target(global_position + Vector3(rng.randf_range(-3,3),0,rng.randf_range(-3,3)))
-			return	
+			return
 	set_velocity(Vector3(0,0,0))
