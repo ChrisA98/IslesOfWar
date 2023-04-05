@@ -1,4 +1,4 @@
-[gd_scene load_steps=3 format=3 uid="uid://blowv5t7yvkvf"]
+[gd_scene load_steps=3 format=3]
 
 [ext_resource type="PackedScene" uid="uid://ccoruw5j562l7" path="res://Parent_Scenes/Building_Base.tscn" id="1_yqtop"]
 

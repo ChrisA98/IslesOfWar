@@ -4,9 +4,8 @@ extends Node3D
 @onready var cam = $Player_camera/Player_view
 @onready var UI_controller = $UI_Node
 @onready var world = $World
-var buildings = [
-	preload("res://Buildings/Fort.tscn"),
-	preload("res://Buildings/Barracks.tscn")]
+@onready var player_faction = preload("res://Faction_Resources/Amerulf.tres")
+var buildings = []
 var units = []
 var menu_buildings
 var world_buildings
@@ -27,6 +26,9 @@ func _ready():
 	#get building buttons UI element ref
 	menu_buildings = $UI_Node/Build_Menu/Building_Buttons.get_popup()
 	menu_buildings.id_pressed.connect(prep_building)
+	for b in player_faction.data.buildings:
+		buildings.push_back(load("res://Buildings/"+b+".tscn"))
+		$UI_Node/Build_Menu/Building_Buttons.get_popup().add_item(b)
 
 
 #Called every frame. 'delta' is the elapsed time since the previous frame.
@@ -101,9 +103,7 @@ func unit_selected(unit):
 
 
 #prepare new building
-func prep_building(id):
-	print(id)
-	
+func prep_building(id):	
 	#clear existing preview buildings
 	if(preview_building != null):
 		preview_building.queue_free()

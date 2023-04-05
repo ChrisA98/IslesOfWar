@@ -1,0 +1,7 @@
+[gd_resource type="JSON" format=3 uid="uid://brqdsvknffkl5"]
+
+[resource]
+data = {
+"buildings": ["Fort", "Barracks"],
+"name": "The Kingdom of Amerulf"
+}

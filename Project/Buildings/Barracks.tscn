@@ -1,24 +1,47 @@
-[gd_scene load_steps=4 format=3 uid="uid://bn1b878p8bt2x"]
+[gd_scene load_steps=7 format=3 uid="uid://dcfqc1d5vuj2d"]
 
-[ext_resource type="Script" path="res://Buildings/Barracks.gd" id="1_offj2"]
-[ext_resource type="PackedScene" uid="uid://ccoruw5j562l7" path="res://Parent_Scenes/Building_Base.tscn" id="1_rnfw4"]
+[ext_resource type="Script" path="res://Parent_Scenes/Scripts/Building_Base.gd" id="1_7cjhp"]
+[ext_resource type="Material" uid="uid://tv8sxu1y3jw7" path="res://Materials/preview_building_valid.tres" id="2_glx4n"]
 
-[sub_resource type="CylinderMesh" id="CylinderMesh_s6ad3"]
+[sub_resource type="CylinderMesh" id="CylinderMesh_hoihg"]
 height = 1.0
 
-[node name="Barracks" type="Node3D"]
-script = ExtResource("1_offj2")
+[sub_resource type="StandardMaterial3D" id="StandardMaterial3D_xyfiq"]
+albedo_color = Color(0.384314, 0.541176, 0.996078, 1)
 
-[node name="Building_Base" parent="." instance=ExtResource("1_rnfw4")]
+[sub_resource type="BoxShape3D" id="BoxShape3D_ibp2k"]
 
-[node name="MeshInstance3D" parent="Building_Base" index="0"]
+[sub_resource type="CylinderMesh" id="CylinderMesh_ar7to"]
+top_radius = 0.25
+bottom_radius = 0.25
+height = 0.018
+
+[node name="Building_Base" type="Node3D"]
+transform = Transform3D(5, 0, 0, 0, 5, 0, 0, 0, 5, 0, 2.5, 0)
+script = ExtResource("1_7cjhp")
+
+[node name="MeshInstance3D" type="MeshInstance3D" parent="."]
 transform = Transform3D(1, 0, 0, 0, -4.37114e-08, -1, 0, 1, -4.37114e-08, 0, -0.5, 0)
-mesh = SubResource("CylinderMesh_s6ad3")
+transparency = 0.55
+cast_shadow = 0
+mesh = SubResource("CylinderMesh_hoihg")
+surface_material_override/0 = SubResource("StandardMaterial3D_xyfiq")
 
-[node name="StaticBody3D" parent="Building_Base" index="1"]
-transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, -0.49989, 0)
+[node name="StaticBody3D" type="StaticBody3D" parent="."]
+collision_layer = 2
+input_ray_pickable = false
 
-[node name="SpawnPoint" parent="Building_Base" index="3"]
-transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, -0.5, 0.665436)
+[node name="CollisionShape3D" type="CollisionShape3D" parent="StaticBody3D"]
+shape = SubResource("BoxShape3D_ibp2k")
 
-[editable path="Building_Base"]
+[node name="RallyPoint" type="Node3D" parent="."]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, -0.462508, 1.59806)
+
+[node name="MeshInstance3D" type="MeshInstance3D" parent="RallyPoint"]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, -0.002, -0.0465063, 0)
+mesh = SubResource("CylinderMesh_ar7to")
+surface_material_override/0 = ExtResource("2_glx4n")
+
+[node name="SpawnPoint" type="Node3D" parent="."]
+
+[connection signal="input_event" from="StaticBody3D" to="." method="_on_static_body_3d_input_event"]

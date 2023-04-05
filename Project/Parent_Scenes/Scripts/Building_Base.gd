@@ -75,7 +75,7 @@ func set_snap(snp):
 	if snp>1:
 		collision_buffer=0.1
 	else:
-		collision_buffer = 1
+		collision_buffer = .5
 
 #pass press to signal activate signal
 func _on_static_body_3d_input_event(_camera, event, _position, _normal, _shape_idx):
