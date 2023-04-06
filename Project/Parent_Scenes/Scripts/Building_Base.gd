@@ -7,19 +7,27 @@ signal activated
 
 
 #REF vars
+@onready var world = get_parent().get_parent()
 @onready var mesh = $MeshInstance3D
 @onready var collision_box = $StaticBody3D/CollisionShape3D
 @onready var static_body = $StaticBody3D
 @onready var rally = $RallyPoint
 @onready var spawn = $SpawnPoint
+@onready var invalid_mat = preload("res://Materials/preview_building_invalid.tres")
+@onready var valid_mat = preload("res://Materials/preview_building_valid.tres")
 var type
-var invalid_mat
-var valid_mat
 
 
 #can be placed
 var is_valid
-
+#Cost to build
+var cost = {"wood": 0,
+"stone": 0,
+"riches": 0,
+"crystals": 0,
+"food": 0,
+"pop": 0}
+var pop_mod = 0
 
 #is snapping to grid
 var snapping = 0
@@ -29,8 +37,7 @@ var collision_buffer = 0
 
 
 func _ready():
-	invalid_mat = preload("res://Materials/preview_building_invalid.tres")
-	valid_mat = preload("res://Materials/preview_building_valid.tres")
+	pass
 
 
 func init(pos, snap):
@@ -62,6 +69,10 @@ func place():
 
 
 func make_valid():
+	for res in cost:
+		if world.resources[res] < cost[res]:
+			make_invalid()
+			return
 	is_valid = true
 	mesh.set_surface_override_material(0, valid_mat)
 
@@ -84,6 +95,10 @@ func check_collision(buff_range):
 		return true
 	else:
 		return false
+
+
+func adj_cost(resource: String, amt: int):
+	cost[resource] += amt
 
 
 #set snap for building placement

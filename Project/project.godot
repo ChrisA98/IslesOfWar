@@ -15,6 +15,10 @@ run/main_scene="res://GameScene.tscn"
 config/features=PackedStringArray("4.0", "Forward Plus")
 config/icon="res://icon.svg"
 
+[autoload]
+
+GlobalVars="*res://global_vars.gd"
+
 [display]
 
 window/size/viewport_width=1280

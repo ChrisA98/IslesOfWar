@@ -1,7 +1,17 @@
 extends Control
 
+#signals
+signal menu_opened
+
+
 #UI Elements
 @onready var menus = [$Build_Menu,$Barracks_Menu]
+@onready var res_displays = {"wood": $Time_Bar2/Wood/Amount,
+"stone": $Time_Bar2/Stone/Amount,
+"riches": $Time_Bar2/Riches/Amount,
+"crystals": $Time_Bar2/Crystal/Amount,
+"food": $Time_Bar2/Food/Amount,
+"pop": $Time_Bar2/Pop/Amount}
 var buttons
 
 #Ref Vars
@@ -10,6 +20,7 @@ var buttons
 
 # Called when the node enters the scene tree for the first time.
 func _ready():
+	$Time_Bar/Date.add_text("3rd, Corvusan Mal, 545 E2")
 	
 	#place menus
 	for i in menus:
@@ -30,6 +41,7 @@ func unpress_button(id):
 
 func show_menu(menu_id):
 	menus[menu_id].visible = true
+	menu_opened.emit()
 
 func close_menus():
 	for m in menus:
@@ -59,3 +71,9 @@ func _on_snap_pressed():
 
 func _on_units_button_pressed():
 	show_menu(1)
+
+
+func _on_timer_timeout():
+	$Time_Bar/Day_Cycle_Timer.start(10)
+	$Time_Bar/Date.clear()
+	$Time_Bar/Date.add_text("4th, Corvusan Mal, 545 E2")

@@ -14,7 +14,13 @@ var rng = RandomNumberGenerator.new()
 var intial_path_dist = 0
 var unit_list
 
-
+var unit_cost = 0
+var res_cost = {"wood": 0,
+"stone": 0,
+"riches": 10,
+"crystals": 10,
+"food": 0,
+"pop": 0}
 #signals
 signal selected
 

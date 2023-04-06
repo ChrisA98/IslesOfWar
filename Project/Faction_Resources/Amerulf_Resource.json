@@ -1,9 +1,9 @@
 {
 	"name": "The Kingdom of Amerulf",
-	"buildings":[
-		"Fort",
-		"Barracks"
-	],
+	"buildings":{
+		"Fort": [ "data"],
+		"Barracks": [ "data"]
+	},
 	"barracks_units":[
 		"Infantry"	
 	]

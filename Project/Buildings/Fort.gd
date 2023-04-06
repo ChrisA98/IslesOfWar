@@ -7,6 +7,7 @@ func _ready():
 	super()
 	hide_radius()
 	type = "Main"
+	pop_mod = 5
 
 
 func preview_radius():

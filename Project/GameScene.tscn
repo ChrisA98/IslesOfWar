@@ -129,7 +129,6 @@ anchor_right = 1.0
 anchor_bottom = 1.0
 offset_left = 10.0
 offset_top = 5.0
-text = "3rd Corvusan Mal"
 
 [node name="Build_Button" type="Button" parent="UI_Node/Time_Bar"]
 layout_mode = 1
@@ -159,6 +158,145 @@ offset_right = -2.192
 offset_bottom = -0.984001
 keep_pressed_outside = true
 text = "Units"
+
+[node name="Day_Cycle_Timer" type="Timer" parent="UI_Node/Time_Bar"]
+wait_time = 15.0
+autostart = true
+
+[node name="Time_Bar2" type="Panel" parent="UI_Node"]
+layout_mode = 1
+anchors_preset = -1
+anchor_right = 0.3
+anchor_bottom = 0.075
+grow_horizontal = 0
+
+[node name="Wood" type="RichTextLabel" parent="UI_Node/Time_Bar2"]
+layout_mode = 1
+anchors_preset = -1
+anchor_right = 1.0
+anchor_bottom = 1.0
+offset_left = 3.0
+offset_top = -2.0
+offset_right = -335.0
+offset_bottom = -7.0
+text = "Wood
+"
+
+[node name="Amount" type="RichTextLabel" parent="UI_Node/Time_Bar2/Wood"]
+layout_mode = 1
+anchors_preset = -1
+anchor_top = 0.4
+anchor_right = 1.0
+anchor_bottom = 0.46
+offset_bottom = 39.6
+text = "
+"
+fit_content = true
+
+[node name="Stone" type="RichTextLabel" parent="UI_Node/Time_Bar2"]
+layout_mode = 1
+anchors_preset = -1
+anchor_right = 1.0
+anchor_bottom = 1.0
+offset_left = 57.0
+offset_top = -2.0
+offset_right = -281.0
+offset_bottom = -7.0
+text = "Stone
+
+"
+
+[node name="Amount" type="RichTextLabel" parent="UI_Node/Time_Bar2/Stone"]
+layout_mode = 1
+anchors_preset = -1
+anchor_top = 0.4
+anchor_right = 1.0
+anchor_bottom = 0.46
+offset_bottom = 39.6
+fit_content = true
+
+[node name="Riches" type="RichTextLabel" parent="UI_Node/Time_Bar2"]
+layout_mode = 1
+anchors_preset = -1
+anchor_right = 1.0
+anchor_bottom = 1.0
+offset_left = 107.0
+offset_top = -2.0
+offset_right = -223.0
+offset_bottom = -7.0
+text = "Riches"
+autowrap_mode = 2
+
+[node name="Amount" type="RichTextLabel" parent="UI_Node/Time_Bar2/Riches"]
+layout_mode = 1
+anchors_preset = -1
+anchor_top = 0.4
+anchor_right = 1.0
+anchor_bottom = 0.46
+offset_bottom = 39.6
+fit_content = true
+
+[node name="Crystal" type="RichTextLabel" parent="UI_Node/Time_Bar2"]
+layout_mode = 1
+anchors_preset = -1
+anchor_right = 1.0
+anchor_bottom = 1.0
+offset_left = 166.0
+offset_top = -2.0
+offset_right = -164.0
+offset_bottom = -7.0
+text = "Crystal"
+autowrap_mode = 2
+
+[node name="Amount" type="RichTextLabel" parent="UI_Node/Time_Bar2/Crystal"]
+layout_mode = 1
+anchors_preset = -1
+anchor_top = 0.4
+anchor_right = 1.0
+anchor_bottom = 0.46
+offset_bottom = 39.6
+fit_content = true
+
+[node name="Food" type="RichTextLabel" parent="UI_Node/Time_Bar2"]
+layout_mode = 1
+anchors_preset = -1
+anchor_right = 1.0
+anchor_bottom = 1.0
+offset_left = 226.0
+offset_top = -2.0
+offset_right = -104.0
+offset_bottom = -7.0
+text = "Food"
+autowrap_mode = 2
+
+[node name="Amount" type="RichTextLabel" parent="UI_Node/Time_Bar2/Food"]
+layout_mode = 1
+anchors_preset = -1
+anchor_top = 0.4
+anchor_right = 1.0
+anchor_bottom = 0.46
+offset_bottom = 39.6
+fit_content = true
+
+[node name="Pop" type="RichTextLabel" parent="UI_Node/Time_Bar2"]
+layout_mode = 1
+anchors_preset = -1
+anchor_right = 1.0
+anchor_bottom = 1.0
+offset_left = 295.0
+offset_top = -2.0
+offset_bottom = 0.999996
+text = "Population"
+autowrap_mode = 2
+
+[node name="Amount" type="RichTextLabel" parent="UI_Node/Time_Bar2/Pop"]
+layout_mode = 1
+anchors_preset = -1
+anchor_top = 0.4
+anchor_right = 1.0
+anchor_bottom = 0.46
+offset_bottom = 39.6
+fit_content = true
 
 [node name="Minimap" type="Panel" parent="UI_Node"]
 layout_mode = 1
@@ -231,6 +369,7 @@ script = ExtResource("1_u3pif")
 [node name="Player_view" type="Camera3D" parent="Player_camera"]
 transform = Transform3D(1, 0, 0, 0, 0.707107, 0.707107, 0, -0.707107, 0.707107, 0.078701, 15, 15.0158)
 
+[connection signal="menu_opened" from="UI_Node" to="." method="_on_ui_node_menu_opened"]
 [connection signal="mouse_entered" from="UI_Node/Viewport_Sectons" to="Player_camera" method="_on_viewport_mouse_entered"]
 [connection signal="mouse_exited" from="UI_Node/Viewport_Sectons" to="Player_camera" method="_on_viewport_mouse_exited"]
 [connection signal="mouse_entered" from="UI_Node/Viewport_Sectons/LeftBar" to="Player_camera" method="_on_left_bar_mouse_entered"]
@@ -243,6 +382,8 @@ transform = Transform3D(1, 0, 0, 0, 0.707107, 0.707107, 0, -0.707107, 0.707107, 
 [connection signal="mouse_exited" from="UI_Node/Viewport_Sectons/BottomBar" to="Player_camera" method="_on_bottom_bar_mouse_exited"]
 [connection signal="pressed" from="UI_Node/Time_Bar/Build_Button" to="UI_Node" method="_on_build_button_pressed"]
 [connection signal="pressed" from="UI_Node/Time_Bar/Units_Button" to="UI_Node" method="_on_units_button_pressed"]
+[connection signal="timeout" from="UI_Node/Time_Bar/Day_Cycle_Timer" to="." method="_on_day_cycle_timer_timeout"]
+[connection signal="timeout" from="UI_Node/Time_Bar/Day_Cycle_Timer" to="UI_Node" method="_on_timer_timeout"]
 [connection signal="pressed" from="UI_Node/Minimap/Snap" to="UI_Node" method="_on_snap_pressed"]
 [connection signal="pressed" from="UI_Node/Barracks_Menu/Unit_Test_Button" to="." method="_on_unit_test_button_pressed"]
 [connection signal="input_event" from="World/Floor/Test_floor" to="." method="_on_static_body_3d_input_event"]
