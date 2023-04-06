@@ -1,11 +1,15 @@
 extends CharacterBody3D
 
 
+class_name Unit_Base
+
+
 const MAX_SPEED = 10
 const ACCEL = 3
 @onready var nav_agent: NavigationAgent3D = $NavigationAgent3D
 @onready var unit_radius = $CollisionShape3D.shape.get_radius()
 var rng = RandomNumberGenerator.new()
+
 
 var intial_path_dist = 0
 var unit_list
@@ -21,16 +25,20 @@ func _ready():
 	
 	call_deferred("actor_setup")
 
+
 func actor_setup():
 	await get_tree().physics_frame
 
 
 func set_mov_target(mov_tar: Vector3):
-	nav_agent.set_target_position(mov_tar+Vector3(0,.5,0))
+	var targ = check_pos(mov_tar+Vector3(0,.5,0))
+	while mov_tar != targ:
+		mov_tar = targ
+		targ = check_pos(mov_tar)
+	nav_agent.set_target_position(mov_tar)
 	intial_path_dist = nav_agent.distance_to_target()
-	
 
-	
+
 func _physics_process(delta):	
 	
 	if nav_agent.is_navigation_finished():
@@ -64,6 +72,17 @@ func lerp_stop(nv, dx):
 	return nv
 	
 
+#check target position for othe runits
+func check_pos(pos):
+	var new_pos = pos
+	for i in unit_list:
+		if i == self:
+			pass
+		elif (i.position.distance_to(new_pos) <= unit_radius*3):
+			new_pos = check_pos(new_pos + Vector3(rng.randf_range(-1,1),0,rng.randf_range(-1,1)))
+	return new_pos
+
+
 #signal being selected on click
 func _on_input_event(camera, event, position, normal, shape_idx):
 	if event is InputEventMouseButton and Input.is_action_just_released("lmb"):
@@ -71,10 +90,7 @@ func _on_input_event(camera, event, position, normal, shape_idx):
 
 
 func _on_navigation_agent_3d_navigation_finished():
-	for i in unit_list:
-		if i.get_children()[0] == self:
-			pass
-		elif (i.get_children()[0].position.distance_to(position) <= unit_radius*2):
-			set_mov_target(global_position + Vector3(rng.randf_range(-3,3),0,rng.randf_range(-3,3)))
-			return
+	var targ = check_pos(position)
+	if(targ.is_equal_approx(position) == false):
+		set_mov_target(targ)
 	set_velocity(Vector3(0,0,0))

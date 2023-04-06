@@ -1,6 +1,6 @@
 [gd_scene load_steps=7 format=3 uid="uid://dcfqc1d5vuj2d"]
 
-[ext_resource type="Script" path="res://Parent_Scenes/Scripts/Building_Base.gd" id="1_7cjhp"]
+[ext_resource type="Script" path="res://Buildings/Barracks.gd" id="1_r17ho"]
 [ext_resource type="Material" uid="uid://tv8sxu1y3jw7" path="res://Materials/preview_building_valid.tres" id="2_glx4n"]
 
 [sub_resource type="CylinderMesh" id="CylinderMesh_hoihg"]
@@ -16,9 +16,9 @@ top_radius = 0.25
 bottom_radius = 0.25
 height = 0.018
 
-[node name="Building_Base" type="Node3D"]
+[node name="Barracks" type="Node3D"]
 transform = Transform3D(5, 0, 0, 0, 5, 0, 0, 0, 5, 0, 2.5, 0)
-script = ExtResource("1_7cjhp")
+script = ExtResource("1_r17ho")
 
 [node name="MeshInstance3D" type="MeshInstance3D" parent="."]
 transform = Transform3D(1, 0, 0, 0, -4.37114e-08, -1, 0, 1, -4.37114e-08, 0, -0.5, 0)
@@ -43,5 +43,6 @@ mesh = SubResource("CylinderMesh_ar7to")
 surface_material_override/0 = ExtResource("2_glx4n")
 
 [node name="SpawnPoint" type="Node3D" parent="."]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, -0.494305, 0.546753)
 
 [connection signal="input_event" from="StaticBody3D" to="." method="_on_static_body_3d_input_event"]

@@ -1,27 +1,38 @@
 extends Node3D
 
+class_name Building
+
 #custom signals
 signal activated
+
 
 #REF vars
 @onready var mesh = $MeshInstance3D
 @onready var collision_box = $StaticBody3D/CollisionShape3D
 @onready var static_body = $StaticBody3D
+@onready var rally = $RallyPoint
+@onready var spawn = $SpawnPoint
 var type
 var invalid_mat
 var valid_mat
 
+
 #can be placed
 var is_valid
+
+
 #is snapping to grid
 var snapping = 0
 
+
 var collision_buffer = 0
+
 
 func _ready():
 	invalid_mat = preload("res://Materials/preview_building_invalid.tres")
 	valid_mat = preload("res://Materials/preview_building_valid.tres")
-	
+
+
 func init(pos, snap):
 	position = pos
 	mesh.transparency = .55
@@ -29,7 +40,8 @@ func init(pos, snap):
 	static_body.set_ray_pickable(false)
 	
 	set_snap(snap)
-	
+
+
 func set_pos(pos):
 	position = pos + Vector3(0,(scale.y/2)*.95,0)
 	if snapping > 1:
@@ -40,20 +52,24 @@ func set_pos(pos):
 	else:
 		make_valid()
 
+
 func place():
 	mesh.set_surface_override_material(0, null)
 	mesh.transparency = 0
 	static_body.set_ray_pickable(true)
 	static_body.set_collision_layer_value(1,true)
 	$RallyPoint.visible = false
-	
+
+
 func make_valid():
 	is_valid = true
 	mesh.set_surface_override_material(0, valid_mat)
 
+
 func make_invalid():
 	is_valid = false
 	mesh.set_surface_override_material(0, invalid_mat)
+
 
 func check_collision(buff_range):	
 	if static_body.test_move(transform.scaled_local(Vector3(.9,.9,.9)), Vector3(0,0,buff_range)):
@@ -69,6 +85,7 @@ func check_collision(buff_range):
 	else:
 		return false
 
+
 #set snap for building placement
 func set_snap(snp):
 	snapping = snp
@@ -76,6 +93,7 @@ func set_snap(snp):
 		collision_buffer=0.1
 	else:
 		collision_buffer = .5
+
 
 #pass press to signal activate signal
 func _on_static_body_3d_input_event(_camera, event, _position, _normal, _shape_idx):

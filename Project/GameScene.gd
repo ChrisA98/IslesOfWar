@@ -4,11 +4,12 @@ extends Node3D
 @onready var cam = $Player_camera/Player_view
 @onready var UI_controller = $UI_Node
 @onready var world = $World
-@onready var player_faction = preload("res://Faction_Resources/Amerulf.tres")
+@onready var player_faction = preload("res://Faction_Resources/Amerulf_Resource.json")
 var buildings = []
 var units = []
-var menu_buildings
-var world_buildings
+var menu_buildings = []
+var world_buildings = []
+var forts = []
 
 var rng = RandomNumberGenerator.new()
 
@@ -26,9 +27,14 @@ func _ready():
 	#get building buttons UI element ref
 	menu_buildings = $UI_Node/Build_Menu/Building_Buttons.get_popup()
 	menu_buildings.id_pressed.connect(prep_building)
+	
+	#load player faction with relevant JSON
+	player_faction.stringify(load("res://Faction_Resources/Amerulf_Resource.json"))
+	
+	#Load building scenes from JSON data
 	for b in player_faction.data.buildings:
 		buildings.push_back(load("res://Buildings/"+b+".tscn"))
-		$UI_Node/Build_Menu/Building_Buttons.get_popup().add_item(b)
+		menu_buildings.add_item(b)
 
 
 #Called every frame. 'delta' is the elapsed time since the previous frame.
@@ -47,13 +53,14 @@ func set_map_snap(snp):
 func place_building():	
 	if preview_building.is_valid == false:
 		return
-		
+	
+	for i in forts:
+			i.hide_radius()
+			
 	preview_building.activated.connect(building_activated)
-	if world_buildings == null:
-		#debug for first building missing
-		world_buildings = [preview_building]
-	else:
-		world_buildings.push_back(preview_building)
+	if preview_building.type == "Main":
+		forts.push_back(preview_building)
+	world_buildings.push_back(preview_building)
 	
 	preview_building = null
 	world_buildings[-1].place()
@@ -64,8 +71,8 @@ func place_building():
 func spawn_unit(unit):
 	add_child(unit)
 	units.push_back(unit)
-	unit.get_children()[0].unit_list = units
-	unit.get_children()[0].selected.connect(unit_selected)
+	unit.unit_list = units
+	unit.selected.connect(unit_selected)
 
 
 #setup navigation
@@ -108,10 +115,16 @@ func prep_building(id):
 	if(preview_building != null):
 		preview_building.queue_free()
 		preview_building = null
+	
 	var new_build = buildings[id].instantiate()
 	world.add_child(new_build)
-	new_build.get_children()[0].init(position, building_snap)
-	preview_building = new_build.get_children()[0]
+	new_build.init(position, building_snap)
+	preview_building = new_build
+		
+	if(preview_building.name != "Fort"):
+		for i in forts:
+			i.preview_radius()
+			
 	#reset menu visibility
 	$UI_Node/Build_Menu.visible = false
 	click_mode = "build"
@@ -156,4 +169,4 @@ func _on_static_body_3d_input_event(_camera, event, position, _normal, _shape_id
 
 
 func _on_unit_test_button_pressed():
-	activated_building.get_parent().use("base")
+	activated_building.use("base")

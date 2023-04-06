@@ -1,9 +1,26 @@
-[gd_scene load_steps=2 format=3 uid="uid://dnmokrtywnp43"]
+[gd_scene load_steps=4 format=3 uid="uid://cahyo2evakvot"]
 
-[ext_resource type="PackedScene" uid="uid://cs2p3v3o53aki" path="res://Parent_Scenes/Unit_Base.tscn" id="1_qhglo"]
+[ext_resource type="Script" path="res://Units/Infantry.gd" id="1_somxn"]
 
-[node name="Infantry" type="Node3D"]
+[sub_resource type="CylinderShape3D" id="CylinderShape3D_603ul"]
 
-[node name="Unit_Base" parent="." instance=ExtResource("1_qhglo")]
+[sub_resource type="CylinderMesh" id="CylinderMesh_ggawr"]
 
-[editable path="Unit_Base"]
+[node name="Infantry" type="CharacterBody3D"]
+collision_mask = 0
+script = ExtResource("1_somxn")
+
+[node name="CollisionShape3D" type="CollisionShape3D" parent="."]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, 0.995465, 0)
+shape = SubResource("CylinderShape3D_603ul")
+
+[node name="MeshInstance3D" type="MeshInstance3D" parent="."]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, 1.00365, 0)
+mesh = SubResource("CylinderMesh_ggawr")
+
+[node name="NavigationAgent3D" type="NavigationAgent3D" parent="."]
+target_desired_distance = 1.97
+debug_enabled = true
+
+[connection signal="input_event" from="." to="." method="_on_input_event"]
+[connection signal="navigation_finished" from="NavigationAgent3D" to="." method="_on_navigation_agent_3d_navigation_finished"]

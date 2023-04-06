@@ -1,0 +1,10 @@
+{
+	"name": "The Kingdom of Amerulf",
+	"buildings":[
+		"Fort",
+		"Barracks"
+	],
+	"barracks_units":[
+		"Infantry"	
+	]
+}
