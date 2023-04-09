@@ -14,7 +14,7 @@ func set_pos(pos):
 	if snapping > 1:
 		position.x = ceil(position.x/snapping)*snapping
 		position.z = ceil(position.z/snapping)*snapping
-	if check_collision(collision_buffer) == false and near_base(world.forts):
+	if check_collision(collision_buffer) == false and near_base(player_owner.forts):
 		make_valid()
 		return
 	make_invalid()
@@ -30,9 +30,9 @@ func near_base(buildings) -> bool:
 
 
 #spawn unit
-func use(unit):
+func use(_unit):
 	var new_unit = units[0].instantiate()
-	if world.spawn_unit(new_unit):
+	if world.spawn_unit(player_owner, new_unit):
 		new_unit.position = spawn.global_position
 		new_unit.set_mov_target(rally.global_position)
 		return

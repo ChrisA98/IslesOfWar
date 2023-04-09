@@ -8,14 +8,17 @@ signal activated
 
 #REF vars
 @onready var world = get_parent().get_parent()
+#pieces of building
 @onready var mesh = $MeshInstance3D
 @onready var collision_box = $StaticBody3D/CollisionShape3D
 @onready var static_body = $StaticBody3D
 @onready var rally = $RallyPoint
 @onready var spawn = $SpawnPoint
+#materials
 @onready var invalid_mat = preload("res://Materials/preview_building_invalid.tres")
 @onready var valid_mat = preload("res://Materials/preview_building_valid.tres")
 var type
+var player_owner
 
 
 #can be placed
@@ -25,9 +28,9 @@ var cost = {"wood": 0,
 "stone": 0,
 "riches": 0,
 "crystals": 0,
-"food": 0,
-"pop": 0}
-var pop_mod = 0
+"food": 0}
+var pop: int = 0
+var pop_mod: int = 0
 
 #is snapping to grid
 var snapping = 0
@@ -40,11 +43,12 @@ func _ready():
 	pass
 
 
-func init(pos, snap):
+func init(pos, snap: int, player: Node):
 	position = pos
 	mesh.transparency = .55
 	mesh.set_surface_override_material(0, valid_mat)
 	static_body.set_ray_pickable(false)
+	player_owner = player
 	
 	set_snap(snap)
 
@@ -70,7 +74,7 @@ func place():
 
 func make_valid():
 	for res in cost:
-		if world.resources[res] < cost[res]:
+		if player_owner.resources[res] < cost[res]:
 			make_invalid()
 			return
 	is_valid = true

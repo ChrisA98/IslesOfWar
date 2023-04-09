@@ -10,6 +10,7 @@ func update_navigation_mesh():
 	bake_navigation_mesh(on_thread)
 	
 	var _navigationmesh: NavigationMesh = navigation_mesh
+	navigation_mesh.set_parsed_geometry_type(NavigationMesh.PARSED_GEOMETRY_STATIC_COLLIDERS)
 	NavigationMeshGenerator.bake(_navigationmesh, self)
 	navigation_mesh = null
 	navigation_mesh = _navigationmesh

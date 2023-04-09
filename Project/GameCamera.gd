@@ -1,8 +1,6 @@
 extends Node3D
 
-var on_game_window = false
-
-#camera stats
+#Camera stats
 var zoom = 10
 
 #Movement vars
@@ -18,15 +16,13 @@ var mouse_direct = Vector3()
 var tot_direct = Vector3()
 var accel = 2
 
-#ref vars
-var cam
-var game_window
+#REF vars
+@onready var cam = $Player_view
+@onready var game_window = $"../../UI_Node/Viewport_Sectons"
 var menu_buildings
 
 
 func _ready():
-	cam = $Player_view
-	game_window = $"../UI_Node/Viewport_Sectons"
 	Input.set_mouse_mode(Input.MOUSE_MODE_CONFINED) 
 
 
@@ -39,20 +35,18 @@ func _input(event):
 			Input.set_mouse_mode(Input.MOUSE_MODE_CONFINED) 
 			
 	#only read mouse position on screen while in game window
-	if on_game_window == true:			
-		if event is InputEventMouseButton:		
-			#scroll wheel input
-			if Input.is_action_just_released("scroll_up") and zoom < 20:
-				zoom += .25
-			if event.is_action("scroll_down") and zoom > 0:
-				zoom -= .25
+	#scroll wheel input
+	if Input.is_action_just_released("scroll_up") and zoom < 20:
+		zoom += .25
+	if event.is_action("scroll_down") and zoom > 0:
+		zoom -= .25
 	cam.position = Vector3(0,25-zoom,25-zoom)
 	
 	
 	#close game, TESTING ONLY
 	if event.is_action_pressed(("esc")):
 		if(check_menus()):
-			$"../UI_Node".close_menus()
+			$"../../UI_Node".close_menus()
 		else:
 			get_tree().quit()
 	
@@ -63,7 +57,7 @@ func _input(event):
 
 
 func check_menus():
-	for i in $"../UI_Node".menus:
+	for i in $"../../UI_Node".menus:
 		if i.visible:
 			return true
 	return false
@@ -94,14 +88,6 @@ func _physics_process(delta):
 	
 	key_direct = Vector3()
 	tot_direct = Vector3()
-
-
-func _on_viewport_mouse_entered():
-	on_game_window = true
-
-
-func _on_viewport_mouse_exited():
-	on_game_window = false
 
 
 #####Control Mouse based camera movement

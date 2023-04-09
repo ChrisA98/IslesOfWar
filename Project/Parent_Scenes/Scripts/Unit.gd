@@ -6,6 +6,10 @@ class_name Unit_Base
 
 const MAX_SPEED = 10
 const ACCEL = 3
+# Get the gravity from the project settings to be synced with RigidBody nodes.
+var gravity = ProjectSettings.get_setting("physics/3d/default_gravity")
+
+
 @onready var nav_agent: NavigationAgent3D = $NavigationAgent3D
 @onready var unit_radius = $CollisionShape3D.shape.get_radius()
 var rng = RandomNumberGenerator.new()
@@ -19,8 +23,7 @@ var res_cost = {"wood": 0,
 "stone": 0,
 "riches": 10,
 "crystals": 10,
-"food": 0,
-"pop": 0}
+"food": 0}
 #signals
 signal selected
 
@@ -29,11 +32,14 @@ func _ready():
 	nav_agent.path_desired_distance = 0.5
 	nav_agent.target_desired_distance = 0.5
 	
+	nav_agent.velocity_computed.connect(vel_calc_finished)
+	
 	call_deferred("actor_setup")
 
 
 func actor_setup():
 	await get_tree().physics_frame
+	
 
 
 func set_mov_target(mov_tar: Vector3):
@@ -46,7 +52,6 @@ func set_mov_target(mov_tar: Vector3):
 
 
 func _physics_process(delta):	
-	
 	if nav_agent.is_navigation_finished():
 		return
 		
@@ -59,8 +64,8 @@ func _physics_process(delta):
 	else:
 		new_velocity = lerp_stop(new_velocity, delta)
 		
-		
 	set_velocity(new_velocity)
+	
 	move_and_slide()
 
 
@@ -89,8 +94,9 @@ func check_pos(pos):
 	return new_pos
 
 
+###SIGNAL FUNCTIONS##
 #signal being selected on click
-func _on_input_event(camera, event, position, normal, shape_idx):
+func _on_input_event(_camera, event, _position, _normal, _shape_idx):
 	if event is InputEventMouseButton and Input.is_action_just_released("lmb"):
 		selected.emit(self)
 
@@ -100,3 +106,9 @@ func _on_navigation_agent_3d_navigation_finished():
 	if(targ.is_equal_approx(position) == false):
 		set_mov_target(targ)
 	set_velocity(Vector3(0,0,0))
+
+
+func vel_calc_finished(safe_velocity: Vector3):
+	print("test")
+	velocity = safe_velocity
+	move_and_slide()

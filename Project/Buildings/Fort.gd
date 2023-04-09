@@ -5,13 +5,16 @@ extends Building
 
 func _ready():
 	super()
-	hide_radius()
 	type = "Main"
 	pop_mod = 5
 
+func place():
+	super()
+	hide_radius()
+
 
 func preview_radius():
-	valid_radius.visible = false
+	valid_radius.visible = true
 
 func hide_radius():
 	valid_radius.visible = false

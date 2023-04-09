@@ -1,4 +1,4 @@
-[gd_scene load_steps=7 format=3 uid="uid://cmrvd8gie8df2"]
+[gd_scene load_steps=11 format=3 uid="uid://cmrvd8gie8df2"]
 
 [ext_resource type="Script" path="res://Buildings/Fort.gd" id="1_fqf45"]
 [ext_resource type="Material" uid="uid://tv8sxu1y3jw7" path="res://Materials/preview_building_valid.tres" id="2_q8y8i"]
@@ -12,8 +12,35 @@ albedo_color = Color(0.384314, 0.541176, 0.996078, 1)
 
 [sub_resource type="BoxShape3D" id="BoxShape3D_ibp2k"]
 
-[sub_resource type="CylinderMesh" id="CylinderMesh_ar7to"]
+[sub_resource type="CylinderMesh" id="CylinderMesh_oyigj"]
+top_radius = 0.25
+bottom_radius = 0.25
 height = 0.018
+
+[sub_resource type="Curve" id="Curve_86jyd"]
+min_value = -3.0
+max_value = 3.0
+_data = [Vector2(0, 1.89091), 0.0, 0.0, 0, 0, Vector2(1, -2.78182), -4.72727, 0.0, 0, 0]
+point_count = 2
+
+[sub_resource type="CurveTexture" id="CurveTexture_xmjpa"]
+curve = SubResource("Curve_86jyd")
+
+[sub_resource type="ParticleProcessMaterial" id="ParticleProcessMaterial_wl8b1"]
+emission_shape = 2
+emission_sphere_radius = 5.6
+gravity = Vector3(0, 2, 0)
+radial_accel_min = -2.0
+radial_accel_max = -2.0
+radial_accel_curve = SubResource("CurveTexture_xmjpa")
+scale_max = 1.65
+color = Color(0, 1, 1, 1)
+hue_variation_min = 0.8
+hue_variation_max = 0.83
+
+[sub_resource type="SphereMesh" id="SphereMesh_g5bb5"]
+radius = 0.25
+height = 0.5
 
 [node name="Fort" type="Node3D"]
 transform = Transform3D(5, 0, 0, 0, 5, 0, 0, 0, 5, 0, 2.5, 0)
@@ -32,22 +59,32 @@ input_ray_pickable = false
 [node name="CollisionShape3D" type="CollisionShape3D" parent="StaticBody3D"]
 shape = SubResource("BoxShape3D_ibp2k")
 
+[node name="CollisionShape3D2" type="CollisionShape3D" parent="StaticBody3D"]
+transform = Transform3D(0.25, 0, 0, 0, 0.25, 0, 0, 0, 0.25, 0, 0.350924, 0.999657)
+shape = SubResource("BoxShape3D_ibp2k")
+
 [node name="RallyPoint" type="Node3D" parent="."]
-transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, -0.462508, 1.59806)
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, -0.462508, 0.98906)
 
 [node name="MeshInstance3D" type="MeshInstance3D" parent="RallyPoint"]
 transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, -0.002, -0.0465063, 0)
-mesh = SubResource("CylinderMesh_ar7to")
+mesh = SubResource("CylinderMesh_oyigj")
 surface_material_override/0 = ExtResource("2_q8y8i")
+
+[node name="SpawnPoint" type="Node3D" parent="."]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0.708249, -0.346258, -0.022)
 
 [node name="Valid_Region" type="Node3D" parent="."]
 transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, -0.462508, 0.0253027)
 
-[node name="MeshInstance3D" type="MeshInstance3D" parent="Valid_Region"]
-transform = Transform3D(10, 0, 0, 0, 10, 0, 0, 0, 10, -0.002, -0.0465063, 0)
-mesh = SubResource("CylinderMesh_ar7to")
-surface_material_override/0 = ExtResource("2_q8y8i")
-
-[node name="SpawnPoint" type="Node3D" parent="."]
+[node name="GPUParticles3D" type="GPUParticles3D" parent="Valid_Region"]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0.101, -0.150815, -0.0473027)
+amount = 408
+lifetime = 1.5
+preprocess = 0.22
+randomness = 1.0
+visibility_aabb = AABB(-4.21792, -9.31952, -6.16998, 10.0108, 18.639, 12.0499)
+process_material = SubResource("ParticleProcessMaterial_wl8b1")
+draw_pass_1 = SubResource("SphereMesh_g5bb5")
 
 [connection signal="input_event" from="StaticBody3D" to="." method="_on_static_body_3d_input_event"]

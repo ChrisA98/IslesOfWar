@@ -1,15 +1,15 @@
 extends Node3D
 
 #ref vars
-@onready var cam = $Player_camera/Player_view
 @onready var UI_controller = $UI_Node
 @onready var world = $World
+@onready var player_controller = $Player
 @onready var player_faction = preload("res://Faction_Resources/Amerulf_Resource.json")
 var buildings = []
-var units = []
+var punits = []
+
 var menu_buildings = []
 var world_buildings = []
-var forts = []
 
 var rng = RandomNumberGenerator.new()
 
@@ -21,30 +21,17 @@ var activated_building = null
 var selected_units = []
 
 
-#Player Resoureces
-@onready var resources = {"wood": 0,
-"stone": 0,
-"riches": 0,
-"crystals": 0,
-"food": 0,
-"pop": 0}
-var max_pop = 0
-
 ###BUILT IN FUNCTIONS###
 #Called when the node enters the scene tree for the first time.
 func _ready():
-	#get building buttons UI element ref
+	
+	#Connect player signals
+	player_controller.res_changed.connect(set_resource)
+	player_controller.pop_changed.connect(set_pop)
+	
+	#Get building buttons UI element ref
 	menu_buildings = $UI_Node/Build_Menu/Building_Buttons.get_popup()
 	menu_buildings.id_pressed.connect(prep_building)
-	
-	
-	#Set resourcest to 0 at start
-	for r in resources:
-		set_resource(r,0)
-	
-	
-	#load player faction with relevant JSON
-	player_faction.stringify(load("res://Faction_Resources/Amerulf_Resource.json"))
 	
 	#Load building scenes from JSON data
 	for b in player_faction.data.buildings:
@@ -53,7 +40,7 @@ func _ready():
 
 
 #Called every frame. 'delta' is the elapsed time since the previous frame.
-func _process(delta):
+func _process(_delta):
 	pass
 
 
@@ -67,68 +54,35 @@ func set_map_snap(snp):
 #whats on the tin
 func place_building():	
 	if preview_building.is_valid == false:
-		return
+		return null
 	
-	#spend resources
-	for res in preview_building.cost:
-		adj_resource(res,preview_building.cost[res]*-1)
-	
-	#hide fort radius
-	for i in forts:
-			i.hide_radius()
-	
-	#connect signals
+	#Connect signals
 	preview_building.activated.connect(building_activated)
 	
-	#place forts in fort list
-	if preview_building.type == "Main":
-		forts.push_back(preview_building)
-	#place building in world
+	#Place building in world
 	world_buildings.push_back(preview_building)
-	preview_building = null
-	world_buildings[-1].place()
+	preview_building.place()
 	world.update_navigation_mesh()
+	preview_building = null
 	
-	#adjust max pop
-	adj_pop_limit(world_buildings[-1].pop_mod)
-	#reset click mode
+	#Reset click mode
 	click_mode = "select"
+	return world_buildings[-1]
 
 
-func set_pop_limit(amt: int):
-	max_pop = amt
-	UI_controller.res_displays["pop"].clear()
-	UI_controller.res_displays["pop"].add_text(var_to_str(resources["pop"]))
-	UI_controller.res_displays["pop"].add_text(" / " + var_to_str(max_pop))
-
-
-func adj_pop_limit(amt: int):
-	max_pop += amt
-	UI_controller.res_displays["pop"].clear()
-	UI_controller.res_displays["pop"].add_text(var_to_str(resources["pop"]))
-	UI_controller.res_displays["pop"].add_text(" / " + var_to_str(max_pop))
-
-
-func update_pop():
-	var _units = 0
-	for i in units:
-		_units += i.unit_cost
-	set_resource("pop",_units)
-
-
-func spawn_unit(unit) -> bool:
-	if unit.unit_cost+ resources["pop"] >= max_pop:
+func spawn_unit(o_player, unit) -> bool:
+	if unit.unit_cost + o_player.pop >= o_player.max_pop:
 		return false
 	for res in unit.res_cost:
-		if resources[res] - unit.res_cost[res] < 0:
+		if o_player.resources[res] - unit.res_cost[res] < 0:
 			return false
 	for res in unit.res_cost:
-		adj_resource(res,unit.res_cost[res]*-1)
+		o_player.adj_resource(res,unit.res_cost[res]*-1)
 	add_child(unit)
-	units.push_back(unit)
-	unit.unit_list = units
+	o_player.units.push_back(unit)
+	unit.unit_list = o_player.units
 	unit.selected.connect(unit_selected)
-	update_pop()
+	o_player.update_pop()
 	return true
 
 
@@ -145,7 +99,7 @@ func custom_nav_setup():
 	var target_position: Vector3 = Vector3(1.0, 0.0, 1.0)
 	var optimize_path: bool = true
 
-	var path: PackedVector3Array = NavigationServer3D.map_get_path(
+	var _path: PackedVector3Array = NavigationServer3D.map_get_path(
 		map,
 		start_position,
 		target_position,
@@ -153,19 +107,13 @@ func custom_nav_setup():
 
 
 func set_resource(resource: String, value: int):
-	resources[resource] = value
 	UI_controller.res_displays[resource].clear()
 	UI_controller.res_displays[resource].add_text(var_to_str(value))
-	if resource == "pop":
-		UI_controller.res_displays[resource].add_text(" / " + var_to_str(max_pop))
 
 
-func adj_resource(resource: String, value: int):
-	resources[resource] += value
-	UI_controller.res_displays[resource].clear()
-	UI_controller.res_displays[resource].add_text(var_to_str(resources[resource]))
-	if resource == "pop":
-		UI_controller.res_displays[resource].add_text(" / " + var_to_str(max_pop))
+func set_pop(current: int, max_pop: int):
+	UI_controller.res_displays["pop"].clear()
+	UI_controller.res_displays["pop"].add_text(var_to_str(current)+" / " + var_to_str(max_pop))
 
 
 ###SIGNALS FUNCTIONS###
@@ -191,11 +139,11 @@ func prep_building(id):
 	
 	var new_build = buildings[id].instantiate()
 	world.add_child(new_build)
-	new_build.init(position, building_snap)
+	new_build.init(position, building_snap, player_controller)
 	preview_building = new_build
 		
 	if(preview_building.name != "Fort"):
-		for i in forts:
+		for i in player_controller.forts:
 			i.preview_radius()
 			
 	#reset menu visibility
@@ -209,28 +157,28 @@ func building_activated(building):
 	var type = building.type
 	match type:
 		"Main":
-			adj_resource("wood",10)
-			adj_resource("stone",10)
+			player_controller.adj_resource("wood",10)
+			player_controller.adj_resource("stone",10)
 		"Barracks":
-			adj_resource("riches",10)
-			adj_resource("crystals",10)
+			player_controller.adj_resource("riches",10)
+			player_controller.adj_resource("crystals",10)
 			UI_controller.show_menu(1)
 		_:
 			pass
 
 
 #Clicks on world
-func _on_static_body_3d_input_event(_camera, event, position, _normal, _shape_idx):	
+func ground_click(_camera, event, pos, _normal, _shape_idx):	
 	match click_mode:
 		"build":
-			preview_building.set_pos(position-world.position)
+			preview_building.set_pos(pos-world.position)
 			if event is InputEventMouseButton and Input.is_action_just_released("lmb"):
 				#Close all menus when clicking on the world	
 				UI_controller.close_menus()
 				if preview_building.is_valid == false:
 					return
 				else:
-					place_building()
+					player_controller.place_building()
 		"command_unit":
 			if event is InputEventMouseButton and Input.is_action_just_released("lmb"):
 				#Close all menus when clicking on the world	
@@ -238,10 +186,10 @@ func _on_static_body_3d_input_event(_camera, event, position, _normal, _shape_id
 				if(selected_units.size() > 4):
 					var dist = selected_units.size()/2
 					for i in selected_units:
-						i.set_mov_target(position + Vector3(rng.randf_range(-dist,dist),0,rng.randf_range(-dist,dist)))
+						i.set_mov_target(pos + Vector3(rng.randf_range(-dist,dist),0,rng.randf_range(-dist,dist)))
 				else:
 					for i in selected_units:
-						i.set_mov_target(position)
+						i.set_mov_target(pos)
 		_:
 			pass
 
@@ -258,4 +206,4 @@ func _on_ui_node_menu_opened():
 
 
 func _on_day_cycle_timer_timeout():
-	adj_resource("food",units.size())
+	player_controller.adj_resource("food",player_controller.units.size())
