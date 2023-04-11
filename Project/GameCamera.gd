@@ -36,9 +36,9 @@ func _input(event):
 			
 	#only read mouse position on screen while in game window
 	#scroll wheel input
-	if Input.is_action_just_released("scroll_up") and zoom < 20:
+	if Input.is_action_just_released("scroll_up"):
 		zoom += .25
-	if event.is_action("scroll_down") and zoom > 0:
+	if event.is_action("scroll_down"):
 		zoom -= .25
 	cam.position = Vector3(0,25-zoom,25-zoom)
 	

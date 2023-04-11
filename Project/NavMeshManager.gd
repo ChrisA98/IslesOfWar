@@ -1,19 +1,19 @@
 extends NavigationRegion3D
 
+signal finished_baking
 
-# Called when the node enters the scene tree for the first time.
 func _ready():
-	pass # Replace with function body.
+	pass
+
+func set_nav_region(grp):
+	navigation_mesh = NavigationMesh.new()
+	navigation_mesh.set_parsed_geometry_type(NavigationMesh.PARSED_GEOMETRY_STATIC_COLLIDERS)
+	navigation_mesh.set_source_geometry_mode(NavigationMesh.SOURCE_GEOMETRY_GROUPS_WITH_CHILDREN)
+	navigation_mesh.set_source_group_name(grp)
+	
 
 func update_navigation_mesh():
+	# use bake and update function of region
 	var on_thread: bool = true
 	bake_navigation_mesh(on_thread)
-	
-	var _navigationmesh: NavigationMesh = navigation_mesh
-	navigation_mesh.set_parsed_geometry_type(NavigationMesh.PARSED_GEOMETRY_STATIC_COLLIDERS)
-	NavigationMeshGenerator.bake(_navigationmesh, self)
-	navigation_mesh = null
-	navigation_mesh = _navigationmesh
-	
-	var region_rid: RID = get_region_rid()
-	NavigationServer3D.region_set_navigation_mesh(region_rid, navigation_mesh)
+	finished_baking.emit()

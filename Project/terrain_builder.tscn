@@ -1,0 +1,6 @@
+[gd_scene load_steps=2 format=3 uid="uid://b1abn5w1hrwln"]
+
+[ext_resource type="Script" path="res://World_Builder.gd" id="1_kyymb"]
+
+[node name="TerrainBuilder" type="Node3D"]
+script = ExtResource("1_kyymb")

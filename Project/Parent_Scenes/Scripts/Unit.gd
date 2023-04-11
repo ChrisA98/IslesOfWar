@@ -59,7 +59,7 @@ func _physics_process(delta):
 	var next_path_position: Vector3 = nav_agent.get_next_path_position()
 	var new_velocity: Vector3 = next_path_position - current_agent_position
 	#Accelerate and decelerrate
-	if nav_agent.distance_to_target() > intial_path_dist*.1:
+	if nav_agent.distance_to_target() > intial_path_dist*.1 or nav_agent.distance_to_target() > 3:
 		new_velocity = lerp_start(new_velocity, delta)
 	else:
 		new_velocity = lerp_stop(new_velocity, delta)

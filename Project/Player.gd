@@ -52,8 +52,8 @@ func _process(_delta):
 
 ###GAME FUNCTIONS###
 #whats on the tin
-func place_building():
-	var building = gamescene.place_building()
+func place_building(grp):
+	var building = gamescene.place_building(grp)
 	if building == null:
 		return
 		

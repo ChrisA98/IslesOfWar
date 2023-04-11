@@ -5,6 +5,7 @@ extends Node3D
 @onready var world = $World
 @onready var player_controller = $Player
 @onready var player_faction = preload("res://Faction_Resources/Amerulf_Resource.json")
+var ground_group = &"navigation_mesh"
 var buildings = []
 var punits = []
 
@@ -20,10 +21,16 @@ var click_mode: String = "select"
 var activated_building = null
 var selected_units = []
 
+##Signals
+signal nav_ready
+
 
 ###BUILT IN FUNCTIONS###
 #Called when the node enters the scene tree for the first time.
 func _ready():
+	for i in world.find_children("Region*"):
+		for j in i.find_children("Floor"):
+			j.get_child(0).input_event.connect(ground_click)
 	
 	#Connect player signals
 	player_controller.res_changed.connect(set_resource)
@@ -37,6 +44,8 @@ func _ready():
 	for b in player_faction.data.buildings:
 		buildings.push_back(load("res://Buildings/"+b+".tscn"))
 		menu_buildings.add_item(b)
+		
+	call_deferred("custom_nav_setup")
 
 
 #Called every frame. 'delta' is the elapsed time since the previous frame.
@@ -52,7 +61,7 @@ func set_map_snap(snp):
 
 
 #whats on the tin
-func place_building():	
+func place_building(grp):	
 	if preview_building.is_valid == false:
 		return null
 	
@@ -62,12 +71,17 @@ func place_building():
 	#Place building in world
 	world_buildings.push_back(preview_building)
 	preview_building.place()
-	world.update_navigation_mesh()
+	preview_building.add_to_group(grp)
+	update_navigation()
 	preview_building = null
 	
 	#Reset click mode
 	click_mode = "select"
 	return world_buildings[-1]
+
+
+func update_navigation():
+	world.update_navigation_meshes()
 
 
 func spawn_unit(o_player, unit) -> bool:
@@ -92,18 +106,9 @@ func custom_nav_setup():
 	var map: RID = NavigationServer3D.map_create()
 	NavigationServer3D.map_set_up(map, Vector3.UP)
 	NavigationServer3D.map_set_active(map, true)
-		
-	await get_tree().physics_frame
-	# query the path from the navigationserver
-	var start_position: Vector3 = Vector3(0.1, 0.0, 0.1)
-	var target_position: Vector3 = Vector3(1.0, 0.0, 1.0)
-	var optimize_path: bool = true
-
-	var _path: PackedVector3Array = NavigationServer3D.map_get_path(
-		map,
-		start_position,
-		target_position,
-		optimize_path)
+	nav_ready.emit()
+	NavigationServer3D.map_set_edge_connection_margin(get_world_3d().get_navigation_map(),3)
+	print(NavigationServer3D.map_get_edge_connection_margin(get_world_3d().get_navigation_map()))
 
 
 func set_resource(resource: String, value: int):
@@ -138,7 +143,7 @@ func prep_building(id):
 		preview_building = null
 	
 	var new_build = buildings[id].instantiate()
-	world.add_child(new_build)
+	add_child(new_build)
 	new_build.init(position, building_snap, player_controller)
 	preview_building = new_build
 		
@@ -168,23 +173,25 @@ func building_activated(building):
 
 
 #Clicks on world
-func ground_click(_camera, event, pos, _normal, _shape_idx):	
+func ground_click(_camera, event, pos, _normal, _shape_idx, shape):	
+	print(pos)
+	print(NavigationServer3D.map_get_edge_connection_margin(get_world_3d().get_navigation_map()))
 	match click_mode:
 		"build":
-			preview_building.set_pos(pos-world.position)
+			preview_building.set_pos(pos)
 			if event is InputEventMouseButton and Input.is_action_just_released("lmb"):
 				#Close all menus when clicking on the world	
 				UI_controller.close_menus()
 				if preview_building.is_valid == false:
 					return
 				else:
-					player_controller.place_building()
+					player_controller.place_building(shape.get_groups()[0])
 		"command_unit":
 			if event is InputEventMouseButton and Input.is_action_just_released("lmb"):
 				#Close all menus when clicking on the world	
 				UI_controller.close_menus()
 				if(selected_units.size() > 4):
-					var dist = selected_units.size()/2
+					var dist = float(selected_units.size())/2
 					for i in selected_units:
 						i.set_mov_target(pos + Vector3(rng.randf_range(-dist,dist),0,rng.randf_range(-dist,dist)))
 				else:

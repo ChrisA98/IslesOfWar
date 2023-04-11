@@ -1,10 +1,13 @@
-[gd_scene load_steps=16 format=3 uid="uid://cjf012xbk6rdn"]
+[gd_scene load_steps=17 format=3 uid="uid://cjf012xbk6rdn"]
 
 [ext_resource type="Script" path="res://GameScene.gd" id="1_1tj7h"]
 [ext_resource type="Script" path="res://GameCamera.gd" id="1_u3pif"]
 [ext_resource type="Script" path="res://UI_Builder.gd" id="2_5ttem"]
-[ext_resource type="Script" path="res://NavMeshManager.gd" id="3_q6gew"]
+[ext_resource type="Script" path="res://NavMesh_Builder.gd" id="4_kvh8x"]
 [ext_resource type="Script" path="res://Player.gd" id="4_sboxr"]
+[ext_resource type="Shader" path="res://terrain.gdshader" id="5_702oc"]
+[ext_resource type="Texture2D" uid="uid://cs6n027ca4h1y" path="res://Test_Items/GrassyField1.png" id="6_8fllc"]
+[ext_resource type="Texture2D" uid="uid://bijeya40743je" path="res://Test_Items/HeightMap.exr" id="7_pr1wa"]
 
 [sub_resource type="PanoramaSkyMaterial" id="PanoramaSkyMaterial_rgxp7"]
 
@@ -23,12 +26,11 @@ ambient_light_energy = 0.2
 ssr_enabled = true
 ssao_enabled = true
 ssil_enabled = true
+glow_enabled = true
 fog_enabled = true
-fog_light_color = Color(0.807843, 0.807843, 0.807843, 1)
-fog_light_energy = 0.33
-fog_sun_scatter = 0.35
-fog_sky_affect = 0.936
-fog_height = 225.59
+fog_light_energy = 2.52
+fog_sun_scatter = 0.77
+fog_density = 0.0002
 volumetric_fog_density = 0.0079
 adjustment_enabled = true
 adjustment_saturation = 2.6
@@ -39,19 +41,17 @@ adjustment_saturation = 2.6
 
 [sub_resource type="CanvasItemMaterial" id="CanvasItemMaterial_fbdp7"]
 
-[sub_resource type="NavigationMesh" id="NavigationMesh_0hmmo"]
-vertices = PackedVector3Array(-43.5, 0.02, -49.5, -49.5, 0.02, -49.5, -49.5, 0.02, -43.5, -49.5, 0.02, 43.25, -49.5, 0.02, 49.5, -43.5, 0.02, 49.5, 49.5, 0.02, -43.5, 49.5, 0.02, -49.5, 43.25, 0.02, -49.5, 43.25, 0.02, 49.5, 49.5, 0.02, 49.5, 49.5, 0.02, 43.25, -37.25, 0.02, -49.5, -43.5, 0.02, -49.5, -49.5, 0.02, -43.5, -49.5, 0.02, -37.25, -49.5, 0.02, 43.25, -43.5, 0.02, 49.5, -37.25, 0.02, 49.5, -49.5, 0.02, 37, 49.5, 0.02, -37.25, 49.5, 0.02, -43.5, 43.25, 0.02, -49.5, 37, 0.02, -49.5, 37, 0.02, 49.5, 43.25, 0.02, 49.5, 49.5, 0.02, 43.25, -49.5, 0.02, 0, -49.5, 0.02, 6, -6.25, 0.02, 49.5, 18.5, 0.02, 49.5, 49.5, 0.02, 24.75, 49.5, 0.02, 18.5, 12.25, 0.02, 49.5, 49.5, 0.02, -6.25, 49.5, 0.02, -12.5, 12.25, 0.02, -49.5, 6, 0.02, -49.5, 37, 0.02, 49.5, 49.5, 0.02, 43.25, 49.5, 0.02, 37, 30.75, 0.02, 49.5, -31, 0.02, -49.5, -37.25, 0.02, -49.5, -49.5, 0.02, -37.25, -49.5, 0.02, -31, -49.5, 0.02, 37, -37.25, 0.02, 49.5, -31, 0.02, 49.5, -49.5, 0.02, 30.75, 49.5, 0.02, -31, 49.5, 0.02, -37.25, 37, 0.02, -49.5, 30.75, 0.02, -49.5, -12.5, 0.02, -49.5, -18.75, 0.02, -49.5, -49.5, 0.02, -18.75, -49.5, 0.02, -12.5, -49.5, 0.02, 18.5, -18.75, 0.02, 49.5, -12.5, 0.02, 49.5, -49.5, 0.02, 12.25, 49.5, 0.02, -6.25, 6, 0.02, -49.5, 0, 0.02, -49.5, 49.5, 0.02, 0, 49.5, 0.02, -12.5, 49.5, 0.02, -18.75, 18.5, 0.02, -49.5, 12.25, 0.02, -49.5, 30.75, 0.02, 49.5, 49.5, 0.02, 37, 49.5, 0.02, 30.75, 24.75, 0.02, 49.5, -49.5, 0.02, 24.75, -49.5, 0.02, 30.75, -31, 0.02, 49.5, -24.75, 0.02, 49.5, 49.5, 0.02, -31, 30.75, 0.02, -49.5, 24.75, 0.02, -49.5, 49.5, 0.02, -24.75, -24.75, 0.02, -49.5, -31, 0.02, -49.5, -49.5, 0.02, -31, -49.5, 0.02, -24.75, 49.5, 0.02, 0, 0, 0.02, -49.5, -49.5, 0.02, 0, -6.25, 0.02, 49.5, 0, 0.02, 49.5, 49.5, 0.02, 6, 12.25, 0.02, 49.5, 49.5, 0.02, 18.5, 49.5, 0.02, 12.25, 6, 0.02, 49.5, 24.75, 0.02, 49.5, 49.5, 0.02, 30.75, 49.5, 0.02, 24.75, 18.5, 0.02, 49.5, 0, 0.02, -49.5, -6.25, 0.02, -49.5, -49.5, 0.02, -6.25, -49.5, 0.02, 0, 6, 0.02, 49.5, 49.5, 0.02, 12.25, 49.5, 0.02, 6, 0, 0.02, 49.5, -49.5, 0.02, 24.75, -24.75, 0.02, 49.5, -18.75, 0.02, 49.5, -49.5, 0.02, 18.5, 49.5, 0.02, -18.75, 49.5, 0.02, -24.75, 24.75, 0.02, -49.5, 18.5, 0.02, -49.5, -18.75, 0.02, -49.5, -24.75, 0.02, -49.5, -49.5, 0.02, -24.75, -49.5, 0.02, -18.75, -6.25, 0.02, -49.5, -12.5, 0.02, -49.5, -49.5, 0.02, -12.5, -49.5, 0.02, -6.25, -49.5, 0.02, 12.25, -12.5, 0.02, 49.5, -6.25, 0.02, 49.5, -49.5, 0.02, 6)
-polygons = [PackedInt32Array(2, 1, 0), PackedInt32Array(5, 4, 3), PackedInt32Array(8, 7, 6), PackedInt32Array(11, 10, 9), PackedInt32Array(13, 12, 14), PackedInt32Array(14, 12, 15), PackedInt32Array(17, 16, 18), PackedInt32Array(18, 16, 19), PackedInt32Array(21, 20, 22), PackedInt32Array(22, 20, 23), PackedInt32Array(26, 25, 24), PackedInt32Array(29, 28, 27), PackedInt32Array(31, 30, 32), PackedInt32Array(32, 30, 33), PackedInt32Array(35, 34, 36), PackedInt32Array(36, 34, 37), PackedInt32Array(39, 38, 40), PackedInt32Array(40, 38, 41), PackedInt32Array(43, 42, 44), PackedInt32Array(44, 42, 45), PackedInt32Array(47, 46, 48), PackedInt32Array(48, 46, 49), PackedInt32Array(51, 50, 52), PackedInt32Array(52, 50, 53), PackedInt32Array(55, 54, 56), PackedInt32Array(56, 54, 57), PackedInt32Array(59, 58, 60), PackedInt32Array(60, 58, 61), PackedInt32Array(63, 62, 64), PackedInt32Array(64, 62, 65), PackedInt32Array(67, 66, 68), PackedInt32Array(68, 66, 69), PackedInt32Array(71, 70, 72), PackedInt32Array(72, 70, 73), PackedInt32Array(75, 74, 76), PackedInt32Array(76, 74, 77), PackedInt32Array(79, 78, 80), PackedInt32Array(80, 78, 81), PackedInt32Array(83, 82, 84), PackedInt32Array(84, 82, 85), PackedInt32Array(91, 90, 86), PackedInt32Array(86, 90, 89), PackedInt32Array(86, 89, 88), PackedInt32Array(86, 88, 87), PackedInt32Array(93, 92, 94), PackedInt32Array(94, 92, 95), PackedInt32Array(97, 96, 98), PackedInt32Array(98, 96, 99), PackedInt32Array(101, 100, 102), PackedInt32Array(102, 100, 103), PackedInt32Array(105, 104, 106), PackedInt32Array(106, 104, 107), PackedInt32Array(109, 108, 110), PackedInt32Array(110, 108, 111), PackedInt32Array(113, 112, 114), PackedInt32Array(114, 112, 115), PackedInt32Array(117, 116, 118), PackedInt32Array(118, 116, 119), PackedInt32Array(121, 120, 122), PackedInt32Array(122, 120, 123), PackedInt32Array(125, 124, 126), PackedInt32Array(126, 124, 127)]
-cell_height = 0.01
-agent_height = 2.0
+[sub_resource type="ShaderMaterial" id="ShaderMaterial_k2vpc"]
+render_priority = 0
+shader = ExtResource("5_702oc")
+shader_parameter/height_ratio = 36.0
+shader_parameter/heightmap = ExtResource("7_pr1wa")
+shader_parameter/_a = ExtResource("6_8fllc")
 
-[sub_resource type="PlaneMesh" id="PlaneMesh_gxwvh"]
-size = Vector2(100, 100)
-
-[sub_resource type="StandardMaterial3D" id="StandardMaterial3D_au8jj"]
-
-[sub_resource type="ConcavePolygonShape3D" id="ConcavePolygonShape3D_tt2i2"]
-data = PackedVector3Array(50, 0, 50, -50, 0, 50, 50, 0, -50, -50, 0, 50, -50, 0, -50, 50, 0, -50)
+[sub_resource type="PlaneMesh" id="PlaneMesh_ssgws"]
+size = Vector2(1000, 1000)
+subdivide_width = 1000
+subdivide_depth = 1000
 
 [node name="GameScene" type="Node3D"]
 script = ExtResource("1_1tj7h")
@@ -59,6 +59,10 @@ script = ExtResource("1_1tj7h")
 [node name="WorldEnvironment" type="WorldEnvironment" parent="."]
 environment = SubResource("Environment_ih53v")
 camera_attributes = SubResource("CameraAttributesPractical_d3i0u")
+
+[node name="DirectionalLight3D" type="DirectionalLight3D" parent="."]
+transform = Transform3D(0.180639, -0.0865428, -0.979735, 0.983549, 0.0158945, 0.179938, 6.70976e-10, -0.996121, 0.0879903, 0, 142.07, 0)
+light_indirect_energy = 0.872
 
 [node name="UI_Node" type="Control" parent="."]
 layout_mode = 3
@@ -351,19 +355,13 @@ offset_right = 210.0
 offset_bottom = 83.0
 text = "Unit_Test"
 
-[node name="World" type="NavigationRegion3D" parent="."]
-navigation_mesh = SubResource("NavigationMesh_0hmmo")
-script = ExtResource("3_q6gew")
+[node name="World" type="Node3D" parent="."]
+script = ExtResource("4_kvh8x")
 
-[node name="Floor" type="MeshInstance3D" parent="World"]
-mesh = SubResource("PlaneMesh_gxwvh")
-skeleton = NodePath("../..")
-surface_material_override/0 = SubResource("StandardMaterial3D_au8jj")
-
-[node name="StaticBody3D" type="StaticBody3D" parent="World/Floor"]
-
-[node name="CollisionShape3D" type="CollisionShape3D" parent="World/Floor/StaticBody3D"]
-shape = SubResource("ConcavePolygonShape3D_tt2i2")
+[node name="Visual_Ground" type="MeshInstance3D" parent="World"]
+material_override = SubResource("ShaderMaterial_k2vpc")
+mesh = SubResource("PlaneMesh_ssgws")
+skeleton = NodePath("")
 
 [node name="Player" type="Node" parent="."]
 script = ExtResource("4_sboxr")
@@ -389,4 +387,3 @@ transform = Transform3D(1, 0, 0, 0, 0.707107, 0.707107, 0, -0.707107, 0.707107, 
 [connection signal="timeout" from="UI_Node/Time_Bar/Day_Cycle_Timer" to="UI_Node" method="_on_timer_timeout"]
 [connection signal="pressed" from="UI_Node/Minimap/Snap" to="UI_Node" method="_on_snap_pressed"]
 [connection signal="pressed" from="UI_Node/Barracks_Menu/Unit_Test_Button" to="." method="_on_unit_test_button_pressed"]
-[connection signal="input_event" from="World/Floor/StaticBody3D" to="." method="ground_click"]

@@ -7,7 +7,7 @@ signal activated
 
 
 #REF vars
-@onready var world = get_parent().get_parent()
+@onready var world = get_parent()
 #pieces of building
 @onready var mesh = $MeshInstance3D
 @onready var collision_box = $StaticBody3D/CollisionShape3D
