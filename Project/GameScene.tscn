@@ -1,4 +1,4 @@
-[gd_scene load_steps=17 format=3 uid="uid://cjf012xbk6rdn"]
+[gd_scene load_steps=18 format=3 uid="uid://cjf012xbk6rdn"]
 
 [ext_resource type="Script" path="res://GameScene.gd" id="1_1tj7h"]
 [ext_resource type="Script" path="res://GameCamera.gd" id="1_u3pif"]
@@ -53,6 +53,8 @@ size = Vector2(1000, 1000)
 subdivide_width = 1000
 subdivide_depth = 1000
 
+[sub_resource type="NavigationMesh" id="NavigationMesh_tage3"]
+
 [node name="GameScene" type="Node3D"]
 script = ExtResource("1_1tj7h")
 
@@ -61,7 +63,8 @@ environment = SubResource("Environment_ih53v")
 camera_attributes = SubResource("CameraAttributesPractical_d3i0u")
 
 [node name="DirectionalLight3D" type="DirectionalLight3D" parent="."]
-transform = Transform3D(0.180639, -0.0865428, -0.979735, 0.983549, 0.0158945, 0.179938, 6.70976e-10, -0.996121, 0.0879903, 0, 142.07, 0)
+transform = Transform3D(0.571215, 0.0722224, 0.817617, -0.820801, 0.0502613, 0.568999, -8.25975e-09, -0.996121, 0.0879902, 0, 142.07, 0)
+light_energy = 3.756
 light_indirect_energy = 0.872
 
 [node name="UI_Node" type="Control" parent="."]
@@ -367,10 +370,14 @@ skeleton = NodePath("")
 script = ExtResource("4_sboxr")
 
 [node name="Player_camera" type="Node3D" parent="Player"]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, 35.0752, 0)
 script = ExtResource("1_u3pif")
 
 [node name="Player_view" type="Camera3D" parent="Player/Player_camera"]
 transform = Transform3D(1, 0, 0, 0, 0.707107, 0.707107, 0, -0.707107, 0.707107, 0.078701, 15, 15.0158)
+
+[node name="NavigationRegion3D" type="NavigationRegion3D" parent="."]
+navigation_mesh = SubResource("NavigationMesh_tage3")
 
 [connection signal="menu_opened" from="UI_Node" to="." method="_on_ui_node_menu_opened"]
 [connection signal="mouse_entered" from="UI_Node/Viewport_Sectons/LeftBar" to="Player/Player_camera" method="_on_left_bar_mouse_entered"]

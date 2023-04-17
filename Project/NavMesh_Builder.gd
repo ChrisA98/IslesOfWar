@@ -20,6 +20,7 @@ var normals = PackedVector3Array()
 
 @onready var meshres = 10
 
+
 func _ready():
 	var chunks = sqrt(find_files())
 	
@@ -34,6 +35,7 @@ func _ready():
 			call_deferred("update_navigation_meshes")
 			i.get_child(0).get_child(0).input_event.connect(gamescene.ground_click.bind(i)) 
 			i.get_child(0).transparency = 1
+			i.set_nav_region()
 
 
 func find_files():
@@ -55,14 +57,13 @@ func update_navigation_meshes():
 	for i in get_children():
 		if i.name.contains("Region"):
 			i.update_navigation_mesh()
-			await i.finished_baking
+
 
 func build_map(img, pos, adj):	
 	var grp = StringName("reg_"+str(adj.x) +"_"+ str(adj.y))
 	#build nav region for chunk
 	var chunk_nav_region = NavigationRegion3D.new()
 	chunk_nav_region.set_script(nav_manager)
-	chunk_nav_region.set_nav_region(grp)
 	chunk_nav_region.add_to_group(grp)
 	#build mesh for chunk
 	var mesh = MeshInstance3D.new()
@@ -70,7 +71,7 @@ func build_map(img, pos, adj):
 	mesh.set_name("Floor")
 	#add to world
 	add_child(chunk_nav_region)
-	get_child(-1).set_name("Region")
+	get_child(-1).set_name("Region_"+str(adj.x) +"_"+ str(adj.y))
 	chunk_nav_region.add_child(mesh)
 	mesh.create_trimesh_collision()
 	mesh.add_to_group(grp)

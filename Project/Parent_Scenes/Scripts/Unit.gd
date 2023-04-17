@@ -10,7 +10,7 @@ const ACCEL = 3
 var gravity = ProjectSettings.get_setting("physics/3d/default_gravity")
 
 
-@onready var nav_agent: NavigationAgent3D = $NavigationAgent3D
+@onready var nav_agent: NavigationAgent3D = get_node("NavigationAgent3D")
 @onready var unit_radius = $CollisionShape3D.shape.get_radius()
 var rng = RandomNumberGenerator.new()
 
@@ -31,8 +31,6 @@ signal selected
 func _ready():
 	nav_agent.path_desired_distance = 0.5
 	nav_agent.target_desired_distance = 0.5
-	
-	nav_agent.velocity_computed.connect(vel_calc_finished)
 	
 	call_deferred("actor_setup")
 
@@ -64,9 +62,7 @@ func _physics_process(delta):
 	else:
 		new_velocity = lerp_stop(new_velocity, delta)
 		
-	set_velocity(new_velocity)
-	
-	move_and_slide()
+	nav_agent.set_velocity(new_velocity)	
 
 
 #speed up when starting movement
@@ -105,10 +101,8 @@ func _on_navigation_agent_3d_navigation_finished():
 	var targ = check_pos(position)
 	if(targ.is_equal_approx(position) == false):
 		set_mov_target(targ)
-	set_velocity(Vector3(0,0,0))
 
 
-func vel_calc_finished(safe_velocity: Vector3):
-	print("test")
+func _on_NavigationAgent_velocity_computed(safe_velocity):
 	velocity = safe_velocity
 	move_and_slide()

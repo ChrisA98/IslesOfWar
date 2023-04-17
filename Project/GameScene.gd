@@ -108,7 +108,6 @@ func custom_nav_setup():
 	NavigationServer3D.map_set_active(map, true)
 	nav_ready.emit()
 	NavigationServer3D.map_set_edge_connection_margin(get_world_3d().get_navigation_map(),3)
-	print(NavigationServer3D.map_get_edge_connection_margin(get_world_3d().get_navigation_map()))
 
 
 func set_resource(resource: String, value: int):
@@ -174,8 +173,7 @@ func building_activated(building):
 
 #Clicks on world
 func ground_click(_camera, event, pos, _normal, _shape_idx, shape):	
-	print(pos)
-	print(NavigationServer3D.map_get_edge_connection_margin(get_world_3d().get_navigation_map()))
+	#print(pos)
 	match click_mode:
 		"build":
 			preview_building.set_pos(pos)
