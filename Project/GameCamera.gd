@@ -1,7 +1,7 @@
 extends Node3D
 
 #Camera stats
-var zoom = 10
+var zoom = 50
 
 #Movement vars
 var speed = Vector3()
@@ -17,7 +17,8 @@ var tot_direct = Vector3()
 var accel = 2
 
 #REF vars
-@onready var cam = $Player_view
+@onready var cam = get_node("./Player_view")
+@onready var ground_check = get_node("./RayCast3D")
 @onready var game_window = $"../../UI_Node/Viewport_Sectons"
 var menu_buildings
 
@@ -36,11 +37,10 @@ func _input(event):
 			
 	#only read mouse position on screen while in game window
 	#scroll wheel input
-	if Input.is_action_just_released("scroll_up"):
-		zoom += .25
-	if event.is_action("scroll_down"):
-		zoom -= .25
-	cam.position = Vector3(0,25-zoom,25-zoom)
+	if Input.is_action_just_released("scroll_up") and zoom > 10:
+		zoom -= 2.5
+	if event.is_action("scroll_down")  and zoom < 75:
+		zoom += 2.5
 	
 	
 	#close game, TESTING ONLY
@@ -79,15 +79,24 @@ func _physics_process(delta):
 	else:
 		tot_direct	= mouse_direct.normalized()
 		
-	
+	#add zoom
+	var height = position.distance_to(ground_check.get_collision_point())
+	if(abs(height - zoom) < 5):
+		tot_direct.y = 0
+	elif(height > zoom and ground_check.is_colliding()):
+		tot_direct.y = -1
+	elif(height < zoom or ground_check.is_colliding() == false):
+		tot_direct.y = 1
 	velocity = velocity.lerp(tot_direct * maxSpeed, accel * delta)
 	speed.z = velocity.z
+	speed.y = velocity.y
 	speed.x = velocity.x
 	
 	translate(speed)
 	
 	key_direct = Vector3()
 	tot_direct = Vector3()
+	
 
 
 #####Control Mouse based camera movement

@@ -62,7 +62,8 @@ func _physics_process(delta):
 	else:
 		new_velocity = lerp_stop(new_velocity, delta)
 		
-	nav_agent.set_velocity(new_velocity)	
+	set_velocity(new_velocity)
+	move_and_slide()
 
 
 #speed up when starting movement
@@ -104,5 +105,5 @@ func _on_navigation_agent_3d_navigation_finished():
 
 
 func _on_NavigationAgent_velocity_computed(safe_velocity):
-	velocity = safe_velocity
+	#velocity = safe_velocity
 	move_and_slide()

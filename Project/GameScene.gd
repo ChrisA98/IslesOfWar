@@ -5,6 +5,7 @@ extends Node3D
 @onready var world = $World
 @onready var player_controller = $Player
 @onready var player_faction = preload("res://Faction_Resources/Amerulf_Resource.json")
+@onready var global = get_node("/root/Global_Vars")
 var ground_group = &"navigation_mesh"
 var buildings = []
 var punits = []
@@ -20,6 +21,11 @@ var preview_building: Node3D
 var click_mode: String = "select"
 var activated_building = null
 var selected_units = []
+
+#time keeping
+var year_day = 330
+var year = 545
+var day_cycle = true
 
 ##Signals
 signal nav_ready
@@ -212,3 +218,8 @@ func _on_ui_node_menu_opened():
 
 func _on_day_cycle_timer_timeout():
 	player_controller.adj_resource("food",player_controller.units.size())
+	year_day+=1
+	if year_day > global.YEAR_LENGTH:
+		year_day = 1
+		year += 1
+	

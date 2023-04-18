@@ -18,7 +18,7 @@ var vertices = PackedVector3Array()
 var UVs = PackedVector2Array()
 var normals = PackedVector3Array()
 
-@onready var meshres = 10
+@onready var meshres = 5
 
 
 func _ready():
@@ -28,6 +28,7 @@ func _ready():
 		for x in range(0,chunks):
 			var img = Image.new()
 			img.load(heightmap_dir+"chunk_"+str(y)+"_"+str(x)+".exr")
+			chunk_size = img.get_width()
 			build_map(img, Vector3(x-1,0,y),Vector2i(x,y))
 		
 	for i in get_children():
@@ -38,6 +39,7 @@ func _ready():
 			i.set_nav_region()
 
 
+#check if .exr files exist in target path
 func find_files():
 	var dir = DirAccess.open(heightmap_dir)
 	var cnt = 0
@@ -87,13 +89,13 @@ func create_mesh(img):
 	st.clear_surfaces()
 	var width = img.get_width()
 	var height = img.get_height()	
+	img.flip_y()
 	
 	vertices.resize(0)
 	UVs.resize(0)
 	normals.resize(0)
 	
 	var heightmap = img
-	img.flip_y()
 	
 	for x in range(width):
 		if x % meshres == 0:

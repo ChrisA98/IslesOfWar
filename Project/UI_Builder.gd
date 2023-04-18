@@ -12,6 +12,7 @@ signal menu_opened
 "crystals": $Time_Bar2/Crystal/Amount,
 "food": $Time_Bar2/Food/Amount,
 "pop": $Time_Bar2/Pop/Amount}
+@onready var global = get_node("/root/Global_Vars")
 var buttons
 
 #Ref Vars
@@ -74,6 +75,10 @@ func _on_units_button_pressed():
 
 
 func _on_timer_timeout():
-	$Time_Bar/Day_Cycle_Timer.start(10)
+	if(game_scene.day_cycle):
+		$Time_Bar/Day_Cycle_Timer.start(global.NIGHT_LENGTH)
+	else:
+		$Time_Bar/Day_Cycle_Timer.start(global.DAY_LENGTH)
+	game_scene.day_cycle = !game_scene.day_cycle
 	$Time_Bar/Date.clear()
-	$Time_Bar/Date.add_text("4th, Corvusan Mal, 545 E2")
+	$Time_Bar/Date.add_text(global.month_to_string(game_scene.year_day,game_scene.year))

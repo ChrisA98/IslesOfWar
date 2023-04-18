@@ -2,16 +2,16 @@
 
 importer="texture"
 type="CompressedTexture2D"
-uid="uid://ciuvt6wduksig"
-path="res://.godot/imported/chunk_1_1.exr-35780822d5e0c476730e7c8f746a85a5.ctex"
+uid="uid://5b3nj84pklq0"
+path="res://.godot/imported/Test_albedo.png-c4f6f5c405cd69c9f2ab07d84d4d1a33.ctex"
 metadata={
 "vram_texture": false
 }
 
 [deps]
 
-source_file="res://Test_Items/Map_data/chunk_1_1.exr"
-dest_files=["res://.godot/imported/chunk_1_1.exr-35780822d5e0c476730e7c8f746a85a5.ctex"]
+source_file="res://Test_Items/Test_albedo.png"
+dest_files=["res://.godot/imported/Test_albedo.png-c4f6f5c405cd69c9f2ab07d84d4d1a33.ctex"]
 
 [params]
 

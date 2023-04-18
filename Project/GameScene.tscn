@@ -3,39 +3,47 @@
 [ext_resource type="Script" path="res://GameScene.gd" id="1_1tj7h"]
 [ext_resource type="Script" path="res://GameCamera.gd" id="1_u3pif"]
 [ext_resource type="Script" path="res://UI_Builder.gd" id="2_5ttem"]
+[ext_resource type="Shader" uid="uid://b4phmp8ng8ufo" path="res://Terrain_Shader.tres" id="4_jr47f"]
 [ext_resource type="Script" path="res://NavMesh_Builder.gd" id="4_kvh8x"]
 [ext_resource type="Script" path="res://Player.gd" id="4_sboxr"]
-[ext_resource type="Shader" path="res://terrain.gdshader" id="5_702oc"]
-[ext_resource type="Texture2D" uid="uid://cs6n027ca4h1y" path="res://Test_Items/GrassyField1.png" id="6_8fllc"]
-[ext_resource type="Texture2D" uid="uid://bijeya40743je" path="res://Test_Items/HeightMap.exr" id="7_pr1wa"]
+[ext_resource type="Texture2D" uid="uid://drbfk3h3s6x1b" path="res://Test_Items/HeightMap.exr" id="5_hv0wo"]
+[ext_resource type="Texture2D" uid="uid://cs6n027ca4h1y" path="res://Test_Items/GrassyField1.png" id="5_ld5fb"]
+[ext_resource type="Texture2D" uid="uid://bxnba2n264pgx" path="res://Test_Items/HeightMap_Normal.png" id="6_dmutg"]
 
-[sub_resource type="PanoramaSkyMaterial" id="PanoramaSkyMaterial_rgxp7"]
+[sub_resource type="ProceduralSkyMaterial" id="ProceduralSkyMaterial_46wwo"]
 
-[sub_resource type="Sky" id="Sky_s4hba"]
-sky_material = SubResource("PanoramaSkyMaterial_rgxp7")
+[sub_resource type="Sky" id="Sky_aswfs"]
+sky_material = SubResource("ProceduralSkyMaterial_46wwo")
 
-[sub_resource type="Environment" id="Environment_ih53v"]
-background_mode = 1
-background_color = Color(0.611765, 1, 0.956863, 1)
-background_energy_multiplier = 1.23
-sky = SubResource("Sky_s4hba")
-sky_custom_fov = 24.6
-ambient_light_source = 2
-ambient_light_color = Color(1, 0.972549, 0.890196, 1)
-ambient_light_energy = 0.2
+[sub_resource type="Environment" id="Environment_0xqwl"]
+background_mode = 2
+background_energy_multiplier = 2.7
+sky = SubResource("Sky_aswfs")
+ambient_light_color = Color(0.364706, 0.623529, 0.803922, 1)
+ambient_light_energy = 5.44
+reflected_light_source = 2
+tonemap_mode = 3
+tonemap_exposure = 1.06
+tonemap_white = 6.0
 ssr_enabled = true
 ssao_enabled = true
-ssil_enabled = true
-glow_enabled = true
-fog_enabled = true
-fog_light_energy = 2.52
-fog_sun_scatter = 0.77
-fog_density = 0.0002
-volumetric_fog_density = 0.0079
+ssao_intensity = 11.77
+ssao_power = 5.4075
+ssao_detail = 2.0
+ssao_light_affect = 0.78
+ssil_radius = 8.03
+ssil_intensity = 0.08
+ssil_sharpness = 0.0
+fog_sun_scatter = 0.41
+fog_sky_affect = 0.842
+volumetric_fog_anisotropy = 0.9
+volumetric_fog_length = 64.15
 adjustment_enabled = true
-adjustment_saturation = 2.6
+adjustment_contrast = 1.2
+adjustment_saturation = 1.2
 
 [sub_resource type="CameraAttributesPractical" id="CameraAttributesPractical_d3i0u"]
+dof_blur_far_distance = 1000.0
 
 [sub_resource type="CanvasItemMaterial" id="CanvasItemMaterial_onle8"]
 
@@ -43,29 +51,29 @@ adjustment_saturation = 2.6
 
 [sub_resource type="ShaderMaterial" id="ShaderMaterial_k2vpc"]
 render_priority = 0
-shader = ExtResource("5_702oc")
-shader_parameter/height_ratio = 36.0
-shader_parameter/heightmap = ExtResource("7_pr1wa")
-shader_parameter/_a = ExtResource("6_8fllc")
+shader = ExtResource("4_jr47f")
+shader_parameter/uvx = 4.75e-06
+shader_parameter/uvy = null
+shader_parameter/t_height = 36
+shader_parameter/uvx2 = null
+shader_parameter/uvy2 = null
+shader_parameter/u_terrain_normal_basis = Basis(1, 0, 0, 0, 0.643, 0, 0, 0, 1)
+shader_parameter/heightmap = ExtResource("5_hv0wo")
+shader_parameter/terrain_normal_map = ExtResource("6_dmutg")
+shader_parameter/Albedo = ExtResource("5_ld5fb")
+shader_parameter/terrain_normal_map2 = ExtResource("6_dmutg")
 
 [sub_resource type="PlaneMesh" id="PlaneMesh_ssgws"]
 size = Vector2(1000, 1000)
-subdivide_width = 1000
-subdivide_depth = 1000
-
-[sub_resource type="NavigationMesh" id="NavigationMesh_tage3"]
+subdivide_width = 1500
+subdivide_depth = 1500
 
 [node name="GameScene" type="Node3D"]
 script = ExtResource("1_1tj7h")
 
 [node name="WorldEnvironment" type="WorldEnvironment" parent="."]
-environment = SubResource("Environment_ih53v")
+environment = SubResource("Environment_0xqwl")
 camera_attributes = SubResource("CameraAttributesPractical_d3i0u")
-
-[node name="DirectionalLight3D" type="DirectionalLight3D" parent="."]
-transform = Transform3D(0.571215, 0.0722224, 0.817617, -0.820801, 0.0502613, 0.568999, -8.25975e-09, -0.996121, 0.0879902, 0, 142.07, 0)
-light_energy = 3.756
-light_indirect_energy = 0.872
 
 [node name="UI_Node" type="Control" parent="."]
 layout_mode = 3
@@ -169,7 +177,7 @@ keep_pressed_outside = true
 text = "Units"
 
 [node name="Day_Cycle_Timer" type="Timer" parent="UI_Node/Time_Bar"]
-wait_time = 15.0
+wait_time = 0.5
 autostart = true
 
 [node name="Time_Bar2" type="Panel" parent="UI_Node"]
@@ -374,10 +382,22 @@ transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, 35.0752, 0)
 script = ExtResource("1_u3pif")
 
 [node name="Player_view" type="Camera3D" parent="Player/Player_camera"]
-transform = Transform3D(1, 0, 0, 0, 0.707107, 0.707107, 0, -0.707107, 0.707107, 0.078701, 15, 15.0158)
+transform = Transform3D(1, 0, 0, 0, 0.573577, 0.819152, 0, -0.819152, 0.573577, 0, 15, 15)
 
-[node name="NavigationRegion3D" type="NavigationRegion3D" parent="."]
-navigation_mesh = SubResource("NavigationMesh_tage3")
+[node name="RayCast3D" type="RayCast3D" parent="Player/Player_camera"]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, 15, 0)
+target_position = Vector3(0, -500, 0)
+hit_from_inside = true
+
+[node name="DirectionalLight3D" type="DirectionalLight3D" parent="."]
+transform = Transform3D(0.933228, 0.250605, 0.257455, -0.354576, 0.526772, 0.77252, 0.057977, -0.812224, 0.580457, 0, 41.7719, 0)
+light_angular_distance = 3.0
+shadow_enabled = true
+shadow_bias = 0.25
+shadow_blur = 0.0
+directional_shadow_blend_splits = true
+directional_shadow_max_distance = 26.4
+directional_shadow_pancake_size = 34.3
 
 [connection signal="menu_opened" from="UI_Node" to="." method="_on_ui_node_menu_opened"]
 [connection signal="mouse_entered" from="UI_Node/Viewport_Sectons/LeftBar" to="Player/Player_camera" method="_on_left_bar_mouse_entered"]

@@ -1,11 +1,10 @@
-@tool
 extends Node
 
 @onready var noise_image: Image = Image.new()
 @export_dir var map_sections_path: String = "res://Test_Items/Map_data/" 
 @onready var world_width
 @onready var world_height
-@onready var heightmap_chunk_size = 501
+@onready var heightmap_chunk_size = 500
 
 var height_data = {}
 
