@@ -20,6 +20,7 @@ mesh = SubResource("CylinderMesh_ggawr")
 
 [node name="NavigationAgent3D" type="NavigationAgent3D" parent="."]
 target_desired_distance = 3.0
+agent_height_offset = 1.0
 avoidance_enabled = true
 ignore_y = false
 debug_enabled = true

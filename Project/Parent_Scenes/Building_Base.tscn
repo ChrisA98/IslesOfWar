@@ -21,7 +21,6 @@ script = ExtResource("1_y54u3")
 
 [node name="MeshInstance3D" type="MeshInstance3D" parent="."]
 transparency = 0.55
-cast_shadow = 0
 mesh = SubResource("BoxMesh_8pvv5")
 surface_material_override/0 = SubResource("StandardMaterial3D_xyfiq")
 

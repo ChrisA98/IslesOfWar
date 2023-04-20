@@ -48,7 +48,6 @@ script = ExtResource("1_fqf45")
 
 [node name="MeshInstance3D" type="MeshInstance3D" parent="."]
 transparency = 0.55
-cast_shadow = 0
 mesh = SubResource("CylinderMesh_hoihg")
 surface_material_override/0 = SubResource("StandardMaterial3D_xyfiq")
 
@@ -79,6 +78,7 @@ transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, -0.462508, 0.0253027)
 
 [node name="GPUParticles3D" type="GPUParticles3D" parent="Valid_Region"]
 transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0.101, -0.150815, -0.0473027)
+gi_mode = 2
 amount = 408
 lifetime = 1.5
 preprocess = 0.22

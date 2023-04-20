@@ -23,7 +23,6 @@ script = ExtResource("1_r17ho")
 [node name="MeshInstance3D" type="MeshInstance3D" parent="."]
 transform = Transform3D(1, 0, 0, 0, -4.37114e-08, -1, 0, 1, -4.37114e-08, 0, -0.5, 0)
 transparency = 0.55
-cast_shadow = 0
 mesh = SubResource("CylinderMesh_hoihg")
 surface_material_override/0 = SubResource("StandardMaterial3D_xyfiq")
 

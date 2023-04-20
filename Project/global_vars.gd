@@ -17,8 +17,8 @@ extends Node
 	12: "Lidrasin Bor"
 }
 const YEAR_LENGTH : int = 336
-const DAY_LENGTH : int = 300
-const NIGHT_LENGTH : int = 240
+const DAY_LENGTH : int = 1
+const NIGHT_LENGTH : int = 1
 
 func month_to_string(yr_day: int, yr: int) -> String:
 	var out = ""
