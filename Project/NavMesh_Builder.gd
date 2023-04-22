@@ -6,7 +6,6 @@ extends Node3D
 @onready var noise_image: Image = Image.new()
 @onready var chunk_size = 500
 @onready var nav_manager = preload("res://NavMeshManager.gd")
-@export var map_size = 100
 @export var heightmap_dir: String = "res://Test_Items/Map_data/"
 
 
@@ -35,7 +34,7 @@ func _ready():
 		if i.name.contains("Region"):
 			call_deferred("update_navigation_meshes")
 			i.get_child(0).get_child(0).input_event.connect(gamescene.ground_click.bind(i)) 
-			i.get_child(0).transparency = 1
+			i.get_child(0).transparency = 0
 			i.set_nav_region()
 
 
@@ -102,13 +101,11 @@ func create_mesh(img):
 			for y in range(height):
 				if y % meshres == 0:
 					height_data[Vector2(x,y)] = heightmap.get_pixel(x,y).r * terrain_amplitude
+		
 	
-	for x in range(width-meshres):
-		if x % meshres == 0:
-			for y in range(height-meshres):
-				if y % meshres == 0:
-					createQuad(x,y)
-					
+	for x in height_data:
+		if (x.x<width-meshres and x.y<height-meshres):
+			createQuad(x.x,x.y)
 	st.surface_begin(Mesh.PRIMITIVE_TRIANGLES)
 	
 	for v in vertices.size():
@@ -119,7 +116,7 @@ func create_mesh(img):
 	return st
 
 
-func createQuad(x,y):
+func createQuad(x,y):	
 	var vert1
 	var vert2
 	var vert3

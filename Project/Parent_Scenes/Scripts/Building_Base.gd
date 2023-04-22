@@ -2,26 +2,26 @@ extends Node3D
 
 class_name Building
 
-#custom signals
+#Custom signals
 signal activated
 
 
 #REF vars
 @onready var world = get_parent()
-#pieces of building
+#Pieces of building
 @onready var mesh = $MeshInstance3D
 @onready var collision_box = $StaticBody3D/CollisionShape3D
 @onready var static_body = $StaticBody3D
 @onready var rally = $RallyPoint
 @onready var spawn = $SpawnPoint
-#materials
+#Materials
 @onready var invalid_mat = preload("res://Materials/preview_building_invalid.tres")
 @onready var valid_mat = preload("res://Materials/preview_building_valid.tres")
 var type
 var player_owner
 
 
-#can be placed
+#Can be placed
 var is_valid
 #Cost to build
 var cost = {"wood": 0,
@@ -87,15 +87,13 @@ func make_invalid():
 
 
 func check_collision(buff_range):	
-	if static_body.test_move(transform.scaled_local(Vector3(.9,.9,.9)), Vector3(0,0,buff_range)):
+	if static_body.test_move(transform.scaled_local(Vector3(.9,.9,.9)), Vector3(0,10,buff_range)):
 		return true
-	elif static_body.test_move(transform.scaled_local(Vector3(.9,.9,.9)), Vector3(0,0,-1*buff_range)):
+	elif static_body.test_move(transform.scaled_local(Vector3(.9,.9,.9)), Vector3(0,10,-1*buff_range)):
 		return true
-	elif static_body.test_move(transform.scaled_local(Vector3(.9,.9,.9)), Vector3(buff_range,0,0)):
+	elif static_body.test_move(transform.scaled_local(Vector3(.9,.9,.9)), Vector3(buff_range,10,0)):
 		return true
-	elif static_body.test_move(transform.scaled_local(Vector3(.9,.9,.9)), Vector3(-1*buff_range,0,0)):
-		return true
-	elif static_body.test_move(transform.scaled_local(Vector3(.9,.9,.9)), Vector3(0,buff_range,0)):
+	elif static_body.test_move(transform.scaled_local(Vector3(.9,.9,.9)), Vector3(-1*buff_range,10,0)):
 		return true
 	else:
 		return false

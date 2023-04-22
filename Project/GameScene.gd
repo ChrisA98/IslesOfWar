@@ -222,4 +222,4 @@ func _on_day_cycle_timer_timeout():
 	if year_day > global.YEAR_LENGTH:
 		year_day = 1
 		year += 1
-	
+

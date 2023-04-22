@@ -6,12 +6,12 @@ signal menu_opened
 
 #UI Elements
 @onready var menus = [$Build_Menu,$Barracks_Menu]
-@onready var res_displays = {"wood": $Time_Bar2/Wood/Amount,
-"stone": $Time_Bar2/Stone/Amount,
-"riches": $Time_Bar2/Riches/Amount,
-"crystals": $Time_Bar2/Crystal/Amount,
-"food": $Time_Bar2/Food/Amount,
-"pop": $Time_Bar2/Pop/Amount}
+@onready var res_displays = {"wood": $Res_Bar/Wood/Amount,
+"stone": $Res_Bar/Stone/Amount,
+"riches": $Res_Bar/Riches/Amount,
+"crystals": $Res_Bar/Crystal/Amount,
+"food": $Res_Bar/Food/Amount,
+"pop": $Res_Bar/Pop/Amount}
 @onready var global = get_node("/root/Global_Vars")
 var buttons
 

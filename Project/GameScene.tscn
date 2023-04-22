@@ -124,8 +124,7 @@ grow_vertical = 2
 [node name="Time_Bar" type="Panel" parent="UI_Node"]
 layout_mode = 1
 anchors_preset = -1
-anchor_left = 0.7
-anchor_right = 1.0
+anchor_right = 0.3
 anchor_bottom = 0.05
 grow_horizontal = 0
 
@@ -170,122 +169,104 @@ text = "Units"
 wait_time = 0.5
 autostart = true
 
-[node name="Time_Bar2" type="Panel" parent="UI_Node"]
+[node name="Res_Bar" type="Panel" parent="UI_Node"]
+self_modulate = Color(1, 1, 1, 0.498039)
 layout_mode = 1
 anchors_preset = -1
-anchor_right = 0.3
-anchor_bottom = 0.075
+anchor_left = 0.7
+anchor_top = 0.75
+anchor_right = 0.8
+anchor_bottom = 1.05
 grow_horizontal = 0
 
-[node name="Wood" type="RichTextLabel" parent="UI_Node/Time_Bar2"]
+[node name="Wood" type="RichTextLabel" parent="UI_Node/Res_Bar"]
 layout_mode = 1
 anchors_preset = -1
 anchor_right = 1.0
-anchor_bottom = 1.0
-offset_left = 3.0
-offset_top = -2.0
-offset_right = -335.0
-offset_bottom = -7.0
+anchor_bottom = 0.125
 text = "Wood
 "
 
-[node name="Amount" type="RichTextLabel" parent="UI_Node/Time_Bar2/Wood"]
+[node name="Amount" type="RichTextLabel" parent="UI_Node/Res_Bar/Wood"]
 layout_mode = 1
 anchors_preset = -1
-anchor_top = 0.4
-anchor_right = 1.0
-anchor_bottom = 0.46
-offset_bottom = 39.6
-text = "
-"
-fit_content = true
-
-[node name="Stone" type="RichTextLabel" parent="UI_Node/Time_Bar2"]
-layout_mode = 1
-anchors_preset = -1
+anchor_left = 0.5
 anchor_right = 1.0
 anchor_bottom = 1.0
-offset_left = 57.0
-offset_top = -2.0
-offset_right = -281.0
-offset_bottom = -7.0
-text = "Stone
-
-"
-
-[node name="Amount" type="RichTextLabel" parent="UI_Node/Time_Bar2/Stone"]
-layout_mode = 1
-anchors_preset = -1
-anchor_top = 0.4
-anchor_right = 1.0
-anchor_bottom = 0.46
-offset_bottom = 39.6
 fit_content = true
 
-[node name="Riches" type="RichTextLabel" parent="UI_Node/Time_Bar2"]
+[node name="Stone" type="RichTextLabel" parent="UI_Node/Res_Bar"]
 layout_mode = 1
 anchors_preset = -1
+anchor_top = 0.125
+anchor_right = 1.0
+anchor_bottom = 0.25
+text = "Stone"
+
+[node name="Amount" type="RichTextLabel" parent="UI_Node/Res_Bar/Stone"]
+layout_mode = 1
+anchors_preset = -1
+anchor_left = 0.5
 anchor_right = 1.0
 anchor_bottom = 1.0
-offset_left = 107.0
-offset_top = -2.0
-offset_right = -223.0
-offset_bottom = -7.0
+offset_bottom = -0.00705338
+fit_content = true
+
+[node name="Riches" type="RichTextLabel" parent="UI_Node/Res_Bar"]
+layout_mode = 1
+anchors_preset = -1
+anchor_top = 0.25
+anchor_right = 1.0
+anchor_bottom = 0.375
 text = "Riches"
 autowrap_mode = 2
 
-[node name="Amount" type="RichTextLabel" parent="UI_Node/Time_Bar2/Riches"]
+[node name="Amount" type="RichTextLabel" parent="UI_Node/Res_Bar/Riches"]
 layout_mode = 1
 anchors_preset = -1
-anchor_top = 0.4
-anchor_right = 1.0
-anchor_bottom = 0.46
-offset_bottom = 39.6
-fit_content = true
-
-[node name="Crystal" type="RichTextLabel" parent="UI_Node/Time_Bar2"]
-layout_mode = 1
-anchors_preset = -1
+anchor_left = 0.5
 anchor_right = 1.0
 anchor_bottom = 1.0
-offset_left = 166.0
-offset_top = -2.0
-offset_right = -164.0
-offset_bottom = -7.0
+offset_top = 0.00847244
+offset_right = 0.00799561
+offset_bottom = 0.00847244
+fit_content = true
+
+[node name="Crystal" type="RichTextLabel" parent="UI_Node/Res_Bar"]
+layout_mode = 1
+anchors_preset = -1
+anchor_top = 0.375
+anchor_right = 1.0
+anchor_bottom = 0.5
 text = "Crystal"
 autowrap_mode = 2
 
-[node name="Amount" type="RichTextLabel" parent="UI_Node/Time_Bar2/Crystal"]
+[node name="Amount" type="RichTextLabel" parent="UI_Node/Res_Bar/Crystal"]
 layout_mode = 1
 anchors_preset = -1
-anchor_top = 0.4
-anchor_right = 1.0
-anchor_bottom = 0.46
-offset_bottom = 39.6
-fit_content = true
-
-[node name="Food" type="RichTextLabel" parent="UI_Node/Time_Bar2"]
-layout_mode = 1
-anchors_preset = -1
+anchor_left = 0.5
 anchor_right = 1.0
 anchor_bottom = 1.0
-offset_left = 226.0
-offset_top = -2.0
-offset_right = -104.0
-offset_bottom = -7.0
+fit_content = true
+
+[node name="Food" type="RichTextLabel" parent="UI_Node/Res_Bar"]
+layout_mode = 1
+anchors_preset = -1
+anchor_top = 0.5
+anchor_right = 1.0
+anchor_bottom = 0.625
 text = "Food"
 autowrap_mode = 2
 
-[node name="Amount" type="RichTextLabel" parent="UI_Node/Time_Bar2/Food"]
+[node name="Amount" type="RichTextLabel" parent="UI_Node/Res_Bar/Food"]
 layout_mode = 1
 anchors_preset = -1
-anchor_top = 0.4
+anchor_left = 0.5
 anchor_right = 1.0
-anchor_bottom = 0.46
-offset_bottom = 39.6
+anchor_bottom = 1.0
 fit_content = true
 
-[node name="Pop" type="RichTextLabel" parent="UI_Node/Time_Bar2"]
+[node name="Pop" type="RichTextLabel" parent="UI_Node/Res_Bar"]
 layout_mode = 1
 anchors_preset = -1
 anchor_right = 1.0
@@ -296,7 +277,7 @@ offset_bottom = 0.999996
 text = "Population"
 autowrap_mode = 2
 
-[node name="Amount" type="RichTextLabel" parent="UI_Node/Time_Bar2/Pop"]
+[node name="Amount" type="RichTextLabel" parent="UI_Node/Res_Bar/Pop"]
 layout_mode = 1
 anchors_preset = -1
 anchor_top = 0.4
@@ -308,8 +289,8 @@ fit_content = true
 [node name="Minimap" type="Panel" parent="UI_Node"]
 layout_mode = 1
 anchors_preset = -1
-anchor_left = 0.75
-anchor_top = 0.681
+anchor_left = 0.8
+anchor_top = 0.7
 anchor_right = 1.0
 anchor_bottom = 1.0
 offset_top = -0.320038
@@ -362,6 +343,7 @@ terrain_amplitude = 57
 
 [node name="Visual_Ground" type="MeshInstance3D" parent="World"]
 transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0.122696, 0, 0.132719)
+visible = false
 mesh = SubResource("PlaneMesh_ssgws")
 skeleton = NodePath("")
 
@@ -380,7 +362,7 @@ transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, 15, 0)
 target_position = Vector3(0, -500, 0)
 hit_from_inside = true
 
-[node name="DirectionalLight3D" type="DirectionalLight3D" parent="."]
+[node name="Sun" type="DirectionalLight3D" parent="."]
 transform = Transform3D(-4.25223e-08, 0.378616, -0.925554, -1.01263e-08, 0.925554, 0.378616, 1, 2.54721e-08, -3.55227e-08, 0, 0, 0)
 shadow_enabled = true
 directional_shadow_max_distance = 700.0

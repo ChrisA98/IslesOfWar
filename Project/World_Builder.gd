@@ -28,8 +28,12 @@ func _ready():
 func create_chunks(img: Image):
 	for y in range(0,(world_height / heightmap_chunk_size)):
 		for x in range(0,(world_width / heightmap_chunk_size)):
-			var sub_img = img.get_region(Rect2i(Vector2i(x*heightmap_chunk_size,y*heightmap_chunk_size) \
-			,Vector2i(heightmap_chunk_size,heightmap_chunk_size)))
+			var spos = Vector2i(x*heightmap_chunk_size,y*heightmap_chunk_size)
+			if x > 0:
+				spos = Vector2i((x*heightmap_chunk_size)-1,y*heightmap_chunk_size)
+			if y > 0:
+				spos = Vector2i(x*heightmap_chunk_size,(y*heightmap_chunk_size)-1)
+			var sub_img = img.get_region(Rect2i(spos,Vector2i(heightmap_chunk_size+1,heightmap_chunk_size+1)))
 			
 			var out = (map_sections_path+"chunk_" + str(y)+"_"+str(x)+".exr")
 			sub_img.save_exr(out)
