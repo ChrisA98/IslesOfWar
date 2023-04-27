@@ -1,8 +1,7 @@
-[gd_scene load_steps=4 format=3 uid="uid://c1fykkdhtkvtu"]
+[gd_scene load_steps=3 format=3 uid="uid://c1fykkdhtkvtu"]
 
 [ext_resource type="PackedScene" uid="uid://ccoruw5j562l7" path="res://Parent_Scenes/Building_Base.tscn" id="1_f4voi"]
 [ext_resource type="Script" path="res://Buildings/Barracks.gd" id="2_t33jg"]
-[ext_resource type="ArrayMesh" uid="uid://b6jt6v7onwtwk" path="res://Models/Amerulf/Barracks_Am.obj" id="3_xqv4h"]
 
 [node name="Building_Base" instance=ExtResource("1_f4voi")]
 transform = Transform3D(5, 0, 0, 0, 5, 0, 0, 0, 5, 0, 0, 0)
@@ -10,7 +9,6 @@ script = ExtResource("2_t33jg")
 
 [node name="MeshInstance3D" parent="." index="0"]
 transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, -0.0027564, 0)
-mesh = ExtResource("3_xqv4h")
 
 [node name="StaticBody3D" parent="." index="1"]
 transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, 0.496792, 0)

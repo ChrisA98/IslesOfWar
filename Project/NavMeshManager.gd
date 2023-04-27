@@ -3,9 +3,11 @@ extends NavigationRegion3D
 signal finished_baking
 
 @onready var baking_mesh = false
+@onready var global = get_node("/root/Global_Vars")
+var baking = false
 
 func _ready():
-	pass
+	bake_finished.connect(open_queue)
 
 func set_nav_region():
 	if get_groups().size() == 0:
@@ -21,7 +23,22 @@ func set_nav_region():
 
 func update_navigation_mesh():
 	# use bake and update function of region
-	var on_thread: bool = true
+	if global.navmesh_baking == null:
+		global.set_nav_queue(self)
+		var on_thread: bool = true
 	
+		bake_navigation_mesh(on_thread)
+	else:
+		global.queued_nav_bakes.push_back(self)
+
+
+func queue_bake():
+	global.set_nav_queue(self)
+	var on_thread: bool = true	
 	bake_navigation_mesh(on_thread)
-	finished_baking.emit()
+	
+
+func open_queue():
+	global.clear_nav_queue(self)
+	if(global.queued_nav_bakes.size()>0):
+		global.queued_nav_bakes[-1].update_navigation_mesh()

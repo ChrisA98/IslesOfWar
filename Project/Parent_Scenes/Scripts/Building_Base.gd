@@ -49,7 +49,6 @@ func load_data():
 	var b_mesh = load("res://Models/"+faction_short_name+"/"+type+"_"+suffix+".obj")
 	if(b_mesh != null):
 		mesh.set_mesh(b_mesh)
-		mesh.position.y = 
 	
 
 func init(pos, snap: int, actor: Node):

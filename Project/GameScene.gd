@@ -44,9 +44,10 @@ func _ready():
 	player_controller.pop_changed.connect(set_pop)
 	
 	# Generate enemy actors
+	var e_script = load("res://Actor_Classes/Enemy.gd")
 	for i in range(1,faction_data.size()):
 		var e = Node.new()
-		e.set_script(load("res://Enemy.gd"))
+		e.set_script(e_script)
 		e.name = "Enemy_"+str(i)
 		e.actor_ID = i
 		add_child(e)
@@ -118,15 +119,14 @@ func place_building(grp, building):
 	#Place building in world
 	world_buildings.push_back(building)
 	building.place()
-	print_debug(grp)
 	building.add_to_group(grp)
-	update_navigation()
+	update_navigation(grp)
 	
 	return world_buildings[-1]
 
 
-func update_navigation():
-	world.update_navigation_meshes()
+func update_navigation(region = null):
+	world.update_navigation_meshes(region)
 
 
 func spawn_unit(o_player, unit) -> bool:
@@ -158,6 +158,7 @@ func custom_nav_setup():
 	NavigationServer3D.map_set_active(map, true)
 	nav_ready.emit()
 	NavigationServer3D.map_set_edge_connection_margin(get_world_3d().get_navigation_map(),3)
+	update_navigation()
 
 
 func set_resource(resource: String, value: int):

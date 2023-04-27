@@ -1,0 +1,26 @@
+[gd_scene load_steps=4 format=3 uid="uid://dl1c7pt3f2ws8"]
+
+[ext_resource type="Script" path="res://test_mesh_load.gd" id="1_aksqi"]
+
+[sub_resource type="PlaneMesh" id="PlaneMesh_88fqw"]
+
+[sub_resource type="BoxMesh" id="BoxMesh_wsfkl"]
+
+[node name="Node3D" type="Node3D"]
+
+[node name="MeshInstance3D" type="MeshInstance3D" parent="."]
+mesh = SubResource("PlaneMesh_88fqw")
+
+[node name="test" type="MeshInstance3D" parent="."]
+mesh = SubResource("BoxMesh_wsfkl")
+script = ExtResource("1_aksqi")
+
+[node name="Camera3D" type="Camera3D" parent="."]
+transform = Transform3D(0.86409, 0.156742, -0.478309, 0, 0.950277, 0.311406, 0.503337, -0.269083, 0.821125, -1.15403, 0.74572, 2.22153)
+
+[node name="Sun" type="DirectionalLight3D" parent="."]
+transform = Transform3D(-3.8677e-08, 0.136977, -0.990574, -2.03662e-08, 0.990574, 0.136977, 1, 2.54721e-08, -3.55227e-08, -20.8353, 5.6193, 0)
+shadow_enabled = true
+shadow_blur = 2.275
+directional_shadow_max_distance = 800.0
+directional_shadow_pancake_size = 76.6

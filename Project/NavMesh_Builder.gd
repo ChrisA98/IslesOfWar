@@ -31,7 +31,6 @@ func _ready():
 		
 	for i in get_children():
 		if i.name.contains("Region"):
-			call_deferred("update_navigation_meshes")
 			i.get_child(0).get_child(0).input_event.connect(gamescene.ground_click.bind(i)) 
 			i.get_child(0).transparency = 1 #hide terrain mesh
 			i.set_nav_region()
@@ -53,12 +52,14 @@ func find_files():
 	return cnt
 
 
-func update_navigation_meshes():
+func update_navigation_meshes(grp):
+	var targ = "Region"
+	if(grp != null):
+		targ += grp.get_slice("g",1)
 	for i in get_children():
-		if i.name.contains("Region"):
+		if i.name.contains(targ):
 			i.update_navigation_mesh()
-
-
+	
 func build_map(img, pos, adj):	
 	var grp = StringName("reg_"+str(adj.x) +"_"+ str(adj.y))
 	#build nav region for chunk

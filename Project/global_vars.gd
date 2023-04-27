@@ -20,6 +20,9 @@ const YEAR_LENGTH : int = 336
 const DAY_LENGTH : int = 1
 const NIGHT_LENGTH : int = 1
 
+var navmesh_baking : NavigationRegion3D
+var queued_nav_bakes: Array
+
 func month_to_string(yr_day: int, yr: int) -> String:
 	var out = ""
 	var month_day = (yr_day%28)+1
@@ -35,3 +38,12 @@ func month_to_string(yr_day: int, yr: int) -> String:
 	out += (months[yr_day/28])
 	out += (", "+str(yr)+" E2")
 	return out
+
+
+func set_nav_queue(nr : NavigationRegion3D):
+	navmesh_baking = nr
+
+
+func clear_nav_queue(nr : NavigationRegion3D):
+	navmesh_baking = null
+	queued_nav_bakes.erase(nr)

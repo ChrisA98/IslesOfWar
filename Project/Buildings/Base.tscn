@@ -1,8 +1,7 @@
-[gd_scene load_steps=10 format=3 uid="uid://dt0wkrxkjbnoq"]
+[gd_scene load_steps=9 format=3 uid="uid://dt0wkrxkjbnoq"]
 
 [ext_resource type="PackedScene" uid="uid://ccoruw5j562l7" path="res://Parent_Scenes/Building_Base.tscn" id="1_l4fnw"]
 [ext_resource type="Script" path="res://Buildings/Base.gd" id="2_40tl8"]
-[ext_resource type="ArrayMesh" uid="uid://bqux1fsngqxbj" path="res://Models/Amerulf/Base_Am.obj" id="3_qv37r"]
 
 [sub_resource type="BoxShape3D" id="BoxShape3D_r4gvb"]
 size = Vector3(2, 2, 2)
@@ -46,8 +45,7 @@ transform = Transform3D(5, 0, 0, 0, 5, 0, 0, 0, 5, 0, 0, 0)
 script = ExtResource("2_40tl8")
 
 [node name="MeshInstance3D" parent="." index="0"]
-transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, 0.087, 0)
-mesh = ExtResource("3_qv37r")
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, 0, 0)
 surface_material_override/0 = null
 
 [node name="StaticBody3D" parent="." index="1"]

@@ -1,15 +1,15 @@
-[gd_scene load_steps=23 format=3 uid="uid://drb6kpwnopd6b"]
+[gd_scene load_steps=23 format=3 uid="uid://bj16w3nykywrm"]
 
 [ext_resource type="Script" path="res://GameScene.gd" id="1_1tj7h"]
 [ext_resource type="Script" path="res://GameCamera.gd" id="1_u3pif"]
 [ext_resource type="Script" path="res://UI_Builder.gd" id="2_5ttem"]
 [ext_resource type="Texture2D" uid="uid://bksut4x4pxm72" path="res://Test_Items/Test_UI.png" id="3_uwhca"]
 [ext_resource type="Script" path="res://NavMesh_Builder.gd" id="4_kvh8x"]
-[ext_resource type="Script" path="res://Player.gd" id="4_sboxr"]
 [ext_resource type="Shader" path="res://New_Terrain.gdshader" id="4_yoi8y"]
 [ext_resource type="Texture2D" uid="uid://cs6n027ca4h1y" path="res://Test_Items/GrassyField1.png" id="5_0uqkj"]
 [ext_resource type="Texture2D" uid="uid://drbfk3h3s6x1b" path="res://Test_Items/HeightMap.exr" id="5_hv0wo"]
-[ext_resource type="Script" path="res://Fort_Spawn.gd" id="7_t268x"]
+[ext_resource type="Script" path="res://Actor_Classes/Fort_Spawn.gd" id="8_l6ukt"]
+[ext_resource type="Script" path="res://Actor_Classes/Player.gd" id="9_5t2fv"]
 
 [sub_resource type="ProceduralSkyMaterial" id="ProceduralSkyMaterial_46wwo"]
 
@@ -369,7 +369,7 @@ skeleton = NodePath("")
 
 [node name="Player_Base_Spawn" type="Node3D" parent="World"]
 transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, -391, 0.401, 420)
-script = ExtResource("7_t268x")
+script = ExtResource("8_l6ukt")
 group = "reg_0_1"
 
 [node name="MeshInstance3D" type="MeshInstance3D" parent="World/Player_Base_Spawn"]
@@ -379,8 +379,8 @@ mesh = SubResource("CapsuleMesh_x5v2n")
 surface_material_override/0 = SubResource("StandardMaterial3D_fjj8m")
 
 [node name="Enemy1_Base_Spawn" type="Node3D" parent="World"]
-transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 398.4, 1.621, -431.39)
-script = ExtResource("7_t268x")
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 398.4, 1.477, -431.39)
+script = ExtResource("8_l6ukt")
 group = "reg_1_0"
 actor_id = 1
 
@@ -390,7 +390,7 @@ mesh = SubResource("CapsuleMesh_x5v2n")
 surface_material_override/0 = SubResource("StandardMaterial3D_0q7om")
 
 [node name="Player" type="Node" parent="."]
-script = ExtResource("4_sboxr")
+script = ExtResource("9_5t2fv")
 
 [node name="Player_camera" type="Node3D" parent="Player"]
 script = ExtResource("1_u3pif")
