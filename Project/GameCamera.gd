@@ -1,7 +1,7 @@
 extends Node3D
 
 #Camera stats
-var zoom = 50
+var zoom = 20
 
 #Movement vars
 var speed = Vector3()

@@ -6,18 +6,6 @@ extends Node
 @onready var world_height
 @onready var heightmap_chunk_size = 500
 
-var height_data = {}
-
-@export var terrain_amplitude = 36
-
-var vertices = PackedVector3Array()
-var UVs = PackedVector2Array()
-var normals = PackedVector3Array()
-
-@onready var themesh = Mesh.new()
-@onready var meshres = 1
-@onready var mesh_container = self
-
 func _ready():
 	noise_image.load("res://Test_Items/HeightMap.exr")
 	world_width = noise_image.get_width()

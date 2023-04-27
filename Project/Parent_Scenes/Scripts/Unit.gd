@@ -4,6 +4,10 @@ extends CharacterBody3D
 class_name Unit_Base
 
 
+#signals
+signal selected
+
+
 const MAX_SPEED = 10
 const ACCEL = 3
 # Get the gravity from the project settings to be synced with RigidBody nodes.
@@ -12,20 +16,20 @@ var gravity = ProjectSettings.get_setting("physics/3d/default_gravity")
 
 @onready var nav_agent: NavigationAgent3D = get_node("NavigationAgent3D")
 @onready var unit_radius = $CollisionShape3D.shape.get_radius()
+var actor_owner
+
 var rng = RandomNumberGenerator.new()
 
-
-var intial_path_dist = 0
+var intial_path_dist := 0.1
 var unit_list
-
-var unit_cost = 0
-var res_cost = {"wood": 0,
+var pop_cost := 0
+var res_cost := {"wood": 0,
 "stone": 0,
 "riches": 10,
 "crystals": 10,
 "food": 0}
-#signals
-signal selected
+
+var target_enemy: Unit_Base
 
 
 func _ready():
@@ -37,7 +41,6 @@ func _ready():
 
 func actor_setup():
 	await get_tree().physics_frame
-	
 
 
 func set_mov_target(mov_tar: Vector3):
@@ -71,14 +74,14 @@ func lerp_start(nv, dx):
 	nv = nv.normalized()* MAX_SPEED
 	nv = lerp(velocity,nv,dx*ACCEL)
 	return nv
-	
-	
+
+
 #speed up when starting movement
 func lerp_stop(nv, dx):
 	nv = nv.normalized() * 0.2
 	nv = lerp(velocity,nv,dx*ACCEL)
 	return nv
-	
+
 
 #check target position for othe runits
 func check_pos(pos):
@@ -89,6 +92,14 @@ func check_pos(pos):
 		elif (i.position.distance_to(new_pos) <= unit_radius*3):
 			new_pos = check_pos(new_pos + Vector3(rng.randf_range(-1,1),0,rng.randf_range(-1,1)))
 	return new_pos
+
+
+## Call to see if purchasable
+func can_afford(builder_res, ):
+	for res in builder_res:
+		if builder_res[res] < res_cost[res] :
+			return false
+	return true
 
 
 ###SIGNAL FUNCTIONS##
@@ -104,6 +115,6 @@ func _on_navigation_agent_3d_navigation_finished():
 		set_mov_target(targ)
 
 
-func _on_NavigationAgent_velocity_computed(safe_velocity):
+func _on_NavigationAgent_velocity_computed(_safe_velocity):
 	#velocity = safe_velocity
 	move_and_slide()

@@ -1,8 +1,13 @@
 {
 	"name": "The Kingdom of Amerulf",
+	"short_name": "Amerulf",
 	"buildings":{
-		"Fort": [ "data"],
-		"Barracks": [ "data"]
+		"Base": {
+			"mesh_y": 0.087
+		},
+		"Barracks": {
+			"mesh_y": -0.003
+		},
 	},
 	"barracks_units":[
 		"Infantry"	

@@ -1,0 +1,85 @@
+[gd_scene load_steps=10 format=3 uid="uid://dt0wkrxkjbnoq"]
+
+[ext_resource type="PackedScene" uid="uid://ccoruw5j562l7" path="res://Parent_Scenes/Building_Base.tscn" id="1_l4fnw"]
+[ext_resource type="Script" path="res://Buildings/Base.gd" id="2_40tl8"]
+[ext_resource type="ArrayMesh" uid="uid://bqux1fsngqxbj" path="res://Models/Amerulf/Base_Am.obj" id="3_qv37r"]
+
+[sub_resource type="BoxShape3D" id="BoxShape3D_r4gvb"]
+size = Vector3(2, 2, 2)
+
+[sub_resource type="Gradient" id="Gradient_auwj1"]
+colors = PackedColorArray(1, 1, 1, 1, 1, 1, 1, 0)
+
+[sub_resource type="GradientTexture1D" id="GradientTexture1D_0y6jh"]
+gradient = SubResource("Gradient_auwj1")
+
+[sub_resource type="ParticleProcessMaterial" id="ParticleProcessMaterial_wbdji"]
+direction = Vector3(0, 1, 0)
+spread = 0.0
+gravity = Vector3(0, 0, 0)
+initial_velocity_min = 0.5
+initial_velocity_max = 0.5
+color_ramp = SubResource("GradientTexture1D_0y6jh")
+attractor_interaction_enabled = false
+
+[sub_resource type="StandardMaterial3D" id="StandardMaterial3D_3j86t"]
+transparency = 1
+blend_mode = 1
+cull_mode = 2
+depth_draw_mode = 1
+shading_mode = 0
+diffuse_mode = 1
+vertex_color_use_as_albedo = true
+albedo_color = Color(1, 0.682353, 0.984314, 1)
+disable_receive_shadows = true
+
+[sub_resource type="CylinderMesh" id="CylinderMesh_5guih"]
+material = SubResource("StandardMaterial3D_3j86t")
+top_radius = 30.0
+bottom_radius = 30.0
+height = 1.5
+cap_top = false
+cap_bottom = false
+
+[node name="Base" instance=ExtResource("1_l4fnw")]
+transform = Transform3D(5, 0, 0, 0, 5, 0, 0, 0, 5, 0, 0, 0)
+script = ExtResource("2_40tl8")
+
+[node name="MeshInstance3D" parent="." index="0"]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, 0.087, 0)
+mesh = ExtResource("3_qv37r")
+surface_material_override/0 = null
+
+[node name="StaticBody3D" parent="." index="1"]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, 0.504915, 0)
+
+[node name="CollisionShape3D" parent="StaticBody3D" index="0"]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, 0.5, 0)
+shape = SubResource("BoxShape3D_r4gvb")
+
+[node name="CollisionShape3D2" parent="StaticBody3D" index="1"]
+transform = Transform3D(0.2, 0, 0, 0, 0.2, 0, 0, 0, 0.2, 0, 0, 1.7338)
+disabled = true
+
+[node name="RallyPoint" parent="." index="2"]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, 0.0986839, 1.75751)
+
+[node name="SpawnPoint" parent="." index="3"]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, -0.0193124, 1.17912)
+
+[node name="Valid_Region" type="Node3D" parent="." index="4"]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, -0.00605364, 0.0253027)
+visible = false
+
+[node name="GPUParticles3D" type="GPUParticles3D" parent="Valid_Region" index="0"]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0.101, -0.150815, -0.0473027)
+gi_mode = 2
+lifetime = 4.81
+preprocess = 4.0
+visibility_aabb = AABB(-5.55879, -1.53446, -5.77225, 11.1176, 3.06891, 11.5445)
+draw_order = 2
+process_material = SubResource("ParticleProcessMaterial_wbdji")
+draw_pass_1 = SubResource("CylinderMesh_5guih")
+
+[node name="RayCast3D" parent="." index="5"]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, 0.157313, 0)

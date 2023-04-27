@@ -25,10 +25,9 @@ func _ready():
 	
 	#place menus
 	for i in menus:
-		i.position = Vector2(int((get_viewport_rect().size.x/2)-100),int(get_viewport_rect().size.y/10))
 		i.visible = false
 	
-	buttons = [$Time_Bar/Build_Button, $Time_Bar/Units_Button, $Minimap/Snap]
+	buttons = [$Minimap/Build_Button, $Minimap/Units_Button, $Minimap/Snap]
 
 
 # Called every frame. 'delta' is the elapsed time since the previous frame.
@@ -48,10 +47,19 @@ func close_menus():
 	for m in menus:
 		if m.visible:
 			m.visible = false
+	for b in buttons:
+		b.visible = true
 
+func close_menu(menu):
+	menus[menu].visible = false
+	for b in buttons:
+		b.visible = true
+		
 
 func _on_build_button_pressed():
 	show_menu(0)
+	buttons[0].visible = false
+	buttons[1].visible = false
 
 
 func _on_snap_pressed():

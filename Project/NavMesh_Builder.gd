@@ -1,4 +1,3 @@
-@tool
 extends Node3D
 
 @onready var gamescene = $".."
@@ -34,7 +33,7 @@ func _ready():
 		if i.name.contains("Region"):
 			call_deferred("update_navigation_meshes")
 			i.get_child(0).get_child(0).input_event.connect(gamescene.ground_click.bind(i)) 
-			i.get_child(0).transparency = 0
+			i.get_child(0).transparency = 1 #hide terrain mesh
 			i.set_nav_region()
 
 
@@ -159,3 +158,7 @@ func createQuad(x,y):
 	
 	for i in range(0,3):
 		normals.push_back(normal)
+
+
+func get_region(pos : Vector3):
+	return StringName("reg_"+str(int(pos.x/chunk_size)) +"_"+ str(int(pos.z/chunk_size)))

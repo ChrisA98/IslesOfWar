@@ -16,15 +16,17 @@ bottom_radius = 0.25
 height = 0.018
 
 [node name="Building_Base" type="Node3D"]
-transform = Transform3D(5, 0, 0, 0, 5, 0, 0, 0, 5, 0, 2.5, 0)
+transform = Transform3D(5, 0, 0, 0, 5, 0, 0, 0, 5, 0, -0.0421534, 0)
 script = ExtResource("1_y54u3")
 
 [node name="MeshInstance3D" type="MeshInstance3D" parent="."]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, 0.512184, 0)
 transparency = 0.55
 mesh = SubResource("BoxMesh_8pvv5")
 surface_material_override/0 = SubResource("StandardMaterial3D_xyfiq")
 
 [node name="StaticBody3D" type="StaticBody3D" parent="."]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, 0.507441, 0)
 collision_layer = 2
 input_ray_pickable = false
 
@@ -36,7 +38,7 @@ transform = Transform3D(0.2, 0, 0, 0, 0.2, 0, 0, 0, 0.2, 0, 0, 0.919428)
 shape = SubResource("BoxShape3D_ibp2k")
 
 [node name="RallyPoint" type="Node3D" parent="."]
-transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, -0.462508, 0.908507)
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, 0.0733881, 0.908507)
 
 [node name="MeshInstance3D" type="MeshInstance3D" parent="RallyPoint"]
 transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, -0.002, -0.0465063, 0)
@@ -44,5 +46,8 @@ mesh = SubResource("CylinderMesh_ar7to")
 surface_material_override/0 = ExtResource("2_lljag")
 
 [node name="SpawnPoint" type="Node3D" parent="."]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, -0.0474244, 0)
+
+[node name="RayCast3D" type="RayCast3D" parent="."]
 
 [connection signal="input_event" from="StaticBody3D" to="." method="_on_static_body_3d_input_event"]

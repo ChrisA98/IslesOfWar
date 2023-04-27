@@ -19,7 +19,7 @@ transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, 1.00365, 0)
 mesh = SubResource("CylinderMesh_ggawr")
 
 [node name="NavigationAgent3D" type="NavigationAgent3D" parent="."]
-avoidance_enabled = true
+target_desired_distance = 3.0
 ignore_y = false
 debug_enabled = true
 

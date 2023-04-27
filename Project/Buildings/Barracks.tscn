@@ -2,19 +2,24 @@
 
 [ext_resource type="PackedScene" uid="uid://ccoruw5j562l7" path="res://Parent_Scenes/Building_Base.tscn" id="1_f4voi"]
 [ext_resource type="Script" path="res://Buildings/Barracks.gd" id="2_t33jg"]
-
-[sub_resource type="CylinderMesh" id="CylinderMesh_v14na"]
-height = 1.0
+[ext_resource type="ArrayMesh" uid="uid://b6jt6v7onwtwk" path="res://Models/Amerulf/Barracks_Am.obj" id="3_xqv4h"]
 
 [node name="Building_Base" instance=ExtResource("1_f4voi")]
+transform = Transform3D(5, 0, 0, 0, 5, 0, 0, 0, 5, 0, 0, 0)
 script = ExtResource("2_t33jg")
 
 [node name="MeshInstance3D" parent="." index="0"]
-transform = Transform3D(1, 0, 0, 0, -4.37114e-08, -1, 0, 1, -4.37114e-08, 0, -0.5, 0)
-mesh = SubResource("CylinderMesh_v14na")
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, -0.0027564, 0)
+mesh = ExtResource("3_xqv4h")
+
+[node name="StaticBody3D" parent="." index="1"]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, 0.496792, 0)
+
+[node name="CollisionShape3D2" parent="StaticBody3D" index="1"]
+transform = Transform3D(0.2, 0, 0, 0, 0.2, 0, 0, 0, 0.2, 0, 0, 1.08503)
 
 [node name="RallyPoint" parent="." index="2"]
-transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, -0.462508, 1.1589)
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, 0.0776555, 1.09582)
 
 [node name="SpawnPoint" parent="." index="3"]
-transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, -0.437983, 0.960314)
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, 0.106123, 0.625176)
