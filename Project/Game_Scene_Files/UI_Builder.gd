@@ -95,9 +95,9 @@ func _on_units_button_pressed():
 ## Day night cycle trigger
 func _on_timer_timeout():
 	if(game_scene.day_cycle):
-		$Time_Bar/Day_Cycle_Timer.start(global.NIGHT_LENGTH)
-	else:
 		$Time_Bar/Day_Cycle_Timer.start(global.DAY_LENGTH)
+	else:
+		$Time_Bar/Day_Cycle_Timer.start(global.NIGHT_LENGTH)
 	game_scene.day_cycle = !game_scene.day_cycle
 	update_clock()
 

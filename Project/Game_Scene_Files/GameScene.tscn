@@ -1,15 +1,15 @@
-[gd_scene load_steps=23 format=3 uid="uid://b6brlnrjv0yvo"]
+[gd_scene load_steps=23 format=3 uid="uid://d32tym6bcdu7c"]
 
-[ext_resource type="Script" path="res://GameScene.gd" id="1_1tj7h"]
-[ext_resource type="Script" path="res://UI_Builder.gd" id="2_5ttem"]
-[ext_resource type="Texture2D" uid="uid://bksut4x4pxm72" path="res://Test_Items/Test_UI.png" id="3_uwhca"]
-[ext_resource type="Script" path="res://NavMesh_Builder.gd" id="4_kvh8x"]
-[ext_resource type="Shader" path="res://New_Terrain.gdshader" id="4_yoi8y"]
-[ext_resource type="Texture2D" uid="uid://cs6n027ca4h1y" path="res://Test_Items/GrassyField1.png" id="5_0uqkj"]
-[ext_resource type="Texture2D" uid="uid://drbfk3h3s6x1b" path="res://Test_Items/HeightMap.exr" id="5_hv0wo"]
-[ext_resource type="Script" path="res://Actor_Classes/Fort_Spawn.gd" id="8_l6ukt"]
-[ext_resource type="Script" path="res://Actor_Classes/Player.gd" id="9_5t2fv"]
-[ext_resource type="Script" path="res://Actor_Classes/GameCamera.gd" id="10_qgi2g"]
+[ext_resource type="Script" path="res://Game_Scene_Files/GameScene.gd" id="1_7pjje"]
+[ext_resource type="Script" path="res://Game_Scene_Files/UI_Builder.gd" id="2_wj4ul"]
+[ext_resource type="Texture2D" uid="uid://bksut4x4pxm72" path="res://Test_Items/Test_UI.png" id="3_lo1wh"]
+[ext_resource type="Script" path="res://World_Generation/NavMesh_Builder.gd" id="4_k22hi"]
+[ext_resource type="Shader" path="res://World_Generation/New_Terrain.gdshader" id="5_gdv2b"]
+[ext_resource type="Texture2D" uid="uid://cs6n027ca4h1y" path="res://Test_Items/GrassyField1.png" id="6_1hvoe"]
+[ext_resource type="Texture2D" uid="uid://drbfk3h3s6x1b" path="res://Test_Items/HeightMap.exr" id="7_ubyyn"]
+[ext_resource type="Script" path="res://Actor_Classes/Fort_Spawn.gd" id="8_viuko"]
+[ext_resource type="Script" path="res://Actor_Classes/Player.gd" id="9_3h23t"]
+[ext_resource type="Script" path="res://Actor_Classes/GameCamera.gd" id="10_jjfcj"]
 
 [sub_resource type="ProceduralSkyMaterial" id="ProceduralSkyMaterial_46wwo"]
 
@@ -18,9 +18,10 @@ sky_material = SubResource("ProceduralSkyMaterial_46wwo")
 
 [sub_resource type="Environment" id="Environment_0xqwl"]
 background_mode = 2
-background_energy_multiplier = 0.4
 sky = SubResource("Sky_aswfs")
-ambient_light_color = Color(0.364706, 0.623529, 0.803922, 1)
+ambient_light_color = Color(0.768627, 1, 0.898039, 1)
+ambient_light_sky_contribution = 0.37
+ambient_light_energy = 0.2
 reflected_light_source = 2
 tonemap_mode = 2
 tonemap_exposure = 1.06
@@ -48,11 +49,11 @@ dof_blur_far_distance = 1000.0
 
 [sub_resource type="ShaderMaterial" id="ShaderMaterial_d1jxg"]
 render_priority = 0
-shader = ExtResource("4_yoi8y")
+shader = ExtResource("5_gdv2b")
 shader_parameter/t_height = 57.0
 shader_parameter/u_terrain_normal_basis = Basis(1, 0, 0, 0, 0.94, 0, 0, 0, 1)
-shader_parameter/heightmap = ExtResource("5_hv0wo")
-shader_parameter/Albedo = ExtResource("5_0uqkj")
+shader_parameter/heightmap = ExtResource("7_ubyyn")
+shader_parameter/Albedo = ExtResource("6_1hvoe")
 
 [sub_resource type="PlaneMesh" id="PlaneMesh_ssgws"]
 material = SubResource("ShaderMaterial_d1jxg")
@@ -74,7 +75,7 @@ albedo_color = Color(0, 0.290196, 1, 1)
 albedo_color = Color(1, 0, 0.0313726, 1)
 
 [node name="GameScene" type="Node3D"]
-script = ExtResource("1_1tj7h")
+script = ExtResource("1_7pjje")
 
 [node name="WorldEnvironment" type="WorldEnvironment" parent="."]
 environment = SubResource("Environment_0xqwl")
@@ -88,12 +89,12 @@ anchor_bottom = 1.0
 grow_horizontal = 2
 grow_vertical = 2
 mouse_filter = 2
-script = ExtResource("2_5ttem")
+script = ExtResource("2_wj4ul")
 
 [node name="Sprite2D" type="Sprite2D" parent="UI_Node"]
 position = Vector2(641.338, 343.801)
 scale = Vector2(0.999473, 0.999472)
-texture = ExtResource("3_uwhca")
+texture = ExtResource("3_lo1wh")
 
 [node name="Viewport_Sectons" type="Panel" parent="UI_Node"]
 modulate = Color(1, 1, 1, 0)
@@ -353,7 +354,7 @@ offset_bottom = 83.0
 text = "Unit_Test"
 
 [node name="World" type="Node3D" parent="."]
-script = ExtResource("4_kvh8x")
+script = ExtResource("4_k22hi")
 terrain_amplitude = 57
 
 [node name="Visual_Ground" type="MeshInstance3D" parent="World"]
@@ -363,7 +364,7 @@ skeleton = NodePath("")
 
 [node name="Player_Base_Spawn" type="Node3D" parent="World"]
 transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, -391, 0.401, 420)
-script = ExtResource("8_l6ukt")
+script = ExtResource("8_viuko")
 group = "reg_0_1"
 
 [node name="MeshInstance3D" type="MeshInstance3D" parent="World/Player_Base_Spawn"]
@@ -374,7 +375,7 @@ surface_material_override/0 = SubResource("StandardMaterial3D_fjj8m")
 
 [node name="Enemy1_Base_Spawn" type="Node3D" parent="World"]
 transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 398.4, 1.477, -431.39)
-script = ExtResource("8_l6ukt")
+script = ExtResource("8_viuko")
 group = "reg_1_0"
 actor_id = 1
 
@@ -384,10 +385,10 @@ mesh = SubResource("CapsuleMesh_x5v2n")
 surface_material_override/0 = SubResource("StandardMaterial3D_0q7om")
 
 [node name="Player" type="Node" parent="."]
-script = ExtResource("9_5t2fv")
+script = ExtResource("9_3h23t")
 
 [node name="Player_camera" type="Node3D" parent="Player"]
-script = ExtResource("10_qgi2g")
+script = ExtResource("10_jjfcj")
 
 [node name="Player_view" type="Camera3D" parent="Player/Player_camera"]
 transform = Transform3D(1, 0, 0, 0, 0.573577, 0.819152, 0, -0.819152, 0.573577, 0, 15, 15)
@@ -395,10 +396,11 @@ transform = Transform3D(1, 0, 0, 0, 0.573577, 0.819152, 0, -0.819152, 0.573577, 
 [node name="RayCast3D" type="RayCast3D" parent="Player/Player_camera"]
 transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, 15, 0)
 target_position = Vector3(0, -500, 0)
+collision_mask = 32768
 hit_from_inside = true
 
 [node name="Sun" type="DirectionalLight3D" parent="."]
-transform = Transform3D(-4.37114e-08, 8.74228e-08, 1, 0, -1, 8.74228e-08, 1, 3.82137e-15, 4.37114e-08, 0, 0, 0)
+transform = Transform3D(6.03666e-09, 0.990418, -0.138102, -4.32925e-08, 0.138102, 0.990418, 1, -4.44089e-14, 4.37114e-08, 0, 0, 0)
 shadow_enabled = true
 shadow_blur = 2.275
 directional_shadow_max_distance = 800.0

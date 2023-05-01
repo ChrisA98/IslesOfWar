@@ -1,6 +1,6 @@
-[gd_scene load_steps=4 format=3 uid="uid://dl1c7pt3f2ws8"]
+[gd_scene load_steps=4 format=3]
 
-[ext_resource type="Script" path="res://test_mesh_load.gd" id="1_aksqi"]
+[ext_resource type="Script" path="res://Test_Items/test_mesh_load.gd" id="1_aksqi"]
 
 [sub_resource type="PlaneMesh" id="PlaneMesh_88fqw"]
 

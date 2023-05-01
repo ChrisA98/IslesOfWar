@@ -18,6 +18,8 @@ var gravity = ProjectSettings.get_setting("physics/3d/default_gravity")
 @onready var unit_radius = $CollisionShape3D.shape.get_radius()
 var actor_owner
 var followers: Array
+var unit_name: String
+var is_selected: bool
 
 var rng = RandomNumberGenerator.new()
 
@@ -115,6 +117,10 @@ func can_afford(builder_res, ):
 			return false
 	return true
 
+
+## Unit is selected and make selection visible
+func select(state : bool = true):
+	$Valid_Region.visible = state
 
 ###SIGNAL FUNCTIONS##
 #signal being selected on click

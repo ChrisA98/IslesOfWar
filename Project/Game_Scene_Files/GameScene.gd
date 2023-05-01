@@ -19,7 +19,12 @@ var rng = RandomNumberGenerator.new()
 #Game logic vars
 var building_snap = 0
 var preview_building: Node3D
-var click_mode: String = "select"
+var click_mode: String = "select":
+	get:
+		return click_mode
+	set(value):
+		click_mode_changed.emit(click_mode, value)
+		click_mode = value
 var activated_building = null
 var selected_units = []
 
@@ -30,18 +35,27 @@ var day_cycle = true
 
 ##Signals
 signal nav_ready
+signal click_mode_changed(old, new)
 
 
 ###BUILT IN FUNCTIONS###
 #Called when the node enters the scene tree for the first time.
 func _ready():
+	# Connect ground signals
 	for i in world.find_children("Region*"):
 		for j in i.find_children("Floor"):
 			j.get_child(0).input_event.connect(ground_click)
 	
+	# Set Sun and moon in place
+	$Sun.rotation_degrees = Vector3(0,90,-180)
+	$Moon.rotation_degrees = Vector3(0,90,-180)
+	
 	# Connect player signals
 	player_controller.res_changed.connect(set_resource)
 	player_controller.pop_changed.connect(set_pop)
+	
+	# Connect gamescene signals
+	click_mode_changed.connect(click_mod_update)
 	
 	# Generate enemy actors
 	var e_script = load("res://Actor_Classes/Enemy.gd")
@@ -96,8 +110,12 @@ func prepare_bases():
 
 #Called every frame. 'delta' is the elapsed time since the previous frame.
 func _process(delta):
-	$Sun.rotation_degrees -= Vector3((180/(global.DAY_LENGTH-1))*delta,0,0)
-	$Moon.rotation_degrees -= Vector3((180/(global.NIGHT_LENGTH-1))*delta,0,0)
+	pass
+
+
+func _physics_process(delta):
+	$Sun.rotation_degrees -= Vector3((180/(global.DAY_LENGTH))*delta,0,0)
+	$Moon.rotation_degrees -= Vector3((180/(global.NIGHT_LENGTH))*delta,0,0)
 
 
 ###GAME FUNCTIONS###
@@ -186,17 +204,29 @@ func unit_selected(unit):
 	
 	if(unit.actor_owner == player_controller):
 		click_mode = "command_unit"
+		unit.select()
 		if Input.is_action_pressed("multi-select"):
 			selected_units.push_back(unit)
 		else:
 			selected_units = [unit]
-		for i in selected_units:
-			print(i.name)
-		print("_______________")
+		
+		group_selected_units()
 	else:
 		if click_mode == "command_unit":
 			pass
 
+
+## Get unit denominations for unit list
+func group_selected_units():
+	var u = {}
+	for i in selected_units:
+		if(u.has(i.unit_name)):
+			u[i.unit_name] += 1
+		else:
+			u[i.unit_name] = 1
+	for unit in u:
+		print(unit+": "+str(u[unit]))
+		print("_______________")
 
 ##  Prepare new building for player
 func prep_player_building(id):	
@@ -290,17 +320,30 @@ func _on_day_cycle_timer_timeout():
 		f.adj_resource("food", f.units.size()* -1)
 	
 	if(day_cycle):
+		print("is night")
 		$Sun.visible = false
 		$Moon.visible = true
+		print($Sun.rotation_degrees)
 	else:
+		print("is day")
+		print($Sun.rotation_degrees)
 		year_day+=1
 		$Sun.visible = true
 		$Moon.visible = false
-		$Sun.rotation_degrees = Vector3(180,-90,0)
-		$Moon.rotation_degrees = Vector3(180,-80,0)
+		$Sun.rotation_degrees = Vector3(0,90,-180)
+		$Moon.rotation_degrees = Vector3(0,90,-180)
+		print($Sun.rotation_degrees)
 		
 	
 	if year_day >= global.YEAR_LENGTH:
 		year_day = 0
 		year += 1
 
+
+func click_mod_update(old, new):
+	var t = [old,new]
+	match t:
+		["command_unit", ..]:
+			for u in selected_units:
+				u.select(false)
+		

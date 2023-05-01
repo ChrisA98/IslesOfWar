@@ -4,7 +4,7 @@ extends Node3D
 
 @onready var noise_image: Image = Image.new()
 @onready var chunk_size = 500
-@onready var nav_manager = preload("res://NavMeshManager.gd")
+@onready var nav_manager = preload("res://World_Generation/NavMeshManager.gd")
 @export var heightmap_dir: String = "res://Test_Items/Map_data/"
 
 
@@ -33,6 +33,8 @@ func _ready():
 		if i.name.contains("Region"):
 			i.get_child(0).get_child(0).input_event.connect(gamescene.ground_click.bind(i)) 
 			i.get_child(0).transparency = 1 #hide terrain mesh
+			i.get_child(0).get_child(0).set_collision_layer_value(16,true)
+			i.get_child(0).get_child(0).set_collision_mask_value(16,true)
 			i.set_nav_region()
 
 

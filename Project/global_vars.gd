@@ -17,8 +17,8 @@ extends Node
 	12: "Lidrasin Bor"
 }
 const YEAR_LENGTH : int = 336
-const DAY_LENGTH : int = 37
-const NIGHT_LENGTH : int = 23
+const DAY_LENGTH : int = 74
+const NIGHT_LENGTH : int = 46
 
 var navmesh_baking : NavigationRegion3D
 var queued_nav_bakes: Array
