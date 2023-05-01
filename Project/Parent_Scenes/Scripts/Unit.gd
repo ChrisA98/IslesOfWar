@@ -17,6 +17,7 @@ var gravity = ProjectSettings.get_setting("physics/3d/default_gravity")
 @onready var nav_agent: NavigationAgent3D = get_node("NavigationAgent3D")
 @onready var unit_radius = $CollisionShape3D.shape.get_radius()
 var actor_owner
+var followers: Array
 
 var rng = RandomNumberGenerator.new()
 
@@ -30,11 +31,14 @@ var res_cost := {"wood": 0,
 "food": 0}
 
 var target_enemy: Unit_Base
+var target_follow: Unit_Base
 
 
 func _ready():
 	nav_agent.path_desired_distance = 0.5
 	nav_agent.target_desired_distance = 0.5
+	
+	nav_agent.waypoint_reached.connect(waypoint)
 	
 	call_deferred("actor_setup")
 
@@ -44,12 +48,22 @@ func actor_setup():
 
 
 func set_mov_target(mov_tar: Vector3):
-	var targ = check_pos(mov_tar+Vector3(0,.5,0))
-	while mov_tar != targ:
-		mov_tar = targ
-		targ = check_pos(mov_tar)
 	nav_agent.set_target_position(mov_tar)
 	intial_path_dist = nav_agent.distance_to_target()
+
+
+## Set folowing units
+func set_following(units):
+	followers = units
+	for i in units:
+		if(i != self):
+			i.target_follow = self
+
+
+## Add folowing units
+func add_following(unit):
+	followers.push_back(unit)
+	unit.target_follow = self
 
 
 func _physics_process(delta):	
@@ -113,8 +127,20 @@ func _on_navigation_agent_3d_navigation_finished():
 	var targ = check_pos(position)
 	if(targ.is_equal_approx(position) == false):
 		set_mov_target(targ)
+	if followers.size() > 0:
+		for i in followers:
+			i.set_mov_target(position)
+			i.target_follow = null
+	if target_follow != null:
+		set_mov_target(target_follow.position)
 
 
 func _on_NavigationAgent_velocity_computed(_safe_velocity):
 	#velocity = safe_velocity
 	move_and_slide()
+
+
+func waypoint(_details):
+	if followers.size() > 0:
+		for i in followers:
+			i.set_mov_target(nav_agent.get_next_path_position())

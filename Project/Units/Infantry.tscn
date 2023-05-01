@@ -1,46 +1,7 @@
-[gd_scene load_steps=5 format=3 uid="uid://du61byc3gsdpx"]
+[gd_scene load_steps=3 format=3 uid="uid://cf6pa153818x2"]
 
 [ext_resource type="PackedScene" uid="uid://cs2p3v3o53aki" path="res://Parent_Scenes/Unit_Base.tscn" id="1_3ybrw"]
 [ext_resource type="Script" path="res://Units/Infantry.gd" id="1_somxn"]
 
-[sub_resource type="CylinderMesh" id="CylinderMesh_snsnd"]
-top_radius = 0.1
-bottom_radius = 0.1
-height = 0.5
-
-[sub_resource type="CylinderMesh" id="CylinderMesh_bg7cy"]
-top_radius = 0.1
-bottom_radius = 0.1
-height = 0.5
-
-[node name="Unit_Base" instance=ExtResource("1_3ybrw")]
+[node name="Infantry" instance=ExtResource("1_3ybrw")]
 script = ExtResource("1_somxn")
-
-[node name="MeshInstance3D" parent="." index="1"]
-transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, 0.455894, 0)
-mesh = SubResource("CylinderMesh_snsnd")
-
-[node name="MeshInstance3D4" type="MeshInstance3D" parent="MeshInstance3D" index="0"]
-transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, -0.117987, -0.088269, 0.317023)
-mesh = SubResource("CylinderMesh_bg7cy")
-skeleton = NodePath("../..")
-
-[node name="MeshInstance3D3" type="MeshInstance3D" parent="MeshInstance3D" index="1"]
-transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, -0.117987, -0.0011031, 0.317023)
-mesh = SubResource("CylinderMesh_bg7cy")
-skeleton = NodePath("../..")
-
-[node name="MeshInstance3D2" type="MeshInstance3D" parent="MeshInstance3D" index="2"]
-transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0.204871, -0.0484323, 0.313775)
-mesh = SubResource("CylinderMesh_bg7cy")
-skeleton = NodePath("../..")
-
-[node name="MeshInstance3D5" type="MeshInstance3D" parent="MeshInstance3D" index="3"]
-transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0.131407, -0.0484322, -0.195552)
-mesh = SubResource("CylinderMesh_bg7cy")
-skeleton = NodePath("../..")
-
-[node name="MeshInstance3D6" type="MeshInstance3D" parent="MeshInstance3D" index="4"]
-transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, -0.369252, -0.0484322, -0.0533265)
-mesh = SubResource("CylinderMesh_bg7cy")
-skeleton = NodePath("../..")

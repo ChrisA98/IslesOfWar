@@ -1,12 +1,102 @@
 {
 	"name": "The Kingdom of Amerulf",
 	"short_name": "Amerulf",
+	"magic_color": "39b8ff",
 	"buildings":{
 		"Base": {
-			"mesh_y": 0.087
+			"base_cost": {
+				"wood": 0,
+				"stone": 0,
+				"riches": 0,
+				"crystals": 0,
+				"food": 0,
+			},
+			"upgrade_cost_mod": {
+				"wood": 10,
+				"stone": 10,
+				"riches": 5,
+				"crystals": 0,
+				"food": 0,
+			},
+			"base_display_name": "Base"
 		},
 		"Barracks": {
-			"mesh_y": -0.003
+			"base_cost": {
+				"wood": 10,
+				"stone": 10,
+				"riches": 0,
+				"crystals": 0,
+				"food": 0,
+			},
+			"upgrade_cost_mod": {
+				"wood": 10,
+				"stone": 10,
+				"riches": 5,
+				"crystals": 0,
+				"food": 0,
+			},
+			"base_display_name": "Barracks"
+		},
+		"Farm": {
+			"base_cost": {
+				"wood": 10,
+				"stone": 10,
+				"riches": 0,
+				"crystals": 0,
+				"food": 0,
+			},
+			"upgrade_cost_mod": {
+				"wood": 10,
+				"stone": 10,
+				"riches": 5,
+				"crystals": 0,
+				"food": 0,
+			},
+			"base_display_name": "Farm"
+		},
+		"Mine": {
+			"base_cost": {
+				"wood": 10,
+				"stone": 0,
+				"riches": 0,
+				"crystals": 0,
+				"food": 0,
+			},
+			"upgrade_cost_mod": {
+				"wood": 10,
+				"stone": 0,
+				"riches": 5,
+				"crystals": 0,
+				"food": 0,
+			},
+			"base_display_name": "Mine"
+		},
+		"Lumber_mill": {
+			"base_cost": {
+				"wood": 0,
+				"stone": 10,
+				"riches": 0,
+				"crystals": 0,
+				"food": 0,
+			},
+			"upgrade_cost_mod": {
+				"wood": 0,
+				"stone": 10,
+				"riches": 5,
+				"crystals": 0,
+				"food": 0,
+			},
+			"base_display_name": "Lumber Mill"
+		},
+		"Trade_post": {
+			"base_cost": {
+				"wood": 10,
+				"stone": 10,
+				"riches": 10,
+				"crystals": 0,
+				"food": 0,
+			},
+			"base_display_name": "Trading Post"
 		},
 	},
 	"barracks_units":[

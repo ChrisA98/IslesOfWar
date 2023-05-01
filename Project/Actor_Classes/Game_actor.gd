@@ -93,6 +93,8 @@ func adj_resource(resource: String, amt: int):
 	resources[resource] += amt
 	if(resources[resource] < 0):
 		resources[resource] = 0
+	if(resources[resource] > 999):
+		resources[resource] = 999
 	res_changed.emit(resource, resources[resource])
 
 

@@ -95,8 +95,9 @@ func prepare_bases():
 
 
 #Called every frame. 'delta' is the elapsed time since the previous frame.
-func _process(_delta):
-	pass
+func _process(delta):
+	$Sun.rotation_degrees -= Vector3((180/(global.DAY_LENGTH-1))*delta,0,0)
+	$Moon.rotation_degrees -= Vector3((180/(global.NIGHT_LENGTH-1))*delta,0,0)
 
 
 ###GAME FUNCTIONS###
@@ -114,7 +115,7 @@ func place_building(grp, building):
 		return null
 	
 	#Connect signals
-	building.activated.connect(building_pressed)
+	building.pressed.connect(building_pressed)
 	
 	#Place building in world
 	world_buildings.push_back(building)
@@ -125,10 +126,14 @@ func place_building(grp, building):
 	return world_buildings[-1]
 
 
+## Update target navmeshes
+##
+## leave null to update all meshes
 func update_navigation(region = null):
 	world.update_navigation_meshes(region)
 
 
+## Spawn unit with ownership assigned to o_player
 func spawn_unit(o_player, unit) -> bool:
 	# Check pop
 	if unit.pop_cost + o_player.pop >= o_player.max_pop:
@@ -150,7 +155,7 @@ func spawn_unit(o_player, unit) -> bool:
 	return true
 
 
-#setup navigation
+## Setup navigation
 func custom_nav_setup():
 	#create navigation map
 	var map: RID = NavigationServer3D.map_create()
@@ -161,11 +166,13 @@ func custom_nav_setup():
 	update_navigation()
 
 
+## Set player resource on screen
 func set_resource(resource: String, value: int):
 	UI_controller.res_displays[resource].clear()
 	UI_controller.res_displays[resource].add_text(var_to_str(value))
 
 
+## Set player population on screen
 func set_pop(current: int, max_pop: int):
 	UI_controller.res_displays["pop"].clear()
 	UI_controller.res_displays["pop"].add_text(var_to_str(current)+" / " + var_to_str(max_pop))
@@ -173,6 +180,7 @@ func set_pop(current: int, max_pop: int):
 
 ###SIGNALS FUNCTIONS###
 
+## Unit was clicked
 func unit_selected(unit):
 	UI_controller.close_menus()
 	
@@ -220,7 +228,7 @@ func prep_other_building(actor, bldg_name):
 	return new_build
 
 
-## Activate buildings
+## Activate buildings menu
 func building_pressed(building):
 	if player_controller.owns_building(building) == false:
 		return
@@ -255,21 +263,20 @@ func ground_click(_camera, event, pos, _normal, _shape_idx, shape):
 			if event is InputEventMouseButton and Input.is_action_just_released("lmb"):
 				#Close all menus when clicking on the world
 				UI_controller.close_menus()
-				if(selected_units.size() > 4):
-					var dist = float(selected_units.size())/2
-					for i in selected_units:
-						i.set_mov_target(pos + Vector3(rng.randf_range(-dist,dist),0,rng.randf_range(-dist,dist)))
-				else:
-					for i in selected_units:
-						i.set_mov_target(pos)
+				selected_units[0].set_mov_target(pos)
+				if(selected_units.size() > 1):
+					for i in range(1,selected_units.size()):
+						selected_units[0].add_following(selected_units[i])
 		_:
 			pass
 
 
+## Button pressed on unit menu (CHANGE THIS)
 func _on_unit_test_button_pressed():
 	activated_building.use("base")
 
 
+## Clear preview building when menu opened
 func _on_ui_node_menu_opened():
 	if(preview_building != null):
 		preview_building.queue_free()
@@ -277,14 +284,23 @@ func _on_ui_node_menu_opened():
 	click_mode = "select"
 
 
+
 func _on_day_cycle_timer_timeout():
 	for f in game_actors:
 		f.adj_resource("food", f.units.size()* -1)
 	
 	if(day_cycle):
+		$Sun.visible = false
+		$Moon.visible = true
+	else:
 		year_day+=1
+		$Sun.visible = true
+		$Moon.visible = false
+		$Sun.rotation_degrees = Vector3(180,-90,0)
+		$Moon.rotation_degrees = Vector3(180,-80,0)
+		
 	
-	if year_day > global.YEAR_LENGTH:
-		year_day = 1
+	if year_day >= global.YEAR_LENGTH:
+		year_day = 0
 		year += 1
 

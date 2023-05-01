@@ -3,7 +3,7 @@ extends Node3D
 class_name Building
 
 #Custom signals
-signal activated
+signal pressed
 
 
 #REF vars
@@ -17,8 +17,10 @@ signal activated
 #Materials
 @onready var invalid_mat = preload("res://Materials/preview_building_invalid.tres")
 @onready var valid_mat = preload("res://Materials/preview_building_valid.tres")
+
 @export var height : int = 1 
-var type
+var type: String
+var display_name : String
 var actor_owner
 var faction
 var faction_short_name
@@ -34,6 +36,7 @@ var cost = {"wood": 0,
 "food": 0}
 var pop: int = 0
 var pop_mod: int = 0
+var tier: int = 0
 
 var snapping = 0
 
@@ -44,25 +47,29 @@ func _ready():
 	pass
 
 
-func load_data():	
-	var suffix = faction_short_name.substr(0,2)
-	var b_mesh = load("res://Models/"+faction_short_name+"/"+type+"_"+suffix+".obj")
-	if(b_mesh != null):
-		mesh.set_mesh(b_mesh)
-	
-
+## Initialize certain elements at start
 func init(pos, snap: int, actor: Node):
 	position = pos
 	mesh.transparency = .55
 	mesh.set_surface_override_material(0, valid_mat)
 	static_body.set_ray_pickable(false)
 	actor_owner = actor
-	faction = actor.faction_data.name
-	faction_short_name = actor.faction_data.short_name
+	faction = actor_owner.faction_data.name
+	faction_short_name = actor_owner.faction_data.short_name
 	
-	load_data()
+	load_data(actor_owner.faction_data)
 	
 	set_snap(snap)
+
+
+func load_data(data):	
+	var suffix = faction_short_name.substr(0,2)
+	var b_mesh = load("res://Models/"+faction_short_name+"/"+type+"_"+suffix+".obj")
+	if(b_mesh != null):
+		mesh.set_mesh(b_mesh)
+	for res in cost:
+		cost[res] = data.buildings[type].base_cost[res]
+	display_name = data.buildings[type]["base_display_name"]
 
 
 func set_pos(pos):
@@ -72,8 +79,6 @@ func set_pos(pos):
 		position.x = ceil(position.x/snapping)*snapping
 		position.z = ceil(position.z/snapping)*snapping
 	
-	#mesh.transform = mesh.transform.looking_at(mesh.position+$RayCast3D.get_collision_normal().rotated(Vector3(0,0,1),-90), Vector3.UP)
-	#position.y -= height*.8
 	if check_collision(collision_buffer):
 		make_invalid()
 	else:
@@ -105,7 +110,7 @@ func make_invalid():
 	for i in range(mesh.get_surface_override_material_count()):
 		mesh.set_surface_override_material(i, invalid_mat)
 
-
+## Check for collision at current location
 func check_collision(buff_range):	
 	if static_body.test_move(transform.translated(Vector3(0,3,0)), Vector3(0,3,buff_range),null , 0.001, true):
 		return true
@@ -131,7 +136,7 @@ func set_snap(snp):
 	else:
 		collision_buffer = .5
 
-
+## Check if close to any buildings in buildings
 func near_base(buildings) -> bool:
 	if buildings == null:
 		return false
@@ -141,10 +146,10 @@ func near_base(buildings) -> bool:
 	return false
 
 
-#pass press to signal activate signal
+## Pass press to signal activate signal
 func _on_static_body_3d_input_event(_camera, event, _position, _normal, _shape_idx):
 	if event is InputEventMouseButton and Input.is_action_just_released("lmb"):
-		activated.emit(self)
+		pressed.emit(self)
 
 
 ## Call to see if purchasable

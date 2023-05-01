@@ -1,0 +1,7 @@
+[gd_scene load_steps=3 format=3 uid="uid://cmjejqyovlm33"]
+
+[ext_resource type="PackedScene" uid="uid://bdwnemom78t8b" path="res://Buildings/Resource_building.tscn" id="1_cw0xs"]
+[ext_resource type="Script" path="res://Buildings/Lumber_Mill.gd" id="2_jfjkn"]
+
+[node name="Lumber_Mill" instance=ExtResource("1_cw0xs")]
+script = ExtResource("2_jfjkn")

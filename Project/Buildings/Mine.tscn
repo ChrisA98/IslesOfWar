@@ -1,0 +1,7 @@
+[gd_scene load_steps=3 format=3 uid="uid://8deytxqmvau2"]
+
+[ext_resource type="PackedScene" uid="uid://bdwnemom78t8b" path="res://Buildings/Resource_building.tscn" id="1_yf3r0"]
+[ext_resource type="Script" path="res://Buildings/Mine.gd" id="2_vs64m"]
+
+[node name="Mine" instance=ExtResource("1_yf3r0")]
+script = ExtResource("2_vs64m")

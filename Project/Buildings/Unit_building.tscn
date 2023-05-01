@@ -1,0 +1,23 @@
+[gd_scene load_steps=3 format=3 uid="uid://dfmnqyu2kckmu"]
+
+[ext_resource type="PackedScene" uid="uid://ccoruw5j562l7" path="res://Parent_Scenes/Building_Base.tscn" id="1_7ya4p"]
+[ext_resource type="Script" path="res://Buildings/Unit_Building.gd" id="2_u3hdh"]
+
+[node name="Building_Base" instance=ExtResource("1_7ya4p")]
+transform = Transform3D(5, 0, 0, 0, 5, 0, 0, 0, 5, 0, 0, 0)
+script = ExtResource("2_u3hdh")
+
+[node name="MeshInstance3D" parent="." index="0"]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, -0.0027564, 0)
+
+[node name="StaticBody3D" parent="." index="1"]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, 0.496792, 0)
+
+[node name="CollisionShape3D2" parent="StaticBody3D" index="1"]
+transform = Transform3D(0.2, 0, 0, 0, 0.2, 0, 0, 0, 0.2, 0, 0, 1.08503)
+
+[node name="RallyPoint" parent="." index="2"]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, 0.0776555, 1.09582)
+
+[node name="SpawnPoint" parent="." index="3"]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, 0.106123, 0.625176)
