@@ -1,4 +1,4 @@
-[gd_scene load_steps=23 format=3 uid="uid://d32tym6bcdu7c"]
+[gd_scene load_steps=27 format=3 uid="uid://d32tym6bcdu7c"]
 
 [ext_resource type="Script" path="res://Game_Scene_Files/GameScene.gd" id="1_7pjje"]
 [ext_resource type="Script" path="res://Game_Scene_Files/UI_Builder.gd" id="2_wj4ul"]
@@ -73,6 +73,22 @@ albedo_color = Color(0, 0.290196, 1, 1)
 
 [sub_resource type="StandardMaterial3D" id="StandardMaterial3D_0q7om"]
 albedo_color = Color(1, 0, 0.0313726, 1)
+
+[sub_resource type="Gradient" id="Gradient_eofwo"]
+offsets = PackedFloat32Array(0)
+colors = PackedColorArray(0.572549, 0.713726, 1, 0.368627)
+
+[sub_resource type="FastNoiseLite" id="FastNoiseLite_kogvw"]
+noise_type = 3
+seed = 12
+frequency = 0.001
+
+[sub_resource type="NoiseTexture2D" id="NoiseTexture2D_p3d2n"]
+generate_mipmaps = false
+color_ramp = SubResource("Gradient_eofwo")
+noise = SubResource("FastNoiseLite_kogvw")
+
+[sub_resource type="BoxShape3D" id="BoxShape3D_rb27j"]
 
 [node name="GameScene" type="Node3D"]
 script = ExtResource("1_7pjje")
@@ -359,11 +375,12 @@ terrain_amplitude = 57
 
 [node name="Visual_Ground" type="MeshInstance3D" parent="World"]
 transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0.122696, 0, 0.132719)
+layers = 3
 mesh = SubResource("PlaneMesh_ssgws")
 skeleton = NodePath("")
 
 [node name="Player_Base_Spawn" type="Node3D" parent="World"]
-transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, -391, 0.401, 420)
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 391.568, 3.23608, -377.605)
 script = ExtResource("8_viuko")
 group = "reg_0_1"
 
@@ -398,6 +415,16 @@ transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, 15, 0)
 target_position = Vector3(0, -500, 0)
 collision_mask = 32768
 hit_from_inside = true
+
+[node name="Selection_square" type="Decal" parent="Player"]
+size = Vector3(1, 20, 1)
+texture_albedo = SubResource("NoiseTexture2D_p3d2n")
+
+[node name="Selection_Square_Box" type="Area3D" parent="Player/Selection_square"]
+input_ray_pickable = false
+
+[node name="CollisionShape3D" type="CollisionShape3D" parent="Player/Selection_square/Selection_Square_Box"]
+shape = SubResource("BoxShape3D_rb27j")
 
 [node name="Sun" type="DirectionalLight3D" parent="."]
 transform = Transform3D(6.03666e-09, 0.990418, -0.138102, -4.32925e-08, 0.138102, 0.990418, 1, -4.44089e-14, 4.37114e-08, 0, 0, 0)

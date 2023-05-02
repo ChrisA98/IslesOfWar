@@ -9,7 +9,7 @@ preload("res://Faction_Resources/Amerulf_Resource.json")]
 @onready var game_actors = [$Player]
 @onready var global = get_node("/root/Global_Vars")
 var loaded_buildings = []
-var punits = []
+var world_units = []
 
 var menu_buildings = []
 var world_buildings = []
@@ -27,6 +27,8 @@ var click_mode: String = "select":
 		click_mode = value
 var activated_building = null
 var selected_units = []
+@onready var selection_square = get_node("Player/Selection_square")
+var selection_square_points = []
 
 #time keeping
 var year_day = 330
@@ -109,13 +111,9 @@ func prepare_bases():
 
 
 #Called every frame. 'delta' is the elapsed time since the previous frame.
-func _process(delta):
-	pass
-
-
 func _physics_process(delta):
-	$Sun.rotation_degrees -= Vector3((180/(global.DAY_LENGTH))*delta,0,0)
-	$Moon.rotation_degrees -= Vector3((180/(global.NIGHT_LENGTH))*delta,0,0)
+	$Sun.rotation_degrees -= Vector3((180/(global.DAY_LENGTH))*1.33*delta,0,0)
+	$Moon.rotation_degrees -= Vector3((180/(global.NIGHT_LENGTH))*1.31*delta,0,0)
 
 
 ###GAME FUNCTIONS###
@@ -167,7 +165,8 @@ func spawn_unit(o_player, unit) -> bool:
 	unit.actor_owner = o_player
 	add_child(unit)
 	o_player.units.push_back(unit)
-	unit.unit_list = o_player.units
+	world_units.push_back(unit)
+	unit.unit_list = world_units
 	unit.selected.connect(unit_selected)
 	o_player.update_pop()
 	return true
@@ -198,7 +197,7 @@ func set_pop(current: int, max_pop: int):
 
 ###SIGNALS FUNCTIONS###
 
-## Unit was clicked
+## Check what unit is being clicked and what to do with it
 func unit_selected(unit):
 	UI_controller.close_menus()
 	
@@ -213,7 +212,54 @@ func unit_selected(unit):
 		group_selected_units()
 	else:
 		if click_mode == "command_unit":
-			pass
+			for i in selected_units:
+				i.target_enemy = unit
+			selected_units[0].set_mov_target(unit.position)
+			if(selected_units.size() > 1):
+				for j in range(1,selected_units.size()):
+					selected_units[0].add_following(selected_units[j])
+
+
+## Start Selection Square
+func start_select_square(pos):
+	selection_square.size.x = 1
+	selection_square.size.y = 5
+	selection_square.size.z = 1
+	selection_square.position = pos+Vector3(0.5,0,0.5)
+	selection_square_points = [pos, pos]
+
+
+## update dimesnions and move Selection Square
+func update_select_square(pos):	
+	if(selection_square.size.x + selection_square.size.z > 1):
+		selection_square.visible = true
+	selection_square_points[1] = pos
+	selection_square.position = selection_square_points[0].lerp(selection_square_points[1], 0.5)
+	selection_square.size.x = abs(selection_square_points[1].x - selection_square_points[0].x)
+	selection_square.size.y = 20
+	selection_square.size.z = abs(selection_square_points[1].z - selection_square_points[0].z)
+
+## Do square selection and add them to selected_units
+##
+## returns true when box works, returns false otherwise
+func select_from_square():
+	selection_square.visible = false
+	if(selection_square.size.x + selection_square.size.z < 4):
+		print(selection_square.size.x + selection_square.size.z)
+		return false
+	selection_square_points.sort()
+	selection_square.get_child(0).get_child(0).shape.size = selection_square.size
+	selection_square.get_child(0).get_child(0).shape.size.y = 50
+	await get_tree().physics_frame
+	selected_units.clear()
+	for unit in player_controller.units:
+		if selection_square.get_child(0).get_overlapping_bodies().has(unit):
+			selected_units.push_back(unit)
+			unit.select()
+	if(selected_units.size()>0):
+		click_mode = "command_unit"
+		group_selected_units()
+	return true
 
 
 ## Get unit denominations for unit list
@@ -227,6 +273,7 @@ func group_selected_units():
 	for unit in u:
 		print(unit+": "+str(u[unit]))
 		print("_______________")
+
 
 ##  Prepare new building for player
 func prep_player_building(id):	
@@ -284,19 +331,35 @@ func ground_click(_camera, event, pos, _normal, _shape_idx, shape):
 			preview_building.set_pos(pos)
 			if event is InputEventMouseButton and Input.is_action_just_released("lmb"):
 				#Close all menus when clicking on the world	
-				UI_controller.close_menus()
 				if player_controller.place_building(shape.get_groups()[0], preview_building):
 					#Reset click mode
 					click_mode = "select"
 					preview_building = null
 		"command_unit":
-			if event is InputEventMouseButton and Input.is_action_just_released("lmb"):
+			if Input.is_action_just_pressed("lmb", true):
+				start_select_square(pos)
+				return
+			if Input.is_action_pressed("lmb", true):
+				update_select_square(pos)
+			if Input.is_action_just_released("lmb"):
+				if(await select_from_square()):
+					print("T")
+					return
 				#Close all menus when clicking on the world
-				UI_controller.close_menus()
 				selected_units[0].set_mov_target(pos)
+				selected_units[0].target_enemy = null
 				if(selected_units.size() > 1):
 					for i in range(1,selected_units.size()):
 						selected_units[0].add_following(selected_units[i])
+						selected_units[1].target_enemy = null
+		"select":
+			if Input.is_action_just_pressed("lmb", true):
+				start_select_square(pos)
+				return
+			if Input.is_action_pressed("lmb", true):
+				update_select_square(pos)
+			if Input.is_action_just_released("lmb"):
+				select_from_square()
 		_:
 			pass
 
@@ -314,7 +377,7 @@ func _on_ui_node_menu_opened():
 	click_mode = "select"
 
 
-
+## Say/Night Cycle
 func _on_day_cycle_timer_timeout():
 	for f in game_actors:
 		f.adj_resource("food", f.units.size()* -1)
@@ -340,10 +403,14 @@ func _on_day_cycle_timer_timeout():
 		year += 1
 
 
+## Signal when updating click mode
 func click_mod_update(old, new):
 	var t = [old,new]
+	if(new != "select"):
+		UI_controller.close_menus()
 	match t:
 		["command_unit", ..]:
-			for u in selected_units:
-				u.select(false)
-		
+			if(new != "command_unit"):
+				for u in selected_units:
+					u.select(false)
+

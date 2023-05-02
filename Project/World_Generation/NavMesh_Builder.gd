@@ -25,7 +25,8 @@ func _ready():
 	for y in range(0,chunks):
 		for x in range(0,chunks):
 			var img = Image.new()
-			img.load(heightmap_dir+"chunk_"+str(y)+"_"+str(x)+".exr")
+			var _img = load(heightmap_dir+"chunk_"+str(y)+"_"+str(x)+".exr")
+			img = _img.get_image()
 			chunk_size = img.get_width()
 			build_map(img, Vector3(x-1,0,y),Vector2i(x,y))
 		

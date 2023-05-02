@@ -1,4 +1,4 @@
-[gd_scene load_steps=9 format=3 uid="uid://cs2p3v3o53aki"]
+[gd_scene load_steps=6 format=3 uid="uid://cs2p3v3o53aki"]
 
 [ext_resource type="Script" path="res://Parent_Scenes/Scripts/Unit.gd" id="1_xwgnb"]
 
@@ -6,38 +6,16 @@
 
 [sub_resource type="CylinderMesh" id="CylinderMesh_ggawr"]
 
-[sub_resource type="Gradient" id="Gradient_lx8hm"]
-colors = PackedColorArray(1, 1, 1, 1, 1, 1, 1, 0)
+[sub_resource type="Gradient" id="Gradient_8n0cr"]
+interpolation_mode = 2
+offsets = PackedFloat32Array(0, 0.762238, 0.804196)
+colors = PackedColorArray(0.534594, 0.83615, 1, 1, 1, 1, 1, 0, 0, 0, 0, 0)
 
-[sub_resource type="GradientTexture1D" id="GradientTexture1D_0y6jh"]
-gradient = SubResource("Gradient_lx8hm")
-
-[sub_resource type="ParticleProcessMaterial" id="ParticleProcessMaterial_tf565"]
-direction = Vector3(0, 1, 0)
-spread = 0.0
-gravity = Vector3(0, 0, 0)
-initial_velocity_min = 0.5
-initial_velocity_max = 0.5
-color_ramp = SubResource("GradientTexture1D_0y6jh")
-attractor_interaction_enabled = false
-
-[sub_resource type="StandardMaterial3D" id="StandardMaterial3D_3j86t"]
-transparency = 1
-blend_mode = 1
-cull_mode = 2
-depth_draw_mode = 1
-shading_mode = 0
-diffuse_mode = 1
-vertex_color_use_as_albedo = true
-disable_receive_shadows = true
-
-[sub_resource type="CylinderMesh" id="CylinderMesh_u3fb0"]
-material = SubResource("StandardMaterial3D_3j86t")
-top_radius = 1.5
-bottom_radius = 1.5
-height = 0.3
-cap_top = false
-cap_bottom = false
+[sub_resource type="GradientTexture2D" id="GradientTexture2D_0hiou"]
+gradient = SubResource("Gradient_8n0cr")
+fill = 1
+fill_from = Vector2(0.509709, 0.504854)
+fill_to = Vector2(0.495146, 0.0242718)
 
 [node name="Unit_Base" type="CharacterBody3D"]
 collision_mask = 0
@@ -57,16 +35,17 @@ ignore_y = false
 debug_enabled = true
 
 [node name="Valid_Region" type="Node3D" parent="."]
+visible = false
 
-[node name="GPUParticles3D" type="GPUParticles3D" parent="Valid_Region"]
-gi_mode = 2
-amount = 1
-lifetime = 0.75
-preprocess = 4.0
-visibility_aabb = AABB(-5.55879, -1.53446, -5.77225, 11.1176, 3.06891, 11.5445)
-draw_order = 2
-process_material = SubResource("ParticleProcessMaterial_tf565")
-draw_pass_1 = SubResource("CylinderMesh_u3fb0")
+[node name="Decal" type="Decal" parent="Valid_Region"]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, -0.0626185, 0)
+size = Vector3(4, 2, 4)
+texture_albedo = SubResource("GradientTexture2D_0hiou")
+cull_mask = 1048574
+
+[node name="Attack_Timer" type="Timer" parent="."]
+process_priority = -1
+process_callback = 0
 
 [connection signal="input_event" from="." to="." method="_on_input_event"]
 [connection signal="navigation_finished" from="NavigationAgent3D" to="." method="_on_navigation_agent_3d_navigation_finished"]
