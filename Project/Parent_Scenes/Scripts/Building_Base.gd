@@ -4,6 +4,7 @@ class_name Building
 
 #Custom signals
 signal pressed
+signal died
 
 
 #REF vars
@@ -43,7 +44,7 @@ var collision_buffer = 0
 
 # Combat variables
 var armor: int = 10
-var health: int = 10
+var health: int = 0
 
 func _ready():
 	pass
@@ -132,6 +133,12 @@ func adj_cost(resource: String, amt: int):
 
 func damage(amt: float, _type: String):
 	health -= amt-armor
+	## DIE
+	if(health <= 0):
+		died.emit()
+		delayed_delete()
+		return true
+	return false
 
 ## Set snap for building placement
 func set_snap(snp):
@@ -167,3 +174,12 @@ func can_afford(builder_res):
 
 func snap_to_ground():
 	position.y = $RayCast3D.get_collision_point().y
+
+
+## Delay delete and remove from lists
+func delayed_delete():
+	actor_owner.buildings.erase(self)
+	world.world_buildings.erase(self)
+	actor_owner.update_pop()
+	await get_tree().physics_frame
+	queue_free()

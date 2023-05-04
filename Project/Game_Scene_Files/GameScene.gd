@@ -262,7 +262,6 @@ func select_from_square():
 
 ## Select signal from unit list
 func select_from_list(units):
-	print(units)
 	selected_units = units
 
 ## Get unit denominations for unit list
@@ -309,6 +308,13 @@ func prep_other_building(actor, bldg_name):
 ## Activate buildings menu
 func building_pressed(building):
 	if player_controller.owns_building(building) == false:
+		if click_mode == "command_unit":
+			for i in selected_units:
+				i.target_enemy = building
+			selected_units[0].set_mov_target(building.position)
+			if(selected_units.size() > 1):
+				for j in range(1,selected_units.size()):
+					selected_units[0].add_following(selected_units[j])
 		return
 	activated_building = building #pass activated building to gamescene
 	var type = building.type

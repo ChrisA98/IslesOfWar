@@ -44,6 +44,7 @@ func think():
 				print_debug("Error invalid building name")
 				current_goal = "sleeping"
 				target_item = "none"
+				return
 			## Attempt to place building
 			if gamescene.loaded_buildings[actor_ID][target_item].instantiate().can_afford(resources):
 				var frt = bases[rng.randi_range(0,bases.size()-1)]
