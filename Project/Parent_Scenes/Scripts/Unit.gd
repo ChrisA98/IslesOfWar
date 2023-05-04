@@ -12,7 +12,6 @@ signal died
 const MAX_SPEED = 10
 const ACCEL = 3
 var rng = RandomNumberGenerator.new()
-
 var gravity = ProjectSettings.get_setting("physics/3d/default_gravity")
 
 ## Navigation variables
@@ -24,8 +23,12 @@ var target_follow: Unit_Base:
 	get:
 		return target_follow
 	set(value):
+		if value == null:
+			target_speed = MAX_SPEED
+		else:
+			target_speed = value.MAX_SPEED
 		target_follow = value
-		
+@onready var target_speed: int = MAX_SPEED
 
 var actor_owner
 var unit_list
@@ -55,7 +58,6 @@ var target_enemy:
 		target_enemy = value
 		if(value != null):
 			target_enemy.died.connect(target_killed)
-var skip = false
 
 func _ready():
 	nav_agent.path_desired_distance = 0.5
@@ -63,6 +65,7 @@ func _ready():
 	
 	nav_agent.waypoint_reached.connect(waypoint)
 	atk_timer.timeout.connect(attack)
+	
 	
 	call_deferred("actor_setup")
 
@@ -136,19 +139,19 @@ func travel(delta):
 
 #speed up when starting movement
 func lerp_start(nv, dx):
-	nv = nv.normalized()* MAX_SPEED
+	nv = nv.normalized()* target_speed
 	nv = lerp(velocity,nv,dx*ACCEL)
 	return nv
 
 
-#speed up when starting movement
+#Speed up when starting movement
 func lerp_stop(nv, dx):
 	nv = nv.normalized() * 0.2
 	nv = lerp(velocity,nv,dx*ACCEL)
 	return nv
 
 
-#check target position for othe runits
+## Check target position for other units
 func check_pos(pos):
 	var new_pos = pos
 	for i in unit_list:
@@ -206,6 +209,7 @@ func _on_NavigationAgent_velocity_computed(_safe_velocity):
 	move_and_slide()
 
 
+## Reaches waypoint
 func waypoint(_details):
 	if followers.size() > 0:
 		for i in followers:
@@ -220,12 +224,13 @@ func attack():
 	target_enemy.damage(base_atk_str,"physical")
 
 
+## Signal from target dying
 func target_killed():
 	target_enemy = null
 	atk_timer.stop()
 
 
-#delay delete and remove from lists
+## Delay delete and remove from lists
 func delayed_delete():
 	await get_tree().physics_frame
 	actor_owner.units.erase(self)

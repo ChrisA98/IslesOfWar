@@ -4,8 +4,10 @@ extends Control
 signal menu_opened
 
 
+@onready var gamescene = get_node("..")
 #UI Elements
 @onready var menus = [$Build_Menu,$Barracks_Menu]
+@onready var unit_bar = get_node("Unit_List")
 @onready var res_displays = {"wood": $Res_Bar/Wood/Amount,
 "stone": $Res_Bar/Stone/Amount,
 "riches": $Res_Bar/Riches/Amount,
@@ -14,9 +16,13 @@ signal menu_opened
 "pop": $Res_Bar/Pop}
 @onready var global = get_node("/root/Global_Vars")
 var buttons
+var act_unit_rect = {}
 
 #Ref Vars
 @onready var game_scene = $".."
+
+# loaded  Elements
+@onready var unit_rect = preload("res://Game_Scene_Files/UI_Elements/unit_rect.tscn")
 
 
 # Called when the node enters the scene tree for the first time.
@@ -61,6 +67,31 @@ func close_menu(menu):
 	menus[menu].visible = false
 	for b in buttons:
 		b.visible = true
+
+
+## Show unit build menu
+func set_unit_list(unit_list = null):
+	if(unit_list == null):
+		unit_bar.visible = false
+		return	
+	for i in act_unit_rect:
+		i.queue_free()
+	act_unit_rect = []
+	unit_bar.visible = true
+	for unit in unit_list:
+		add_unit_rect(unit,unit_list[unit])
+
+## Add rectangle for unit
+func add_unit_rect(unit, list):
+	var r = unit_rect.instantiate()
+	r.get_node("Unit_count").text = "[font_size={15}][color=black]"+str(list.size())+"[/color][/font_size]"
+	r.get_node("Unit_name").text = "[font_size={12}][color=black]"+unit+"[/color][/font_size]"
+	r.init(unit)
+	r.pressed.connect(gamescene.select_from_list)
+	unit_bar.add_child(r)
+	act_unit_rect.push_back(r)
+	act_unit_rect[-1].anchor_left = 0.025 + (act_unit_rect.size()-1)*.15
+	act_unit_rect[-1].anchor_right = 0.125 + (act_unit_rect.size()-1)*.15
 
 
 ## Show build menu

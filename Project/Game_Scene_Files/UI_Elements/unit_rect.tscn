@@ -1,0 +1,41 @@
+[gd_scene load_steps=2 format=3 uid="uid://7vqwukl2u0d3"]
+
+[ext_resource type="Script" path="res://Game_Scene_Files/UI_Elements/unit_rect.gd" id="1_atuv7"]
+
+[node name="unit_rect" type="ColorRect"]
+anchors_preset = -1
+anchor_left = 0.025
+anchor_top = -0.1
+anchor_right = 0.125
+anchor_bottom = 0.9
+color = Color(0.615686, 1, 0.996078, 1)
+script = ExtResource("1_atuv7")
+
+[node name="Unit_count" type="RichTextLabel" parent="."]
+layout_mode = 1
+anchors_preset = 1
+anchor_left = 1.0
+anchor_right = 1.0
+offset_left = -40.0
+offset_bottom = 40.0
+grow_horizontal = 0
+bbcode_enabled = true
+text = "[font_size={15
+}][color=black]0
+[/color][/font_size]"
+text_direction = 2
+
+[node name="Unit_name" type="RichTextLabel" parent="."]
+layout_mode = 1
+anchors_preset = 7
+anchor_left = 0.5
+anchor_top = 1.0
+anchor_right = 0.5
+anchor_bottom = 1.0
+offset_left = -20.0
+offset_top = -40.0
+offset_right = 20.0
+grow_horizontal = 2
+grow_vertical = 0
+bbcode_enabled = true
+text = "test"

@@ -207,8 +207,7 @@ func unit_selected(unit):
 		if Input.is_action_pressed("multi-select"):
 			selected_units.push_back(unit)
 		else:
-			selected_units = [unit]
-		
+			selected_units = [unit]		
 		group_selected_units()
 	else:
 		if click_mode == "command_unit":
@@ -241,11 +240,10 @@ func update_select_square(pos):
 
 ## Do square selection and add them to selected_units
 ##
-## returns true when box works, returns false otherwise
+## returns true when box selects something, returns false otherwise
 func select_from_square():
 	selection_square.visible = false
 	if(selection_square.size.x + selection_square.size.z < 4):
-		print(selection_square.size.x + selection_square.size.z)
 		return false
 	selection_square_points.sort()
 	selection_square.get_child(0).get_child(0).shape.size = selection_square.size
@@ -262,17 +260,20 @@ func select_from_square():
 	return true
 
 
+## Select signal from unit list
+func select_from_list(units):
+	print(units)
+	selected_units = units
+
 ## Get unit denominations for unit list
 func group_selected_units():
 	var u = {}
 	for i in selected_units:
 		if(u.has(i.unit_name)):
-			u[i.unit_name] += 1
+			u[i.unit_name].push_back(i)
 		else:
-			u[i.unit_name] = 1
-	for unit in u:
-		print(unit+": "+str(u[unit]))
-		print("_______________")
+			u[i.unit_name] = [i]
+	UI_controller.set_unit_list(u)
 
 
 ##  Prepare new building for player
@@ -330,7 +331,6 @@ func ground_click(_camera, event, pos, _normal, _shape_idx, shape):
 		"build":
 			preview_building.set_pos(pos)
 			if event is InputEventMouseButton and Input.is_action_just_released("lmb"):
-				#Close all menus when clicking on the world	
 				if player_controller.place_building(shape.get_groups()[0], preview_building):
 					#Reset click mode
 					click_mode = "select"
@@ -343,15 +343,15 @@ func ground_click(_camera, event, pos, _normal, _shape_idx, shape):
 				update_select_square(pos)
 			if Input.is_action_just_released("lmb"):
 				if(await select_from_square()):
-					print("T")
+					## no units selected
 					return
-				#Close all menus when clicking on the world
 				selected_units[0].set_mov_target(pos)
 				selected_units[0].target_enemy = null
 				if(selected_units.size() > 1):
 					for i in range(1,selected_units.size()):
 						selected_units[0].add_following(selected_units[i])
 						selected_units[1].target_enemy = null
+					
 		"select":
 			if Input.is_action_just_pressed("lmb", true):
 				start_select_square(pos)
@@ -413,4 +413,5 @@ func click_mod_update(old, new):
 			if(new != "command_unit"):
 				for u in selected_units:
 					u.select(false)
+				UI_controller.set_unit_list()
 

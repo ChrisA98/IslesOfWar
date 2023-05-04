@@ -43,7 +43,7 @@ func prepare_resources():
 	
 	#Set resourcest to 0 at start
 	for r in resources:
-		set_resource(r,0)
+		set_resource(r,20)
 	
 	update_pop()
 

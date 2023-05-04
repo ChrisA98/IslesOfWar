@@ -39,9 +39,11 @@ var pop_mod: int = 0
 var tier: int = 0
 
 var snapping = 0
-
 var collision_buffer = 0
 
+# Combat variables
+var armor: int = 10
+var health: int = 10
 
 func _ready():
 	pass
@@ -127,6 +129,9 @@ func check_collision(buff_range):
 func adj_cost(resource: String, amt: int):
 	cost[resource] += amt
 
+
+func damage(amt: float, _type: String):
+	health -= amt-armor
 
 ## Set snap for building placement
 func set_snap(snp):

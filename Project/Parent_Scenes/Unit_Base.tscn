@@ -32,7 +32,6 @@ mesh = SubResource("CylinderMesh_ggawr")
 [node name="NavigationAgent3D" type="NavigationAgent3D" parent="."]
 target_desired_distance = 3.0
 ignore_y = false
-debug_enabled = true
 
 [node name="Valid_Region" type="Node3D" parent="."]
 visible = false
