@@ -120,6 +120,12 @@ func _physics_process(delta):
 	$Moon.rotation_degrees -= Vector3((180/(global.NIGHT_LENGTH))*1.31*delta,0,0)
 
 
+## on player input event
+func _input(event):
+	if event.is_action_pressed("select_all_units"):
+		for u in player_controller.units:
+			selected_units.push_back(u)
+
 ###GAME FUNCTIONS###
 func set_map_snap(snp):
 	building_snap = snp
@@ -202,13 +208,13 @@ func set_pop(current: int, max_pop: int):
 ###SIGNALS FUNCTIONS###
 
 ## Check what unit is being clicked and what to do with it
-func unit_selected(unit):
+func unit_selected(unit, event):
 	UI_controller.close_menus()
 	
 	if(unit.actor_owner == player_controller):
 		click_mode = "command_unit"
 		unit.select()
-		if Input.is_action_pressed("multi-select"):
+		if event.is_shift_pressed():
 			selected_units.push_back(unit)
 		else:
 			selected_units = [unit]		
@@ -234,8 +240,11 @@ func start_select_square(pos):
 
 ## update dimesnions and move Selection Square
 func update_select_square(pos):	
-	if(selection_square.size.x + selection_square.size.z > 1):
+	if(selection_square.size.x + selection_square.size.z < 4):
+		selection_square.visible = false
+	else:
 		selection_square.visible = true
+		click_mode = "square_selecting"
 	selection_square_points[1] = pos
 	selection_square.position = selection_square_points[0].lerp(selection_square_points[1], 0.5)
 	selection_square.size.x = abs(selection_square_points[1].x - selection_square_points[0].x)
@@ -248,6 +257,9 @@ func update_select_square(pos):
 func select_from_square():
 	selection_square.visible = false
 	if(selection_square.size.x + selection_square.size.z < 4):
+		if click_mode != "square_selecting":
+			return false
+		click_mode = "select"
 		return false
 	selection_square_points.sort()
 	selection_square.get_child(0).get_child(0).shape.size = selection_square.size
@@ -262,6 +274,8 @@ func select_from_square():
 		click_mode = "command_unit"
 		group_selected_units()
 	else:
+		if click_mode != "square_selecting":
+			return true
 		click_mode = "select"
 	return true
 
@@ -269,6 +283,7 @@ func select_from_square():
 ## Select signal from unit list
 func select_from_list(units):
 	selected_units = units
+
 
 ## Get unit denominations for unit list
 func group_selected_units():
@@ -331,7 +346,7 @@ func building_pressed(building):
 		"Barracks":
 			player_controller.adj_resource("riches",10)
 			player_controller.adj_resource("crystals",10)
-			UI_controller.show_menu(1)
+			building.show_menu()
 		_:
 			pass
 
@@ -348,30 +363,46 @@ func ground_click(_camera, event, pos, _normal, _shape_idx, shape):
 					click_mode = "select"
 					preview_building = null
 		"command_unit":
-			if Input.is_action_just_pressed("lmb", true):
-				start_select_square(pos)
-				return
-			if Input.is_action_pressed("lmb", true):
+			if event is InputEventMouseButton:
+				if event.button_index == MOUSE_BUTTON_LEFT and event.pressed:
+					start_select_square(pos)
+					return
+			if Input.is_action_pressed("lmb"):
 				update_select_square(pos)
+				return
 			if Input.is_action_just_released("lmb"):
 				if(await select_from_square()):
-					## no units selected
+					##units selected
 					return
+			if Input.is_action_just_released("rmb"):
 				selected_units[0].set_mov_target(pos)
 				selected_units[0].target_enemy = null
 				if(selected_units.size() > 1):
 					for i in range(1,selected_units.size()):
 						selected_units[0].add_following(selected_units[i])
 						selected_units[1].target_enemy = null
-					
 		"select":
-			if Input.is_action_just_pressed("lmb", true):
-				start_select_square(pos)
-				return
-			if Input.is_action_pressed("lmb", true):
+			if event is InputEventMouseButton:
+				if event.button_index == MOUSE_BUTTON_LEFT and event.pressed:
+					start_select_square(pos)
+					return
+				if event.button_index == MOUSE_BUTTON_RIGHT and event.pressed:
+					click_mode = "select"
+					return
+			if Input.is_action_pressed("lmb"):
 				update_select_square(pos)
+				return
+		"square_selecting":
+			if Input.is_action_pressed("lmb"):
+				update_select_square(pos)
+				return
 			if Input.is_action_just_released("lmb"):
 				select_from_square()
+		"menu":
+			if event is InputEventMouseButton:
+				if event.button_index == MOUSE_BUTTON_LEFT and event.pressed:
+					click_mode = "select"
+					return
 		_:
 			pass
 
@@ -386,7 +417,7 @@ func _on_ui_node_menu_opened():
 	if(preview_building != null):
 		preview_building.queue_free()
 		preview_building = null
-	click_mode = "select"
+	click_mode = "menu"
 
 
 ## Say/Night Cycle
@@ -418,12 +449,22 @@ func _on_day_cycle_timer_timeout():
 ## Signal when updating click mode
 func click_mod_update(old, new):
 	var t = [old,new]
-	if(new != "select"):
+	if(new != "menu"):
 		UI_controller.close_menus()
+		for b in player_controller.buildings:
+			b.show_menu(false)
 	match t:
-		["command_unit", ..]:
+		["command_unit", _]:
 			if(new != "command_unit"):
 				for u in selected_units:
 					u.select(false)
 				UI_controller.set_unit_list()
+		[_,"square_selecting"]:
+			# hide clicking of buildings
+			for b in world_buildings:
+				b.hide_from_mouse()
+		["square_selecting",_]:
+			# allow clicking of buildings again
+			for b in world_buildings:
+				b.hide_from_mouse(false)
 

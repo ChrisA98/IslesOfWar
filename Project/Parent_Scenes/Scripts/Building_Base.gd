@@ -15,6 +15,7 @@ signal died
 @onready var static_body = get_node("StaticBody3D")
 @onready var rally = $RallyPoint
 @onready var spawn = $SpawnPoint
+@onready var menu
 #Materials
 @onready var invalid_mat = preload("res://Materials/preview_building_invalid.tres")
 @onready var valid_mat = preload("res://Materials/preview_building_valid.tres")
@@ -184,3 +185,13 @@ func delayed_delete():
 	await get_tree().physics_frame
 	queue_free()
 	world.update_navigation(get_groups()[0])
+
+
+#Show buildings menu
+func show_menu(state: = true):
+	if is_instance_valid(menu):
+		menu.visible = state
+
+
+func hide_from_mouse(state: = true):
+	static_body.input_ray_pickable = !state

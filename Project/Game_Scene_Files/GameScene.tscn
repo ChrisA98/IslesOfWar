@@ -1,8 +1,7 @@
-[gd_scene load_steps=36 format=3 uid="uid://d32tym6bcdu7c"]
+[gd_scene load_steps=43 format=3 uid="uid://d32tym6bcdu7c"]
 
 [ext_resource type="Script" path="res://Game_Scene_Files/GameScene.gd" id="1_7pjje"]
 [ext_resource type="Script" path="res://Game_Scene_Files/UI_Builder.gd" id="2_wj4ul"]
-[ext_resource type="Texture2D" uid="uid://bksut4x4pxm72" path="res://Test_Items/Test_UI.png" id="3_lo1wh"]
 [ext_resource type="Script" path="res://World_Generation/NavMesh_Builder.gd" id="4_k22hi"]
 [ext_resource type="Shader" path="res://World_Generation/New_Terrain.gdshader" id="5_gdv2b"]
 [ext_resource type="Texture2D" uid="uid://cs6n027ca4h1y" path="res://Test_Items/GrassyField1.png" id="6_1hvoe"]
@@ -37,10 +36,12 @@ volumetric_fog_enabled = true
 volumetric_fog_density = 0.0
 volumetric_fog_anisotropy = 0.9
 volumetric_fog_length = 64.15
+adjustment_enabled = true
 adjustment_contrast = 1.2
 adjustment_saturation = 1.2
 
 [sub_resource type="CameraAttributesPractical" id="CameraAttributesPractical_d3i0u"]
+exposure_multiplier = 0.717
 auto_exposure_scale = 0.25
 auto_exposure_speed = 0.01
 dof_blur_far_distance = 1000.0
@@ -48,6 +49,48 @@ dof_blur_far_distance = 1000.0
 [sub_resource type="CanvasItemMaterial" id="CanvasItemMaterial_onle8"]
 
 [sub_resource type="CanvasItemMaterial" id="CanvasItemMaterial_fbdp7"]
+
+[sub_resource type="Gradient" id="Gradient_cwsep"]
+offsets = PackedFloat32Array(0, 0.574194, 0.593548)
+colors = PackedColorArray(0, 0, 0, 1, 0.232258, 0.232258, 0.232258, 1, 0, 0, 0, 0)
+
+[sub_resource type="GradientTexture2D" id="GradientTexture2D_g6uko"]
+gradient = SubResource("Gradient_cwsep")
+fill = 1
+fill_from = Vector2(0.5, 0.5)
+
+[sub_resource type="GradientTexture2D" id="GradientTexture2D_mb71g"]
+gradient = SubResource("Gradient_cwsep")
+fill = 1
+fill_from = Vector2(0.5, 0.5)
+
+[sub_resource type="GradientTexture2D" id="GradientTexture2D_tausu"]
+gradient = SubResource("Gradient_cwsep")
+fill = 1
+fill_from = Vector2(0.5, 0.5)
+
+[sub_resource type="Gradient" id="Gradient_j83u8"]
+offsets = PackedFloat32Array(0, 0.525568, 0.553977)
+colors = PackedColorArray(0, 0, 0, 1, 0.00689007, 0.00689007, 0.00689007, 1, 0, 0, 0, 0)
+
+[sub_resource type="GradientTexture2D" id="GradientTexture2D_k0fou"]
+gradient = SubResource("Gradient_j83u8")
+width = 128
+height = 128
+fill = 1
+fill_from = Vector2(0.5, 0.5)
+
+[sub_resource type="Gradient" id="Gradient_1xm2h"]
+offsets = PackedFloat32Array(0, 0.542614, 0.556818)
+colors = PackedColorArray(0.399532, 0.339551, 0.146551, 1, 0.399532, 0.339551, 0.146551, 1, 0.4, 0.341176, 0.145098, 0)
+
+[sub_resource type="GradientTexture2D" id="GradientTexture2D_0t47b"]
+gradient = SubResource("Gradient_1xm2h")
+width = 128
+height = 128
+use_hdr = true
+fill = 1
+fill_from = Vector2(0.5, 0.5)
 
 [sub_resource type="Gradient" id="Gradient_12c41"]
 colors = PackedColorArray(0.8769, 0.632388, 1, 1, 1, 0.54902, 1, 0.247059)
@@ -170,11 +213,6 @@ grow_vertical = 2
 mouse_filter = 2
 script = ExtResource("2_wj4ul")
 
-[node name="Sprite2D" type="Sprite2D" parent="UI_Node"]
-position = Vector2(641.338, 343.801)
-scale = Vector2(0.999473, 0.999472)
-texture = ExtResource("3_lo1wh")
-
 [node name="Viewport_Sectons" type="Panel" parent="UI_Node"]
 modulate = Color(1, 1, 1, 0)
 layout_mode = 1
@@ -241,23 +279,157 @@ process_callback = 0
 wait_time = 0.5
 autostart = true
 
+[node name="Build_Menu" type="Panel" parent="UI_Node"]
+material = SubResource("CanvasItemMaterial_onle8")
+layout_mode = 0
+offset_left = 1030.0
+offset_top = 89.0
+offset_right = 1230.0
+offset_bottom = 510.0
+
+[node name="Building_Buttons" type="MenuButton" parent="UI_Node/Build_Menu"]
+material = SubResource("CanvasItemMaterial_fbdp7")
+layout_mode = 1
+anchors_preset = -1
+anchor_right = 1.0
+anchor_bottom = 0.12
+toggle_mode = false
+text = "Buildings"
+switch_on_hover = true
+
+[node name="Minimap" type="Panel" parent="UI_Node"]
+self_modulate = Color(1, 1, 1, 0)
+layout_mode = 1
+anchors_preset = -1
+anchor_left = 0.8
+anchor_top = 0.7
+anchor_right = 1.0
+anchor_bottom = 1.0
+offset_top = -0.320038
+
+[node name="Snap" type="Button" parent="UI_Node/Minimap"]
+layout_mode = 1
+anchors_preset = -1
+anchor_right = 0.06
+anchor_bottom = 0.08
+offset_left = -59.0
+offset_top = -66.68
+offset_right = -2.36
+offset_bottom = -11.9856
+text = "Snap"
+icon = SubResource("GradientTexture2D_g6uko")
+flat = true
+icon_alignment = 1
+
+[node name="Build_Button" type="Button" parent="UI_Node/Minimap"]
+layout_mode = 1
+anchors_preset = -1
+anchor_left = 0.355
+anchor_top = -0.145
+anchor_right = 0.355
+anchor_bottom = -0.145
+offset_left = -102.88
+offset_top = -70.3135
+offset_right = -30.88
+offset_bottom = 1.68646
+text = "Build"
+icon = SubResource("GradientTexture2D_mb71g")
+flat = true
+icon_alignment = 1
+
+[node name="Units_Button" type="Button" parent="UI_Node/Minimap"]
+layout_mode = 1
+anchors_preset = -1
+anchor_left = 0.57
+anchor_top = -0.145
+anchor_right = 0.57
+offset_left = -41.92
+offset_top = -87.3136
+offset_right = 31.08
+offset_bottom = -46.68
+keep_pressed_outside = true
+text = "Units"
+icon = SubResource("GradientTexture2D_tausu")
+flat = true
+icon_alignment = 1
+
+[node name="Management_Button" type="Button" parent="UI_Node/Minimap"]
+layout_mode = 1
+anchors_preset = -1
+anchor_left = 0.57
+anchor_top = -0.145
+anchor_right = 0.57
+offset_left = -99.92
+offset_top = -93.3136
+offset_right = -26.92
+offset_bottom = -52.68
+keep_pressed_outside = true
+text = "Mgmt"
+icon = SubResource("GradientTexture2D_tausu")
+flat = true
+icon_alignment = 1
+
+[node name="ColorRect" type="ColorRect" parent="UI_Node/Minimap"]
+self_modulate = Color(1, 1, 1, 0.313726)
+show_behind_parent = true
+layout_mode = 1
+anchors_preset = -1
+anchor_left = 0.589
+anchor_top = -0.47
+anchor_right = 1.0
+anchor_bottom = -0.275
+grow_horizontal = 2
+grow_vertical = 2
+color = Color(0, 0, 0, 1)
+
+[node name="Pop" type="RichTextLabel" parent="UI_Node/Minimap"]
+layout_mode = 1
+anchors_preset = -1
+anchor_left = 0.651
+anchor_top = -0.423
+anchor_right = 0.948
+anchor_bottom = -0.282
+text = "Population"
+autowrap_mode = 2
+
+[node name="Minimap_Placeholder" type="Sprite2D" parent="UI_Node/Minimap"]
+position = Vector2(102, 75.32)
+scale = Vector2(2.65039, 2.65039)
+texture = SubResource("GradientTexture2D_k0fou")
+
+[node name="Clock_Placeholder" type="Sprite2D" parent="UI_Node/Minimap"]
+position = Vector2(-958, -449.68)
+scale = Vector2(0.9375, 0.9375)
+texture = SubResource("GradientTexture2D_0t47b")
+
 [node name="Res_Bar" type="Panel" parent="UI_Node"]
-self_modulate = Color(1, 1, 1, 0.498039)
+self_modulate = Color(1, 1, 1, 0)
 layout_mode = 1
 anchors_preset = -1
 anchor_left = 0.7
-anchor_top = 0.75
+anchor_top = 0.7
 anchor_right = 0.8
-anchor_bottom = 1.05
+anchor_bottom = 1.0
 grow_horizontal = 0
 
 [node name="Wood" type="RichTextLabel" parent="UI_Node/Res_Bar"]
 layout_mode = 1
 anchors_preset = -1
-anchor_right = 1.0
+anchor_right = 1.055
 anchor_bottom = 0.125
 text = "Wood
 "
+
+[node name="ColorRect" type="ColorRect" parent="UI_Node/Res_Bar/Wood"]
+self_modulate = Color(1, 1, 1, 0.313726)
+show_behind_parent = true
+layout_mode = 1
+anchors_preset = 15
+anchor_right = 1.0
+anchor_bottom = 1.0
+grow_horizontal = 2
+grow_vertical = 2
+color = Color(0, 0, 0, 1)
 
 [node name="Amount" type="RichTextLabel" parent="UI_Node/Res_Bar/Wood"]
 layout_mode = 1
@@ -273,7 +445,20 @@ anchors_preset = -1
 anchor_top = 0.125
 anchor_right = 1.0
 anchor_bottom = 0.25
+offset_top = 4.0
+offset_bottom = 4.0
 text = "Stone"
+
+[node name="ColorRect" type="ColorRect" parent="UI_Node/Res_Bar/Stone"]
+self_modulate = Color(1, 1, 1, 0.313726)
+show_behind_parent = true
+layout_mode = 1
+anchors_preset = 15
+anchor_right = 1.0
+anchor_bottom = 1.0
+grow_horizontal = 2
+grow_vertical = 2
+color = Color(0, 0, 0, 1)
 
 [node name="Amount" type="RichTextLabel" parent="UI_Node/Res_Bar/Stone"]
 layout_mode = 1
@@ -290,8 +475,21 @@ anchors_preset = -1
 anchor_top = 0.25
 anchor_right = 1.0
 anchor_bottom = 0.375
+offset_top = 8.0
+offset_bottom = 8.0
 text = "Riches"
 autowrap_mode = 2
+
+[node name="ColorRect" type="ColorRect" parent="UI_Node/Res_Bar/Riches"]
+self_modulate = Color(1, 1, 1, 0.313726)
+show_behind_parent = true
+layout_mode = 1
+anchors_preset = 15
+anchor_right = 1.0
+anchor_bottom = 1.0
+grow_horizontal = 2
+grow_vertical = 2
+color = Color(0, 0, 0, 1)
 
 [node name="Amount" type="RichTextLabel" parent="UI_Node/Res_Bar/Riches"]
 layout_mode = 1
@@ -310,8 +508,21 @@ anchors_preset = -1
 anchor_top = 0.375
 anchor_right = 1.0
 anchor_bottom = 0.5
+offset_top = 12.0
+offset_bottom = 12.0
 text = "Crystal"
 autowrap_mode = 2
+
+[node name="ColorRect" type="ColorRect" parent="UI_Node/Res_Bar/Crystal"]
+self_modulate = Color(1, 1, 1, 0.313726)
+show_behind_parent = true
+layout_mode = 1
+anchors_preset = 15
+anchor_right = 1.0
+anchor_bottom = 1.0
+grow_horizontal = 2
+grow_vertical = 2
+color = Color(0, 0, 0, 1)
 
 [node name="Amount" type="RichTextLabel" parent="UI_Node/Res_Bar/Crystal"]
 layout_mode = 1
@@ -327,6 +538,9 @@ anchors_preset = -1
 anchor_top = 0.5
 anchor_right = 1.0
 anchor_bottom = 0.625
+offset_top = 16.0
+offset_right = 12.0
+offset_bottom = 16.0
 text = "Food"
 autowrap_mode = 2
 
@@ -338,99 +552,16 @@ anchor_right = 1.0
 anchor_bottom = 1.0
 fit_content = true
 
-[node name="Pop" type="RichTextLabel" parent="UI_Node/Res_Bar"]
+[node name="ColorRect" type="ColorRect" parent="UI_Node/Res_Bar/Food"]
+self_modulate = Color(1, 1, 1, 0.313726)
+show_behind_parent = true
 layout_mode = 1
-anchors_preset = -1
+anchors_preset = 15
 anchor_right = 1.0
 anchor_bottom = 1.0
-offset_left = 202.0
-offset_top = -185.0
-offset_right = 207.0
-offset_bottom = -172.0
-text = "Population"
-autowrap_mode = 2
-
-[node name="Minimap" type="Panel" parent="UI_Node"]
-modulate = Color(1, 1, 1, 0)
-layout_mode = 1
-anchors_preset = -1
-anchor_left = 0.8
-anchor_top = 0.7
-anchor_right = 1.0
-anchor_bottom = 1.0
-offset_top = -0.320038
-
-[node name="Snap" type="Button" parent="UI_Node/Minimap"]
-layout_mode = 1
-anchors_preset = -1
-anchor_right = 0.06
-anchor_bottom = 0.08
-offset_left = -48.0
-offset_top = -12.68
-offset_right = -13.36
-offset_bottom = 1.01443
-text = "None"
-
-[node name="Build_Button" type="Button" parent="UI_Node/Minimap"]
-layout_mode = 1
-anchors_preset = -1
-anchor_left = 0.355
-anchor_top = -0.145
-anchor_right = 0.355
-anchor_bottom = -0.145
-offset_left = -88.88
-offset_top = -44.3136
-offset_right = -40.88
-offset_bottom = -13.3136
-text = "Build"
-
-[node name="Units_Button" type="Button" parent="UI_Node/Minimap"]
-layout_mode = 1
-anchors_preset = -1
-anchor_left = 0.57
-anchor_top = -0.145
-anchor_right = 0.57
-offset_left = -87.9201
-offset_top = -71.3136
-offset_right = -38.9201
-offset_bottom = -71.3136
-keep_pressed_outside = true
-text = "Units"
-
-[node name="Build_Menu" type="Panel" parent="UI_Node"]
-visible = false
-material = SubResource("CanvasItemMaterial_onle8")
-layout_mode = 0
-offset_left = 1030.0
-offset_top = 89.0
-offset_right = 1230.0
-offset_bottom = 465.0
-
-[node name="Building_Buttons" type="MenuButton" parent="UI_Node/Build_Menu"]
-material = SubResource("CanvasItemMaterial_fbdp7")
-layout_mode = 1
-anchors_preset = -1
-anchor_right = 1.0
-anchor_bottom = 0.12
-toggle_mode = false
-text = "Buildings"
-switch_on_hover = true
-
-[node name="Barracks_Menu" type="Panel" parent="UI_Node"]
-visible = false
-layout_mode = 0
-offset_left = 463.0
-offset_top = 191.0
-offset_right = 696.0
-offset_bottom = 432.0
-
-[node name="Unit_Test_Button" type="Button" parent="UI_Node/Barracks_Menu"]
-layout_mode = 0
-offset_left = 26.0
-offset_top = 16.0
-offset_right = 210.0
-offset_bottom = 83.0
-text = "Unit_Test"
+grow_horizontal = 2
+grow_vertical = 2
+color = Color(0, 0, 0, 1)
 
 [node name="Unit_List" type="Panel" parent="UI_Node"]
 visible = false
@@ -483,7 +614,7 @@ transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 381.785, 1.52588e-05, -382.23
 script = ExtResource("10_jjfcj")
 
 [node name="Player_view" type="Camera3D" parent="Player/Player_camera"]
-transform = Transform3D(1, 0, 0, 0, 0.573577, 0.819152, 0, -0.819152, 0.573577, 0, 15, 15)
+transform = Transform3D(1, 0, 0, 0, 0.573577, 0.819152, 0, -0.819152, 0.573577, 0, 27.9176, 15)
 
 [node name="RayCast3D" type="RayCast3D" parent="Player/Player_camera"]
 transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, 15, 0)
@@ -492,6 +623,7 @@ collision_mask = 32768
 hit_from_inside = true
 
 [node name="Selection_square" type="Decal" parent="Player"]
+visible = false
 size = Vector3(1, 20, 1)
 texture_albedo = SubResource("NoiseTexture2D_p3d2n")
 
@@ -509,9 +641,12 @@ directional_shadow_max_distance = 800.0
 directional_shadow_pancake_size = 76.6
 
 [node name="Moon" type="DirectionalLight3D" parent="."]
-transform = Transform3D(4.37114e-08, 8.74228e-08, -1, -8.74228e-08, 1, 8.74228e-08, 1, 8.74228e-08, 4.37114e-08, 0, 0, 0)
+transform = Transform3D(-4.37114e-08, 0, 1, 0, 1, 0, -1, 0, -4.37114e-08, 0, 0, 0)
 visible = false
-light_energy = 16.0
+light_color = Color(0.745098, 1, 1, 1)
+light_energy = 0.427
+light_indirect_energy = 0.819
+shadow_enabled = true
 shadow_blur = 7.224
 directional_shadow_mode = 1
 directional_shadow_blend_splits = true
@@ -520,7 +655,7 @@ directional_shadow_pancake_size = 76.6
 sky_mode = 1
 
 [node name="Fog_Of_War" type="GPUParticles3D" parent="."]
-transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 385.645, 6.43969, -416.247)
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 482.721, 6.43969, -485.748)
 amount = 23
 lifetime = 7.0
 randomness = 0.44
@@ -542,4 +677,3 @@ draw_pass_1 = SubResource("SphereMesh_cyqkr")
 [connection signal="pressed" from="UI_Node/Minimap/Snap" to="UI_Node" method="_on_snap_pressed"]
 [connection signal="pressed" from="UI_Node/Minimap/Build_Button" to="UI_Node" method="_on_build_button_pressed"]
 [connection signal="pressed" from="UI_Node/Minimap/Units_Button" to="UI_Node" method="_on_units_button_pressed"]
-[connection signal="pressed" from="UI_Node/Barracks_Menu/Unit_Test_Button" to="." method="_on_unit_test_button_pressed"]

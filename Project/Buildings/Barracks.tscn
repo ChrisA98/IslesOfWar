@@ -1,29 +1,24 @@
-[gd_scene load_steps=5 format=3 uid="uid://b655chjibk30f"]
+[gd_scene load_steps=3 format=3 uid="uid://b655chjibk30f"]
 
 [ext_resource type="PackedScene" uid="uid://dfmnqyu2kckmu" path="res://Buildings/Unit_building.tscn" id="1_r1xwx"]
 [ext_resource type="Script" path="res://Buildings/Barracks.gd" id="2_t33jg"]
 
-[sub_resource type="CanvasItemMaterial" id="CanvasItemMaterial_pbp11"]
-
-[sub_resource type="CanvasItemMaterial" id="CanvasItemMaterial_ibj0a"]
-
 [node name="Building_Base" instance=ExtResource("1_r1xwx")]
 script = ExtResource("2_t33jg")
 
-[node name="Build_Menu" type="Panel" parent="." index="4"]
+[node name="Barracks_Menu" type="Panel" parent="." index="4"]
 visible = false
-material = SubResource("CanvasItemMaterial_pbp11")
-offset_left = 1030.0
-offset_top = 89.0
-offset_right = 1230.0
-offset_bottom = 465.0
+offset_left = 463.0
+offset_top = 191.0
+offset_right = 696.0
+offset_bottom = 432.0
 
-[node name="Building_Buttons" type="MenuButton" parent="Build_Menu" index="0"]
-material = SubResource("CanvasItemMaterial_ibj0a")
-layout_mode = 1
-anchors_preset = -1
-anchor_right = 1.0
-anchor_bottom = 0.12
-toggle_mode = false
-text = "Buildings"
-switch_on_hover = true
+[node name="Unit_Test_Button" type="Button" parent="Barracks_Menu" index="0"]
+layout_mode = 0
+offset_left = 26.0
+offset_top = 16.0
+offset_right = 210.0
+offset_bottom = 83.0
+text = "Unit_Test"
+
+[connection signal="pressed" from="Barracks_Menu/Unit_Test_Button" to="." method="use" binds= [NodePath(".")]]

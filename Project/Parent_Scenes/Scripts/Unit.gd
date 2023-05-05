@@ -192,7 +192,7 @@ func damage(amt: float, _type: String):
 #signal being selected on click
 func _on_input_event(_camera, event, _position, _normal, _shape_idx):
 	if event is InputEventMouseButton and Input.is_action_just_released("lmb"):
-		selected.emit(self)
+		selected.emit(self, event)
 
 
 func _on_navigation_agent_3d_navigation_finished():

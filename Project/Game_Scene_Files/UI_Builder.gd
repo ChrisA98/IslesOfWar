@@ -6,17 +6,18 @@ signal menu_opened
 
 @onready var gamescene = get_node("..")
 #UI Elements
-@onready var menus = [$Build_Menu,$Barracks_Menu]
+@onready var menus = [$Build_Menu]
 @onready var unit_bar = get_node("Unit_List")
+@onready var minmap = get_node("Minimap")
 @onready var res_displays = {"wood": $Res_Bar/Wood/Amount,
 "stone": $Res_Bar/Stone/Amount,
 "riches": $Res_Bar/Riches/Amount,
 "crystals": $Res_Bar/Crystal/Amount,
 "food": $Res_Bar/Food/Amount,
-"pop": $Res_Bar/Pop}
+"pop": $Minimap/Pop}
 @onready var global = get_node("/root/Global_Vars")
-var buttons
-var act_unit_rect = {}
+var buttons := []
+var act_unit_rect := []
 
 #Ref Vars
 @onready var game_scene = $".."
@@ -34,7 +35,10 @@ func _ready():
 	for i in menus:
 		i.visible = false
 	
-	buttons = [$Minimap/Build_Button, $Minimap/Units_Button, $Minimap/Snap]
+	
+	for i in minmap.get_children():
+		if i.name.contains("Button"):
+			buttons.push_back(i)
 
 
 # Called every frame. 'delta' is the elapsed time since the previous frame.
@@ -97,30 +101,30 @@ func add_unit_rect(unit, list):
 ## Show build menu
 func _on_build_button_pressed():
 	show_menu(0)
-	buttons[0].visible = false
-	buttons[1].visible = false
+	for i in buttons:
+		i.visible = false
 
 
 ## Snap to grid button
 func _on_snap_pressed():
 	match buttons[2].text:
-		"None":
-			buttons[2].text = "5"
+		"Snap":
+			buttons[2].text = "x5"
 			game_scene.set_map_snap(5)
-		"5":
-			buttons[2].text = "10"
+		"x5":
+			buttons[2].text = "x10"
 			game_scene.set_map_snap(10)
-		"10":
-			buttons[2].text = "15"
+		"x10":
+			buttons[2].text = "x15"
 			game_scene.set_map_snap(15)
-		"15":
-			buttons[2].text = "None"
+		"x15":
+			buttons[2].text = "Snap"
 			game_scene.set_map_snap(0)
 
 
 ## This does the wrong thing FIX IT
 func _on_units_button_pressed():
-	show_menu(1)
+	print("Why didn't you just implement the menu spongebob")
 
 
 ## Day night cycle trigger
