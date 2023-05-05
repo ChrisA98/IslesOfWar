@@ -96,7 +96,7 @@ func place():
 	static_body.set_collision_layer_value(1,true)
 	$RallyPoint.visible = false
 	$StaticBody3D/CollisionShape3D2.disabled = true
-	#snap_to_ground()
+	snap_to_ground()
 
 
 func make_valid():
@@ -173,7 +173,7 @@ func can_afford(builder_res):
 
 
 func snap_to_ground():
-	position.y = $RayCast3D.get_collision_point().y
+	position.y = $StaticBody3D/RayCast3D.get_collision_point().y
 
 
 ## Delay delete and remove from lists
@@ -183,3 +183,4 @@ func delayed_delete():
 	actor_owner.update_pop()
 	await get_tree().physics_frame
 	queue_free()
+	world.update_navigation(get_groups()[0])

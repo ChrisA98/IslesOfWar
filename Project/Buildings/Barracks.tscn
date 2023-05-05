@@ -10,7 +10,8 @@
 [node name="Building_Base" instance=ExtResource("1_r1xwx")]
 script = ExtResource("2_t33jg")
 
-[node name="Build_Menu" type="Panel" parent="." index="5"]
+[node name="Build_Menu" type="Panel" parent="." index="4"]
+visible = false
 material = SubResource("CanvasItemMaterial_pbp11")
 offset_left = 1030.0
 offset_top = 89.0

@@ -89,24 +89,28 @@ func _ready():
 
 ## Place starting bases
 func prepare_bases():
-	await get_tree().physics_frame ## debug for collision thing
+	await get_tree().physics_frame ## fix for collision issue
 	# Place enemy starting Bases
 	for enemy in range(1,game_actors.size()):
 		var spawn = get_node("World/Enemy"+str(enemy)+"_Base_Spawn")
 		var bldg = prep_other_building(game_actors[enemy],"Base")
+		var grp = game_actors[enemy].ping_ground(bldg.position).get_parent().get_groups()[0]
 		bldg.set_pos(spawn.position)
 		while bldg.is_valid == false:
 			bldg.set_pos(spawn.position)
 			spawn.position += Vector3(0,1,0)
-		game_actors[enemy].place_building(spawn.group, bldg)
+		game_actors[enemy].place_building(grp, bldg)
 		
 	# Add player first Base
 	var p_spawn = get_node("World/Player_Base_Spawn")
+	player_controller.set_cam_pos(p_spawn.position + Vector3(0,20,0))
+	player_controller.get_child(0).get_child(1).force_raycast_update()
+	# inelegent solution, but it works
+	var grp = player_controller.get_child(0).get_child(1).get_collider().get_parent().get_groups()[0]
 	prep_player_building(0)
 	preview_building.set_pos(p_spawn.position)
-	player_controller.place_building(p_spawn.group, preview_building)
+	player_controller.place_building(grp, preview_building)
 	preview_building = null
-	player_controller.set_cam_pos(p_spawn.position + Vector3(0,20,0))
 	click_mode = "select"
 
 
@@ -257,6 +261,8 @@ func select_from_square():
 	if(selected_units.size()>0):
 		click_mode = "command_unit"
 		group_selected_units()
+	else:
+		click_mode = "select"
 	return true
 
 

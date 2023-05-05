@@ -132,6 +132,3 @@ visibility_aabb = AABB(-5.55879, -1.53446, -5.77225, 11.1176, 3.06891, 11.5445)
 draw_order = 2
 process_material = SubResource("ParticleProcessMaterial_wbdji")
 draw_pass_1 = SubResource("CylinderMesh_5guih")
-
-[node name="RayCast3D" parent="." index="5"]
-transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, 0.157313, 0)
