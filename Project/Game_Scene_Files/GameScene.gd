@@ -28,7 +28,7 @@ var click_mode: String = "select":
 var activated_building = null
 var selected_units = []
 @onready var selection_square = get_node("Player/Selection_square")
-var selection_square_points = []
+var selection_square_points = [Vector3.ZERO,Vector3.ZERO]
 
 #time keeping
 var year_day = 330
@@ -266,6 +266,7 @@ func select_from_square():
 	selection_square.get_child(0).get_child(0).shape.size.y = 50
 	await get_tree().physics_frame
 	selected_units.clear()
+	selection_square_points = [Vector3.ZERO,Vector3.ZERO]
 	for unit in player_controller.units:
 		if selection_square.get_child(0).get_overlapping_bodies().has(unit):
 			selected_units.push_back(unit)
@@ -328,7 +329,7 @@ func prep_other_building(actor, bldg_name):
 
 ## Activate buildings menu
 func building_pressed(building):
-	if player_controller.owns_building(building) == false:
+	if !player_controller.owns_building(building):
 		if click_mode == "command_unit":
 			for i in selected_units:
 				i.target_enemy = building
@@ -339,6 +340,7 @@ func building_pressed(building):
 		return
 	activated_building = building #pass activated building to gamescene
 	var type = building.type
+	click_mode = "menu"
 	match type:
 		"Base":
 			player_controller.adj_resource("wood",10)
@@ -364,7 +366,7 @@ func ground_click(_camera, event, pos, _normal, _shape_idx, shape):
 					preview_building = null
 		"command_unit":
 			if event is InputEventMouseButton:
-				if event.button_index == MOUSE_BUTTON_LEFT and event.pressed:
+				if event.button_index == MOUSE_BUTTON_RIGHT and event.pressed:
 					start_select_square(pos)
 					return
 			if Input.is_action_pressed("lmb"):
@@ -400,7 +402,7 @@ func ground_click(_camera, event, pos, _normal, _shape_idx, shape):
 				select_from_square()
 		"menu":
 			if event is InputEventMouseButton:
-				if event.button_index == MOUSE_BUTTON_LEFT and event.pressed:
+				if event.pressed:
 					click_mode = "select"
 					return
 		_:
