@@ -3,7 +3,7 @@
 [ext_resource type="Script" path="res://Game_Scene_Files/GameScene.gd" id="1_7pjje"]
 [ext_resource type="Script" path="res://Game_Scene_Files/UI_Builder.gd" id="2_wj4ul"]
 [ext_resource type="Script" path="res://World_Generation/NavMesh_Builder.gd" id="4_k22hi"]
-[ext_resource type="Shader" path="res://World_Generation/New_Terrain.gdshader" id="5_gdv2b"]
+[ext_resource type="Shader" path="res://World_Generation/New_Terrain.gdshader" id="4_tdb6m"]
 [ext_resource type="Texture2D" uid="uid://cs6n027ca4h1y" path="res://Test_Items/GrassyField1.png" id="6_1hvoe"]
 [ext_resource type="Texture2D" uid="uid://drbfk3h3s6x1b" path="res://Test_Items/HeightMap.exr" id="7_ubyyn"]
 [ext_resource type="Script" path="res://Actor_Classes/Fort_Spawn.gd" id="8_viuko"]
@@ -123,9 +123,9 @@ VSeparator/styles/separator = null
 
 [sub_resource type="ShaderMaterial" id="ShaderMaterial_d1jxg"]
 render_priority = 0
-shader = ExtResource("5_gdv2b")
+shader = ExtResource("4_tdb6m")
 shader_parameter/t_height = 57.0
-shader_parameter/u_terrain_normal_basis = Basis(1, 0, 0, 0, 0.94, 0, 0, 0, 1)
+shader_parameter/u_terrain_normal_basis = null
 shader_parameter/heightmap = ExtResource("7_ubyyn")
 shader_parameter/Albedo = ExtResource("6_1hvoe")
 
@@ -634,7 +634,7 @@ input_ray_pickable = false
 shape = SubResource("BoxShape3D_rb27j")
 
 [node name="Sun" type="DirectionalLight3D" parent="."]
-transform = Transform3D(6.03666e-09, 0.990418, -0.138102, -4.32925e-08, 0.138102, 0.990418, 1, -4.44089e-14, 4.37114e-08, 0, 0, 0)
+transform = Transform3D(6.03666e-09, 0.990418, -0.138102, -0.991897, 0.0175455, 0.12583, 0.127047, 0.136983, 0.982392, 0, 0, 0)
 shadow_enabled = true
 shadow_blur = 2.275
 directional_shadow_max_distance = 800.0
