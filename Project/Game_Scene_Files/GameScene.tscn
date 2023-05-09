@@ -2,8 +2,8 @@
 
 [ext_resource type="Script" path="res://Game_Scene_Files/GameScene.gd" id="1_7pjje"]
 [ext_resource type="Script" path="res://Game_Scene_Files/UI_Builder.gd" id="2_wj4ul"]
+[ext_resource type="Shader" uid="uid://b7gjudd3nwgnl" path="res://World_Generation/Terrain_Shader.tres" id="4_jayql"]
 [ext_resource type="Script" path="res://World_Generation/NavMesh_Builder.gd" id="4_k22hi"]
-[ext_resource type="Shader" path="res://World_Generation/New_Terrain.gdshader" id="4_tdb6m"]
 [ext_resource type="Texture2D" uid="uid://cs6n027ca4h1y" path="res://Test_Items/GrassyField1.png" id="6_1hvoe"]
 [ext_resource type="Texture2D" uid="uid://drbfk3h3s6x1b" path="res://Test_Items/HeightMap.exr" id="7_ubyyn"]
 [ext_resource type="Script" path="res://Actor_Classes/Fort_Spawn.gd" id="8_viuko"]
@@ -121,16 +121,17 @@ TooltipPanel/styles/panel = null
 Tree/styles/panel = null
 VSeparator/styles/separator = null
 
-[sub_resource type="ShaderMaterial" id="ShaderMaterial_d1jxg"]
+[sub_resource type="ShaderMaterial" id="ShaderMaterial_v40og"]
 render_priority = 0
-shader = ExtResource("4_tdb6m")
-shader_parameter/t_height = 57.0
-shader_parameter/u_terrain_normal_basis = null
+shader = ExtResource("4_jayql")
+shader_parameter/terrain_height = 57.0
+shader_parameter/offset = -0.963
+shader_parameter/fade = -0.074
 shader_parameter/heightmap = ExtResource("7_ubyyn")
 shader_parameter/Albedo = ExtResource("6_1hvoe")
 
 [sub_resource type="PlaneMesh" id="PlaneMesh_ssgws"]
-material = SubResource("ShaderMaterial_d1jxg")
+material = SubResource("ShaderMaterial_v40og")
 size = Vector2(1000, 1000)
 subdivide_width = 1500
 subdivide_depth = 1500
@@ -579,7 +580,7 @@ script = ExtResource("4_k22hi")
 terrain_amplitude = 57
 
 [node name="Visual_Ground" type="MeshInstance3D" parent="World"]
-transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0.122696, 0, 0.132719)
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, 0, 0)
 layers = 3
 mesh = SubResource("PlaneMesh_ssgws")
 skeleton = NodePath("")
@@ -634,7 +635,7 @@ input_ray_pickable = false
 shape = SubResource("BoxShape3D_rb27j")
 
 [node name="Sun" type="DirectionalLight3D" parent="."]
-transform = Transform3D(6.03666e-09, 0.990418, -0.138102, -0.991897, 0.0175455, 0.12583, 0.127047, 0.136983, 0.982392, 0, 0, 0)
+transform = Transform3D(-0.0039411, 0.225382, -0.974262, 0.722848, 0.673864, 0.152965, 0.690996, -0.70364, -0.165573, 0, 0, 0)
 shadow_enabled = true
 shadow_blur = 2.275
 directional_shadow_max_distance = 800.0
