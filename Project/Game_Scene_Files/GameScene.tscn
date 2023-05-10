@@ -1,14 +1,14 @@
-[gd_scene load_steps=43 format=3 uid="uid://d32tym6bcdu7c"]
+[gd_scene load_steps=56 format=3 uid="uid://d32tym6bcdu7c"]
 
 [ext_resource type="Script" path="res://Game_Scene_Files/GameScene.gd" id="1_7pjje"]
 [ext_resource type="Script" path="res://Game_Scene_Files/UI_Builder.gd" id="2_wj4ul"]
-[ext_resource type="Shader" uid="uid://b7gjudd3nwgnl" path="res://World_Generation/Terrain_Shader.tres" id="4_jayql"]
+[ext_resource type="Shader" path="res://World_Generation/New_Terrain.gdshader" id="4_4qqhp"]
 [ext_resource type="Script" path="res://World_Generation/NavMesh_Builder.gd" id="4_k22hi"]
-[ext_resource type="Texture2D" uid="uid://cs6n027ca4h1y" path="res://Test_Items/GrassyField1.png" id="6_1hvoe"]
 [ext_resource type="Texture2D" uid="uid://drbfk3h3s6x1b" path="res://Test_Items/HeightMap.exr" id="7_ubyyn"]
 [ext_resource type="Script" path="res://Actor_Classes/Fort_Spawn.gd" id="8_viuko"]
 [ext_resource type="Script" path="res://Actor_Classes/Player.gd" id="9_3h23t"]
 [ext_resource type="Script" path="res://Actor_Classes/GameCamera.gd" id="10_jjfcj"]
+[ext_resource type="Shader" uid="uid://cmyeclhrvhn2o" path="res://World_Generation/Foliage_Shader.tres" id="10_l3sfk"]
 
 [sub_resource type="ProceduralSkyMaterial" id="ProceduralSkyMaterial_46wwo"]
 
@@ -121,14 +121,72 @@ TooltipPanel/styles/panel = null
 Tree/styles/panel = null
 VSeparator/styles/separator = null
 
+[sub_resource type="Gradient" id="Gradient_uke0v"]
+colors = PackedColorArray(0.162066, 0.162066, 0.162065, 1, 0.159482, 0.219576, 0.302686, 1)
+
+[sub_resource type="FastNoiseLite" id="FastNoiseLite_sks0x"]
+noise_type = 4
+frequency = 0.011
+fractal_type = 2
+fractal_lacunarity = 2.416
+fractal_gain = 0.543
+fractal_weighted_strength = 0.8
+fractal_ping_pong_strength = 2.037
+domain_warp_enabled = true
+domain_warp_amplitude = 30.168
+domain_warp_frequency = 0.032
+domain_warp_fractal_octaves = 1
+
+[sub_resource type="NoiseTexture2D" id="NoiseTexture2D_hn25n"]
+seamless = true
+color_ramp = SubResource("Gradient_uke0v")
+noise = SubResource("FastNoiseLite_sks0x")
+
+[sub_resource type="NoiseTexture2D" id="NoiseTexture2D_fcitg"]
+seamless = true
+as_normal_map = true
+bump_strength = 10.8
+noise = SubResource("FastNoiseLite_sks0x")
+
+[sub_resource type="Gradient" id="Gradient_58fcx"]
+colors = PackedColorArray(0, 0.260467, 0, 1, 0.305169, 0.557647, 0.256383, 1)
+
+[sub_resource type="FastNoiseLite" id="FastNoiseLite_5ilk1"]
+noise_type = 0
+frequency = 0.018
+fractal_octaves = 10
+fractal_lacunarity = 2.123
+fractal_gain = 0.874
+domain_warp_enabled = true
+domain_warp_amplitude = 30.164
+domain_warp_frequency = -0.03
+domain_warp_fractal_type = 2
+domain_warp_fractal_lacunarity = 6.062
+domain_warp_fractal_gain = 0.971
+
+[sub_resource type="NoiseTexture2D" id="NoiseTexture2D_p0d1b"]
+seamless = true
+color_ramp = SubResource("Gradient_58fcx")
+noise = SubResource("FastNoiseLite_5ilk1")
+
+[sub_resource type="NoiseTexture2D" id="NoiseTexture2D_e22tc"]
+seamless = true
+as_normal_map = true
+bump_strength = 3.5
+noise = SubResource("FastNoiseLite_5ilk1")
+
 [sub_resource type="ShaderMaterial" id="ShaderMaterial_v40og"]
 render_priority = 0
-shader = ExtResource("4_jayql")
-shader_parameter/terrain_height = 57.0
-shader_parameter/offset = -0.963
-shader_parameter/fade = -0.074
+shader = ExtResource("4_4qqhp")
+shader_parameter/t_height = 57.0
+shader_parameter/universal_tex_scaling = 10.498
+shader_parameter/min_rock_slope = 0.339
+shader_parameter/max_grass_slope = 0.643
 shader_parameter/heightmap = ExtResource("7_ubyyn")
-shader_parameter/Albedo = ExtResource("6_1hvoe")
+shader_parameter/grass_alb_tex = SubResource("NoiseTexture2D_p0d1b")
+shader_parameter/grass_norm_tex = SubResource("NoiseTexture2D_e22tc")
+shader_parameter/cliff_alb_tex = SubResource("NoiseTexture2D_hn25n")
+shader_parameter/cliff_norm_tex = SubResource("NoiseTexture2D_fcitg")
 
 [sub_resource type="PlaneMesh" id="PlaneMesh_ssgws"]
 material = SubResource("ShaderMaterial_v40og")
@@ -148,6 +206,48 @@ albedo_color = Color(0, 0.290196, 1, 1)
 
 [sub_resource type="StandardMaterial3D" id="StandardMaterial3D_0q7om"]
 albedo_color = Color(1, 0, 0.0313726, 1)
+
+[sub_resource type="FastNoiseLite" id="FastNoiseLite_oe4h0"]
+seed = 2
+frequency = 0.041
+
+[sub_resource type="NoiseTexture2D" id="NoiseTexture2D_tx7g1"]
+noise = SubResource("FastNoiseLite_oe4h0")
+
+[sub_resource type="ShaderMaterial" id="ShaderMaterial_qfdoi"]
+shader = ExtResource("10_l3sfk")
+shader_parameter/instance_rows = 140.0
+shader_parameter/instance_rot_randomize = 2.423
+shader_parameter/instance_spacing = 2.641
+shader_parameter/instance_scale_x = 1.0
+shader_parameter/instance_scale_y = 0.567
+shader_parameter/instance_scale_z = 1.0
+shader_parameter/instance_scale_randomize = 1.303
+shader_parameter/instance_pos_randomize = 2.0
+shader_parameter/instance_scale_min = 1.027
+shader_parameter/instance_scale_max = 1.129
+shader_parameter/_coverage_altitude = 10.0
+shader_parameter/_coverage_range = 100.0
+shader_parameter/_slope_coverage = 0.04
+shader_parameter/clumping_strength = 33.19
+shader_parameter/terrain_normal_basis = null
+shader_parameter/instance_orient_to_normal = false
+shader_parameter/instance_orientation_influence = 1.0
+shader_parameter/__terrain_amplitude = 57.0
+shader_parameter/map_heightmap_size = Vector2(1000, 1000)
+shader_parameter/map_normalmap_size = Vector2(2000, 2000)
+shader_parameter/map_heightmap = ExtResource("7_ubyyn")
+shader_parameter/map_clumpmap = SubResource("NoiseTexture2D_tx7g1")
+
+[sub_resource type="StandardMaterial3D" id="StandardMaterial3D_hhxgb"]
+shading_mode = 2
+diffuse_mode = 3
+disable_ambient_light = true
+albedo_color = Color(0, 1, 0, 1)
+
+[sub_resource type="CapsuleMesh" id="CapsuleMesh_cfock"]
+material = SubResource("StandardMaterial3D_hhxgb")
+radius = 0.055
 
 [sub_resource type="Gradient" id="Gradient_eofwo"]
 offsets = PackedFloat32Array(0)
@@ -580,8 +680,8 @@ script = ExtResource("4_k22hi")
 terrain_amplitude = 57
 
 [node name="Visual_Ground" type="MeshInstance3D" parent="World"]
-transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, 0, 0)
 layers = 3
+cast_shadow = 2
 mesh = SubResource("PlaneMesh_ssgws")
 skeleton = NodePath("")
 
@@ -623,6 +723,15 @@ target_position = Vector3(0, -500, 0)
 collision_mask = 32768
 hit_from_inside = true
 
+[node name="GPUParticles3D" type="GPUParticles3D" parent="Player/Player_camera"]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0.509369, 0, 23.4169)
+amount = 10000
+lifetime = 0.09
+explosiveness = 1.0
+visibility_aabb = AABB(-62.3046, -32.3354, -55.5563, 124.609, 64.6707, 111.113)
+process_material = SubResource("ShaderMaterial_qfdoi")
+draw_pass_1 = SubResource("CapsuleMesh_cfock")
+
 [node name="Selection_square" type="Decal" parent="Player"]
 visible = false
 size = Vector3(1, 20, 1)
@@ -635,8 +744,9 @@ input_ray_pickable = false
 shape = SubResource("BoxShape3D_rb27j")
 
 [node name="Sun" type="DirectionalLight3D" parent="."]
-transform = Transform3D(-0.0039411, 0.225382, -0.974262, 0.722848, 0.673864, 0.152965, 0.690996, -0.70364, -0.165573, 0, 0, 0)
+transform = Transform3D(-0.160534, 0.169665, -0.972339, 0.694698, 0.71922, 0.0108022, 0.701158, -0.673748, -0.233325, 0, 0, 0)
 shadow_enabled = true
+shadow_reverse_cull_face = true
 shadow_blur = 2.275
 directional_shadow_max_distance = 800.0
 directional_shadow_pancake_size = 76.6
