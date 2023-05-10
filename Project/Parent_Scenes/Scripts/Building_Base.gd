@@ -45,7 +45,7 @@ var collision_buffer = 0
 
 # Combat variables
 var armor: int = 10
-var health: int = 0
+var health: float = 0
 
 func _ready():
 	pass

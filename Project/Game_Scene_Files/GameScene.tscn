@@ -1,9 +1,10 @@
-[gd_scene load_steps=56 format=3 uid="uid://d32tym6bcdu7c"]
+[gd_scene load_steps=58 format=3 uid="uid://d32tym6bcdu7c"]
 
 [ext_resource type="Script" path="res://Game_Scene_Files/GameScene.gd" id="1_7pjje"]
 [ext_resource type="Script" path="res://Game_Scene_Files/UI_Builder.gd" id="2_wj4ul"]
 [ext_resource type="Shader" path="res://World_Generation/New_Terrain.gdshader" id="4_4qqhp"]
 [ext_resource type="Script" path="res://World_Generation/NavMesh_Builder.gd" id="4_k22hi"]
+[ext_resource type="PackedScene" uid="uid://crswchumae5b0" path="res://World_Objects/Forest.tscn" id="7_1qpxy"]
 [ext_resource type="Texture2D" uid="uid://drbfk3h3s6x1b" path="res://Test_Items/HeightMap.exr" id="7_ubyyn"]
 [ext_resource type="Script" path="res://Actor_Classes/Fort_Spawn.gd" id="8_viuko"]
 [ext_resource type="Script" path="res://Actor_Classes/Player.gd" id="9_3h23t"]
@@ -121,10 +122,10 @@ TooltipPanel/styles/panel = null
 Tree/styles/panel = null
 VSeparator/styles/separator = null
 
-[sub_resource type="Gradient" id="Gradient_uke0v"]
+[sub_resource type="Gradient" id="Gradient_1g27v"]
 colors = PackedColorArray(0.162066, 0.162066, 0.162065, 1, 0.159482, 0.219576, 0.302686, 1)
 
-[sub_resource type="FastNoiseLite" id="FastNoiseLite_sks0x"]
+[sub_resource type="FastNoiseLite" id="FastNoiseLite_dlv7m"]
 noise_type = 4
 frequency = 0.011
 fractal_type = 2
@@ -139,19 +140,19 @@ domain_warp_fractal_octaves = 1
 
 [sub_resource type="NoiseTexture2D" id="NoiseTexture2D_hn25n"]
 seamless = true
-color_ramp = SubResource("Gradient_uke0v")
-noise = SubResource("FastNoiseLite_sks0x")
+color_ramp = SubResource("Gradient_1g27v")
+noise = SubResource("FastNoiseLite_dlv7m")
 
 [sub_resource type="NoiseTexture2D" id="NoiseTexture2D_fcitg"]
 seamless = true
 as_normal_map = true
 bump_strength = 10.8
-noise = SubResource("FastNoiseLite_sks0x")
+noise = SubResource("FastNoiseLite_dlv7m")
 
-[sub_resource type="Gradient" id="Gradient_58fcx"]
+[sub_resource type="Gradient" id="Gradient_im8lq"]
 colors = PackedColorArray(0, 0.260467, 0, 1, 0.305169, 0.557647, 0.256383, 1)
 
-[sub_resource type="FastNoiseLite" id="FastNoiseLite_5ilk1"]
+[sub_resource type="FastNoiseLite" id="FastNoiseLite_al3lm"]
 noise_type = 0
 frequency = 0.018
 fractal_octaves = 10
@@ -166,16 +167,16 @@ domain_warp_fractal_gain = 0.971
 
 [sub_resource type="NoiseTexture2D" id="NoiseTexture2D_p0d1b"]
 seamless = true
-color_ramp = SubResource("Gradient_58fcx")
-noise = SubResource("FastNoiseLite_5ilk1")
+color_ramp = SubResource("Gradient_im8lq")
+noise = SubResource("FastNoiseLite_al3lm")
 
 [sub_resource type="NoiseTexture2D" id="NoiseTexture2D_e22tc"]
 seamless = true
 as_normal_map = true
 bump_strength = 3.5
-noise = SubResource("FastNoiseLite_5ilk1")
+noise = SubResource("FastNoiseLite_al3lm")
 
-[sub_resource type="ShaderMaterial" id="ShaderMaterial_v40og"]
+[sub_resource type="ShaderMaterial" id="ShaderMaterial_rie7d"]
 render_priority = 0
 shader = ExtResource("4_4qqhp")
 shader_parameter/t_height = 57.0
@@ -189,7 +190,7 @@ shader_parameter/cliff_alb_tex = SubResource("NoiseTexture2D_hn25n")
 shader_parameter/cliff_norm_tex = SubResource("NoiseTexture2D_fcitg")
 
 [sub_resource type="PlaneMesh" id="PlaneMesh_ssgws"]
-material = SubResource("ShaderMaterial_v40og")
+material = SubResource("ShaderMaterial_rie7d")
 size = Vector2(1000, 1000)
 subdivide_width = 1500
 subdivide_depth = 1500
@@ -206,6 +207,29 @@ albedo_color = Color(0, 0.290196, 1, 1)
 
 [sub_resource type="StandardMaterial3D" id="StandardMaterial3D_0q7om"]
 albedo_color = Color(1, 0, 0.0313726, 1)
+
+[sub_resource type="ShaderMaterial" id="ShaderMaterial_twvxw"]
+shader = ExtResource("10_l3sfk")
+shader_parameter/instance_rows = 15.0
+shader_parameter/instance_rot_randomize = 2.5
+shader_parameter/instance_spacing = 4.829
+shader_parameter/instance_scale_x = 1.0
+shader_parameter/instance_scale_y = 1.0
+shader_parameter/instance_scale_z = 1.0
+shader_parameter/instance_scale_randomize = 1.0
+shader_parameter/instance_pos_randomize = 4.713
+shader_parameter/instance_scale_min = 0.8
+shader_parameter/instance_scale_max = 1.2
+shader_parameter/_coverage_altitude = 10.0
+shader_parameter/_coverage_range = 100.0
+shader_parameter/_slope_coverage = 0.1
+shader_parameter/clumping_strength = 20.0
+shader_parameter/terrain_normal_basis = null
+shader_parameter/instance_orient_to_normal = true
+shader_parameter/instance_orientation_influence = 1.0
+shader_parameter/__terrain_amplitude = 57.0
+shader_parameter/map_heightmap_size = Vector2(1000, 1000)
+shader_parameter/map_heightmap = ExtResource("7_ubyyn")
 
 [sub_resource type="FastNoiseLite" id="FastNoiseLite_oe4h0"]
 seed = 2
@@ -235,7 +259,6 @@ shader_parameter/instance_orient_to_normal = false
 shader_parameter/instance_orientation_influence = 1.0
 shader_parameter/__terrain_amplitude = 57.0
 shader_parameter/map_heightmap_size = Vector2(1000, 1000)
-shader_parameter/map_normalmap_size = Vector2(2000, 2000)
 shader_parameter/map_heightmap = ExtResource("7_ubyyn")
 shader_parameter/map_clumpmap = SubResource("NoiseTexture2D_tx7g1")
 
@@ -243,11 +266,13 @@ shader_parameter/map_clumpmap = SubResource("NoiseTexture2D_tx7g1")
 shading_mode = 2
 diffuse_mode = 3
 disable_ambient_light = true
-albedo_color = Color(0, 1, 0, 1)
+albedo_color = Color(0, 0.568627, 0, 1)
 
 [sub_resource type="CapsuleMesh" id="CapsuleMesh_cfock"]
 material = SubResource("StandardMaterial3D_hhxgb")
 radius = 0.055
+radial_segments = 4
+rings = 3
 
 [sub_resource type="Gradient" id="Gradient_eofwo"]
 offsets = PackedFloat32Array(0)
@@ -707,11 +732,19 @@ transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, 4.02921, 0)
 mesh = SubResource("CapsuleMesh_x5v2n")
 surface_material_override/0 = SubResource("StandardMaterial3D_0q7om")
 
+[node name="Forest" parent="World" instance=ExtResource("7_1qpxy")]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 250.194, 0, -418.79)
+
+[node name="GPUParticles3D" parent="World/Forest" index="1"]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, 0, 4.89764)
+amount = 250
+visibility_aabb = AABB(-38.4773, -66.4526, -36.144, 76.9545, 132.905, 72.288)
+process_material = SubResource("ShaderMaterial_twvxw")
+
 [node name="Player" type="Node" parent="."]
 script = ExtResource("9_3h23t")
 
 [node name="Player_camera" type="Node3D" parent="Player"]
-transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 381.785, 1.52588e-05, -382.236)
 script = ExtResource("10_jjfcj")
 
 [node name="Player_view" type="Camera3D" parent="Player/Player_camera"]
@@ -723,7 +756,7 @@ target_position = Vector3(0, -500, 0)
 collision_mask = 32768
 hit_from_inside = true
 
-[node name="GPUParticles3D" type="GPUParticles3D" parent="Player/Player_camera"]
+[node name="Grass Scatter" type="GPUParticles3D" parent="Player/Player_camera"]
 transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0.509369, 0, 23.4169)
 amount = 10000
 lifetime = 0.09
@@ -739,12 +772,13 @@ texture_albedo = SubResource("NoiseTexture2D_p3d2n")
 
 [node name="Selection_Square_Box" type="Area3D" parent="Player/Selection_square"]
 input_ray_pickable = false
+monitorable = false
 
 [node name="CollisionShape3D" type="CollisionShape3D" parent="Player/Selection_square/Selection_Square_Box"]
 shape = SubResource("BoxShape3D_rb27j")
 
 [node name="Sun" type="DirectionalLight3D" parent="."]
-transform = Transform3D(-0.160534, 0.169665, -0.972339, 0.694698, 0.71922, 0.0108022, 0.701158, -0.673748, -0.233325, 0, 0, 0)
+transform = Transform3D(0.0507821, 0.3736, -0.926199, 0.711195, 0.637563, 0.296167, 0.701158, -0.673748, -0.233325, 0, 0, 0)
 shadow_enabled = true
 shadow_reverse_cull_face = true
 shadow_blur = 2.275
@@ -767,6 +801,7 @@ sky_mode = 1
 
 [node name="Fog_Of_War" type="GPUParticles3D" parent="."]
 transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 482.721, 6.43969, -485.748)
+visible = false
 amount = 23
 lifetime = 7.0
 randomness = 0.44
@@ -788,3 +823,6 @@ draw_pass_1 = SubResource("SphereMesh_cyqkr")
 [connection signal="pressed" from="UI_Node/Minimap/Snap" to="UI_Node" method="_on_snap_pressed"]
 [connection signal="pressed" from="UI_Node/Minimap/Build_Button" to="UI_Node" method="_on_build_button_pressed"]
 [connection signal="pressed" from="UI_Node/Minimap/Units_Button" to="UI_Node" method="_on_units_button_pressed"]
+[connection signal="area_shape_entered" from="World/Forest/Affected_Area" to="World/Forest" method="_area_entered" flags=18]
+
+[editable path="World/Forest"]

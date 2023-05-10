@@ -2,8 +2,16 @@ extends resource_building
 
 # Called when the node enters the scene tree for the first time.
 func _ready():
+	type = "Lumber_mill"
 	super()
 	resource = "wood"
 	rpc = 10
 	generate_time = 3
-	type = "Lumber_mill"
+
+
+func make_valid():
+	super()
+	for i in $Detection_Area.get_overlapping_areas():
+		if i.get_parent().name == "Forest":
+			return
+	make_invalid()

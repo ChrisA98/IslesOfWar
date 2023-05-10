@@ -6,4 +6,7 @@
 [node name="Resource_Building" instance=ExtResource("1_2a22c")]
 script = ExtResource("2_3c0dw")
 
+[node name="Detection_Area" parent="." index="4"]
+metadata/res_bldg_area = ""
+
 [node name="Timer" type="Timer" parent="." index="5"]

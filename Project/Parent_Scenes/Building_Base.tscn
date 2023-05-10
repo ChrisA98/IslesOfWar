@@ -1,4 +1,4 @@
-[gd_scene load_steps=7 format=3 uid="uid://ccoruw5j562l7"]
+[gd_scene load_steps=8 format=3 uid="uid://ccoruw5j562l7"]
 
 [ext_resource type="Script" path="res://Parent_Scenes/Scripts/Building_Base.gd" id="1_y54u3"]
 [ext_resource type="Material" uid="uid://tv8sxu1y3jw7" path="res://Materials/preview_building_valid.tres" id="2_lljag"]
@@ -14,6 +14,8 @@ albedo_color = Color(0.384314, 0.541176, 0.996078, 1)
 top_radius = 0.25
 bottom_radius = 0.25
 height = 0.018
+
+[sub_resource type="BoxShape3D" id="BoxShape3D_llyv1"]
 
 [node name="Building_Base" type="Node3D"]
 transform = Transform3D(5, 0, 0, 0, 5, 0, 0, 0, 5, 0, -0.0421534, 0)
@@ -52,5 +54,12 @@ surface_material_override/0 = ExtResource("2_lljag")
 
 [node name="SpawnPoint" type="Node3D" parent="."]
 transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, -0.0474244, 0)
+
+[node name="Detection_Area" type="Area3D" parent="."]
+input_ray_pickable = false
+metadata/building_area = true
+
+[node name="CollisionShape3D" type="CollisionShape3D" parent="Detection_Area"]
+shape = SubResource("BoxShape3D_llyv1")
 
 [connection signal="input_event" from="StaticBody3D" to="." method="_on_static_body_3d_input_event"]

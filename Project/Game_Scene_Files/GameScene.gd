@@ -239,7 +239,9 @@ func start_select_square(pos):
 
 
 ## update dimesnions and move Selection Square
-func update_select_square(pos):	
+func update_select_square(pos):
+	if (selection_square_points[0] == Vector3.ZERO):
+		start_select_square(pos)
 	if(selection_square.size.x + selection_square.size.z < 4):
 		selection_square.visible = false
 	else:
@@ -256,6 +258,7 @@ func update_select_square(pos):
 ## returns true when box selects something, returns false otherwise
 func select_from_square():
 	selection_square.visible = false
+	selection_square_points = [Vector3.ZERO,Vector3.ZERO]
 	if(selection_square.size.x + selection_square.size.z < 4):
 		if click_mode != "square_selecting":
 			return false
@@ -266,7 +269,6 @@ func select_from_square():
 	selection_square.get_child(0).get_child(0).shape.size.y = 50
 	await get_tree().physics_frame
 	selected_units.clear()
-	selection_square_points = [Vector3.ZERO,Vector3.ZERO]
 	for unit in player_controller.units:
 		if selection_square.get_child(0).get_overlapping_bodies().has(unit):
 			selected_units.push_back(unit)
@@ -365,10 +367,6 @@ func ground_click(_camera, event, pos, _normal, _shape_idx, shape):
 					click_mode = "select"
 					preview_building = null
 		"command_unit":
-			if event is InputEventMouseButton:
-				if event.button_index == MOUSE_BUTTON_RIGHT and event.pressed:
-					start_select_square(pos)
-					return
 			if Input.is_action_pressed("lmb"):
 				update_select_square(pos)
 				return
@@ -385,9 +383,6 @@ func ground_click(_camera, event, pos, _normal, _shape_idx, shape):
 						selected_units[1].target_enemy = null
 		"select":
 			if event is InputEventMouseButton:
-				if event.button_index == MOUSE_BUTTON_LEFT and event.pressed:
-					start_select_square(pos)
-					return
 				if event.button_index == MOUSE_BUTTON_RIGHT and event.pressed:
 					click_mode = "select"
 					return

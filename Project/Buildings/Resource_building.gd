@@ -14,10 +14,15 @@ func _ready():
 	timer.timeout.connect(generate_resource)
 	$RallyPoint.visible = false #hide rally point
 	$StaticBody3D/CollisionShape3D2.disabled = true #hide rally point
+	$Detection_Area.set_meta("res_bldg_area",type) #set area meta to building type
 
 
 func init(pos, snap: int, actor: Node):
 	super(pos, snap, actor)
+
+
+func place():
+	super()
 	timer.start(generate_time)
 
 

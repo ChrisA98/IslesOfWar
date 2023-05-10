@@ -3,7 +3,7 @@
 [ext_resource type="PackedScene" uid="uid://dfmnqyu2kckmu" path="res://Buildings/Unit_building.tscn" id="1_r1xwx"]
 [ext_resource type="Script" path="res://Buildings/Barracks.gd" id="2_t33jg"]
 
-[node name="Building_Base" instance=ExtResource("1_r1xwx")]
+[node name="Barracks" instance=ExtResource("1_r1xwx")]
 script = ExtResource("2_t33jg")
 
 [node name="Barracks_Menu" type="Panel" parent="." index="4"]
