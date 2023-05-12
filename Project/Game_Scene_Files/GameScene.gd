@@ -221,9 +221,7 @@ func unit_selected(unit, event):
 		group_selected_units()
 	else:
 		if click_mode == "command_unit":
-			for i in selected_units:
-				i.target_enemy = unit
-			selected_units[0].set_mov_target(unit.position)
+			selected_units[0].declare_enemy(unit)
 			if(selected_units.size() > 1):
 				for j in range(1,selected_units.size()):
 					selected_units[0].add_following(selected_units[j])
@@ -333,9 +331,7 @@ func prep_other_building(actor, bldg_name):
 func building_pressed(building):
 	if !player_controller.owns_building(building):
 		if click_mode == "command_unit":
-			for i in selected_units:
-				i.target_enemy = building
-			selected_units[0].set_mov_target(building.position)
+			selected_units[0].declare_enemy(building)
 			if(selected_units.size() > 1):
 				for j in range(1,selected_units.size()):
 					selected_units[0].add_following(selected_units[j])

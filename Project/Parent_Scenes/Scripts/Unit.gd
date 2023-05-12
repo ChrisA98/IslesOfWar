@@ -14,6 +14,13 @@ const ACCEL = 3
 var rng = RandomNumberGenerator.new()
 var gravity = ProjectSettings.get_setting("physics/3d/default_gravity")
 
+var ai_mode :StringName = "idle_basic"
+var ai_methods : Dictionary = {
+	"idle_basic" : Callable(idling_basic),
+	"traveling_basic" : Callable(traveling_basic),
+	"attack_commanded" : Callable(targeted_attack)
+}
+
 ## Navigation variables
 @onready var nav_agent: NavigationAgent3D = get_node("NavigationAgent3D")
 @onready var unit_radius = $CollisionShape3D.shape.get_radius()
@@ -59,23 +66,31 @@ var target_enemy:
 		if(value != null):
 			target_enemy.died.connect(target_killed)
 
+
 func _ready():
 	nav_agent.path_desired_distance = 0.5
 	nav_agent.target_desired_distance = 0.5
 	
 	nav_agent.waypoint_reached.connect(waypoint)
 	atk_timer.timeout.connect(attack)
-	
-	
+		
 	call_deferred("actor_setup")
-
 
 
 func actor_setup():
 	await get_tree().physics_frame
 
 
+## Set target move location
+##
+## Called by outside functions
 func set_mov_target(mov_tar: Vector3):
+	set_target_position(mov_tar)
+	ai_mode = "traveling_basic"
+
+
+## Public call to targeted travel 
+func set_target_position(mov_tar: Vector3):
 	nav_agent.set_target_position(mov_tar)
 	intial_path_dist = nav_agent.distance_to_target()
 
@@ -92,32 +107,51 @@ func set_following(units):
 func add_following(unit):
 	followers.push_back(unit)
 	unit.target_follow = self
+	unit.ai_mode = ai_mode
+	if(target_enemy != null):
+		unit.target_enemy = target_enemy
 
 
 func clear_following():	
 	if followers.size() > 0:
 		for i in followers:
-			i.set_mov_target(position)
+			i.set_target_position(position)
 			i.target_follow = null
 	followers.clear()
 
 
 func _physics_process(delta):
+	ai_methods[ai_mode].call(delta)
+
+
+### Process Paths ###
+
+## Has a target set by player
+func targeted_attack(delta):
 	# Attack targeting
-	if is_instance_valid(target_enemy):
-		if(position.distance_to(target_enemy.position) <= target_atk_rng):
-			if(nav_agent.is_navigation_finished() == false):
-				set_mov_target(position)
-				attack()
-				travel(delta)
-				return
-		else:
+	if !is_instance_valid(target_enemy):
+		return
+	
+	if(position.distance_to(target_enemy.position) <= target_atk_rng):
+		if(nav_agent.is_navigation_finished() == false):
+			set_target_position(position)
+			attack()
 			travel(delta)
-			atk_timer.stop()
 			return
 	else:
 		travel(delta)
+		atk_timer.stop()
 		return
+
+
+func traveling_basic(delta):
+	travel(delta)
+
+
+func idling_basic(delta):
+	pass
+
+### End Process Paths ###
 
 
 ## Move on process
@@ -136,6 +170,7 @@ func travel(delta):
 		
 	set_velocity(new_velocity)
 	move_and_slide()
+
 
 #speed up when starting movement
 func lerp_start(nv, dx):
@@ -188,6 +223,15 @@ func damage(amt: float, _type: String):
 		return true
 	return false
 
+
+## Decalres enemy from outside unit thinking
+func declare_enemy(unit):
+	ai_mode = "attack_commanded"
+	target_enemy = unit
+	if(target_follow == null):
+		set_target_position(unit.position)
+
+
 ###SIGNAL FUNCTIONS##
 #signal being selected on click
 func _on_input_event(_camera, event, _position, _normal, _shape_idx):
@@ -198,10 +242,11 @@ func _on_input_event(_camera, event, _position, _normal, _shape_idx):
 func _on_navigation_agent_3d_navigation_finished():
 	var targ = check_pos(position)
 	if(targ.is_equal_approx(position) == false):
-		set_mov_target(targ)
+		set_target_position(targ)
 	clear_following()
 	if target_follow != null:
-		set_mov_target(target_follow.position)
+		set_target_position(target_follow.position)
+		return
 
 
 func _on_NavigationAgent_velocity_computed(_safe_velocity):
@@ -213,7 +258,7 @@ func _on_NavigationAgent_velocity_computed(_safe_velocity):
 func waypoint(_details):
 	if followers.size() > 0:
 		for i in followers:
-			i.set_mov_target(nav_agent.get_next_path_position())
+			i.set_target_position(nav_agent.get_next_path_position())
 
 
 ## Attack function

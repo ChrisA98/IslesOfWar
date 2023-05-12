@@ -3,7 +3,7 @@ extends Node3D
 class_name world_object
 
 #REF vars
-@onready var area = get_node("Affected_Area")
+@onready var local_area = get_node("Affected_Area")
 @onready var area_shape = get_node("Affected_Area/CollisionShape3D")
 @onready var editor_display_mesh = get_node("Editor_Mesh")
 
@@ -19,11 +19,11 @@ var radius: float:
 func _ready():
 	#editor_display_mesh.hide()
 	#Connect signals
-	area.body_entered.connect(body_entered)
-	area.area_shape_entered.connect(_area_entered)
+	local_area.body_entered.connect(body_entered)
+	local_area.area_shape_entered.connect(_area_entered)
 	
 	if(target_meta == null):
-		area.monitoring = false
+		local_area.monitoring = false
 
 
 ## Only should be called by radius setter
