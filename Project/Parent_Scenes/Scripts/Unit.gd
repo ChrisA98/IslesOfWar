@@ -73,12 +73,6 @@ func _ready():
 	
 	nav_agent.waypoint_reached.connect(waypoint)
 	atk_timer.timeout.connect(attack)
-		
-	call_deferred("actor_setup")
-
-
-func actor_setup():
-	await get_tree().physics_frame
 
 
 ## Set target move location
@@ -89,7 +83,7 @@ func set_mov_target(mov_tar: Vector3):
 	ai_mode = "traveling_basic"
 
 
-## Public call to targeted travel 
+## set target move location 
 func set_target_position(mov_tar: Vector3):
 	nav_agent.set_target_position(mov_tar)
 	intial_path_dist = nav_agent.distance_to_target()
@@ -172,14 +166,14 @@ func travel(delta):
 	move_and_slide()
 
 
-#speed up when starting movement
+## Speed up when starting movement
 func lerp_start(nv, dx):
 	nv = nv.normalized()* target_speed
 	nv = lerp(velocity,nv,dx*ACCEL)
 	return nv
 
 
-#Speed up when starting movement
+## Speed up when starting movement
 func lerp_stop(nv, dx):
 	nv = nv.normalized() * 0.2
 	nv = lerp(velocity,nv,dx*ACCEL)
@@ -213,7 +207,7 @@ func select(state : bool = true):
 ## Damage dealt
 ##
 ## returns true if killed or false if survived
-## type is for later
+## type is for later implementation
 func damage(amt: float, _type: String):
 	health -= amt
 	## DIE

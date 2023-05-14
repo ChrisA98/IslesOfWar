@@ -127,17 +127,11 @@ func _on_units_button_pressed():
 	print("Why didn't you just implement the menu spongebob")
 
 
-## Day night cycle trigger
-func _on_timer_timeout():
+## Update clock
+func update_clock():
 	if(game_scene.day_cycle):
 		$Time_Bar/Day_Cycle_Timer.start(global.DAY_LENGTH)
 	else:
 		$Time_Bar/Day_Cycle_Timer.start(global.NIGHT_LENGTH)
-	game_scene.day_cycle = !game_scene.day_cycle
-	update_clock()
-
-
-## Update clock
-func update_clock():
 	$Time_Bar/Date.clear()
 	$Time_Bar/Date.add_text(global.month_to_string(game_scene.year_day,game_scene.year))

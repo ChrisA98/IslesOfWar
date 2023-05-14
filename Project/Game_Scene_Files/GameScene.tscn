@@ -401,9 +401,7 @@ anchor_right = 1.0
 anchor_bottom = 1.0
 
 [node name="Day_Cycle_Timer" type="Timer" parent="UI_Node/Time_Bar"]
-process_callback = 0
 wait_time = 0.5
-autostart = true
 
 [node name="Build_Menu" type="Panel" parent="UI_Node"]
 material = SubResource("CanvasItemMaterial_onle8")
@@ -716,7 +714,7 @@ script = ExtResource("8_viuko")
 group = "reg_0_1"
 
 [node name="MeshInstance3D" type="MeshInstance3D" parent="World/Player_Base_Spawn"]
-transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, 2.0212, 0)
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, -1.7489, 0)
 material_override = SubResource("StandardMaterial3D_01r5d")
 mesh = SubResource("CapsuleMesh_x5v2n")
 surface_material_override/0 = SubResource("StandardMaterial3D_fjj8m")
@@ -819,7 +817,6 @@ draw_pass_1 = SubResource("SphereMesh_cyqkr")
 [connection signal="mouse_entered" from="UI_Node/Viewport_Sectons/BottomBar" to="Player/Player_camera" method="_on_bottom_bar_mouse_entered"]
 [connection signal="mouse_exited" from="UI_Node/Viewport_Sectons/BottomBar" to="Player/Player_camera" method="_on_bottom_bar_mouse_exited"]
 [connection signal="timeout" from="UI_Node/Time_Bar/Day_Cycle_Timer" to="." method="_on_day_cycle_timer_timeout"]
-[connection signal="timeout" from="UI_Node/Time_Bar/Day_Cycle_Timer" to="UI_Node" method="_on_timer_timeout"]
 [connection signal="pressed" from="UI_Node/Minimap/Snap" to="UI_Node" method="_on_snap_pressed"]
 [connection signal="pressed" from="UI_Node/Minimap/Build_Button" to="UI_Node" method="_on_build_button_pressed"]
 [connection signal="pressed" from="UI_Node/Minimap/Units_Button" to="UI_Node" method="_on_units_button_pressed"]

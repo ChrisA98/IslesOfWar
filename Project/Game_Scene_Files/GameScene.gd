@@ -34,6 +34,10 @@ var selection_square_points = [Vector3.ZERO,Vector3.ZERO]
 var year_day = 330
 var year = 545
 var day_cycle = true
+var sun_rotation = 0
+var moon_rotation = 0
+var sun_str = 1
+var moon_str = .427
 
 ##Signals
 signal nav_ready
@@ -115,9 +119,13 @@ func prepare_bases():
 
 
 #Called every frame. 'delta' is the elapsed time since the previous frame.
-func _physics_process(delta):
-	$Sun.rotation_degrees -= Vector3((180/(global.DAY_LENGTH))*1.33*delta,0,0)
-	$Moon.rotation_degrees -= Vector3((180/(global.NIGHT_LENGTH))*1.31*delta,0,0)
+func _process(delta):
+	sun_rotation = 180-(180*($UI_Node/Time_Bar/Day_Cycle_Timer.time_left/global.DAY_LENGTH))
+	$Sun.rotation_degrees = Vector3(-sun_rotation,90,-180)
+	$Sun.light_energy = sun_str - ((sun_str * (abs(sun_rotation-90)/180))*2) + sun_str*.05
+	moon_rotation = 180-(180*($UI_Node/Time_Bar/Day_Cycle_Timer.time_left/global.NIGHT_LENGTH))
+	$Moon.rotation_degrees = Vector3(-moon_rotation,90,-180)
+	$Moon.light_energy = moon_str - ((moon_str * (abs(moon_rotation-90)/180))*2) + moon_str*.02
 
 
 ## on player input event
@@ -420,23 +428,27 @@ func _on_day_cycle_timer_timeout():
 	
 	if(day_cycle):
 		print("is night")
+		print(sun_rotation)
 		$Sun.visible = false
 		$Moon.visible = true
-		print($Sun.rotation_degrees)
+		$Moon.rotation_degrees = Vector3(0,90,-180)
+		moon_rotation = 0
 	else:
 		print("is day")
-		print($Sun.rotation_degrees)
+		print(moon_rotation)
 		year_day+=1
 		$Sun.visible = true
 		$Moon.visible = false
 		$Sun.rotation_degrees = Vector3(0,90,-180)
-		$Moon.rotation_degrees = Vector3(0,90,-180)
-		print($Sun.rotation_degrees)
-		
+		sun_rotation = 0
 	
+	day_cycle = !day_cycle
+		
 	if year_day >= global.YEAR_LENGTH:
 		year_day = 0
-		year += 1
+		year += 1	
+	
+	UI_controller.update_clock()
 
 
 ## Signal when updating click mode
