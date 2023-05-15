@@ -5,7 +5,7 @@ signal menu_opened
 
 
 @onready var gamescene = get_node("..")
-#UI Elements
+## UI Elements
 @onready var menus = [$Build_Menu]
 @onready var unit_bar = get_node("Unit_List")
 @onready var minmap = get_node("Minimap")
@@ -17,16 +17,17 @@ signal menu_opened
 "pop": $Minimap/Pop}
 @onready var global = get_node("/root/Global_Vars")
 var buttons := []
+@onready var snap_button := get_node("Minimap/Snap")
 var act_unit_rect := []
 
-#Ref Vars
+## Ref Vars
 @onready var game_scene = $".."
 
-# loaded  Elements
+## Loaded  Elements
 @onready var unit_rect = preload("res://Game_Scene_Files/UI_Elements/unit_rect.tscn")
 
 
-# Called when the node enters the scene tree for the first time.
+## Called when the node enters the scene tree for the first time.
 func _ready():
 	$Time_Bar/Day_Cycle_Timer.start(global.DAY_LENGTH)
 	update_clock()
@@ -41,7 +42,7 @@ func _ready():
 			buttons.push_back(i)
 
 
-# Called every frame. 'delta' is the elapsed time since the previous frame.
+## Called every frame. 'delta' is the elapsed time since the previous frame.
 func _process(_delta):
 	pass
 
@@ -85,6 +86,7 @@ func set_unit_list(unit_list = null):
 	for unit in unit_list:
 		add_unit_rect(unit,unit_list[unit])
 
+
 ## Add rectangle for unit
 func add_unit_rect(unit, list):
 	var r = unit_rect.instantiate()
@@ -107,18 +109,18 @@ func _on_build_button_pressed():
 
 ## Snap to grid button
 func _on_snap_pressed():
-	match buttons[2].text:
+	match snap_button.text:
 		"Snap":
-			buttons[2].text = "x5"
+			snap_button.text = "x5"
 			game_scene.set_map_snap(5)
 		"x5":
-			buttons[2].text = "x10"
+			snap_button.text = "x10"
 			game_scene.set_map_snap(10)
 		"x10":
-			buttons[2].text = "x15"
+			snap_button.text = "x15"
 			game_scene.set_map_snap(15)
 		"x15":
-			buttons[2].text = "Snap"
+			snap_button.text = "Snap"
 			game_scene.set_map_snap(0)
 
 

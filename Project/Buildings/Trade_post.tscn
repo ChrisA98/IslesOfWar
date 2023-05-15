@@ -1,7 +1,8 @@
-[gd_scene load_steps=3 format=3 uid="uid://cnldq26ejbpse"]
+[gd_scene load_steps=3 format=3 uid="uid://8h1isqvrigww"]
 
-[ext_resource type="PackedScene" uid="uid://bdwnemom78t8b" path="res://Buildings/Resource_building.tscn" id="1_o1m3g"]
-[ext_resource type="Script" path="res://Buildings/Trade_Post.gd" id="2_rafk1"]
+[ext_resource type="PackedScene" uid="uid://dvsgehqxy6lav" path="res://Buildings/Resource_building.tscn" id="1_o1m3g"]
+[ext_resource type="Script" path="res://Buildings/scripts/Trade_Post.gd" id="2_rafk1"]
 
 [node name="Trade_Post" instance=ExtResource("1_o1m3g")]
 script = ExtResource("2_rafk1")
+resource = "riches"

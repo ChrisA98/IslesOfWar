@@ -17,8 +17,10 @@ func set_nav_region():
 	navigation_mesh.set_parsed_geometry_type(NavigationMesh.PARSED_GEOMETRY_STATIC_COLLIDERS)
 	navigation_mesh.set_source_geometry_mode(NavigationMesh.SOURCE_GEOMETRY_GROUPS_WITH_CHILDREN)
 	navigation_mesh.region_min_size = 30
-	navigation_mesh.cell_size = .75
-	navigation_mesh.set_agent_radius(.75)
+	navigation_mesh.cell_size = .35
+	navigation_mesh.edge_max_length = 11.9
+	navigation_mesh.agent_max_slope = 35
+	navigation_mesh.set_agent_radius(.35)
 	navigation_mesh.set_source_group_name(get_groups()[0])
 	
 

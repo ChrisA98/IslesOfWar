@@ -20,6 +20,7 @@ mesh = SubResource("TextMesh_wbs3m")
 collision_layer = 3
 collision_mask = 3
 input_ray_pickable = false
+metadata/is_world_obj = true
 
 [node name="CollisionShape3D" type="CollisionShape3D" parent="Affected_Area"]
 shape = SubResource("SphereShape3D_s1a7o")

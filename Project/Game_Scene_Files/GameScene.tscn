@@ -1,4 +1,4 @@
-[gd_scene load_steps=58 format=3 uid="uid://d32tym6bcdu7c"]
+[gd_scene load_steps=61 format=3 uid="uid://d32tym6bcdu7c"]
 
 [ext_resource type="Script" path="res://Game_Scene_Files/GameScene.gd" id="1_7pjje"]
 [ext_resource type="Script" path="res://Game_Scene_Files/UI_Builder.gd" id="2_wj4ul"]
@@ -8,6 +8,8 @@
 [ext_resource type="Texture2D" uid="uid://drbfk3h3s6x1b" path="res://Test_Items/HeightMap.exr" id="7_ubyyn"]
 [ext_resource type="Script" path="res://Actor_Classes/Fort_Spawn.gd" id="8_viuko"]
 [ext_resource type="Script" path="res://Actor_Classes/Player.gd" id="9_3h23t"]
+[ext_resource type="PackedScene" uid="uid://76wslx0hq568" path="res://World_Objects/Stone_deposit.tscn" id="9_b7fca"]
+[ext_resource type="PackedScene" uid="uid://dire4xft8ffrx" path="res://World_Objects/Crystal_deposit.tscn" id="10_07s6x"]
 [ext_resource type="Script" path="res://Actor_Classes/GameCamera.gd" id="10_jjfcj"]
 [ext_resource type="Shader" uid="uid://cmyeclhrvhn2o" path="res://World_Generation/Foliage_Shader.tres" id="10_l3sfk"]
 
@@ -123,20 +125,23 @@ Tree/styles/panel = null
 VSeparator/styles/separator = null
 
 [sub_resource type="Gradient" id="Gradient_1g27v"]
-colors = PackedColorArray(0.162066, 0.162066, 0.162065, 1, 0.159482, 0.219576, 0.302686, 1)
+interpolation_mode = 2
+colors = PackedColorArray(0.442911, 0.442911, 0.442909, 1, 0.929412, 0.945098, 1, 1)
 
 [sub_resource type="FastNoiseLite" id="FastNoiseLite_dlv7m"]
 noise_type = 4
-frequency = 0.011
+frequency = 0.015
 fractal_type = 2
+fractal_octaves = 3
 fractal_lacunarity = 2.416
-fractal_gain = 0.543
-fractal_weighted_strength = 0.8
+fractal_gain = 0.239
+fractal_weighted_strength = 1.0
 fractal_ping_pong_strength = 2.037
 domain_warp_enabled = true
 domain_warp_amplitude = 30.168
 domain_warp_frequency = 0.032
 domain_warp_fractal_octaves = 1
+domain_warp_fractal_lacunarity = 6.086
 
 [sub_resource type="NoiseTexture2D" id="NoiseTexture2D_hn25n"]
 seamless = true
@@ -179,10 +184,10 @@ noise = SubResource("FastNoiseLite_al3lm")
 [sub_resource type="ShaderMaterial" id="ShaderMaterial_rie7d"]
 render_priority = 0
 shader = ExtResource("4_4qqhp")
-shader_parameter/t_height = 57.0
-shader_parameter/universal_tex_scaling = 10.498
-shader_parameter/min_rock_slope = 0.339
-shader_parameter/max_grass_slope = 0.643
+shader_parameter/t_height = 100.0
+shader_parameter/universal_tex_scaling = 6.0
+shader_parameter/min_rock_slope = 0.306
+shader_parameter/max_grass_slope = 0.448
 shader_parameter/heightmap = ExtResource("7_ubyyn")
 shader_parameter/grass_alb_tex = SubResource("NoiseTexture2D_p0d1b")
 shader_parameter/grass_norm_tex = SubResource("NoiseTexture2D_e22tc")
@@ -227,7 +232,7 @@ shader_parameter/clumping_strength = 20.0
 shader_parameter/terrain_normal_basis = null
 shader_parameter/instance_orient_to_normal = true
 shader_parameter/instance_orientation_influence = 1.0
-shader_parameter/__terrain_amplitude = 57.0
+shader_parameter/__terrain_amplitude = 100.0
 shader_parameter/map_heightmap_size = Vector2(1000, 1000)
 shader_parameter/map_heightmap = ExtResource("7_ubyyn")
 
@@ -321,6 +326,8 @@ distance_fade_mode = 2
 
 [sub_resource type="SphereMesh" id="SphereMesh_cyqkr"]
 material = SubResource("StandardMaterial3D_y0vbv")
+
+[sub_resource type="NavigationMesh" id="NavigationMesh_emcgv"]
 
 [node name="GameScene" type="Node3D"]
 script = ExtResource("1_7pjje")
@@ -700,7 +707,6 @@ theme = SubResource("Theme_ut02k")
 
 [node name="World" type="Node3D" parent="."]
 script = ExtResource("4_k22hi")
-terrain_amplitude = 57
 
 [node name="Visual_Ground" type="MeshInstance3D" parent="World"]
 layers = 3
@@ -709,7 +715,7 @@ mesh = SubResource("PlaneMesh_ssgws")
 skeleton = NodePath("")
 
 [node name="Player_Base_Spawn" type="Node3D" parent="World"]
-transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 391.568, 8.68737, -377.605)
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 391.568, 11.222, -377.605)
 script = ExtResource("8_viuko")
 group = "reg_0_1"
 
@@ -720,7 +726,7 @@ mesh = SubResource("CapsuleMesh_x5v2n")
 surface_material_override/0 = SubResource("StandardMaterial3D_fjj8m")
 
 [node name="Enemy1_Base_Spawn" type="Node3D" parent="World"]
-transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 398.4, 1.477, -431.39)
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 398.4, 5.85368, -431.39)
 script = ExtResource("8_viuko")
 group = "reg_1_0"
 actor_id = 1
@@ -738,6 +744,12 @@ transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, 0, 4.89764)
 amount = 250
 visibility_aabb = AABB(-38.4773, -66.4526, -36.144, 76.9545, 132.905, 72.288)
 process_material = SubResource("ShaderMaterial_twvxw")
+
+[node name="Stone_deposit" parent="World" instance=ExtResource("9_b7fca")]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 107.985, 9.91013, -12.6955)
+
+[node name="Crystal_deposit" parent="World" instance=ExtResource("10_07s6x")]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 284.293, 3.05176e-05, -142.043)
 
 [node name="Player" type="Node" parent="."]
 script = ExtResource("9_3h23t")
@@ -776,7 +788,7 @@ monitorable = false
 shape = SubResource("BoxShape3D_rb27j")
 
 [node name="Sun" type="DirectionalLight3D" parent="."]
-transform = Transform3D(0.0507821, 0.3736, -0.926199, 0.711195, 0.637563, 0.296167, 0.701158, -0.673748, -0.233325, 0, 0, 0)
+transform = Transform3D(0.0507821, 0.3736, -0.926199, 0.711195, 0.637563, 0.296167, 0.701158, -0.673748, -0.233326, 0, 0, 0)
 shadow_enabled = true
 shadow_reverse_cull_face = true
 shadow_blur = 2.275
@@ -807,6 +819,9 @@ visibility_aabb = AABB(-12.7014, -46.3993, -10.8425, 25.4027, 92.7985, 21.685)
 process_material = SubResource("ParticleProcessMaterial_p133b")
 draw_pass_1 = SubResource("SphereMesh_cyqkr")
 
+[node name="NavigationRegion3D" type="NavigationRegion3D" parent="."]
+navigation_mesh = SubResource("NavigationMesh_emcgv")
+
 [connection signal="menu_opened" from="UI_Node" to="." method="_on_ui_node_menu_opened"]
 [connection signal="mouse_entered" from="UI_Node/Viewport_Sectons/LeftBar" to="Player/Player_camera" method="_on_left_bar_mouse_entered"]
 [connection signal="mouse_exited" from="UI_Node/Viewport_Sectons/LeftBar" to="Player/Player_camera" method="_on_left_bar_mouse_exited"]
@@ -823,3 +838,4 @@ draw_pass_1 = SubResource("SphereMesh_cyqkr")
 [connection signal="area_shape_entered" from="World/Forest/Affected_Area" to="World/Forest" method="_area_entered" flags=18]
 
 [editable path="World/Forest"]
+[editable path="World/Stone_deposit"]

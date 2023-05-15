@@ -31,12 +31,12 @@ var selected_units = []
 var selection_square_points = [Vector3.ZERO,Vector3.ZERO]
 
 #time keeping
-var year_day = 330
-var year = 545
+var year_day = 270
+var year = 603
 var day_cycle = true
 var sun_rotation = 0
 var moon_rotation = 0
-var sun_str = 1
+var sun_str = 1.3
 var moon_str = .427
 
 ##Signals
@@ -168,7 +168,7 @@ func update_navigation(region = null):
 
 
 ## Spawn unit with ownership assigned to o_player
-func spawn_unit(o_player, unit) -> bool:
+func spawn_unit(o_player, unit):
 	# Check pop
 	if unit.pop_cost + o_player.pop >= o_player.max_pop:
 		return false

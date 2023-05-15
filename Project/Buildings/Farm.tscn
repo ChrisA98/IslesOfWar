@@ -1,7 +1,11 @@
-[gd_scene load_steps=3 format=3 uid="uid://bk8tmq137j2g2"]
+[gd_scene load_steps=3 format=3 uid="uid://d2g2l3v0l8ddr"]
 
-[ext_resource type="PackedScene" uid="uid://bdwnemom78t8b" path="res://Buildings/Resource_building.tscn" id="1_ymq4m"]
-[ext_resource type="Script" path="res://Buildings/Farm.gd" id="2_fjy3v"]
+[ext_resource type="PackedScene" uid="uid://dvsgehqxy6lav" path="res://Buildings/Resource_building.tscn" id="1_8w74i"]
+[ext_resource type="Script" path="res://Buildings/scripts/Farm.gd" id="1_rw74g"]
 
-[node name="Farm" instance=ExtResource("1_ymq4m")]
-script = ExtResource("2_fjy3v")
+[node name="Farm" instance=ExtResource("1_8w74i")]
+script = ExtResource("1_rw74g")
+resource = "food"
+
+[node name="CollisionShape3D" parent="Detection_Area" index="0"]
+transform = Transform3D(1, 0, 0, 0, 0.99981, 0.0195115, 0, -0.0195115, 0.99981, 0, -0.0803504, -0.00312893)

@@ -1,0 +1,40 @@
+[gd_scene load_steps=6 format=3 uid="uid://76wslx0hq568"]
+
+[ext_resource type="PackedScene" uid="uid://c4e7broeu0wn3" path="res://Parent_Scenes/World_Object.tscn" id="1_a36sy"]
+[ext_resource type="Shader" uid="uid://cmyeclhrvhn2o" path="res://World_Generation/Foliage_Shader.tres" id="2_ahq8c"]
+[ext_resource type="Texture2D" uid="uid://drbfk3h3s6x1b" path="res://Test_Items/HeightMap.exr" id="3_7ewqd"]
+
+[sub_resource type="ShaderMaterial" id="ShaderMaterial_ty7ey"]
+shader = ExtResource("2_ahq8c")
+shader_parameter/instance_rows = 20.0
+shader_parameter/instance_rot_randomize = 2.5
+shader_parameter/instance_spacing = 2.139
+shader_parameter/instance_scale_x = 1.0
+shader_parameter/instance_scale_y = 1.0
+shader_parameter/instance_scale_z = 1.0
+shader_parameter/instance_scale_randomize = 1.0
+shader_parameter/instance_pos_randomize = 10.527
+shader_parameter/instance_scale_min = 0.8
+shader_parameter/instance_scale_max = 1.2
+shader_parameter/_coverage_altitude = 10.0
+shader_parameter/_coverage_range = 100.0
+shader_parameter/_slope_coverage = 0.912
+shader_parameter/clumping_strength = 20.0
+shader_parameter/terrain_normal_basis = null
+shader_parameter/instance_orient_to_normal = true
+shader_parameter/instance_orientation_influence = 1.0
+shader_parameter/__terrain_amplitude = 100.0
+shader_parameter/map_heightmap_size = Vector2(1000, 1000)
+shader_parameter/map_heightmap = ExtResource("3_7ewqd")
+
+[sub_resource type="SphereMesh" id="SphereMesh_wfmrl"]
+
+[node name="Stone_deposit" instance=ExtResource("1_a36sy")]
+
+[node name="GPUParticles3D" type="GPUParticles3D" parent="." index="2"]
+amount = 500
+lifetime = 0.01
+explosiveness = 1.0
+visibility_aabb = AABB(-27.4512, -66.4526, -36.144, 54.9024, 132.905, 72.288)
+process_material = SubResource("ShaderMaterial_ty7ey")
+draw_pass_1 = SubResource("SphereMesh_wfmrl")

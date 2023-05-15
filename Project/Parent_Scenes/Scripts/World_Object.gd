@@ -7,7 +7,7 @@ class_name world_object
 @onready var area_shape = get_node("Affected_Area/CollisionShape3D")
 @onready var editor_display_mesh = get_node("Editor_Mesh")
 
-var radius: float:
+var radius: float = 50:
 	get:
 		return radius
 	set(value):
@@ -37,7 +37,7 @@ func body_entered(body: Node3D):
 		return
 
 
-## To be edited by inheritors, but natively checks if target has necassary meta data
+## To be edited by inheritors, but natively checks if target has necessary meta data
 func _area_entered(_area_rid, area, _area_shape_index, _local_shape_index):
 	if(!area.has_meta(target_meta)):
 		return

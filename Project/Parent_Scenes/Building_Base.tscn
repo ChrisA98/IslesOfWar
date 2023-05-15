@@ -16,6 +16,7 @@ bottom_radius = 0.25
 height = 0.018
 
 [sub_resource type="BoxShape3D" id="BoxShape3D_llyv1"]
+size = Vector3(1.27026, 0.8, 1.75699)
 
 [node name="Building_Base" type="Node3D"]
 transform = Transform3D(5, 0, 0, 0, 5, 0, 0, 0, 5, 0, -0.0421534, 0)
@@ -56,10 +57,14 @@ surface_material_override/0 = ExtResource("2_lljag")
 transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, -0.0474244, 0)
 
 [node name="Detection_Area" type="Area3D" parent="."]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, 0.687257, 0)
+collision_layer = 32769
+collision_mask = 32769
 input_ray_pickable = false
 metadata/building_area = true
 
 [node name="CollisionShape3D" type="CollisionShape3D" parent="Detection_Area"]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, -0.0803504, 0.404653)
 shape = SubResource("BoxShape3D_llyv1")
 
 [connection signal="input_event" from="StaticBody3D" to="." method="_on_static_body_3d_input_event"]

@@ -1,7 +1,7 @@
-[gd_scene load_steps=3 format=3 uid="uid://dfmnqyu2kckmu"]
+[gd_scene load_steps=3 format=3 uid="uid://s8v1hdp4b7u2"]
 
 [ext_resource type="PackedScene" uid="uid://ccoruw5j562l7" path="res://Parent_Scenes/Building_Base.tscn" id="1_7ya4p"]
-[ext_resource type="Script" path="res://Buildings/Unit_Building.gd" id="2_u3hdh"]
+[ext_resource type="Script" path="res://Buildings/scripts/Unit_Building.gd" id="2_u3hdh"]
 
 [node name="Building_Base" instance=ExtResource("1_7ya4p")]
 transform = Transform3D(5, 0, 0, 0, 5, 0, 0, 0, 5, 0, 0, 0)

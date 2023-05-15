@@ -13,6 +13,7 @@ signal died
 @onready var mesh = $MeshInstance3D
 @onready var collision_box = $StaticBody3D/CollisionShape3D
 @onready var static_body = get_node("StaticBody3D")
+@onready var det_area = get_node("Detection_Area")
 @onready var rally = $RallyPoint
 @onready var spawn = $SpawnPoint
 @onready var menu
@@ -29,7 +30,7 @@ var faction_short_name
 
 
 #Can be placed
-var is_valid
+var is_valid = false
 #Cost to build
 var cost = {"wood": 0,
 "stone": 0,
@@ -115,17 +116,14 @@ func make_invalid():
 		mesh.set_surface_override_material(i, invalid_mat)
 
 ## Check for collision at current location
-func check_collision(buff_range):	
-	if static_body.test_move(transform.translated(Vector3(0,3,0)), Vector3(0,3,buff_range),null , 0.001, true):
-		return true
-	elif static_body.test_move(transform.translated(Vector3(0,3,0)), Vector3(0,3,-1*buff_range),null , 0.001, true):
-		return true
-	elif static_body.test_move(transform.translated(Vector3(0,3,0)), Vector3(buff_range,3,0),null , 0.001, true):
-		return true
-	elif static_body.test_move(transform.translated(Vector3(0,3,0)), Vector3(-1*buff_range,3,0),null , 0.001, true):
-		return true
-	else:
-		return false
+func check_collision(buff_range):
+	for ar in det_area.get_overlapping_areas():
+		if !ar.has_meta("is_world_obj"):
+			return true
+	for bod in det_area.get_overlapping_bodies():
+		if bod.has_meta("is_ground"):
+			return true
+	return false
 
 
 func adj_cost(resource: String, amt: int):
@@ -141,6 +139,7 @@ func damage(amt: float, _type: String):
 		return true
 	return false
 
+
 ## Set snap for building placement
 func set_snap(snp):
 	snapping = snp
@@ -148,6 +147,7 @@ func set_snap(snp):
 		collision_buffer=0.01
 	else:
 		collision_buffer = .5
+
 
 ## Check if close to any buildings in buildings
 func near_base(buildings) -> bool:
@@ -169,8 +169,8 @@ func _on_static_body_3d_input_event(_camera, event, _position, _normal, _shape_i
 func can_afford(builder_res):
 	for res in builder_res:
 		if builder_res[res] < cost[res] :
-			return false
-	return true
+			return res
+	return null
 
 
 func snap_to_ground():

@@ -1,7 +1,7 @@
-[gd_scene load_steps=3 format=3 uid="uid://b655chjibk30f"]
+[gd_scene load_steps=3 format=3 uid="uid://c33jxgp8lmppl"]
 
-[ext_resource type="PackedScene" uid="uid://dfmnqyu2kckmu" path="res://Buildings/Unit_building.tscn" id="1_r1xwx"]
-[ext_resource type="Script" path="res://Buildings/Barracks.gd" id="2_t33jg"]
+[ext_resource type="PackedScene" uid="uid://s8v1hdp4b7u2" path="res://Buildings/Unit_building.tscn" id="1_r1xwx"]
+[ext_resource type="Script" path="res://Buildings/scripts/Barracks.gd" id="2_t33jg"]
 
 [node name="Barracks" instance=ExtResource("1_r1xwx")]
 script = ExtResource("2_t33jg")

@@ -10,7 +10,7 @@ extends Node3D
 
 var height_data = {}
 
-@export var terrain_amplitude = 36
+@export var terrain_amplitude = 100
 
 var vertices = PackedVector3Array()
 var UVs = PackedVector2Array()
@@ -36,6 +36,7 @@ func _ready():
 			i.get_child(0).transparency = 1 #hide terrain mesh
 			i.get_child(0).get_child(0).set_collision_layer_value(16,true)
 			i.get_child(0).get_child(0).set_collision_mask_value(16,true)
+			i.get_child(0).get_child(0).set_meta("is_ground", true)
 			i.set_nav_region()
 
 
