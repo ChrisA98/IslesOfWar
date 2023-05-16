@@ -98,11 +98,9 @@ func prepare_bases():
 	for enemy in range(1,game_actors.size()):
 		var spawn = get_node("World/Enemy"+str(enemy)+"_Base_Spawn")
 		var bldg = prep_other_building(game_actors[enemy],"Base")
-		var grp = game_actors[enemy].ping_ground(bldg.position).get_parent().get_groups()[0]
 		bldg.set_pos(spawn.position)
-		while bldg.is_valid == false:
-			bldg.set_pos(spawn.position)
-			spawn.position += Vector3(0,1,0)
+		var grp = game_actors[enemy].ping_ground(bldg.position).get_parent().get_groups()[0]		
+		bldg.set_pos(Vector3(spawn.position.x,game_actors[enemy].ping_ground_depth(bldg.position),spawn.position.z))
 		game_actors[enemy].place_building(grp, bldg)
 		
 	# Add player first Base

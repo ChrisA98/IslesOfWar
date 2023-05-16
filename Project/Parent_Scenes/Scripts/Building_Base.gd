@@ -174,6 +174,7 @@ func can_afford(builder_res):
 
 
 func snap_to_ground():
+	$StaticBody3D/RayCast3D.force_raycast_update()
 	position.y = $StaticBody3D/RayCast3D.get_collision_point().y
 
 

@@ -48,9 +48,9 @@ func _ready():
 	think_timer.start(speed_of_thought)
 	
 	## -- DEBUG/TESTING STUFF -- ##
-	resource_locations["Lumber_mill"] = [gamescene.find_child("World").get_children()[3]]
-	resource_locations["Mine_stone"] = [gamescene.find_child("World").get_children()[4]]
-	resource_locations["Mine_crystal"] = [gamescene.find_child("World").get_children()[5]]
+	resource_locations["Lumber_mill"] = [gamescene.find_child("World").get_children()[4]]
+	resource_locations["Mine_stone"] = [gamescene.find_child("World").get_children()[5]]
+	resource_locations["Mine_crystal"] = [gamescene.find_child("World").get_children()[6]]
 
 
 func think_caller():
@@ -178,13 +178,18 @@ func complete_goal():
 		return
 
 
-## return ground collision at location
+## return ground at location
 func ping_ground(pos):
 	picker.position.x = pos.x
 	picker.position.z = pos.z
 	picker.force_raycast_update()
 	return picker.get_collider()
-	
+
+func ping_ground_depth(pos):
+	picker.position.x = pos.x
+	picker.position.z = pos.z
+	picker.force_raycast_update()
+	return picker.get_collision_point().y
 
 func can_afford(res):
 	for r in resources:
@@ -209,7 +214,6 @@ func ponder():
 	calc_res_rate()
 	
 	## Emergency resource getting
-	## not enough food
 	
 	for goal in goal_hierarchy:
 		match goal:

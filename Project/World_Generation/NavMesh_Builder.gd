@@ -7,6 +7,11 @@ extends Node3D
 @onready var nav_manager = preload("res://World_Generation/NavMeshManager.gd")
 @export var heightmap_dir: String = "res://Test_Items/Map_data/"
 
+## Level terrain info
+@export var water_table : float = 7
+@onready var ground = get_node("Visual_Ground")
+@onready var water = get_node("Water")
+
 
 var height_data = {}
 
@@ -22,6 +27,7 @@ var normals = PackedVector3Array()
 func _ready():
 	var chunks = sqrt(find_files())
 	
+	## Prepare chucnks
 	for y in range(0,chunks):
 		for x in range(0,chunks):
 			var img = Image.new()
@@ -29,7 +35,8 @@ func _ready():
 			img = _img.get_image()
 			chunk_size = img.get_width()
 			build_map(img, Vector3(x-1,0,y),Vector2i(x,y))
-		
+	
+	## Assign Regions to terrain mesh chunks
 	for i in get_children():
 		if i.name.contains("Region"):
 			i.get_child(0).get_child(0).input_event.connect(gamescene.ground_click.bind(i)) 
@@ -38,6 +45,12 @@ func _ready():
 			i.get_child(0).get_child(0).set_collision_mask_value(16,true)
 			i.get_child(0).get_child(0).set_meta("is_ground", true)
 			i.set_nav_region()
+	
+	## Prepare Ground with level info
+	ground.mesh.surface_get_material(0).set_shader_parameter("water_table", water_table)
+	ground.mesh.surface_get_material(0).set_shader_parameter("max_sand_height", water_table+2)
+	## Prepare Water with level info
+	water.position.y = water_table
 
 
 #check if .exr files exist in target path

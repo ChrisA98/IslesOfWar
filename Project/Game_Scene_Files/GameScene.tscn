@@ -1,9 +1,10 @@
-[gd_scene load_steps=61 format=3 uid="uid://d32tym6bcdu7c"]
+[gd_scene load_steps=75 format=3 uid="uid://d32tym6bcdu7c"]
 
 [ext_resource type="Script" path="res://Game_Scene_Files/GameScene.gd" id="1_7pjje"]
 [ext_resource type="Script" path="res://Game_Scene_Files/UI_Builder.gd" id="2_wj4ul"]
 [ext_resource type="Shader" path="res://World_Generation/New_Terrain.gdshader" id="4_4qqhp"]
 [ext_resource type="Script" path="res://World_Generation/NavMesh_Builder.gd" id="4_k22hi"]
+[ext_resource type="Shader" path="res://Game_Scene_Files/Water.gdshader" id="4_tqim1"]
 [ext_resource type="PackedScene" uid="uid://crswchumae5b0" path="res://World_Objects/Forest.tscn" id="7_1qpxy"]
 [ext_resource type="Texture2D" uid="uid://drbfk3h3s6x1b" path="res://Test_Items/HeightMap.exr" id="7_ubyyn"]
 [ext_resource type="Script" path="res://Actor_Classes/Fort_Spawn.gd" id="8_viuko"]
@@ -124,6 +125,56 @@ TooltipPanel/styles/panel = null
 Tree/styles/panel = null
 VSeparator/styles/separator = null
 
+[sub_resource type="Gradient" id="Gradient_o22mc"]
+colors = PackedColorArray(0.350586, 0.748248, 0.89365, 1, 0.0072261, 0.221523, 0.196945, 1)
+
+[sub_resource type="GradientTexture1D" id="GradientTexture1D_6j88f"]
+gradient = SubResource("Gradient_o22mc")
+
+[sub_resource type="FastNoiseLite" id="FastNoiseLite_106fy"]
+noise_type = 3
+fractal_type = 2
+
+[sub_resource type="NoiseTexture2D" id="NoiseTexture2D_2hdqa"]
+seamless = true
+as_normal_map = true
+noise = SubResource("FastNoiseLite_106fy")
+
+[sub_resource type="FastNoiseLite" id="FastNoiseLite_27ihn"]
+noise_type = 3
+seed = 10
+fractal_type = 2
+
+[sub_resource type="NoiseTexture2D" id="NoiseTexture2D_1yygc"]
+seamless = true
+as_normal_map = true
+noise = SubResource("FastNoiseLite_27ihn")
+
+[sub_resource type="ShaderMaterial" id="ShaderMaterial_hmrwr"]
+render_priority = 0
+shader = ExtResource("4_tqim1")
+shader_parameter/t_height = 100.0
+shader_parameter/water_level = 8.0
+shader_parameter/tide = 4.131
+shader_parameter/water_turbulence = 6.76
+shader_parameter/water_alb = Color(0, 0.47451, 0.764706, 1)
+shader_parameter/wave_direction_1 = Vector2(-2, 0.5)
+shader_parameter/wave_direction_2 = Vector2(2, -0.5)
+shader_parameter/time_scale = 0.007
+shader_parameter/heightmap = ExtResource("7_ubyyn")
+shader_parameter/water_alb_tex = SubResource("GradientTexture1D_6j88f")
+shader_parameter/water_disp_tex_1 = SubResource("NoiseTexture2D_2hdqa")
+shader_parameter/water_disp_tex_2 = SubResource("NoiseTexture2D_1yygc")
+
+[sub_resource type="PlaneMesh" id="PlaneMesh_02ixx"]
+material = SubResource("ShaderMaterial_hmrwr")
+size = Vector2(1000, 1000)
+subdivide_width = 750
+subdivide_depth = 750
+
+[sub_resource type="BoxShape3D" id="BoxShape3D_cixmr"]
+size = Vector3(1000, 100, 1000)
+
 [sub_resource type="Gradient" id="Gradient_1g27v"]
 interpolation_mode = 2
 colors = PackedColorArray(0.442911, 0.442911, 0.442909, 1, 0.929412, 0.945098, 1, 1)
@@ -181,18 +232,37 @@ as_normal_map = true
 bump_strength = 3.5
 noise = SubResource("FastNoiseLite_al3lm")
 
+[sub_resource type="Gradient" id="Gradient_2i80b"]
+colors = PackedColorArray(0.859586, 0.873469, 0.643777, 1, 0.550264, 0.542165, 0.456681, 1)
+
+[sub_resource type="FastNoiseLite" id="FastNoiseLite_l7c1p"]
+
+[sub_resource type="NoiseTexture2D" id="NoiseTexture2D_x1bul"]
+seamless = true
+color_ramp = SubResource("Gradient_2i80b")
+noise = SubResource("FastNoiseLite_l7c1p")
+
+[sub_resource type="NoiseTexture2D" id="NoiseTexture2D_23uga"]
+seamless = true
+color_ramp = SubResource("Gradient_2i80b")
+noise = SubResource("FastNoiseLite_l7c1p")
+
 [sub_resource type="ShaderMaterial" id="ShaderMaterial_rie7d"]
 render_priority = 0
 shader = ExtResource("4_4qqhp")
 shader_parameter/t_height = 100.0
+shader_parameter/water_table = 7.0
+shader_parameter/max_sand_height = 9.0
 shader_parameter/universal_tex_scaling = 6.0
-shader_parameter/min_rock_slope = 0.306
-shader_parameter/max_grass_slope = 0.448
+shader_parameter/min_rock_slope = 0.235
+shader_parameter/max_grass_slope = 0.482
 shader_parameter/heightmap = ExtResource("7_ubyyn")
 shader_parameter/grass_alb_tex = SubResource("NoiseTexture2D_p0d1b")
 shader_parameter/grass_norm_tex = SubResource("NoiseTexture2D_e22tc")
 shader_parameter/cliff_alb_tex = SubResource("NoiseTexture2D_hn25n")
 shader_parameter/cliff_norm_tex = SubResource("NoiseTexture2D_fcitg")
+shader_parameter/sand_alb_tex = SubResource("NoiseTexture2D_x1bul")
+shader_parameter/sand_norm_tex = SubResource("NoiseTexture2D_23uga")
 
 [sub_resource type="PlaneMesh" id="PlaneMesh_ssgws"]
 material = SubResource("ShaderMaterial_rie7d")
@@ -708,6 +778,19 @@ theme = SubResource("Theme_ut02k")
 [node name="World" type="Node3D" parent="."]
 script = ExtResource("4_k22hi")
 
+[node name="Water" type="MeshInstance3D" parent="World"]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, 8, 0)
+mesh = SubResource("PlaneMesh_02ixx")
+skeleton = NodePath("../Visual_Ground")
+
+[node name="Area3D" type="Area3D" parent="World/Water"]
+input_ray_pickable = false
+metadata/is_water = true
+
+[node name="CollisionShape3D" type="CollisionShape3D" parent="World/Water/Area3D"]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, -50, 0)
+shape = SubResource("BoxShape3D_cixmr")
+
 [node name="Visual_Ground" type="MeshInstance3D" parent="World"]
 layers = 3
 cast_shadow = 2
@@ -715,7 +798,7 @@ mesh = SubResource("PlaneMesh_ssgws")
 skeleton = NodePath("")
 
 [node name="Player_Base_Spawn" type="Node3D" parent="World"]
-transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 391.568, 11.222, -377.605)
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 262.322, 21.5589, 70.0708)
 script = ExtResource("8_viuko")
 group = "reg_0_1"
 
@@ -726,7 +809,7 @@ mesh = SubResource("CapsuleMesh_x5v2n")
 surface_material_override/0 = SubResource("StandardMaterial3D_fjj8m")
 
 [node name="Enemy1_Base_Spawn" type="Node3D" parent="World"]
-transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 398.4, 5.85368, -431.39)
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 250.659, 20.7904, -267.06)
 script = ExtResource("8_viuko")
 group = "reg_1_0"
 actor_id = 1
@@ -749,7 +832,7 @@ process_material = SubResource("ShaderMaterial_twvxw")
 transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 107.985, 9.91013, -12.6955)
 
 [node name="Crystal_deposit" parent="World" instance=ExtResource("10_07s6x")]
-transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 284.293, 3.05176e-05, -142.043)
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 344.647, 3.05176e-05, 5.01563)
 
 [node name="Player" type="Node" parent="."]
 script = ExtResource("9_3h23t")
