@@ -97,6 +97,14 @@ void start() {
 		pos.y = -10000.0;
 	} 	
 	
+	//Hide parts outside map
+	if(abs(pos.x) > map_heightmap_size.x/2.0){
+		pos.y = -10000.0;		
+	}
+	if(abs(pos.z) > map_heightmap_size.y/2.0){
+		pos.y = -10000.0;		
+	}
+	
 	// clumping
 	vec3 clumps = texture(map_clumpmap, pos.zx).rgb;
 	if (abs(y4) < clumping_strength) {

@@ -74,5 +74,6 @@ void fragment(){
 	ALBEDO = mix(sand_albedo, rockgrass_albedo, sand_rockgrass_weight);
 	SPECULAR = 0.02;
 	ROUGHNESS = .5;
-	NORMAL_MAP = mix(rock_normal, grass_normal, rock_grass_weight);
+	NORMAL_MAP_DEPTH = mix(normal,mix(rock_normal, grass_normal, rock_grass_weight),0.5).y;
+	NORMAL_MAP = normalize(normal+mix(rock_normal, grass_normal, rock_grass_weight));
 }

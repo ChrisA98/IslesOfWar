@@ -118,9 +118,9 @@ func prepare_bases():
 
 #Called every frame. 'delta' is the elapsed time since the previous frame.
 func _process(delta):
-	sun_rotation = 180-(180*($UI_Node/Time_Bar/Day_Cycle_Timer.time_left/global.DAY_LENGTH))
+	sun_rotation = clampf(180-(180*($UI_Node/Time_Bar/Day_Cycle_Timer.time_left/global.DAY_LENGTH)),0,180)
 	$Sun.rotation_degrees = Vector3(-sun_rotation,90,-180)
-	$Sun.light_energy = sun_str - ((sun_str * (abs(sun_rotation-90)/180))*2) + sun_str*.05
+	$Sun.light_energy = clampf(sun_str - ((sun_str * (abs(sun_rotation-90)/180))*2), sun_str*.15,sun_str)
 	moon_rotation = 180-(180*($UI_Node/Time_Bar/Day_Cycle_Timer.time_left/global.NIGHT_LENGTH))
 	$Moon.rotation_degrees = Vector3(-moon_rotation,90,-180)
 	$Moon.light_energy = moon_str - ((moon_str * (abs(moon_rotation-90)/180))*2) + moon_str*.02

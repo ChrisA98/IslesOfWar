@@ -49,8 +49,11 @@ func _ready():
 	## Prepare Ground with level info
 	ground.mesh.surface_get_material(0).set_shader_parameter("water_table", water_table)
 	ground.mesh.surface_get_material(0).set_shader_parameter("max_sand_height", water_table+2)
+	ground.mesh.surface_get_material(0).set_shader_parameter("t_height", terrain_amplitude)
 	## Prepare Water with level info
 	water.position.y = water_table
+	water.mesh.surface_get_material(0).set_shader_parameter("water_level", water_table)
+	water.mesh.surface_get_material(0).set_shader_parameter("t_height", terrain_amplitude)
 
 
 #check if .exr files exist in target path
@@ -76,7 +79,8 @@ func update_navigation_meshes(grp):
 	for i in get_children():
 		if i.name.contains(targ):
 			i.update_navigation_mesh()
-	
+
+
 func build_map(img, pos, adj):	
 	var grp = StringName("reg_"+str(adj.x) +"_"+ str(adj.y))
 	#build nav region for chunk

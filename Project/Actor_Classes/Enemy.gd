@@ -11,7 +11,15 @@ var picker : RayCast3D	#Raycast for checking locations
 ## Knowledgebase
 var resource_locations := {}
 var enemy_locations := {}
+## Resource Per Day
 var rpd := {
+"wood": 0,
+"stone": 0,
+"riches": 0,
+"crystals": 0,
+"food": 0}
+## Resource Per Day goal
+var rpd_goal := {
 "wood": 0,
 "stone": 0,
 "riches": 0,
@@ -54,11 +62,11 @@ func _ready():
 
 
 func think_caller():
-	call_deferred("think")
+	call_deferred("_think")
 
 
 #dont call directly
-func think():
+func _think():
 	match current_goal:
 		"get units":
 			if check_for_buildings("Barracks") == false:
@@ -185,11 +193,13 @@ func ping_ground(pos):
 	picker.force_raycast_update()
 	return picker.get_collider()
 
+
 func ping_ground_depth(pos):
 	picker.position.x = pos.x
 	picker.position.z = pos.z
 	picker.force_raycast_update()
 	return picker.get_collision_point().y
+
 
 func can_afford(res):
 	for r in resources:
@@ -212,6 +222,11 @@ func ponder():
 		return true
 	## Calculate resource rate
 	calc_res_rate()
+	
+	## Get resource building if no income of that source exists
+	for res in rpd:
+		if rpd[res] == 0:
+			decide_resource_goal(res)
 	
 	## Emergency resource getting
 	

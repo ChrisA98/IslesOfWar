@@ -1,4 +1,4 @@
-[gd_scene load_steps=75 format=3 uid="uid://d32tym6bcdu7c"]
+[gd_scene load_steps=78 format=3 uid="uid://d32tym6bcdu7c"]
 
 [ext_resource type="Script" path="res://Game_Scene_Files/GameScene.gd" id="1_7pjje"]
 [ext_resource type="Script" path="res://Game_Scene_Files/UI_Builder.gd" id="2_wj4ul"]
@@ -15,6 +15,9 @@
 [ext_resource type="Shader" uid="uid://cmyeclhrvhn2o" path="res://World_Generation/Foliage_Shader.tres" id="10_l3sfk"]
 
 [sub_resource type="ProceduralSkyMaterial" id="ProceduralSkyMaterial_46wwo"]
+sky_horizon_color = Color(0.647059, 0.654902, 0.670588, 1)
+ground_bottom_color = Color(0, 0, 0, 1)
+sun_curve = 0.310578
 
 [sub_resource type="Sky" id="Sky_4kxja"]
 sky_material = SubResource("ProceduralSkyMaterial_46wwo")
@@ -22,11 +25,12 @@ sky_material = SubResource("ProceduralSkyMaterial_46wwo")
 [sub_resource type="Environment" id="Environment_0xqwl"]
 background_mode = 2
 sky = SubResource("Sky_4kxja")
+ambient_light_source = 3
 ambient_light_color = Color(0.768627, 1, 0.898039, 1)
 ambient_light_sky_contribution = 0.37
 ambient_light_energy = 0.2
 reflected_light_source = 2
-tonemap_mode = 2
+tonemap_mode = 3
 tonemap_exposure = 1.06
 tonemap_white = 6.0
 ssao_enabled = true
@@ -34,12 +38,13 @@ ssao_light_affect = 0.78
 ssil_radius = 8.03
 ssil_intensity = 0.08
 ssil_sharpness = 0.0
+sdfgi_use_occlusion = true
 fog_sun_scatter = 0.41
-fog_sky_affect = 0.842
+fog_density = 0.0285
+fog_sky_affect = 0.0
 volumetric_fog_enabled = true
 volumetric_fog_density = 0.0
-volumetric_fog_anisotropy = 0.9
-volumetric_fog_length = 64.15
+volumetric_fog_anisotropy = 0.06
 adjustment_enabled = true
 adjustment_contrast = 1.2
 adjustment_saturation = 1.2
@@ -155,8 +160,8 @@ render_priority = 0
 shader = ExtResource("4_tqim1")
 shader_parameter/t_height = 100.0
 shader_parameter/water_level = 8.0
-shader_parameter/tide = 4.131
-shader_parameter/water_turbulence = 6.76
+shader_parameter/tide = 4.638
+shader_parameter/water_turbulence = 4.744
 shader_parameter/water_alb = Color(0, 0.47451, 0.764706, 1)
 shader_parameter/wave_direction_1 = Vector2(-2, 0.5)
 shader_parameter/wave_direction_2 = Vector2(2, -0.5)
@@ -254,8 +259,8 @@ shader_parameter/t_height = 100.0
 shader_parameter/water_table = 7.0
 shader_parameter/max_sand_height = 9.0
 shader_parameter/universal_tex_scaling = 6.0
-shader_parameter/min_rock_slope = 0.235
-shader_parameter/max_grass_slope = 0.482
+shader_parameter/min_rock_slope = 0.156
+shader_parameter/max_grass_slope = 0.362
 shader_parameter/heightmap = ExtResource("7_ubyyn")
 shader_parameter/grass_alb_tex = SubResource("NoiseTexture2D_p0d1b")
 shader_parameter/grass_norm_tex = SubResource("NoiseTexture2D_e22tc")
@@ -325,29 +330,53 @@ shader_parameter/instance_scale_randomize = 1.303
 shader_parameter/instance_pos_randomize = 2.0
 shader_parameter/instance_scale_min = 1.027
 shader_parameter/instance_scale_max = 1.129
-shader_parameter/_coverage_altitude = 10.0
+shader_parameter/_coverage_altitude = 21.666
 shader_parameter/_coverage_range = 100.0
-shader_parameter/_slope_coverage = 0.04
+shader_parameter/_slope_coverage = 0.5
 shader_parameter/clumping_strength = 33.19
 shader_parameter/terrain_normal_basis = null
 shader_parameter/instance_orient_to_normal = false
 shader_parameter/instance_orientation_influence = 1.0
-shader_parameter/__terrain_amplitude = 57.0
+shader_parameter/__terrain_amplitude = 100.0
 shader_parameter/map_heightmap_size = Vector2(1000, 1000)
 shader_parameter/map_heightmap = ExtResource("7_ubyyn")
 shader_parameter/map_clumpmap = SubResource("NoiseTexture2D_tx7g1")
 
-[sub_resource type="StandardMaterial3D" id="StandardMaterial3D_hhxgb"]
+[sub_resource type="StandardMaterial3D" id="StandardMaterial3D_vrrp7"]
+cull_mode = 2
 shading_mode = 2
-diffuse_mode = 3
-disable_ambient_light = true
-albedo_color = Color(0, 0.568627, 0, 1)
+vertex_color_use_as_albedo = true
+albedo_color = Color(0, 0.831373, 0.184314, 1)
+billboard_mode = 3
+billboard_keep_scale = true
+particles_anim_h_frames = 1
+particles_anim_v_frames = 1
+particles_anim_loop = false
 
-[sub_resource type="CapsuleMesh" id="CapsuleMesh_cfock"]
-material = SubResource("StandardMaterial3D_hhxgb")
-radius = 0.055
-radial_segments = 4
-rings = 3
+[sub_resource type="PlaneMesh" id="PlaneMesh_nq15t"]
+material = SubResource("StandardMaterial3D_vrrp7")
+size = Vector2(0.071, 4.458)
+subdivide_width = 6
+orientation = 2
+
+[sub_resource type="PlaneMesh" id="PlaneMesh_nulpy"]
+material = SubResource("StandardMaterial3D_vrrp7")
+size = Vector2(0.071, 0.663)
+subdivide_width = 6
+center_offset = Vector3(0.32, 1.086, -0.071)
+orientation = 2
+
+[sub_resource type="PlaneMesh" id="PlaneMesh_wopk1"]
+material = SubResource("StandardMaterial3D_vrrp7")
+size = Vector2(0.087, 4.737)
+subdivide_width = 6
+center_offset = Vector3(-0.358, -0.104, 0.019)
+orientation = 2
+
+[sub_resource type="FogMaterial" id="FogMaterial_qm3eb"]
+emission = Color(0.2, 0.572549, 0.67451, 1)
+height_falloff = 1.79049
+edge_fade = 1.2996
 
 [sub_resource type="Gradient" id="Gradient_eofwo"]
 offsets = PackedFloat32Array(0)
@@ -780,11 +809,15 @@ script = ExtResource("4_k22hi")
 
 [node name="Water" type="MeshInstance3D" parent="World"]
 transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, 8, 0)
+layers = 32769
 mesh = SubResource("PlaneMesh_02ixx")
 skeleton = NodePath("../Visual_Ground")
 
 [node name="Area3D" type="Area3D" parent="World/Water"]
 input_ray_pickable = false
+gravity_space_override = 3
+linear_damp_space_override = 3
+linear_damp = 0.206
 metadata/is_water = true
 
 [node name="CollisionShape3D" type="CollisionShape3D" parent="World/Water/Area3D"]
@@ -841,7 +874,7 @@ script = ExtResource("9_3h23t")
 script = ExtResource("10_jjfcj")
 
 [node name="Player_view" type="Camera3D" parent="Player/Player_camera"]
-transform = Transform3D(1, 0, 0, 0, 0.573577, 0.819152, 0, -0.819152, 0.573577, 0, 27.9176, 15)
+transform = Transform3D(1, 0, 0, 0, 0.573577, 0.819152, 0, -0.819152, 0.573577, 0, 50, 15)
 
 [node name="RayCast3D" type="RayCast3D" parent="Player/Player_camera"]
 transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, 15, 0)
@@ -850,13 +883,22 @@ collision_mask = 32768
 hit_from_inside = true
 
 [node name="Grass Scatter" type="GPUParticles3D" parent="Player/Player_camera"]
-transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0.509369, 0, 23.4169)
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, 0, 16.457)
+visible = false
 amount = 10000
 lifetime = 0.09
 explosiveness = 1.0
 visibility_aabb = AABB(-62.3046, -32.3354, -55.5563, 124.609, 64.6707, 111.113)
 process_material = SubResource("ShaderMaterial_qfdoi")
-draw_pass_1 = SubResource("CapsuleMesh_cfock")
+draw_passes = 3
+draw_pass_1 = SubResource("PlaneMesh_nq15t")
+draw_pass_2 = SubResource("PlaneMesh_nulpy")
+draw_pass_3 = SubResource("PlaneMesh_wopk1")
+
+[node name="FogVolume" type="FogVolume" parent="Player/Player_camera"]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, -33.7412, 0)
+size = Vector3(200, 30, 200)
+material = SubResource("FogMaterial_qm3eb")
 
 [node name="Selection_square" type="Decal" parent="Player"]
 visible = false
@@ -871,7 +913,7 @@ monitorable = false
 shape = SubResource("BoxShape3D_rb27j")
 
 [node name="Sun" type="DirectionalLight3D" parent="."]
-transform = Transform3D(0.0507821, 0.3736, -0.926199, 0.711195, 0.637563, 0.296167, 0.701158, -0.673748, -0.233326, 0, 0, 0)
+transform = Transform3D(1.30746e-07, 0.995562, -0.0941083, 8.2272e-09, 0.0941083, 0.995562, 1, -1.3094e-07, 4.1136e-09, 0, 0, 0)
 shadow_enabled = true
 shadow_reverse_cull_face = true
 shadow_blur = 2.275

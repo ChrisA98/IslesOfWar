@@ -7,7 +7,8 @@ var zoom = 20
 var speed = Vector3()
 var maxSpeed = 1
 var maxSpeed_run = 3
-var maxSpeed_norm = .8
+var maxSpeed_norm = 1.2
+var world_bounds := Vector2i(500,500)
 
 #Physics vars
 var velocity = Vector3()
@@ -17,6 +18,7 @@ var tot_direct = Vector3()
 var accel = 2
 
 #REF vars
+@onready var gamescene = $"../.."
 @onready var cam = get_node("./Player_view")
 @onready var ground_check = get_node("./RayCast3D")
 @onready var game_window = $"../../UI_Node/Viewport_Sectons"
@@ -34,14 +36,15 @@ func _input(event):
 			Input.set_mouse_mode(Input.MOUSE_MODE_CONFINED_HIDDEN)
 		else:
 			Input.set_mouse_mode(Input.MOUSE_MODE_CONFINED) 
+		if Input.is_mouse_button_pressed(MOUSE_BUTTON_MIDDLE):
+			rotate_y(event.get_relative().x/100)
 			
 	#only read mouse position on screen while in game window
 	#scroll wheel input
 	if Input.is_action_just_released("scroll_up") and zoom > 5:
 		zoom -= 2.5
-	if event.is_action("scroll_down")  and zoom < 75:
+	if event.is_action("scroll_down") and zoom < 75:
 		zoom += 2.5
-	
 	
 	#close game, TESTING ONLY
 	if event.is_action_pressed(("esc")):
@@ -79,8 +82,9 @@ func _physics_process(delta):
 	else:
 		tot_direct	= mouse_direct.normalized()
 		
-	#add zoom
+	# Add zoom
 	var height = position.distance_to(ground_check.get_collision_point())
+	
 	if(abs(height - zoom) < 5):
 		tot_direct.y = 0
 	elif(height > zoom and ground_check.is_colliding()):
@@ -89,10 +93,16 @@ func _physics_process(delta):
 		tot_direct.y = 1
 	velocity = velocity.lerp(tot_direct * maxSpeed, accel * delta)
 	speed.z = velocity.z
-	speed.y = velocity.y
 	speed.x = velocity.x
+	speed = speed.rotated(Vector3.UP,deg_to_rad(-get_rotation_degrees().y))
+	speed.y = velocity.y
 	
 	translate(speed)
+	
+	## Arrest motion at map edge
+	if abs(position.x) > world_bounds.x or abs(position.z) > world_bounds.y:
+		translate(-speed)
+		velocity = Vector3.ZERO
 	
 	key_direct = Vector3()
 	tot_direct = Vector3()

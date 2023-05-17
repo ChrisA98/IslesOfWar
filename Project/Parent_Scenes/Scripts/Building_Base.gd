@@ -14,6 +14,7 @@ signal died
 @onready var collision_box = $StaticBody3D/CollisionShape3D
 @onready var static_body = get_node("StaticBody3D")
 @onready var det_area = get_node("Detection_Area")
+@onready var picker = get_node("StaticBody3D/RayCast3D")
 @onready var rally = $RallyPoint
 @onready var spawn = $SpawnPoint
 @onready var menu
@@ -31,6 +32,7 @@ var faction_short_name
 
 #Can be placed
 var is_valid = false
+@onready var base_transform = transform
 #Cost to build
 var cost = {"wood": 0,
 "stone": 0,
@@ -78,16 +80,25 @@ func load_data(data):
 
 
 func set_pos(pos):
+	transform = base_transform
 	position = pos
+	align_to_ground()
+	position = pos
+	snap_to_ground()
 	
 	if snapping > 1:
 		position.x = ceil(position.x/snapping)*snapping
 		position.z = ceil(position.z/snapping)*snapping
 	
+	#calculate ground normal validity
+	if (Vector3.UP.dot(picker.get_collision_normal()) < .93):
+		make_invalid()
+		return
+	
 	if check_collision(collision_buffer):
 		make_invalid()
-	else:
-		make_valid()
+		return
+	make_valid()
 
 
 func place():
@@ -98,7 +109,6 @@ func place():
 	static_body.set_collision_layer_value(1,true)
 	$RallyPoint.visible = false
 	$StaticBody3D/CollisionShape3D2.disabled = true
-	snap_to_ground()
 
 
 func make_valid():
@@ -173,10 +183,19 @@ func can_afford(builder_res):
 	return null
 
 
-func snap_to_ground():
-	$StaticBody3D/RayCast3D.force_raycast_update()
-	position.y = $StaticBody3D/RayCast3D.get_collision_point().y
+func align_to_ground():
+	picker.force_raycast_update()
+	var norm = picker.get_collision_normal()
+	var cosa = Vector3.UP.dot(norm)
+	var alph = acos(cosa)
+	var axis = Vector3.UP.cross(norm)
+	axis = axis.normalized()	
+	transform = transform.rotated(axis,alph)
 
+
+func snap_to_ground():
+	picker.force_raycast_update()
+	position.y = $StaticBody3D/RayCast3D.get_collision_point().y
 
 ## Delay delete and remove from lists
 func delayed_delete():
