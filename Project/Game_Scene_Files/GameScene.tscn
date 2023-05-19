@@ -517,7 +517,29 @@ offset_top = 89.0
 offset_right = 1230.0
 offset_bottom = 510.0
 
-[node name="Building_Buttons" type="MenuButton" parent="UI_Node/Build_Menu"]
+[node name="Resource_Buttons" type="MenuButton" parent="UI_Node/Build_Menu"]
+material = SubResource("CanvasItemMaterial_fbdp7")
+layout_mode = 1
+anchors_preset = -1
+anchor_right = 1.0
+anchor_bottom = 0.12
+toggle_mode = false
+text = "Buildings"
+switch_on_hover = true
+
+[node name="PopupMenu" type="PopupMenu" parent="UI_Node/Build_Menu/Resource_Buttons"]
+
+[node name="Military_Buttons" type="MenuButton" parent="UI_Node/Build_Menu"]
+material = SubResource("CanvasItemMaterial_fbdp7")
+layout_mode = 1
+anchors_preset = -1
+anchor_right = 1.0
+anchor_bottom = 0.12
+toggle_mode = false
+text = "Buildings"
+switch_on_hover = true
+
+[node name="General_Buttons" type="MenuButton" parent="UI_Node/Build_Menu"]
 material = SubResource("CanvasItemMaterial_fbdp7")
 layout_mode = 1
 anchors_preset = -1
@@ -848,7 +870,7 @@ group = "reg_1_0"
 actor_id = 1
 
 [node name="MeshInstance3D" type="MeshInstance3D" parent="World/Enemy1_Base_Spawn"]
-transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, 4.02921, 0)
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 33.3791, -3.28116, -34.0609)
 mesh = SubResource("CapsuleMesh_x5v2n")
 surface_material_override/0 = SubResource("StandardMaterial3D_0q7om")
 
@@ -913,7 +935,7 @@ monitorable = false
 shape = SubResource("BoxShape3D_rb27j")
 
 [node name="Sun" type="DirectionalLight3D" parent="."]
-transform = Transform3D(1.30746e-07, 0.995562, -0.0941083, 8.2272e-09, 0.0941083, 0.995562, 1, -1.3094e-07, 4.1136e-09, 0, 0, 0)
+transform = Transform3D(2.21801e-08, 0.200172, 0.979761, -1.29113e-07, -0.979761, 0.200172, 1, -1.3094e-07, 4.11362e-09, 0, 0, 0)
 shadow_enabled = true
 shadow_reverse_cull_face = true
 shadow_blur = 2.275

@@ -75,7 +75,7 @@ func _ready():
 	
 	# Get building buttons UI element ref
 	menu_buildings = get_node("UI_Node/Build_Menu/Building_Buttons").get_popup()
-	menu_buildings.id_pressed.connect(prep_player_building)
+	menu_buildings.id_pressed.connect(prep_player_building,menu_buildings)
 	
 	# Load building scenes from JSON data
 	for fac in range(faction_data.size()):

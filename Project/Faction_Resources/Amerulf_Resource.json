@@ -18,7 +18,8 @@
 				"crystals": 0,
 				"food": 0,
 			},
-			"base_display_name": "Base"
+			"base_display_name": "Base",
+			"category": "primary"
 		},
 		"Fort": {
 			"base_cost": {
@@ -35,7 +36,8 @@
 				"crystals": 0,
 				"food": 0,
 			},
-			"base_display_name": "Fort"
+			"base_display_name": "Fort",
+			"category": "base"
 		},
 		"Mage_tower": {
 			"base_cost": {
@@ -52,7 +54,8 @@
 				"crystals": 0,
 				"food": 0,
 			},
-			"base_display_name": "Mage Tower"
+			"base_display_name": "Mage Tower",
+			"category": "base"
 		},
 		"Barracks": {
 			"base_cost": {
@@ -98,7 +101,8 @@
 					}
 				}
 			},
-			"base_display_name": "Barracks"
+			"base_display_name": "Barracks",
+			"category": "military"
 		},
 		"Depot": {
 			"base_cost": {
@@ -153,7 +157,8 @@
 					}
 				}
 			},
-			"base_display_name": "Depot"
+			"base_display_name": "Depot",
+			"category": "military"
 		},
 		"Dock": {
 			"base_cost": {
@@ -199,7 +204,7 @@
 					}
 				}
 			},
-			"base_display_name": "Dock"
+			"base_display_name": "military"
 		},
 		"Farm": {
 			"base_cost": {
@@ -216,7 +221,8 @@
 				"crystals": 0,
 				"food": 0,
 			},
-			"base_display_name": "Farm"
+			"base_display_name": "Farm",
+			"category": "resource"
 		},
 		"Mine_stone": {
 			"base_cost": {
@@ -233,7 +239,8 @@
 				"crystals": 0,
 				"food": 0,
 			},
-			"base_display_name": "Mine"
+			"base_display_name": "Mine",
+			"category": "resource"
 		},
 		"Mine_crystal": {
 			"base_cost": {
@@ -250,7 +257,8 @@
 				"crystals": 0,
 				"food": 0,
 			},
-			"base_display_name": "Mine"
+			"base_display_name": "Mine",
+			"category": "resource"
 		},
 		"Lumber_mill": {
 			"base_cost": {
@@ -267,7 +275,8 @@
 				"crystals": 0,
 				"food": 0,
 			},
-			"base_display_name": "Lumber Mill"
+			"base_display_name": "Lumber Mill",
+			"category": "resource"
 		},
 		"Trade_post": {
 			"base_cost": {
@@ -277,7 +286,8 @@
 				"crystals": 0,
 				"food": 0,
 			},
-			"base_display_name": "Trading Post"
+			"base_display_name": "Trading Post",
+			"category": "resource"
 		},
 		"Watch_tower": {
 			"base_cost": {
@@ -287,7 +297,8 @@
 				"crystals": 0,
 				"food": 0,
 			},
-			"base_display_name": "Watch Tower"
+			"base_display_name": "Watch Tower",
+			"category": "base"
 		},
 	}
 }

@@ -112,7 +112,7 @@ func place():
 
 
 func make_valid():
-	if can_afford(actor_owner.resources) == false:
+	if can_afford(actor_owner.resources) !=null:
 		make_invalid()
 		return
 	is_valid = true
