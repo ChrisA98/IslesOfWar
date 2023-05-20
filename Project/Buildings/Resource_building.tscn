@@ -8,6 +8,7 @@ size = Vector3(1.27026, 0.8, 1.11899)
 
 [node name="Resource_Building" instance=ExtResource("1_5db2t")]
 script = ExtResource("2_8girq")
+resource = "wood"
 
 [node name="RallyPoint" parent="." index="2"]
 visible = false

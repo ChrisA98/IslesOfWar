@@ -5,4 +5,3 @@
 
 [node name="Lumber_mill" instance=ExtResource("1_4ie1e")]
 script = ExtResource("2_alkm7")
-resource = "wood"

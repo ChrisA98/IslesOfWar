@@ -204,7 +204,8 @@
 					}
 				}
 			},
-			"base_display_name": "military"
+			"base_display_name": "Dock",
+			"category": "military"
 		},
 		"Farm": {
 			"base_cost": {

@@ -32,7 +32,9 @@ var goal_queue := []
 var target_item : String 
 
 ## Personality variables
-var speed_of_thought = 3
+var troop_train_patience = .1
+var build_patience = .1
+var speed_of_thought = 1
 var few_troops_threshold = 2
 var min_troop_attack = 10
 var goal_hierarchy = [
@@ -79,7 +81,12 @@ func _think():
 				complete_goal()
 				return
 			else:
-				decide_resource_goal(u_res)
+				var ttt = troop_train_patience_decide(u_res, faction_data["buildings"]["Barracks"]["unit_list"]["Knight"]["base_cost"][u_res])
+				print(ttt)
+				if(ttt == -1):
+					decide_resource_goal(u_res)
+					return
+				think_timer.start(ttt)
 				return
 		"build":
 			## Error checking for building name
@@ -87,13 +94,14 @@ func _think():
 				print_debug("Error invalid building name: " + target_item)
 				current_goal = "sleeping"
 				target_item = "none"
+				return
 			## Attempt to place building
 			var m_res = can_afford(faction_data["buildings"][target_item]["base_cost"])
 			if m_res == null:
 				var bldg = gamescene.prep_other_building(self,target_item)
 				bldg.visible = false
 				match target_item:
-					"Barracks","Trade_post":
+					"Barracks","Trade_post", "Farm":	#Fort Buildings
 						var frt = bases[rng.randi_range(0,bases.size()-1)]
 						if(await find_build_spot(frt,bldg)):
 							place_building(ping_ground(bldg.position).get_parent().get_groups()[0],bldg)
@@ -102,7 +110,7 @@ func _think():
 							bldg.queue_free()
 							add_goal("build","Fort")
 							return
-					"Lumber_mill","Mine_crystal","Mine_stone":
+					"Lumber_mill","Mine_crystal","Mine_stone":	#Resource Node Buildings
 						var res_node = resource_locations[target_item][rng.randi_range(0,bases.size()-1)]
 						if(await find_build_spot(res_node,bldg)):
 							place_building(ping_ground(bldg.position).get_parent().get_groups()[0],bldg)
@@ -112,7 +120,11 @@ func _think():
 							add_goal("find",target_item)
 							return
 			else:
-				decide_resource_goal(m_res)
+				var ttb = build_patience_decide(m_res, faction_data["buildings"][target_item]["base_cost"][m_res])
+				if(ttb == -1):
+					decide_resource_goal(m_res)
+					return
+				think_timer.start(ttb)
 				return
 		_:
 			if !ponder():
@@ -120,20 +132,44 @@ func _think():
 	think_timer.start(speed_of_thought)
 
 
+## Decides whether waiting for resources for buildings
+##
+## returns -1 if wait would be too long
+func build_patience_decide(res: String, amt: int) -> float:
+	if(rpd[res] * build_patience < amt):
+		return -1
+	return (amt/rpd[res])*(global.DAY_LENGTH+global.NIGHT_LENGTH)
+
+
+## Decides whether waiting for resources for troops
+##
+## returns -1 if wait would be too long
+func troop_train_patience_decide(res: String, amt: int) -> float:
+	print(rpd[res] * troop_train_patience)
+	if(rpd[res] * troop_train_patience < amt):
+		return -1
+	return (amt/rpd[res])*(global.DAY_LENGTH+global.NIGHT_LENGTH)
+
+
 ## add goal to get target resource
+##
+## returns true when goal created
 func decide_resource_goal(res):
 	match res:
 		"wood":
-			add_goal("build","Lumber_mill")
+			add_goal("build","Lumber_mill",false)
 			return
 		"stone":
-			add_goal("build","Mine_stone")
+			add_goal("build","Mine_stone",false)
 			return
 		"riches":
-			add_goal("build","Trade_post")
+			add_goal("build","Trade_post",false)
 			return
 		"crystals":
-			add_goal("build","Mine_crystal")
+			add_goal("build","Mine_crystal",false)
+			return
+		"food":
+			add_goal("build","Farm",false)
 			return
 
 
@@ -152,8 +188,8 @@ func find_build_spot(targ, bldg):
 	var attempts = 50
 	bldg.set_pos(center+Vector3(rng.randf_range(-targ.radius,targ.radius),0,rng.randf_range(-targ.radius,targ.radius)))
 	while bldg.is_valid == false:
-		var variation = Vector3(rng.randf_range(-targ.radius,targ.radius),0,rng.randf_range(-targ.radius,targ.radius))
-		variation = ping_ground(variation).position
+		var variation = Vector3(rng.randf_range(1,targ.radius),0,rng.randf_range(1,targ.radius))
+		variation.y = ping_ground_depth(center + variation)
 		bldg.set_pos(center + variation)
 		await get_tree().physics_frame
 		attempts -= 1
@@ -170,11 +206,12 @@ func check_for_buildings(bldg: String):
 	return false
 
 
-func add_goal(goal: String, trgt: String):	
+func add_goal(goal: String, trgt: String, think_after : bool = true):	
 	goal_queue.push_back([current_goal,target_item])
 	current_goal = goal
 	target_item = trgt
-	think_caller()
+	if(think_after):
+		think_caller()
 
 
 ## complete goal and get next in queue
@@ -211,15 +248,17 @@ func can_afford(res):
 func place_building(grp, bld):
 	super(grp, bld)
 	bld.visible = true
+	calc_res_rate()
 
 
 ## Consider next plan after goals queue finished
+##
+## Return false if think not called
 func ponder():
-	print("pondering...")
-	## Ensure minimum units are met
-	if units.size() < few_troops_threshold:
-		add_goal("get units","something")#add unit build decision code here
-		return true
+	if(goal_queue.size() > 100):
+		goal_queue = [["do_nothing","nothing"]]
+		print_debug("goal overflow error")
+	
 	## Calculate resource rate
 	calc_res_rate()
 	
@@ -227,15 +266,19 @@ func ponder():
 	for res in rpd:
 		if rpd[res] == 0:
 			decide_resource_goal(res)
+			return false
 	
-	## Emergency resource getting
+	## Ensure minimum units are met
+	if units.size() < few_troops_threshold:
+		add_goal("get units","something")#add unit build decision code here
+		return true
 	
 	for goal in goal_hierarchy:
 		match goal:
 			"attack":
 				if(units.size() < min_troop_attack):
 					add_goal("get units","something")#add unit build decision code here
-					return
+					return true
 				else:
 					## HOW DO ATTACK??
 					pass 

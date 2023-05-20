@@ -11,7 +11,8 @@ preload("res://Faction_Resources/Amerulf_Resource.json")]
 var loaded_buildings = []
 var world_units = []
 
-var menu_buildings = []
+var menu_buildings = {}
+var active_build_menu : String
 var world_buildings = []
 
 var rng = RandomNumberGenerator.new()
@@ -74,8 +75,12 @@ func _ready():
 		game_actors.push_back(e)
 	
 	# Get building buttons UI element ref
-	menu_buildings = get_node("UI_Node/Build_Menu/Building_Buttons").get_popup()
-	menu_buildings.id_pressed.connect(prep_player_building,menu_buildings)
+	var res_bldgs = get_node("UI_Node/Build_Menu/Build_Menu_Container/Resource_Buttons").get_popup()
+	res_bldgs.id_pressed.connect(prep_player_building.bind(res_bldgs))
+	var mil_bldgs = get_node("UI_Node/Build_Menu/Build_Menu_Container/Military_Buttons").get_popup()
+	mil_bldgs.id_pressed.connect(prep_player_building.bind(mil_bldgs))
+	var gen_bldgs = get_node("UI_Node/Build_Menu/Build_Menu_Container/General_Buttons").get_popup()
+	gen_bldgs.id_pressed.connect(prep_player_building.bind(gen_bldgs))
 	
 	# Load building scenes from JSON data
 	for fac in range(faction_data.size()):
@@ -84,9 +89,18 @@ func _ready():
 		for b in faction_data[fac].data.buildings:
 			loaded_buildings[fac][b] = load("res://Buildings/"+b+".tscn")
 			if(fac == 0):
-				menu_buildings.add_item(b)
+				menu_buildings[faction_data[fac]["data"]["buildings"][b].base_display_name] = b
+				match faction_data[fac]["data"]["buildings"][b].category:
+					"resource":
+						res_bldgs.add_item(faction_data[fac]["data"]["buildings"][b].base_display_name)
+					"military":
+						mil_bldgs.add_item(faction_data[fac]["data"]["buildings"][b].base_display_name)
+					"base":
+						gen_bldgs.add_item(faction_data[fac]["data"]["buildings"][b].base_display_name)
+					_:
+						pass
 	
-	
+	print(menu_buildings)
 	call_deferred("prepare_bases")
 	call_deferred("custom_nav_setup")
 
@@ -109,7 +123,7 @@ func prepare_bases():
 	player_controller.get_child(0).get_child(1).force_raycast_update()
 	# inelegent solution, but it works
 	var grp = player_controller.get_child(0).get_child(1).get_collider().get_parent().get_groups()[0]
-	prep_player_building(0)
+	prep_player_building(0, null)
 	preview_building.set_pos(p_spawn.position)
 	player_controller.place_building(grp, preview_building)
 	preview_building = null
@@ -304,13 +318,18 @@ func group_selected_units():
 
 
 ##  Prepare new building for player
-func prep_player_building(id):	
+func prep_player_building(id, menu):
+	print(menu)
+	print(id)
 	# Clear existing preview buildings
 	if(preview_building != null):
 		preview_building.queue_free()
 		preview_building = null
-	
-	var new_build = loaded_buildings[0][menu_buildings.get_item_text(id)].instantiate()
+	var new_build
+	if(menu == null):
+		new_build = loaded_buildings[0]["Base"].instantiate()
+	else:
+		new_build = loaded_buildings[0][menu_buildings[menu.get_item_text(id)]].instantiate()
 	add_child(new_build)
 	new_build.init(position, building_snap, player_controller)
 	preview_building = new_build

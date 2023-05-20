@@ -517,37 +517,38 @@ offset_top = 89.0
 offset_right = 1230.0
 offset_bottom = 510.0
 
-[node name="Resource_Buttons" type="MenuButton" parent="UI_Node/Build_Menu"]
-material = SubResource("CanvasItemMaterial_fbdp7")
+[node name="Build_Menu_Container" type="VBoxContainer" parent="UI_Node/Build_Menu"]
 layout_mode = 1
-anchors_preset = -1
+anchors_preset = 15
 anchor_right = 1.0
-anchor_bottom = 0.12
-toggle_mode = false
-text = "Buildings"
-switch_on_hover = true
+anchor_bottom = 1.0
+grow_horizontal = 2
+grow_vertical = 2
 
-[node name="PopupMenu" type="PopupMenu" parent="UI_Node/Build_Menu/Resource_Buttons"]
+[node name="RichTextLabel" type="RichTextLabel" parent="UI_Node/Build_Menu/Build_Menu_Container"]
+layout_mode = 2
+bbcode_enabled = true
+text = "                [u][b]--BUILD--[/b][/u]
+"
+fit_content = true
 
-[node name="Military_Buttons" type="MenuButton" parent="UI_Node/Build_Menu"]
+[node name="General_Buttons" type="MenuButton" parent="UI_Node/Build_Menu/Build_Menu_Container"]
 material = SubResource("CanvasItemMaterial_fbdp7")
-layout_mode = 1
-anchors_preset = -1
-anchor_right = 1.0
-anchor_bottom = 0.12
+layout_mode = 2
 toggle_mode = false
-text = "Buildings"
-switch_on_hover = true
+text = "General"
 
-[node name="General_Buttons" type="MenuButton" parent="UI_Node/Build_Menu"]
+[node name="Military_Buttons" type="MenuButton" parent="UI_Node/Build_Menu/Build_Menu_Container"]
 material = SubResource("CanvasItemMaterial_fbdp7")
-layout_mode = 1
-anchors_preset = -1
-anchor_right = 1.0
-anchor_bottom = 0.12
+layout_mode = 2
 toggle_mode = false
-text = "Buildings"
-switch_on_hover = true
+text = "Military"
+
+[node name="Resource_Buttons" type="MenuButton" parent="UI_Node/Build_Menu/Build_Menu_Container"]
+material = SubResource("CanvasItemMaterial_fbdp7")
+layout_mode = 2
+toggle_mode = false
+text = "Resource"
 
 [node name="Minimap" type="Panel" parent="UI_Node"]
 self_modulate = Color(1, 1, 1, 0)

@@ -85,6 +85,7 @@ func set_pos(pos):
 	align_to_ground()
 	position = pos
 	snap_to_ground()
+	det_area.force_update_transform()
 	
 	if snapping > 1:
 		position.x = ceil(position.x/snapping)*snapping

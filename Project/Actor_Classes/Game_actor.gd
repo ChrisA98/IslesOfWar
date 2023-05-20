@@ -21,7 +21,7 @@ var units = []
 # Actor Resources
 @onready var resources = {
 "wood": 20,
-"stone": 0,
+"stone": 20,
 "riches": 20,
 "crystals": 20,
 "food": 20}
