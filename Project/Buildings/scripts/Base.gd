@@ -3,7 +3,6 @@ extends Building
 @onready var valid_region = get_node("Valid_Region")
 @onready var particles_generator = get_node("Valid_Region/GPUParticles3D")
 @onready var radius = 30
-var magic_col: Color
 
 func _ready():
 	super()
@@ -14,7 +13,7 @@ func _ready():
 
 func load_data(data):
 	super(data)
-	set_m_color(data["magic_color"])
+	set_radius_color(magic_color)
 
 
 func set_pos(pos):
@@ -60,7 +59,8 @@ func update_radius(new_radius):
 	particles_generator.set_draw_pass_mesh(0,m)
 
 
-func set_m_color(hex):
+## Set color of radius
+func set_radius_color(hex):
 	var mat = particles_generator.get_draw_pass_mesh(0).surface_get_material(0)
 	mat.albedo_color = hex
 	particles_generator.get_draw_pass_mesh(0).surface_set_material(0,mat)

@@ -240,7 +240,7 @@
 				"crystals": 0,
 				"food": 0,
 			},
-			"base_display_name": "Mine",
+			"base_display_name": "Stone Mine",
 			"category": "resource"
 		},
 		"Mine_crystal": {
@@ -258,7 +258,7 @@
 				"crystals": 0,
 				"food": 0,
 			},
-			"base_display_name": "Mine",
+			"base_display_name": "Crystal Mine",
 			"category": "resource"
 		},
 		"Lumber_mill": {

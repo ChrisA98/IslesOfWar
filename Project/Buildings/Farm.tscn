@@ -1,11 +1,22 @@
-[gd_scene load_steps=3 format=3 uid="uid://d2g2l3v0l8ddr"]
+[gd_scene load_steps=5 format=3 uid="uid://d2g2l3v0l8ddr"]
 
 [ext_resource type="PackedScene" uid="uid://dvsgehqxy6lav" path="res://Buildings/Resource_building.tscn" id="1_8w74i"]
 [ext_resource type="Script" path="res://Buildings/scripts/Farm.gd" id="1_rw74g"]
 
+[sub_resource type="BoxMesh" id="BoxMesh_8pvv5"]
+
+[sub_resource type="StandardMaterial3D" id="StandardMaterial3D_xyfiq"]
+albedo_color = Color(0.384314, 0.541176, 0.996078, 1)
+
 [node name="Farm" instance=ExtResource("1_8w74i")]
 script = ExtResource("1_rw74g")
 resource = "food"
+metadata/show_base_radius = true
+
+[node name="MeshInstance3D" parent="." index="0"]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, 0.512184, 0)
+mesh = SubResource("BoxMesh_8pvv5")
+surface_material_override/0 = SubResource("StandardMaterial3D_xyfiq")
 
 [node name="CollisionShape3D" parent="Detection_Area" index="0"]
 transform = Transform3D(1, 0, 0, 0, 0.99981, 0.0195115, 0, -0.0195115, 0.99981, 0, -0.0803504, -0.00312893)

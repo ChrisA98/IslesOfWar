@@ -1,7 +1,17 @@
-[gd_scene load_steps=3 format=3 uid="uid://b2bk4qiqnbll5"]
+[gd_scene load_steps=5 format=3 uid="uid://b2bk4qiqnbll5"]
 
 [ext_resource type="PackedScene" uid="uid://dvsgehqxy6lav" path="res://Buildings/Resource_building.tscn" id="1_4ie1e"]
 [ext_resource type="Script" path="res://Buildings/scripts/Lumber_Mill.gd" id="2_alkm7"]
 
+[sub_resource type="BoxMesh" id="BoxMesh_8pvv5"]
+
+[sub_resource type="StandardMaterial3D" id="StandardMaterial3D_xyfiq"]
+albedo_color = Color(0.384314, 0.541176, 0.996078, 1)
+
 [node name="Lumber_mill" instance=ExtResource("1_4ie1e")]
 script = ExtResource("2_alkm7")
+
+[node name="MeshInstance3D" parent="." index="0"]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, 0.512184, 0)
+mesh = SubResource("BoxMesh_8pvv5")
+surface_material_override/0 = SubResource("StandardMaterial3D_xyfiq")

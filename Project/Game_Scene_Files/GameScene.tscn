@@ -1,10 +1,10 @@
-[gd_scene load_steps=78 format=3 uid="uid://d32tym6bcdu7c"]
+[gd_scene load_steps=82 format=3 uid="uid://d32tym6bcdu7c"]
 
 [ext_resource type="Script" path="res://Game_Scene_Files/GameScene.gd" id="1_7pjje"]
 [ext_resource type="Script" path="res://Game_Scene_Files/UI_Builder.gd" id="2_wj4ul"]
 [ext_resource type="Shader" path="res://World_Generation/New_Terrain.gdshader" id="4_4qqhp"]
 [ext_resource type="Script" path="res://World_Generation/NavMesh_Builder.gd" id="4_k22hi"]
-[ext_resource type="Shader" path="res://Game_Scene_Files/Water.gdshader" id="4_tqim1"]
+[ext_resource type="Shader" path="res://World_Objects/Water.gdshader" id="4_u8xi5"]
 [ext_resource type="PackedScene" uid="uid://crswchumae5b0" path="res://World_Objects/Forest.tscn" id="7_1qpxy"]
 [ext_resource type="Texture2D" uid="uid://drbfk3h3s6x1b" path="res://Test_Items/HeightMap.exr" id="7_ubyyn"]
 [ext_resource type="Script" path="res://Actor_Classes/Fort_Spawn.gd" id="8_viuko"]
@@ -13,10 +13,10 @@
 [ext_resource type="PackedScene" uid="uid://dire4xft8ffrx" path="res://World_Objects/Crystal_deposit.tscn" id="10_07s6x"]
 [ext_resource type="Script" path="res://Actor_Classes/GameCamera.gd" id="10_jjfcj"]
 [ext_resource type="Shader" uid="uid://cmyeclhrvhn2o" path="res://World_Generation/Foliage_Shader.tres" id="10_l3sfk"]
+[ext_resource type="Script" path="res://World_Generation/NavMeshManager.gd" id="12_bu3g8"]
 
 [sub_resource type="ProceduralSkyMaterial" id="ProceduralSkyMaterial_46wwo"]
 sky_horizon_color = Color(0.647059, 0.654902, 0.670588, 1)
-ground_bottom_color = Color(0, 0, 0, 1)
 sun_curve = 0.310578
 
 [sub_resource type="Sky" id="Sky_4kxja"]
@@ -130,55 +130,62 @@ TooltipPanel/styles/panel = null
 Tree/styles/panel = null
 VSeparator/styles/separator = null
 
-[sub_resource type="Gradient" id="Gradient_o22mc"]
-colors = PackedColorArray(0.350586, 0.748248, 0.89365, 1, 0.0072261, 0.221523, 0.196945, 1)
+[sub_resource type="Gradient" id="Gradient_b6hmg"]
+interpolation_mode = 2
+colors = PackedColorArray(0.383293, 0.763558, 1, 1, 1.20327e-06, 0.337756, 0.401284, 1)
 
-[sub_resource type="GradientTexture1D" id="GradientTexture1D_6j88f"]
-gradient = SubResource("Gradient_o22mc")
+[sub_resource type="GradientTexture1D" id="GradientTexture1D_8euv3"]
+gradient = SubResource("Gradient_b6hmg")
 
-[sub_resource type="FastNoiseLite" id="FastNoiseLite_106fy"]
+[sub_resource type="FastNoiseLite" id="FastNoiseLite_6n0eb"]
 noise_type = 3
 fractal_type = 2
 
-[sub_resource type="NoiseTexture2D" id="NoiseTexture2D_2hdqa"]
+[sub_resource type="NoiseTexture2D" id="NoiseTexture2D_pd0fy"]
 seamless = true
+seamless_blend_skirt = 0.596
 as_normal_map = true
-noise = SubResource("FastNoiseLite_106fy")
+bump_strength = 8.8
+noise = SubResource("FastNoiseLite_6n0eb")
 
-[sub_resource type="FastNoiseLite" id="FastNoiseLite_27ihn"]
+[sub_resource type="FastNoiseLite" id="FastNoiseLite_vgweg"]
 noise_type = 3
-seed = 10
+seed = 3
 fractal_type = 2
 
-[sub_resource type="NoiseTexture2D" id="NoiseTexture2D_1yygc"]
+[sub_resource type="NoiseTexture2D" id="NoiseTexture2D_cxok4"]
 seamless = true
 as_normal_map = true
-noise = SubResource("FastNoiseLite_27ihn")
+bump_strength = 12.9
+noise = SubResource("FastNoiseLite_vgweg")
 
-[sub_resource type="ShaderMaterial" id="ShaderMaterial_hmrwr"]
+[sub_resource type="ShaderMaterial" id="ShaderMaterial_5qp3h"]
 render_priority = 0
-shader = ExtResource("4_tqim1")
+shader = ExtResource("4_u8xi5")
 shader_parameter/t_height = 100.0
-shader_parameter/water_level = 8.0
-shader_parameter/tide = 4.638
-shader_parameter/water_turbulence = 4.744
-shader_parameter/water_alb = Color(0, 0.47451, 0.764706, 1)
-shader_parameter/wave_direction_1 = Vector2(-2, 0.5)
-shader_parameter/wave_direction_2 = Vector2(2, -0.5)
-shader_parameter/time_scale = 0.007
+shader_parameter/water_level = 7.0
+shader_parameter/tide = 2.871
+shader_parameter/water_turbulence = 6.652
+shader_parameter/water_alb = Color(0.392157, 0.831373, 0.898039, 1)
+shader_parameter/wave_direction_1 = Vector2(2, -2)
+shader_parameter/wave_direction_2 = Vector2(-2, 2)
+shader_parameter/time_scale = 0.01
 shader_parameter/heightmap = ExtResource("7_ubyyn")
-shader_parameter/water_alb_tex = SubResource("GradientTexture1D_6j88f")
-shader_parameter/water_disp_tex_1 = SubResource("NoiseTexture2D_2hdqa")
-shader_parameter/water_disp_tex_2 = SubResource("NoiseTexture2D_1yygc")
+shader_parameter/water_alb_tex = SubResource("GradientTexture1D_8euv3")
+shader_parameter/water_disp_tex_1 = SubResource("NoiseTexture2D_pd0fy")
+shader_parameter/water_disp_tex_2 = SubResource("NoiseTexture2D_cxok4")
 
 [sub_resource type="PlaneMesh" id="PlaneMesh_02ixx"]
-material = SubResource("ShaderMaterial_hmrwr")
+material = SubResource("ShaderMaterial_5qp3h")
 size = Vector2(1000, 1000)
 subdivide_width = 750
 subdivide_depth = 750
 
 [sub_resource type="BoxShape3D" id="BoxShape3D_cixmr"]
 size = Vector3(1000, 100, 1000)
+
+[sub_resource type="BoxShape3D" id="BoxShape3D_gubrw"]
+size = Vector3(1000, 1, 1000)
 
 [sub_resource type="Gradient" id="Gradient_1g27v"]
 interpolation_mode = 2
@@ -311,6 +318,78 @@ shader_parameter/__terrain_amplitude = 100.0
 shader_parameter/map_heightmap_size = Vector2(1000, 1000)
 shader_parameter/map_heightmap = ExtResource("7_ubyyn")
 
+[sub_resource type="NavigationMesh" id="NavigationMesh_p5w6u"]
+geometry_parsed_geometry_type = 1
+geometry_collision_mask = 4294934528
+geometry_source_geometry_mode = 1
+geometry_source_group_name = &"water"
+filter_baking_aabb = AABB(-500, 0, -500, 1000, 10, 1000)
+filter_baking_aabb_offset = Vector3(0, -1, 0)
+
+[sub_resource type="Gradient" id="Gradient_d2vmg"]
+interpolation_mode = 2
+offsets = PackedFloat32Array(0.621212, 1)
+colors = PackedColorArray(1, 1, 1, 1, 1, 1, 1, 0)
+
+[sub_resource type="GradientTexture1D" id="GradientTexture1D_ogm3e"]
+gradient = SubResource("Gradient_d2vmg")
+
+[sub_resource type="ParticleProcessMaterial" id="ParticleProcessMaterial_p133b"]
+lifetime_randomness = 0.16
+emission_shape = 3
+emission_box_extents = Vector3(65, 10, 65)
+direction = Vector3(0, 1, 0)
+gravity = Vector3(0, 0, 0)
+initial_velocity_min = 1.0
+initial_velocity_max = 1.0
+linear_accel_min = 1.0
+linear_accel_max = 1.0
+scale_min = 14.83
+scale_max = 17.73
+color = Color(0.835294, 0.835294, 0.835294, 1)
+color_ramp = SubResource("GradientTexture1D_ogm3e")
+sub_emitter_mode = 2
+sub_emitter_amount_at_end = 1
+
+[sub_resource type="Gradient" id="Gradient_mryif"]
+colors = PackedColorArray(0.74558, 0.74558, 0.74558, 1, 1, 1, 1, 1)
+
+[sub_resource type="FastNoiseLite" id="FastNoiseLite_l7j28"]
+frequency = 0.0045
+
+[sub_resource type="NoiseTexture2D" id="NoiseTexture2D_hexlv"]
+seamless = true
+color_ramp = SubResource("Gradient_mryif")
+noise = SubResource("FastNoiseLite_l7j28")
+
+[sub_resource type="StandardMaterial3D" id="StandardMaterial3D_y0vbv"]
+transparency = 1
+shading_mode = 2
+vertex_color_use_as_albedo = true
+metallic_specular = 0.0
+roughness_texture = SubResource("NoiseTexture2D_hexlv")
+emission_enabled = true
+emission = Color(0.596078, 0.596078, 0.596078, 1)
+rim = 0.29
+rim_tint = 1.0
+heightmap_scale = 8.393
+subsurf_scatter_enabled = true
+subsurf_scatter_strength = 0.79
+subsurf_scatter_transmittance_depth = 8.0
+subsurf_scatter_transmittance_boost = 1.0
+refraction_scale = 0.38
+shadow_to_opacity = true
+proximity_fade_distance = 0.0
+distance_fade_mode = 2
+
+[sub_resource type="SphereMesh" id="SphereMesh_cyqkr"]
+lightmap_size_hint = Vector2i(41, 11)
+material = SubResource("StandardMaterial3D_y0vbv")
+radius = 1.25
+height = 2.5
+radial_segments = 16
+rings = 8
+
 [sub_resource type="FastNoiseLite" id="FastNoiseLite_oe4h0"]
 seed = 2
 frequency = 0.041
@@ -373,11 +452,6 @@ subdivide_width = 6
 center_offset = Vector3(-0.358, -0.104, 0.019)
 orientation = 2
 
-[sub_resource type="FogMaterial" id="FogMaterial_qm3eb"]
-emission = Color(0.2, 0.572549, 0.67451, 1)
-height_falloff = 1.79049
-edge_fade = 1.2996
-
 [sub_resource type="Gradient" id="Gradient_eofwo"]
 offsets = PackedFloat32Array(0)
 colors = PackedColorArray(0.572549, 0.713726, 1, 0.368627)
@@ -393,40 +467,6 @@ color_ramp = SubResource("Gradient_eofwo")
 noise = SubResource("FastNoiseLite_kogvw")
 
 [sub_resource type="BoxShape3D" id="BoxShape3D_rb27j"]
-
-[sub_resource type="Curve" id="Curve_4qrwo"]
-_data = [Vector2(0, 0.75), 0.0, 0.0, 0, 0, Vector2(0.448052, 1), 0.0, 0.0, 0, 0, Vector2(1, 0.75), 0.0, 0.0, 0, 0]
-point_count = 3
-
-[sub_resource type="CurveTexture" id="CurveTexture_xo61g"]
-curve = SubResource("Curve_4qrwo")
-
-[sub_resource type="ParticleProcessMaterial" id="ParticleProcessMaterial_p133b"]
-lifetime_randomness = 0.16
-emission_shape = 3
-emission_box_extents = Vector3(10, 10, 10)
-gravity = Vector3(0, 0, 0)
-linear_accel_min = -1.0
-linear_accel_max = 1.0
-scale_min = 14.83
-scale_max = 17.73
-scale_curve = SubResource("CurveTexture_xo61g")
-sub_emitter_mode = 2
-sub_emitter_amount_at_end = 1
-
-[sub_resource type="StandardMaterial3D" id="StandardMaterial3D_y0vbv"]
-shading_mode = 2
-metallic_specular = 0.0
-emission_enabled = true
-rim_tint = 0.0
-heightmap_scale = 16.0
-proximity_fade_distance = 0.0
-distance_fade_mode = 2
-
-[sub_resource type="SphereMesh" id="SphereMesh_cyqkr"]
-material = SubResource("StandardMaterial3D_y0vbv")
-
-[sub_resource type="NavigationMesh" id="NavigationMesh_emcgv"]
 
 [node name="GameScene" type="Node3D"]
 script = ExtResource("1_7pjje")
@@ -831,7 +871,7 @@ theme = SubResource("Theme_ut02k")
 script = ExtResource("4_k22hi")
 
 [node name="Water" type="MeshInstance3D" parent="World"]
-transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, 8, 0)
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, 7, 0)
 layers = 32769
 mesh = SubResource("PlaneMesh_02ixx")
 skeleton = NodePath("../Visual_Ground")
@@ -846,6 +886,13 @@ metadata/is_water = true
 [node name="CollisionShape3D" type="CollisionShape3D" parent="World/Water/Area3D"]
 transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, -50, 0)
 shape = SubResource("BoxShape3D_cixmr")
+
+[node name="StaticBody3D" type="StaticBody3D" parent="World/Water" groups=["water"]]
+collision_layer = 32768
+collision_mask = 32768
+
+[node name="CollisionShape3D" type="CollisionShape3D" parent="World/Water/StaticBody3D"]
+shape = SubResource("BoxShape3D_gubrw")
 
 [node name="Visual_Ground" type="MeshInstance3D" parent="World"]
 layers = 3
@@ -871,12 +918,11 @@ group = "reg_1_0"
 actor_id = 1
 
 [node name="MeshInstance3D" type="MeshInstance3D" parent="World/Enemy1_Base_Spawn"]
-transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 33.3791, -3.28116, -34.0609)
 mesh = SubResource("CapsuleMesh_x5v2n")
 surface_material_override/0 = SubResource("StandardMaterial3D_0q7om")
 
 [node name="Forest" parent="World" instance=ExtResource("7_1qpxy")]
-transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 250.194, 0, -418.79)
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 237.065, 3.8147e-06, -399.984)
 
 [node name="GPUParticles3D" parent="World/Forest" index="1"]
 transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, 0, 4.89764)
@@ -889,6 +935,22 @@ transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 107.985, 9.91013, -12.6955)
 
 [node name="Crystal_deposit" parent="World" instance=ExtResource("10_07s6x")]
 transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 344.647, 3.05176e-05, 5.01563)
+
+[node name="water_navigation" type="NavigationRegion3D" parent="World" groups=["water"]]
+navigation_mesh = SubResource("NavigationMesh_p5w6u")
+script = ExtResource("12_bu3g8")
+agent_max_slope = 10.0
+agent_radius = 10.0
+
+[node name="Fog_Of_War_Edge" type="GPUParticles3D" parent="World"]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 555, 10, -555)
+layers = 16
+amount = 400
+lifetime = 8.0
+preprocess = 7.0
+visibility_aabb = AABB(-71.389, -46.399, -68.944, 145, 200, 145)
+process_material = SubResource("ParticleProcessMaterial_p133b")
+draw_pass_1 = SubResource("SphereMesh_cyqkr")
 
 [node name="Player" type="Node" parent="."]
 script = ExtResource("9_3h23t")
@@ -918,11 +980,6 @@ draw_pass_1 = SubResource("PlaneMesh_nq15t")
 draw_pass_2 = SubResource("PlaneMesh_nulpy")
 draw_pass_3 = SubResource("PlaneMesh_wopk1")
 
-[node name="FogVolume" type="FogVolume" parent="Player/Player_camera"]
-transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, -33.7412, 0)
-size = Vector3(200, 30, 200)
-material = SubResource("FogMaterial_qm3eb")
-
 [node name="Selection_square" type="Decal" parent="Player"]
 visible = false
 size = Vector3(1, 20, 1)
@@ -937,6 +994,7 @@ shape = SubResource("BoxShape3D_rb27j")
 
 [node name="Sun" type="DirectionalLight3D" parent="."]
 transform = Transform3D(2.21801e-08, 0.200172, 0.979761, -1.29113e-07, -0.979761, 0.200172, 1, -1.3094e-07, 4.11362e-09, 0, 0, 0)
+light_cull_mask = 4294967279
 shadow_enabled = true
 shadow_reverse_cull_face = true
 shadow_blur = 2.275
@@ -949,6 +1007,7 @@ visible = false
 light_color = Color(0.745098, 1, 1, 1)
 light_energy = 0.427
 light_indirect_energy = 0.819
+light_cull_mask = 4294967279
 shadow_enabled = true
 shadow_blur = 7.224
 directional_shadow_mode = 1
@@ -956,19 +1015,6 @@ directional_shadow_blend_splits = true
 directional_shadow_max_distance = 800.0
 directional_shadow_pancake_size = 76.6
 sky_mode = 1
-
-[node name="Fog_Of_War" type="GPUParticles3D" parent="."]
-transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 482.721, 6.43969, -485.748)
-visible = false
-amount = 23
-lifetime = 7.0
-randomness = 0.44
-visibility_aabb = AABB(-12.7014, -46.3993, -10.8425, 25.4027, 92.7985, 21.685)
-process_material = SubResource("ParticleProcessMaterial_p133b")
-draw_pass_1 = SubResource("SphereMesh_cyqkr")
-
-[node name="NavigationRegion3D" type="NavigationRegion3D" parent="."]
-navigation_mesh = SubResource("NavigationMesh_emcgv")
 
 [connection signal="menu_opened" from="UI_Node" to="." method="_on_ui_node_menu_opened"]
 [connection signal="mouse_entered" from="UI_Node/Viewport_Sectons/LeftBar" to="Player/Player_camera" method="_on_left_bar_mouse_entered"]

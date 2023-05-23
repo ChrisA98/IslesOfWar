@@ -23,8 +23,12 @@ func init(pos, snap: int, actor: Node):
 
 func place():
 	super()
-	timer.start(generate_time)
 
+
+func finish_building():
+	super()
+	timer.start(generate_time)
+	
 
 func generate_resource():
 	actor_owner.adj_resource(resource, rpc)

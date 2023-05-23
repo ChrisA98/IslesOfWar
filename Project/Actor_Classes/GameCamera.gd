@@ -41,10 +41,10 @@ func _input(event):
 			
 	#only read mouse position on screen while in game window
 	#scroll wheel input
-	if Input.is_action_just_released("scroll_up") and zoom > 5:
-		zoom -= 2.5
+	if Input.is_action_just_released("scroll_up") and zoom > 3.5:
+		zoom -= 1
 	if event.is_action("scroll_down") and zoom < 75:
-		zoom += 2.5
+		zoom += 1
 	
 	#close game, TESTING ONLY
 	if event.is_action_pressed(("esc")):

@@ -13,6 +13,7 @@ extends Node3D
 @onready var water = get_node("Water")
 
 
+var rng = RandomNumberGenerator.new()
 var height_data = {}
 
 @export var terrain_amplitude = 100
@@ -46,6 +47,10 @@ func _ready():
 			i.get_child(0).get_child(0).set_meta("is_ground", true)
 			i.set_nav_region()
 	
+	$water_navigation.set_nav_region()
+	$water_navigation.navigation_mesh.set_filter_baking_aabb(AABB(Vector3(-chunk_size,-1.9,-chunk_size),Vector3(chunks*chunk_size,10,chunks*chunk_size)))
+	$water_navigation.update_navigation_mesh()
+	
 	## Prepare Ground with level info
 	ground.mesh.surface_get_material(0).set_shader_parameter("water_table", water_table)
 	ground.mesh.surface_get_material(0).set_shader_parameter("max_sand_height", water_table+2)
@@ -54,6 +59,30 @@ func _ready():
 	water.position.y = water_table
 	water.mesh.surface_get_material(0).set_shader_parameter("water_level", water_table)
 	water.mesh.surface_get_material(0).set_shader_parameter("t_height", terrain_amplitude)
+	
+	## Fog of war TEMPORARY
+	for j in range(14):
+		var t = find_children("Fog*","Node",false)[-1]
+		var te = t.duplicate()
+		te.position.x -= 75*j
+		add_child(te)
+	for j in range(14):
+		var t = find_children("Fog*","Node",false)[-1]
+		var te = t.duplicate()
+		te.position.z += 75*j
+		add_child(te)
+	for j in range(14):
+		var t = find_children("Fog*","Node",false)[-1]
+		var te = t.duplicate()
+		te.position.x -= 75*j
+		te.position.z = 555
+		add_child(te)
+	for j in range(15):
+		var t = find_children("Fog*","Node",false)[-1]
+		var te = t.duplicate()
+		te.position.z += 75*j
+		te.position.x = -555
+		add_child(te)
 
 
 #check if .exr files exist in target path
@@ -73,12 +102,14 @@ func find_files():
 
 
 func update_navigation_meshes(grp):
+	return
 	var targ = "Region"
 	if(grp != null):
 		targ += grp.get_slice("g",1)
 	for i in get_children():
 		if i.name.contains(targ):
-			i.update_navigation_mesh()
+			i.update_navigation_mesh()	
+	
 
 
 func build_map(img, pos, adj):	
@@ -97,6 +128,7 @@ func build_map(img, pos, adj):
 	chunk_nav_region.add_child(mesh)
 	mesh.create_trimesh_collision()
 	mesh.add_to_group(grp)
+	mesh.add_to_group("water")
 	
 	mesh.position = pos*chunk_size - Vector3(adj.x,0,adj.y)
 	
@@ -122,6 +154,8 @@ func create_mesh(img):
 			for y in range(height):
 				if y % meshres == 0:
 					height_data[Vector2(x,y)] = heightmap.get_pixel(x,y).r * terrain_amplitude
+					if(height_data[Vector2(x,y)] < water_table-1):
+						height_data[Vector2(x,y)] -= (100 + rng.randf_range(10,50))
 		
 	
 	for x in height_data:

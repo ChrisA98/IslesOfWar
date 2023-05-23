@@ -19,8 +19,8 @@ signal died
 @onready var spawn = $SpawnPoint
 @onready var menu
 #Materials
-@onready var invalid_mat = preload("res://Materials/preview_building_invalid.tres")
-@onready var valid_mat = preload("res://Materials/preview_building_valid.tres")
+@onready var prev_mat = preload("res://Materials/preview_building.tres")
+@onready var build_shader
 
 @export var height : int = 1 
 var type: String
@@ -33,6 +33,12 @@ var faction_short_name
 #Can be placed
 var is_valid = false
 @onready var base_transform = transform
+var is_building : bool = false
+@export var build_time : float = 10
+@onready var build_timer : float = build_time
+@onready var build_particles = get_node("GPUParticles3D")
+var magic_color : Color
+
 #Cost to build
 var cost = {"wood": 0,
 "stone": 0,
@@ -47,36 +53,59 @@ var snapping = 0
 var collision_buffer = 0
 
 # Combat variables
-var armor: int = 10
-var health: float = 0
+@export var armor: int = 10
+@export var health: float = 0
 
 func _ready():
+	build_shader = load("res://Materials/building.gdshader")
+	prev_mat = prev_mat.duplicate(true)
+	build_shader = build_shader.duplicate(true)
+	build_particles.visible = false
 	pass
 
+
+func _physics_process(delta):
+	if(is_building):
+		build_timer-=delta
+		var prog = height*((build_time-build_timer)/build_time)
+		build_particles.position.y = prog
+		for i in range(mesh.get_surface_override_material_count()):
+			mesh.mesh.surface_get_material(i).set_shader_parameter("progress", prog)
+		if prog > 1:
+			finish_building()
+			return
 
 ## Initialize certain elements at start
 func init(pos, snap: int, actor: Node):
 	position = pos
 	mesh.transparency = .55
-	mesh.set_surface_override_material(0, valid_mat)
 	static_body.set_ray_pickable(false)
 	actor_owner = actor
 	faction = actor_owner.faction_data.name
 	faction_short_name = actor_owner.faction_data.short_name
 	
 	load_data(actor_owner.faction_data)
+	for i in range(mesh.get_surface_override_material_count()):
+		mesh.mesh.surface_set_material(i,ShaderMaterial.new())	##Later load materials here
+	set_all_over_mats(prev_mat)
 	
 	set_snap(snap)
 
 
 func load_data(data):	
 	var suffix = faction_short_name.substr(0,2)
-	var b_mesh = load("res://Models/"+faction_short_name+"/"+type+"_"+suffix+".obj")
-	if(b_mesh != null):
-		mesh.set_mesh(b_mesh)
+	#check for file and load if exists
+	if(FileAccess.file_exists ("res://Models/"+faction_short_name+"/"+type+"_"+suffix+".obj")):
+		var b_mesh = load("res://Models/"+faction_short_name+"/"+type+"_"+suffix+".obj")
+		if(b_mesh != null):
+			mesh.set_mesh(b_mesh.duplicate(true))
+	else:
+		mesh.set_mesh(BoxMesh.new())
+		print_debug("Building model:"+type+" does not exist")
 	for res in cost:
 		cost[res] = data.buildings[type].base_cost[res]
 	display_name = data.buildings[type]["base_display_name"]
+	magic_color = data["magic_color"]
 
 
 func set_pos(pos):
@@ -96,38 +125,77 @@ func set_pos(pos):
 		make_invalid()
 		return
 	
+	##make invalid if locked to base radius
+	if(get_meta("show_base_radius")):
+		if near_base(actor_owner.bases) == false:
+			make_invalid()
+			return
+	
 	if check_collision(collision_buffer):
 		make_invalid()
 		return
 	make_valid()
 
 
+## Place and start building
 func place():
-	for i in range(mesh.get_surface_override_material_count()):
-		mesh.set_surface_override_material(i, null)
-	mesh.transparency = 0
 	static_body.set_ray_pickable(true)
 	static_body.set_collision_layer_value(1,true)
 	$RallyPoint.visible = false
 	$StaticBody3D/CollisionShape3D2.disabled = true
+	set_all_shader(build_shader)
+	set_all_over_mats(null)
+	for i in range(mesh.get_surface_override_material_count()):
+		mesh.mesh.surface_get_material(i).set_shader_parameter("magic_color", magic_color)
+	is_building = true
+	build_particles.visible = true
+	build_particles.draw_pass_1.surface_get_material(0).albedo_color = magic_color
 
 
+#Finish the building process
+func finish_building():
+	is_building = false
+	for i in range(mesh.get_surface_override_material_count()):
+		mesh.mesh.surface_get_material(i).set_shader_parameter("magic_color", Color.FLORAL_WHITE)
+	build_particles.visible = false
+	mesh.transparency = 0
+
+
+## Can place
 func make_valid():
 	if can_afford(actor_owner.resources) !=null:
 		make_invalid()
 		return
 	is_valid = true
-	for i in range(mesh.get_surface_override_material_count()):
-		mesh.set_surface_override_material(i, valid_mat)
+	set_mat_over_color(Color.CORNFLOWER_BLUE)
 
 
+## Cannot place
 func make_invalid():
 	is_valid = false
+	set_mat_over_color(Color.INDIAN_RED)
+
+
+## Set all surfaces to override material
+func set_all_over_mats(mat):
 	for i in range(mesh.get_surface_override_material_count()):
-		mesh.set_surface_override_material(i, invalid_mat)
+		mesh.set_surface_override_material(i, mat)
+
+
+## Set all surfaces to override material
+func set_mat_over_color(col):
+	for i in range(mesh.get_surface_override_material_count()):
+		mesh.get_surface_override_material(i).albedo_color = col
+
+
+## sets material to a shader for building
+func set_all_shader(shad):
+	for i in range(mesh.get_surface_override_material_count()):
+		mesh.mesh.surface_get_material(i).set_shader(shad)
+
 
 ## Check for collision at current location
-func check_collision(buff_range):
+func check_collision(_buff_range):
 	for ar in det_area.get_overlapping_areas():
 		if !ar.has_meta("is_world_obj"):
 			return true
@@ -172,6 +240,8 @@ func near_base(buildings) -> bool:
 
 ## Pass press to signal activate signal
 func _on_static_body_3d_input_event(_camera, event, _position, _normal, _shape_idx):
+	if(is_building):
+		return
 	if event is InputEventMouseButton and Input.is_action_just_released("lmb"):
 		pressed.emit(self)
 
@@ -190,8 +260,7 @@ func align_to_ground():
 	var cosa = Vector3.UP.dot(norm)
 	var alph = acos(cosa)
 	var axis = Vector3.UP.cross(norm)
-	axis = axis.normalized()	
-	transform = transform.rotated(axis,alph)
+	transform = transform.rotated(axis.normalized(),alph)
 
 
 func snap_to_ground():

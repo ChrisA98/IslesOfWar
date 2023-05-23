@@ -15,7 +15,6 @@ func _ready():
 	generate_time = 3
 	type = "Trade_post"
 
-
 func generate_resource():
 	for r in resources:
 		actor_owner.adj_resource(r, resources[r])

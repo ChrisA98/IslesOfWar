@@ -10,3 +10,13 @@ func _ready():
 
 func set_cam_pos(pos: Vector3):
 	cam.position = pos
+	
+
+func place_building(grp, bld):
+	var out = super(grp, bld) 
+	if !out:
+		return false
+	#Hide base radius
+	for i in bases:
+			i.hide_radius()
+	return out

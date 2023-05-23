@@ -142,8 +142,13 @@ func traveling_basic(delta):
 	travel(delta)
 
 
-func idling_basic(delta):
+func idling_basic(_delta):
 	pass
+
+
+func wandering_basic(_delta):
+	pass
+
 
 ### End Process Paths ###
 

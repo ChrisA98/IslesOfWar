@@ -1,12 +1,12 @@
-[gd_scene load_steps=8 format=3 uid="uid://ccoruw5j562l7"]
+[gd_scene load_steps=13 format=3 uid="uid://ccoruw5j562l7"]
 
 [ext_resource type="Script" path="res://Parent_Scenes/Scripts/Building_Base.gd" id="1_y54u3"]
-[ext_resource type="Material" uid="uid://tv8sxu1y3jw7" path="res://Materials/preview_building_valid.tres" id="2_lljag"]
+[ext_resource type="Material" uid="uid://tv8sxu1y3jw7" path="res://Materials/preview_building.tres" id="2_y34xx"]
 
-[sub_resource type="BoxMesh" id="BoxMesh_8pvv5"]
+[sub_resource type="StandardMaterial3D" id="StandardMaterial3D_eebkm"]
 
-[sub_resource type="StandardMaterial3D" id="StandardMaterial3D_xyfiq"]
-albedo_color = Color(0.384314, 0.541176, 0.996078, 1)
+[sub_resource type="BoxMesh" id="BoxMesh_1iip8"]
+material = SubResource("StandardMaterial3D_eebkm")
 
 [sub_resource type="BoxShape3D" id="BoxShape3D_ibp2k"]
 
@@ -18,15 +18,48 @@ height = 0.018
 [sub_resource type="BoxShape3D" id="BoxShape3D_llyv1"]
 size = Vector3(1.27026, 0.8, 1.75699)
 
+[sub_resource type="Gradient" id="Gradient_tr6fe"]
+
+[sub_resource type="GradientTexture1D" id="GradientTexture1D_5p35x"]
+gradient = SubResource("Gradient_tr6fe")
+
+[sub_resource type="ParticleProcessMaterial" id="ParticleProcessMaterial_x0ttp"]
+emission_shape = 6
+emission_ring_axis = Vector3(0, 1, 0)
+emission_ring_height = 0.1
+emission_ring_radius = 0.8
+emission_ring_inner_radius = 0.0
+direction = Vector3(0, 10, 0)
+spread = 107.86
+gravity = Vector3(0, -10, 0)
+initial_velocity_min = 0.54
+initial_velocity_max = 0.54
+linear_accel_min = 6.35
+linear_accel_max = 33.33
+radial_accel_min = 3.17
+radial_accel_max = 20.49
+color_ramp = SubResource("GradientTexture1D_5p35x")
+
+[sub_resource type="StandardMaterial3D" id="StandardMaterial3D_e47b7"]
+emission_enabled = true
+emission = Color(0.466667, 0.466667, 0.466667, 1)
+emission_energy_multiplier = 0.5
+
+[sub_resource type="SphereMesh" id="SphereMesh_7vuld"]
+material = SubResource("StandardMaterial3D_e47b7")
+radial_segments = 8
+rings = 4
+
 [node name="Building_Base" type="Node3D"]
 transform = Transform3D(5, 0, 0, 0, 5, 0, 0, 0, 5, 0, -0.0421534, 0)
 script = ExtResource("1_y54u3")
+metadata/show_base_radius = true
+metadata/has_build_radius = true
 
 [node name="MeshInstance3D" type="MeshInstance3D" parent="."]
-transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, 0.512184, 0)
+transform = Transform3D(0.999995, -0.00318934, 0.000585354, 0.00318969, 0.999995, -0.000604614, -0.000583429, 0.000606472, 1, 0, 0.512184, 0)
 transparency = 0.55
-mesh = SubResource("BoxMesh_8pvv5")
-surface_material_override/0 = SubResource("StandardMaterial3D_xyfiq")
+mesh = SubResource("BoxMesh_1iip8")
 
 [node name="StaticBody3D" type="StaticBody3D" parent="."]
 transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, 0.507441, 0)
@@ -51,7 +84,7 @@ transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, 0.0733881, 0.908507)
 [node name="MeshInstance3D" type="MeshInstance3D" parent="RallyPoint"]
 transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, -0.002, -0.0465063, 0)
 mesh = SubResource("CylinderMesh_ar7to")
-surface_material_override/0 = ExtResource("2_lljag")
+surface_material_override/0 = ExtResource("2_y34xx")
 
 [node name="SpawnPoint" type="Node3D" parent="."]
 transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, -0.0474244, 0)
@@ -66,5 +99,13 @@ metadata/building_area = true
 [node name="CollisionShape3D" type="CollisionShape3D" parent="Detection_Area"]
 transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, -0.0803504, 0.404653)
 shape = SubResource("BoxShape3D_llyv1")
+
+[node name="GPUParticles3D" type="GPUParticles3D" parent="."]
+amount = 300
+lifetime = 0.22
+randomness = 0.48
+visibility_aabb = AABB(-1.16615, -4, -1.13586, 2.33229, 8, 2.27171)
+process_material = SubResource("ParticleProcessMaterial_x0ttp")
+draw_pass_1 = SubResource("SphereMesh_7vuld")
 
 [connection signal="input_event" from="StaticBody3D" to="." method="_on_static_body_3d_input_event"]

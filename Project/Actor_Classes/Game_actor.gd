@@ -66,11 +66,7 @@ func place_building(grp, bld):
 	#Spend resources
 	for res in building.cost:
 		adj_resource(res,building.cost[res]*-1)
-	
-	#Hide base radius
-	for i in bases:
-			i.hide_radius()
-	
+		
 	#Place bases in bases list
 	if building.type == "Base":
 		bases.push_back(building)

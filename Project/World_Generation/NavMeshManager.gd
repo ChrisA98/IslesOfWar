@@ -4,6 +4,13 @@ signal finished_baking
 
 @onready var baking_mesh = false
 @onready var global = get_node("/root/Global_Vars")
+@export var min_size: float = 30
+@export var cell_size: float = .35
+@export var cell_height: float = .25
+@export var edge_max_length: float = 11.9
+@export var agent_max_slope: float = 35
+@export var agent_radius: float = .35
+@export var connects: bool = true
 var baking = false
 
 func _ready():
@@ -16,11 +23,12 @@ func set_nav_region():
 	navigation_mesh = NavigationMesh.new()
 	navigation_mesh.set_parsed_geometry_type(NavigationMesh.PARSED_GEOMETRY_STATIC_COLLIDERS)
 	navigation_mesh.set_source_geometry_mode(NavigationMesh.SOURCE_GEOMETRY_GROUPS_WITH_CHILDREN)
-	navigation_mesh.region_min_size = 30
-	navigation_mesh.cell_size = .35
-	navigation_mesh.edge_max_length = 11.9
-	navigation_mesh.agent_max_slope = 35
-	navigation_mesh.set_agent_radius(.35)
+	navigation_mesh.region_min_size = min_size
+	navigation_mesh.cell_size = cell_size
+	navigation_mesh.set_cell_height(cell_height)
+	navigation_mesh.edge_max_length = edge_max_length
+	navigation_mesh.agent_max_slope = agent_max_slope
+	navigation_mesh.set_agent_radius(agent_radius)
 	navigation_mesh.set_source_group_name(get_groups()[0])
 	
 
@@ -28,8 +36,7 @@ func update_navigation_mesh():
 	# use bake and update function of region
 	if global.navmesh_baking == null:
 		global.set_nav_queue(self)
-		var on_thread: bool = true
-	
+		var on_thread: bool = true	
 		bake_navigation_mesh(on_thread)
 	else:
 		global.queued_nav_bakes.push_back(self)

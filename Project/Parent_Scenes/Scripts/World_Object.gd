@@ -19,8 +19,6 @@ var radius: float = 50:
 func _ready():
 	#editor_display_mesh.hide()
 	#Connect signals
-	local_area.body_entered.connect(body_entered)
-	local_area.area_shape_entered.connect(_area_entered)
 	
 	if(target_meta == null):
 		local_area.monitoring = false

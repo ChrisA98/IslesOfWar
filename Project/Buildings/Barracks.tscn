@@ -1,10 +1,19 @@
-[gd_scene load_steps=3 format=3 uid="uid://c33jxgp8lmppl"]
+[gd_scene load_steps=5 format=3 uid="uid://c33jxgp8lmppl"]
 
 [ext_resource type="PackedScene" uid="uid://s8v1hdp4b7u2" path="res://Buildings/Unit_building.tscn" id="1_r1xwx"]
 [ext_resource type="Script" path="res://Buildings/scripts/Barracks.gd" id="2_t33jg"]
 
+[sub_resource type="BoxMesh" id="BoxMesh_8pvv5"]
+
+[sub_resource type="StandardMaterial3D" id="StandardMaterial3D_xyfiq"]
+albedo_color = Color(0.384314, 0.541176, 0.996078, 1)
+
 [node name="Barracks" instance=ExtResource("1_r1xwx")]
 script = ExtResource("2_t33jg")
+
+[node name="MeshInstance3D" parent="." index="0"]
+mesh = SubResource("BoxMesh_8pvv5")
+surface_material_override/0 = SubResource("StandardMaterial3D_xyfiq")
 
 [node name="Barracks_Menu" type="Panel" parent="." index="4"]
 visible = false

@@ -82,7 +82,6 @@ func _think():
 				return
 			else:
 				var ttt = troop_train_patience_decide(u_res, faction_data["buildings"]["Barracks"]["unit_list"]["Knight"]["base_cost"][u_res])
-				print(ttt)
 				if(ttt == -1):
 					decide_resource_goal(u_res)
 					return
@@ -108,7 +107,7 @@ func _think():
 							complete_goal()
 						else:
 							bldg.queue_free()
-							add_goal("build","Fort")
+							add_goal("build","Farm")
 							return
 					"Lumber_mill","Mine_crystal","Mine_stone":	#Resource Node Buildings
 						var res_node = resource_locations[target_item][rng.randi_range(0,bases.size()-1)]
@@ -145,7 +144,6 @@ func build_patience_decide(res: String, amt: int) -> float:
 ##
 ## returns -1 if wait would be too long
 func troop_train_patience_decide(res: String, amt: int) -> float:
-	print(rpd[res] * troop_train_patience)
 	if(rpd[res] * troop_train_patience < amt):
 		return -1
 	return (amt/rpd[res])*(global.DAY_LENGTH+global.NIGHT_LENGTH)
@@ -190,7 +188,12 @@ func find_build_spot(targ, bldg):
 	while bldg.is_valid == false:
 		var variation = Vector3(rng.randf_range(1,targ.radius),0,rng.randf_range(1,targ.radius))
 		variation.y = ping_ground_depth(center + variation)
-		bldg.set_pos(center + variation)
+		if(!ping_ground(center + variation).name.contains("Floor")):
+			#Stop trying to build on top of buildings
+			continue
+		var np = center + variation
+		np.y -= center.y
+		bldg.set_pos(np)
 		await get_tree().physics_frame
 		attempts -= 1
 		if(attempts < 0):

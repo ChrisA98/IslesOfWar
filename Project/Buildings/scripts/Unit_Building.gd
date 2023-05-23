@@ -9,12 +9,6 @@ func _ready():
 	super()
 
 
-func set_pos(pos):
-	super(pos)
-	if near_base(actor_owner.bases) == false:
-		make_invalid()
-
-
 ## Spawn unit and validate spawning
 func use(_unit):
 	var new_unit = units[0].instantiate()

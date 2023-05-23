@@ -19,7 +19,20 @@ var rng = RandomNumberGenerator.new()
 
 #Game logic vars
 var building_snap = 0
-var preview_building: Node3D
+var preview_building: Node3D:
+	get:
+		return preview_building
+	set(value):
+		preview_building = value
+		## Hide build radii
+		if(value == null):
+			for i in player_controller.bases:
+				i.hide_radius()
+				return
+		#show build radii
+		if(preview_building.get_meta("show_base_radius") or preview_building.get_meta("show_base_radius")):
+			for i in player_controller.bases:
+				i.preview_radius()
 var click_mode: String = "select":
 	get:
 		return click_mode
@@ -87,7 +100,13 @@ func _ready():
 		loaded_buildings.push_back({})
 		game_actors[fac].faction_data = faction_data[fac].data
 		for b in faction_data[fac].data.buildings:
-			loaded_buildings[fac][b] = load("res://Buildings/"+b+".tscn")
+			
+			#check for file and load if exists
+			if(FileAccess.file_exists ("res://Buildings/"+b+".tscn")):
+				loaded_buildings[fac][b] = load("res://Buildings/"+b+".tscn")
+			else:
+				loaded_buildings[fac][b] = null
+				print_debug("Scene file: "+b+" does not exist")
 			if(fac == 0):
 				menu_buildings[faction_data[fac]["data"]["buildings"][b].base_display_name] = b
 				match faction_data[fac]["data"]["buildings"][b].category:
@@ -100,7 +119,6 @@ func _ready():
 					_:
 						pass
 	
-	print(menu_buildings)
 	call_deferred("prepare_bases")
 	call_deferred("custom_nav_setup")
 
@@ -131,7 +149,7 @@ func prepare_bases():
 
 
 #Called every frame. 'delta' is the elapsed time since the previous frame.
-func _process(delta):
+func _process(_delta):
 	sun_rotation = clampf(180-(180*($UI_Node/Time_Bar/Day_Cycle_Timer.time_left/global.DAY_LENGTH)),0,180)
 	$Sun.rotation_degrees = Vector3(-sun_rotation,90,-180)
 	$Sun.light_energy = clampf(sun_str - ((sun_str * (abs(sun_rotation-90)/180))*2), sun_str*.15,sun_str)
@@ -209,7 +227,7 @@ func custom_nav_setup():
 	NavigationServer3D.map_set_up(map, Vector3.UP)
 	NavigationServer3D.map_set_active(map, true)
 	nav_ready.emit()
-	NavigationServer3D.map_set_edge_connection_margin(get_world_3d().get_navigation_map(),3)
+	NavigationServer3D.map_set_edge_connection_margin(get_world_3d().get_navigation_map(),2)
 	update_navigation()
 
 
@@ -319,25 +337,19 @@ func group_selected_units():
 
 ##  Prepare new building for player
 func prep_player_building(id, menu):
-	print(menu)
-	print(id)
 	# Clear existing preview buildings
 	if(preview_building != null):
 		preview_building.queue_free()
 		preview_building = null
 	var new_build
-	if(menu == null):
-		new_build = loaded_buildings[0]["Base"].instantiate()
+	if(menu != null):
+		new_build = loaded_buildings[0][menu_buildings[menu.get_item_text(id)]].instantiate(1)
 	else:
-		new_build = loaded_buildings[0][menu_buildings[menu.get_item_text(id)]].instantiate()
+		new_build = loaded_buildings[0]["Base"].instantiate(1)
 	add_child(new_build)
 	new_build.init(position, building_snap, player_controller)
 	preview_building = new_build
-		
-	if(preview_building.name != "Base"):
-		for i in player_controller.bases:
-			i.preview_radius()
-			
+	
 	#reset menu visibility
 	UI_controller.close_menu(0)
 	click_mode = "build"
@@ -345,9 +357,9 @@ func prep_player_building(id, menu):
 
 ##  Prepare new building for other actors
 func prep_other_building(actor, bldg_name):
-	var new_build = loaded_buildings[actor.actor_ID][bldg_name].instantiate()
+	var new_build = loaded_buildings[actor.actor_ID][bldg_name].instantiate(1)
 	add_child(new_build)
-	new_build.init(position, building_snap, actor)
+	new_build.init(position, 0, actor)
 	
 	return new_build
 
@@ -438,21 +450,17 @@ func _on_ui_node_menu_opened():
 	click_mode = "menu"
 
 
-## Say/Night Cycle
+## Day/Night Cycle
 func _on_day_cycle_timer_timeout():
 	for f in game_actors:
 		f.adj_resource("food", f.units.size()* -1)
 	
 	if(day_cycle):
-		print("is night")
-		print(sun_rotation)
 		$Sun.visible = false
 		$Moon.visible = true
 		$Moon.rotation_degrees = Vector3(0,90,-180)
 		moon_rotation = 0
 	else:
-		print("is day")
-		print(moon_rotation)
 		year_day+=1
 		$Sun.visible = true
 		$Moon.visible = false
@@ -489,4 +497,3 @@ func click_mod_update(old, new):
 			# allow clicking of buildings again
 			for b in world_buildings:
 				b.hide_from_mouse(false)
-

@@ -1,0 +1,21 @@
+[gd_resource type="StandardMaterial3D" format=3 uid="uid://tv8sxu1y3jw7"]
+
+[resource]
+albedo_color = Color(0.384314, 0.541176, 0.996078, 1)
+metallic = 0.09
+metallic_specular = 0.68
+roughness = 0.11
+rim_enabled = true
+rim_tint = 0.42
+clearcoat_enabled = true
+clearcoat_roughness = 0.63
+anisotropy_enabled = true
+anisotropy = 0.94
+ao_enabled = true
+ao_light_affect = 1.0
+subsurf_scatter_strength = 1.0
+backlight_enabled = true
+backlight = Color(0.470588, 0.470588, 0.470588, 1)
+refraction_enabled = true
+refraction_scale = 0.45
+disable_receive_shadows = true
