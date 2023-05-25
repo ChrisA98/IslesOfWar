@@ -42,7 +42,7 @@ noise = SubResource("FastNoiseLite_l7j28")
 
 [sub_resource type="StandardMaterial3D" id="StandardMaterial3D_eng7j"]
 transparency = 1
-shading_mode = 2
+diffuse_mode = 1
 vertex_color_use_as_albedo = true
 albedo_color = Color(0.341176, 0.341176, 0.341176, 1)
 metallic_specular = 0.0
@@ -58,6 +58,7 @@ subsurf_scatter_strength = 0.79
 subsurf_scatter_transmittance_depth = 8.0
 subsurf_scatter_transmittance_boost = 1.0
 refraction_scale = 0.38
+disable_receive_shadows = true
 proximity_fade_distance = 0.0
 distance_fade_mode = 2
 
@@ -76,9 +77,9 @@ size = Vector3(50, 300, 50)
 layers = 17
 sorting_offset = 100.0
 cast_shadow = 0
+gi_mode = 0
 amount = 5
 lifetime = 8.0
-preprocess = 2.87
 visibility_aabb = AABB(-25, -40, -25, 50, 200, 50)
 process_material = SubResource("ParticleProcessMaterial_amkef")
 draw_pass_1 = SubResource("SphereMesh_em45m")
