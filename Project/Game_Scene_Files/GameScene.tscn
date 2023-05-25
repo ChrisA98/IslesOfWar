@@ -1,4 +1,4 @@
-[gd_scene load_steps=82 format=3 uid="uid://d32tym6bcdu7c"]
+[gd_scene load_steps=81 format=3 uid="uid://d32tym6bcdu7c"]
 
 [ext_resource type="Script" path="res://Game_Scene_Files/GameScene.gd" id="1_7pjje"]
 [ext_resource type="Script" path="res://Game_Scene_Files/UI_Builder.gd" id="2_wj4ul"]
@@ -13,7 +13,7 @@
 [ext_resource type="PackedScene" uid="uid://dire4xft8ffrx" path="res://World_Objects/Crystal_deposit.tscn" id="10_07s6x"]
 [ext_resource type="Script" path="res://Actor_Classes/GameCamera.gd" id="10_jjfcj"]
 [ext_resource type="Shader" uid="uid://cmyeclhrvhn2o" path="res://World_Generation/Foliage_Shader.tres" id="10_l3sfk"]
-[ext_resource type="Script" path="res://World_Generation/NavMeshManager.gd" id="12_bu3g8"]
+[ext_resource type="PackedScene" uid="uid://dbdak3gjtpx88" path="res://World_Generation/Explorable_Fog.tscn" id="12_875hf"]
 
 [sub_resource type="ProceduralSkyMaterial" id="ProceduralSkyMaterial_46wwo"]
 sky_horizon_color = Color(0.647059, 0.654902, 0.670588, 1)
@@ -44,7 +44,6 @@ fog_density = 0.0285
 fog_sky_affect = 0.0
 volumetric_fog_enabled = true
 volumetric_fog_density = 0.0
-volumetric_fog_anisotropy = 0.06
 adjustment_enabled = true
 adjustment_contrast = 1.2
 adjustment_saturation = 1.2
@@ -318,21 +317,13 @@ shader_parameter/__terrain_amplitude = 100.0
 shader_parameter/map_heightmap_size = Vector2(1000, 1000)
 shader_parameter/map_heightmap = ExtResource("7_ubyyn")
 
-[sub_resource type="NavigationMesh" id="NavigationMesh_p5w6u"]
-geometry_parsed_geometry_type = 1
-geometry_collision_mask = 4294934528
-geometry_source_geometry_mode = 1
-geometry_source_group_name = &"water"
-filter_baking_aabb = AABB(-500, 0, -500, 1000, 10, 1000)
-filter_baking_aabb_offset = Vector3(0, -1, 0)
-
-[sub_resource type="Gradient" id="Gradient_d2vmg"]
+[sub_resource type="Gradient" id="Gradient_iuqrm"]
 interpolation_mode = 2
 offsets = PackedFloat32Array(0.621212, 1)
 colors = PackedColorArray(1, 1, 1, 1, 1, 1, 1, 0)
 
 [sub_resource type="GradientTexture1D" id="GradientTexture1D_ogm3e"]
-gradient = SubResource("Gradient_d2vmg")
+gradient = SubResource("Gradient_iuqrm")
 
 [sub_resource type="ParticleProcessMaterial" id="ParticleProcessMaterial_p133b"]
 lifetime_randomness = 0.16
@@ -350,17 +341,19 @@ color = Color(0.835294, 0.835294, 0.835294, 1)
 color_ramp = SubResource("GradientTexture1D_ogm3e")
 sub_emitter_mode = 2
 sub_emitter_amount_at_end = 1
+collision_mode = 2
+collision_use_scale = true
 
-[sub_resource type="Gradient" id="Gradient_mryif"]
+[sub_resource type="Gradient" id="Gradient_xpn55"]
 colors = PackedColorArray(0.74558, 0.74558, 0.74558, 1, 1, 1, 1, 1)
 
-[sub_resource type="FastNoiseLite" id="FastNoiseLite_l7j28"]
+[sub_resource type="FastNoiseLite" id="FastNoiseLite_xswe7"]
 frequency = 0.0045
 
 [sub_resource type="NoiseTexture2D" id="NoiseTexture2D_hexlv"]
 seamless = true
-color_ramp = SubResource("Gradient_mryif")
-noise = SubResource("FastNoiseLite_l7j28")
+color_ramp = SubResource("Gradient_xpn55")
+noise = SubResource("FastNoiseLite_xswe7")
 
 [sub_resource type="StandardMaterial3D" id="StandardMaterial3D_y0vbv"]
 transparency = 1
@@ -387,8 +380,8 @@ lightmap_size_hint = Vector2i(41, 11)
 material = SubResource("StandardMaterial3D_y0vbv")
 radius = 1.25
 height = 2.5
-radial_segments = 16
-rings = 8
+radial_segments = 8
+rings = 2
 
 [sub_resource type="FastNoiseLite" id="FastNoiseLite_oe4h0"]
 seed = 2
@@ -936,18 +929,26 @@ transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 107.985, 9.91013, -12.6955)
 [node name="Crystal_deposit" parent="World" instance=ExtResource("10_07s6x")]
 transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 344.647, 3.05176e-05, 5.01563)
 
-[node name="water_navigation" type="NavigationRegion3D" parent="World" groups=["water"]]
-navigation_mesh = SubResource("NavigationMesh_p5w6u")
-script = ExtResource("12_bu3g8")
-agent_max_slope = 10.0
-agent_radius = 10.0
+[node name="Explorable_Fog" type="Node3D" parent="World"]
 
-[node name="Fog_Of_War_Edge" type="GPUParticles3D" parent="World"]
+[node name="RayCast3D" type="RayCast3D" parent="World/Explorable_Fog"]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, 200, 0)
+exclude_parent = false
+target_position = Vector3(0, -500, 0)
+collision_mask = 32768
+
+[node name="Fog_Of_War" parent="World/Explorable_Fog" instance=ExtResource("12_875hf")]
+
+[node name="Great_Fog_Wall" type="Node3D" parent="World"]
+
+[node name="Fog_Of_War_Edge" type="GPUParticles3D" parent="World/Great_Fog_Wall"]
 transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 555, 10, -555)
 layers = 16
+sorting_offset = 100.0
 amount = 400
 lifetime = 8.0
 preprocess = 7.0
+randomness = 0.6
 visibility_aabb = AABB(-71.389, -46.399, -68.944, 145, 200, 145)
 process_material = SubResource("ParticleProcessMaterial_p133b")
 draw_pass_1 = SubResource("SphereMesh_cyqkr")
@@ -1033,3 +1034,4 @@ sky_mode = 1
 
 [editable path="World/Forest"]
 [editable path="World/Stone_deposit"]
+[editable path="World/Explorable_Fog/Fog_Of_War"]

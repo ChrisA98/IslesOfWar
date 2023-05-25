@@ -188,7 +188,7 @@ func find_build_spot(targ, bldg):
 	while bldg.is_valid == false:
 		var variation = Vector3(rng.randf_range(1,targ.radius),0,rng.randf_range(1,targ.radius))
 		variation.y = ping_ground_depth(center + variation)
-		if(!ping_ground(center + variation).name.contains("Floor")):
+		if(!ping_ground(center + variation + Vector3(0,10,0)).name.contains("Floor")):
 			#Stop trying to build on top of buildings
 			continue
 		var np = center + variation

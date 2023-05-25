@@ -1,7 +1,8 @@
-[gd_scene load_steps=13 format=3 uid="uid://ccoruw5j562l7"]
+[gd_scene load_steps=14 format=3 uid="uid://ccoruw5j562l7"]
 
 [ext_resource type="Script" path="res://Parent_Scenes/Scripts/Building_Base.gd" id="1_y54u3"]
 [ext_resource type="Material" uid="uid://tv8sxu1y3jw7" path="res://Materials/preview_building.tres" id="2_y34xx"]
+[ext_resource type="PackedScene" uid="uid://p576jcs2kqxc" path="res://World_Generation/fog_breaker.tscn" id="3_02et3"]
 
 [sub_resource type="StandardMaterial3D" id="StandardMaterial3D_eebkm"]
 
@@ -107,5 +108,9 @@ randomness = 0.48
 visibility_aabb = AABB(-1.16615, -4, -1.13586, 2.33229, 8, 2.27171)
 process_material = SubResource("ParticleProcessMaterial_x0ttp")
 draw_pass_1 = SubResource("SphereMesh_7vuld")
+
+[node name="Fog_Breaker" parent="." instance=ExtResource("3_02et3")]
+transform = Transform3D(0.2, 0, 0, 0, 0.2, 0, 0, 0, 0.2, 0, 0, 0)
+visible = false
 
 [connection signal="input_event" from="StaticBody3D" to="." method="_on_static_body_3d_input_event"]

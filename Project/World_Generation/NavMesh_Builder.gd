@@ -47,9 +47,18 @@ func _ready():
 			i.get_child(0).get_child(0).set_meta("is_ground", true)
 			i.set_nav_region()
 	
-	$water_navigation.set_nav_region()
-	$water_navigation.navigation_mesh.set_filter_baking_aabb(AABB(Vector3(-chunk_size,-1.9,-chunk_size),Vector3(chunks*chunk_size,10,chunks*chunk_size)))
-	$water_navigation.update_navigation_mesh()
+	
+	var wtr_nav_region = NavigationRegion3D.new()
+	wtr_nav_region.set_script(nav_manager)
+	wtr_nav_region.agent_max_slope = 10
+	wtr_nav_region.agent_radius = 10
+	wtr_nav_region.add_to_group("water")
+	#add to world
+	add_child(wtr_nav_region)
+	get_child(-1).set_name("water_navigation")	
+	wtr_nav_region.set_nav_region()
+	wtr_nav_region.navigation_mesh.set_filter_baking_aabb(AABB(Vector3(-chunk_size,-1.9,-chunk_size),Vector3(chunks*chunk_size,10,chunks*chunk_size)))
+	wtr_nav_region.update_navigation_mesh()
 	
 	## Prepare Ground with level info
 	ground.mesh.surface_get_material(0).set_shader_parameter("water_table", water_table)
@@ -60,29 +69,52 @@ func _ready():
 	water.mesh.surface_get_material(0).set_shader_parameter("water_level", water_table)
 	water.mesh.surface_get_material(0).set_shader_parameter("t_height", terrain_amplitude)
 	
-	## Fog of war TEMPORARY
-	for j in range(14):
-		var t = find_children("Fog*","Node",false)[-1]
-		var te = t.duplicate()
+	## Fog of war walls
+	var fog_wall_size = chunk_size*chunks/75	#gets length	 of walls
+	var base_fog_wall = $Great_Fog_Wall.find_children("Fog*","Node",false)[-1]
+	base_fog_wall.position.x = ((chunk_size*chunks)/2) + 55
+	base_fog_wall.position.z = ((chunk_size*chunks*-1)/2) - 55
+	for j in range(fog_wall_size):
+		var te = base_fog_wall.duplicate()
 		te.position.x -= 75*j
-		add_child(te)
-	for j in range(14):
-		var t = find_children("Fog*","Node",false)[-1]
-		var te = t.duplicate()
+		$Great_Fog_Wall.add_child(te)
+	for j in range(fog_wall_size):
+		var te = base_fog_wall.duplicate()
 		te.position.z += 75*j
-		add_child(te)
-	for j in range(14):
-		var t = find_children("Fog*","Node",false)[-1]
-		var te = t.duplicate()
+		$Great_Fog_Wall.add_child(te)
+	for j in range(fog_wall_size):
+		var te = base_fog_wall.duplicate()
 		te.position.x -= 75*j
 		te.position.z = 555
-		add_child(te)
-	for j in range(15):
-		var t = find_children("Fog*","Node",false)[-1]
-		var te = t.duplicate()
+		$Great_Fog_Wall.add_child(te)
+	for j in range(fog_wall_size):
+		var te = base_fog_wall.duplicate()
 		te.position.z += 75*j
 		te.position.x = -555
-		add_child(te)
+		$Great_Fog_Wall.add_child(te)
+	call_deferred("build_fog_war",chunks)
+	
+
+
+func build_fog_war(chunks):
+	await get_tree().physics_frame
+	
+	## Fog of explorable
+	var fog_explor_range = (chunk_size*chunks)/25	#gets length of walls
+	var base_fog = $Explorable_Fog.find_children("Fog*","Node",false)[-1]
+	base_fog.position.x = ((chunk_size*chunks)/2) - 25
+	base_fog.position.z = ((chunk_size*chunks*-1)/2) + 25
+	var picker  = $Explorable_Fog/RayCast3D
+	for i in range(fog_explor_range):
+		for j in range(fog_explor_range):
+			var te = base_fog.duplicate()
+			te.position.x -= 25*j
+			te.position.z += 25*i
+			picker.position.x = te.position.x
+			picker.position.z = te.position.z 
+			picker.force_raycast_update()
+			te.position.y = picker.get_collision_point().y
+			$Explorable_Fog.add_child(te)
 
 
 #check if .exr files exist in target path
@@ -102,7 +134,6 @@ func find_files():
 
 
 func update_navigation_meshes(grp):
-	return
 	var targ = "Region"
 	if(grp != null):
 		targ += grp.get_slice("g",1)

@@ -1,0 +1,94 @@
+[gd_scene load_steps=11 format=3 uid="uid://dbdak3gjtpx88"]
+
+[ext_resource type="Script" path="res://Explorable_Fog.gd" id="1_rin6b"]
+
+[sub_resource type="Gradient" id="Gradient_iuqrm"]
+interpolation_mode = 2
+offsets = PackedFloat32Array(0.621212, 1)
+colors = PackedColorArray(1, 1, 1, 1, 1, 1, 1, 0)
+
+[sub_resource type="GradientTexture1D" id="GradientTexture1D_ogm3e"]
+gradient = SubResource("Gradient_iuqrm")
+
+[sub_resource type="ParticleProcessMaterial" id="ParticleProcessMaterial_amkef"]
+lifetime_randomness = 0.16
+emission_shape = 3
+emission_box_extents = Vector3(10, 10, 10)
+direction = Vector3(0, 1, 0)
+gravity = Vector3(0, 0, 0)
+initial_velocity_min = 1.0
+initial_velocity_max = 1.0
+linear_accel_min = 1.0
+linear_accel_max = 1.0
+scale_min = 14.83
+scale_max = 17.73
+color = Color(0.835294, 0.835294, 0.835294, 1)
+color_ramp = SubResource("GradientTexture1D_ogm3e")
+sub_emitter_mode = 2
+sub_emitter_amount_at_end = 1
+collision_mode = 2
+collision_use_scale = true
+
+[sub_resource type="Gradient" id="Gradient_mryif"]
+colors = PackedColorArray(0.74558, 0.74558, 0.74558, 1, 1, 1, 1, 1)
+
+[sub_resource type="FastNoiseLite" id="FastNoiseLite_l7j28"]
+frequency = 0.0045
+
+[sub_resource type="NoiseTexture2D" id="NoiseTexture2D_xf5jh"]
+seamless = true
+color_ramp = SubResource("Gradient_mryif")
+noise = SubResource("FastNoiseLite_l7j28")
+
+[sub_resource type="StandardMaterial3D" id="StandardMaterial3D_eng7j"]
+transparency = 1
+shading_mode = 2
+vertex_color_use_as_albedo = true
+albedo_color = Color(0.341176, 0.341176, 0.341176, 1)
+metallic_specular = 0.0
+roughness_texture = SubResource("NoiseTexture2D_xf5jh")
+emission_enabled = true
+emission = Color(0.596078, 0.596078, 0.596078, 1)
+emission_energy_multiplier = 0.23
+rim = 0.29
+rim_tint = 1.0
+heightmap_scale = 8.393
+subsurf_scatter_enabled = true
+subsurf_scatter_strength = 0.79
+subsurf_scatter_transmittance_depth = 8.0
+subsurf_scatter_transmittance_boost = 1.0
+refraction_scale = 0.38
+proximity_fade_distance = 0.0
+distance_fade_mode = 2
+
+[sub_resource type="SphereMesh" id="SphereMesh_em45m"]
+lightmap_size_hint = Vector2i(41, 11)
+material = SubResource("StandardMaterial3D_eng7j")
+radius = 1.25
+height = 2.5
+radial_segments = 8
+rings = 2
+
+[sub_resource type="BoxShape3D" id="BoxShape3D_dqk14"]
+size = Vector3(50, 300, 50)
+
+[node name="Fog_Of_War" type="GPUParticles3D"]
+layers = 17
+sorting_offset = 100.0
+cast_shadow = 0
+amount = 5
+lifetime = 8.0
+preprocess = 2.87
+visibility_aabb = AABB(-25, -40, -25, 50, 200, 50)
+process_material = SubResource("ParticleProcessMaterial_amkef")
+draw_pass_1 = SubResource("SphereMesh_em45m")
+script = ExtResource("1_rin6b")
+
+[node name="Area3D" type="Area3D" parent="."]
+input_ray_pickable = false
+metadata/is_fog_area = true
+
+[node name="CollisionShape3D" type="CollisionShape3D" parent="Area3D"]
+shape = SubResource("BoxShape3D_dqk14")
+
+[connection signal="body_exited" from="Area3D" to="." method="_body_exited"]

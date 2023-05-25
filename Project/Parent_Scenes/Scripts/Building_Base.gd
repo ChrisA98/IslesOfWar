@@ -14,6 +14,7 @@ signal died
 @onready var collision_box = $StaticBody3D/CollisionShape3D
 @onready var static_body = get_node("StaticBody3D")
 @onready var det_area = get_node("Detection_Area")
+@onready var fog_reg = get_node("Fog_Breaker")
 @onready var picker = get_node("StaticBody3D/RayCast3D")
 @onready var rally = $RallyPoint
 @onready var spawn = $SpawnPoint
@@ -38,6 +39,7 @@ var is_building : bool = false
 @onready var build_timer : float = build_time
 @onready var build_particles = get_node("GPUParticles3D")
 var magic_color : Color
+@export var fog_rev_radius : float = 50
 
 #Cost to build
 var cost = {"wood": 0,
@@ -150,6 +152,9 @@ func place():
 	is_building = true
 	build_particles.visible = true
 	build_particles.draw_pass_1.surface_get_material(0).albedo_color = magic_color
+	if(actor_owner.actor_ID == 0):
+		fog_reg.fog_break_radius = fog_rev_radius*.5
+		fog_reg.visible = true
 
 
 #Finish the building process
@@ -159,6 +164,7 @@ func finish_building():
 		mesh.mesh.surface_get_material(i).set_shader_parameter("magic_color", Color.FLORAL_WHITE)
 	build_particles.visible = false
 	mesh.transparency = 0
+	fog_reg.radius = fog_rev_radius
 
 
 ## Can place
@@ -197,7 +203,7 @@ func set_all_shader(shad):
 ## Check for collision at current location
 func check_collision(_buff_range):
 	for ar in det_area.get_overlapping_areas():
-		if !ar.has_meta("is_world_obj"):
+		if !ar.has_meta("is_world_obj") and !ar.has_meta("is_fog_area"):
 			return true
 	for bod in det_area.get_overlapping_bodies():
 		if bod.has_meta("is_ground"):

@@ -13,6 +13,7 @@ const MAX_SPEED = 10
 const ACCEL = 3
 var rng = RandomNumberGenerator.new()
 var gravity = ProjectSettings.get_setting("physics/3d/default_gravity")
+@onready var fog_reg = get_node("Fog_Breaker")
 
 var ai_mode :StringName = "idle_basic"
 var ai_methods : Dictionary = {
@@ -41,6 +42,7 @@ var actor_owner
 var unit_list
 var unit_name: String
 var is_selected: bool
+@export var fog_rev_radius : float = 50
 
 
 var pop_cost := 0
@@ -73,6 +75,9 @@ func _ready():
 	
 	nav_agent.waypoint_reached.connect(waypoint)
 	atk_timer.timeout.connect(attack)
+	if(actor_owner.actor_ID == 0):
+		fog_reg.fog_break_radius = fog_rev_radius*.5
+		fog_reg.visible = true
 
 
 ## Set target move location
@@ -206,7 +211,7 @@ func can_afford(builder_res, ):
 
 ## Unit is selected and make selection visible
 func select(state : bool = true):
-	$Valid_Region.visible = state
+	$Selection.visible = state
 
 
 ## Damage dealt
@@ -281,3 +286,9 @@ func delayed_delete():
 	actor_owner.update_pop()
 	unit_list.erase(self)
 	queue_free()
+
+
+func place_fog_breaker():
+	var tf = fog_reg.duplicate()
+	tf.position = position
+	get_parent().add_child(tf)

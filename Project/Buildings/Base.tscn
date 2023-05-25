@@ -49,6 +49,7 @@ transform = Transform3D(5, 0, 0, 0, 5, 0, 0, 0, 5, 0, 0, 0)
 script = ExtResource("2_hibt6")
 height = 2
 build_time = 0.0
+fog_rev_radius = 75.0
 metadata/show_base_radius = false
 
 [node name="MeshInstance3D" parent="." index="0"]

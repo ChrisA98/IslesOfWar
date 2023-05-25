@@ -1,6 +1,7 @@
-[gd_scene load_steps=6 format=3 uid="uid://cs2p3v3o53aki"]
+[gd_scene load_steps=7 format=3 uid="uid://cs2p3v3o53aki"]
 
 [ext_resource type="Script" path="res://Parent_Scenes/Scripts/Unit.gd" id="1_xwgnb"]
+[ext_resource type="PackedScene" uid="uid://p576jcs2kqxc" path="res://World_Generation/fog_breaker.tscn" id="2_510m0"]
 
 [sub_resource type="CylinderShape3D" id="CylinderShape3D_603ul"]
 
@@ -20,6 +21,7 @@ fill_to = Vector2(0.495146, 0.0242718)
 [node name="Unit_Base" type="CharacterBody3D"]
 collision_mask = 0
 script = ExtResource("1_xwgnb")
+fog_rev_radius = 75.0
 
 [node name="CollisionShape3D" type="CollisionShape3D" parent="."]
 transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, 0.995465, 0)
@@ -33,10 +35,10 @@ mesh = SubResource("CylinderMesh_ggawr")
 target_desired_distance = 3.0
 ignore_y = false
 
-[node name="Valid_Region" type="Node3D" parent="."]
+[node name="Selection" type="Node3D" parent="."]
 visible = false
 
-[node name="Decal" type="Decal" parent="Valid_Region"]
+[node name="Decal" type="Decal" parent="Selection"]
 transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, -0.0626185, 0)
 size = Vector3(4, 2, 4)
 texture_albedo = SubResource("GradientTexture2D_0hiou")
@@ -45,6 +47,8 @@ cull_mask = 1048574
 [node name="Attack_Timer" type="Timer" parent="."]
 process_priority = -1
 process_callback = 0
+
+[node name="Fog_Breaker" parent="." instance=ExtResource("2_510m0")]
 
 [connection signal="input_event" from="." to="." method="_on_input_event"]
 [connection signal="navigation_finished" from="NavigationAgent3D" to="." method="_on_navigation_agent_3d_navigation_finished"]
