@@ -17,7 +17,7 @@ var radius: float = 50:
 
 # Called when the node enters the scene tree for the first time.
 func _ready():
-	#editor_display_mesh.hide()
+	editor_display_mesh.hide()
 	#Connect signals
 	
 	if(target_meta == null):

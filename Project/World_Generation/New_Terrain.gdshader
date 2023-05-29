@@ -16,6 +16,10 @@ uniform sampler2D sand_norm_tex : source_color;
 uniform float min_rock_slope:hint_range(0.0,1.0) = 0.5;
 uniform float max_grass_slope:hint_range(0.0,1.0) = 0.9;
 
+//current fog
+uniform sampler2D fog;
+
+
 varying vec3 normal;
 varying float height;
 
@@ -76,4 +80,9 @@ void fragment(){
 	ROUGHNESS = .5;
 	NORMAL_MAP_DEPTH = mix(normal,mix(rock_normal, grass_normal, rock_grass_weight),0.5).y;
 	NORMAL_MAP = normalize(normal+mix(rock_normal, grass_normal, rock_grass_weight));
+	
+	vec4 fog_color = texture(fog, UV);
+	if(fog_color.r < 0.1){
+		ALBEDO = mix(ALBEDO, vec3 (0,0,0), .55);
+	}
 }

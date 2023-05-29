@@ -70,26 +70,26 @@ func _ready():
 	water.mesh.surface_get_material(0).set_shader_parameter("t_height", terrain_amplitude)
 	
 	## Fog of war walls
-	var fog_wall_size = chunk_size*chunks/75	#gets length	 of walls
+	var fog_wall_size = ((chunk_size*chunks)/65)+1	#gets length of walls
 	var base_fog_wall = $Great_Fog_Wall.find_children("Fog*","Node",false)[-1]
-	base_fog_wall.position.x = ((chunk_size*chunks)/2) + 55
-	base_fog_wall.position.z = ((chunk_size*chunks*-1)/2) - 55
+	base_fog_wall.position.x = ((chunk_size*chunks)/2) + 65
+	base_fog_wall.position.z = ((chunk_size*chunks*-1)/2) - 65
 	for j in range(fog_wall_size):
 		var te = base_fog_wall.duplicate()
-		te.position.x -= 75*j
+		te.position.x -= 65*j
 		$Great_Fog_Wall.add_child(te)
 	for j in range(fog_wall_size):
 		var te = base_fog_wall.duplicate()
-		te.position.z += 75*j
+		te.position.z += 65*j
 		$Great_Fog_Wall.add_child(te)
-	for j in range(fog_wall_size):
+	for j in range(fog_wall_size+1):
 		var te = base_fog_wall.duplicate()
-		te.position.x -= 75*j
+		te.position.x -= 65*j
 		te.position.z = 555
 		$Great_Fog_Wall.add_child(te)
-	for j in range(fog_wall_size):
+	for j in range(fog_wall_size+1):
 		var te = base_fog_wall.duplicate()
-		te.position.z += 75*j
+		te.position.z += 65*j
 		te.position.x = -555
 		$Great_Fog_Wall.add_child(te)
 	call_deferred("build_fog_war",chunks)

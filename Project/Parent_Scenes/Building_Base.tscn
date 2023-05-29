@@ -56,6 +56,7 @@ transform = Transform3D(5, 0, 0, 0, 5, 0, 0, 0, 5, 0, -0.0421534, 0)
 script = ExtResource("1_y54u3")
 metadata/show_base_radius = true
 metadata/has_build_radius = true
+metadata/reveals_fog = 0
 
 [node name="MeshInstance3D" type="MeshInstance3D" parent="."]
 transform = Transform3D(0.999995, -0.00318934, 0.000585354, 0.00318969, 0.999995, -0.000604614, -0.000583429, 0.000606472, 1, 0, 0.512184, 0)
@@ -111,6 +112,5 @@ draw_pass_1 = SubResource("SphereMesh_7vuld")
 
 [node name="Fog_Breaker" parent="." instance=ExtResource("3_02et3")]
 transform = Transform3D(0.2, 0, 0, 0, 0.2, 0, 0, 0, 0.2, 0, 0, 0)
-visible = false
 
 [connection signal="input_event" from="StaticBody3D" to="." method="_on_static_body_3d_input_event"]

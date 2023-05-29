@@ -8,6 +8,7 @@ extends Node3D
 preload("res://Faction_Resources/Amerulf_Resource.json")]
 @onready var game_actors = [$Player]
 @onready var global = get_node("/root/Global_Vars")
+@onready var player_fog_manager = get_node("Player/Fog_drawer")
 var loaded_buildings = []
 var world_units = []
 
@@ -28,7 +29,7 @@ var preview_building: Node3D:
 		if(value == null):
 			for i in player_controller.bases:
 				i.hide_radius()
-				return
+			return
 		#show build radii
 		if(preview_building.get_meta("show_base_radius") or preview_building.get_meta("show_base_radius")):
 			for i in player_controller.bases:
@@ -156,6 +157,11 @@ func _process(_delta):
 	moon_rotation = 180-(180*($UI_Node/Time_Bar/Day_Cycle_Timer.time_left/global.NIGHT_LENGTH))
 	$Moon.rotation_degrees = Vector3(-moon_rotation,90,-180)
 	$Moon.light_energy = moon_str - ((moon_str * (abs(moon_rotation-90)/180))*2) + moon_str*.02
+	if(day_cycle):
+		$UI_Node/Minimap/Clock_Back.rotation = deg_to_rad(sun_rotation-90)
+	else:
+		$UI_Node/Minimap/Clock_Back.rotation = deg_to_rad(moon_rotation+90)
+		
 
 
 ## on player input event
@@ -163,6 +169,7 @@ func _input(event):
 	if event.is_action_pressed("select_all_units"):
 		for u in player_controller.units:
 			selected_units.push_back(u)
+
 
 ###GAME FUNCTIONS###
 func set_map_snap(snp):
@@ -346,6 +353,7 @@ func prep_player_building(id, menu):
 		new_build = loaded_buildings[0][menu_buildings[menu.get_item_text(id)]].instantiate(1)
 	else:
 		new_build = loaded_buildings[0]["Base"].instantiate(1)
+	new_build.actor_owner = player_controller
 	add_child(new_build)
 	new_build.init(position, building_snap, player_controller)
 	preview_building = new_build
@@ -358,6 +366,7 @@ func prep_player_building(id, menu):
 ##  Prepare new building for other actors
 func prep_other_building(actor, bldg_name):
 	var new_build = loaded_buildings[actor.actor_ID][bldg_name].instantiate(1)
+	new_build.actor_owner = actor
 	add_child(new_build)
 	new_build.init(position, 0, actor)
 	
@@ -497,3 +506,11 @@ func click_mod_update(old, new):
 			# allow clicking of buildings again
 			for b in world_buildings:
 				b.hide_from_mouse(false)
+
+
+## Trigger when entity enters 
+func added_fog_revealer(child: Node):
+	if child.has_meta("reveals_fog"):
+		if(child.actor_owner == player_controller):
+			child.fog_reg.active = true
+			player_fog_manager.create_drawer(child)

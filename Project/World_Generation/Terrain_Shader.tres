@@ -173,7 +173,7 @@ input_name = "vertex"
 
 [resource]
 code = "shader_type spatial;
-render_mode diffuse_toon, specular_toon;
+render_mode blend_mix, depth_draw_opaque, cull_back, diffuse_toon, specular_toon;
 
 
 // Varyings
@@ -279,7 +279,6 @@ void fragment() {
 
 }
 "
-graph_offset = Vector2(-437.164, 246.261)
 modes/diffuse = 3
 modes/specular = 1
 varyings/t_height = "0,0"

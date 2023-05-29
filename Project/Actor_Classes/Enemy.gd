@@ -29,7 +29,7 @@ var rpd_goal := {
 ## Goal processing variables
 var current_goal : String
 var goal_queue := []
-var target_item : String 
+var target_item 
 
 ## Personality variables
 var troop_train_patience = .1
@@ -125,6 +125,8 @@ func _think():
 					return
 				think_timer.start(ttb)
 				return
+		"move troop to":
+			pass
 		_:
 			if !ponder():
 				return
@@ -193,7 +195,9 @@ func find_build_spot(targ, bldg):
 			continue
 		var np = center + variation
 		np.y -= center.y
-		bldg.set_pos(np)
+		if bldg.set_pos(np) == "cant see":
+			add_goal("move troop to", np, false) ## move troop to location to see it
+			return false
 		await get_tree().physics_frame
 		attempts -= 1
 		if(attempts < 0):
@@ -209,7 +213,7 @@ func check_for_buildings(bldg: String):
 	return false
 
 
-func add_goal(goal: String, trgt: String, think_after : bool = true):	
+func add_goal(goal: String, trgt, think_after : bool = true):	
 	goal_queue.push_back([current_goal,target_item])
 	current_goal = goal
 	target_item = trgt

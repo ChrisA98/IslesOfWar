@@ -21,7 +21,8 @@ fill_to = Vector2(0.495146, 0.0242718)
 [node name="Unit_Base" type="CharacterBody3D"]
 collision_mask = 0
 script = ExtResource("1_xwgnb")
-fog_rev_radius = 75.0
+fog_rev_radius = 25.0
+metadata/reveals_fog = 0
 
 [node name="CollisionShape3D" type="CollisionShape3D" parent="."]
 transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, 0.995465, 0)
@@ -49,6 +50,7 @@ process_priority = -1
 process_callback = 0
 
 [node name="Fog_Breaker" parent="." instance=ExtResource("2_510m0")]
+radius = 50.0
 
 [connection signal="input_event" from="." to="." method="_on_input_event"]
 [connection signal="navigation_finished" from="NavigationAgent3D" to="." method="_on_navigation_agent_3d_navigation_finished"]

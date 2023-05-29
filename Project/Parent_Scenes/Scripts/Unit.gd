@@ -7,6 +7,7 @@ class_name Unit_Base
 #signals
 signal selected
 signal died
+signal update_fog
 
 
 const MAX_SPEED = 10
@@ -78,6 +79,7 @@ func _ready():
 	if(actor_owner.actor_ID == 0):
 		fog_reg.fog_break_radius = fog_rev_radius*.5
 		fog_reg.visible = true
+	get_parent().added_fog_revealer(self)
 
 
 ## Set target move location
@@ -162,7 +164,8 @@ func wandering_basic(_delta):
 func travel(delta):
 	if nav_agent.is_navigation_finished():
 		return
-		
+	
+	update_fog.emit(self,position)
 	var current_agent_position: Vector3 = global_transform.origin
 	var next_path_position: Vector3 = nav_agent.get_next_path_position()
 	var new_velocity: Vector3 = next_path_position - current_agent_position
@@ -286,9 +289,3 @@ func delayed_delete():
 	actor_owner.update_pop()
 	unit_list.erase(self)
 	queue_free()
-
-
-func place_fog_breaker():
-	var tf = fog_reg.duplicate()
-	tf.position = position
-	get_parent().add_child(tf)

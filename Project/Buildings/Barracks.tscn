@@ -10,6 +10,7 @@ albedo_color = Color(0.384314, 0.541176, 0.996078, 1)
 
 [node name="Barracks" instance=ExtResource("1_r1xwx")]
 script = ExtResource("2_t33jg")
+build_time = 1.0
 
 [node name="MeshInstance3D" parent="." index="0"]
 mesh = SubResource("BoxMesh_8pvv5")

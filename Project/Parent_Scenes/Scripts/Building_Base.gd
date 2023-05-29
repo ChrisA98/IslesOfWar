@@ -5,6 +5,8 @@ class_name Building
 #Custom signals
 signal pressed
 signal died
+signal update_fog
+signal fog_radius_changed
 
 
 #REF vars
@@ -122,20 +124,33 @@ func set_pos(pos):
 		position.x = ceil(position.x/snapping)*snapping
 		position.z = ceil(position.z/snapping)*snapping
 	
-	#calculate ground normal validity
+	
+	# Check can afford
+	if can_afford(actor_owner.resources) !=null:
+		make_invalid()
+		return "cant afford"
+	
+	##check for collisions
+	if check_collision(collision_buffer):
+		make_invalid()
+		return "colliding"	
+		
+	# Calculate ground normal validity
 	if (Vector3.UP.dot(picker.get_collision_normal()) < .93):
 		make_invalid()
 		return
 	
-	##make invalid if locked to base radius
+	## Make invalid if locked to base radius
 	if(get_meta("show_base_radius")):
 		if near_base(actor_owner.bases) == false:
 			make_invalid()
-			return
+			return "out of zone"
 	
-	if check_collision(collision_buffer):
+	## Make sure can be seen
+	if !is_visible_area() and type != "Base":
 		make_invalid()
-		return
+		return "cant see"
+	
 	make_valid()
 
 
@@ -152,9 +167,10 @@ func place():
 	is_building = true
 	build_particles.visible = true
 	build_particles.draw_pass_1.surface_get_material(0).albedo_color = magic_color
+	fog_reg.fog_break_radius = fog_rev_radius*.5
 	if(actor_owner.actor_ID == 0):
-		fog_reg.fog_break_radius = fog_rev_radius*.5
-		fog_reg.visible = true
+		get_parent().added_fog_revealer(self)
+		update_fog.emit(self,position)
 
 
 #Finish the building process
@@ -164,14 +180,14 @@ func finish_building():
 		mesh.mesh.surface_get_material(i).set_shader_parameter("magic_color", Color.FLORAL_WHITE)
 	build_particles.visible = false
 	mesh.transparency = 0
-	fog_reg.radius = fog_rev_radius
+	await get_tree().physics_frame
+	fog_reg.fog_break_radius = fog_rev_radius
+	update_fog.emit(self,position)
+	fog_radius_changed.emit(self)
 
 
 ## Can place
 func make_valid():
-	if can_afford(actor_owner.resources) !=null:
-		make_invalid()
-		return
 	is_valid = true
 	set_mat_over_color(Color.CORNFLOWER_BLUE)
 
@@ -207,6 +223,14 @@ func check_collision(_buff_range):
 			return true
 	for bod in det_area.get_overlapping_bodies():
 		if bod.has_meta("is_ground"):
+			return true
+	return false
+
+
+## Check that building is in visible area
+func is_visible_area():	
+	for ar in fog_reg.detect_area.get_overlapping_areas():
+		if(ar.has_meta("fog_owner_id")):
 			return true
 	return false
 

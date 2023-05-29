@@ -12,8 +12,12 @@ albedo_color = Color(0.384314, 0.541176, 0.996078, 1)
 script = ExtResource("2_rafk1")
 resource = "riches"
 metadata/show_base_radius = true
+metadata/reveals_fog = true
 
 [node name="MeshInstance3D" parent="." index="0"]
 transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, 0.512184, 0)
 mesh = SubResource("BoxMesh_8pvv5")
 surface_material_override/0 = SubResource("StandardMaterial3D_xyfiq")
+
+[node name="Fog_Breaker" parent="." index="7"]
+visible = false
