@@ -79,7 +79,9 @@ func _ready():
 	if(actor_owner.actor_ID == 0):
 		fog_reg.fog_break_radius = fog_rev_radius*.5
 		fog_reg.visible = true
+		fog_reg.active = true
 	get_parent().added_fog_revealer(self)
+	fog_reg.activate_area()
 
 
 ## Set target move location

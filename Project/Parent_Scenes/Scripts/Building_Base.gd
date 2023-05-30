@@ -65,7 +65,7 @@ func _ready():
 	prev_mat = prev_mat.duplicate(true)
 	build_shader = build_shader.duplicate(true)
 	build_particles.visible = false
-	pass
+	position = Vector3(0,-100,0)
 
 
 func _physics_process(delta):
@@ -81,7 +81,7 @@ func _physics_process(delta):
 
 ## Initialize certain elements at start
 func init(pos, snap: int, actor: Node):
-	position = pos
+	#position = pos
 	mesh.transparency = .55
 	static_body.set_ray_pickable(false)
 	actor_owner = actor
@@ -168,9 +168,11 @@ func place():
 	build_particles.visible = true
 	build_particles.draw_pass_1.surface_get_material(0).albedo_color = magic_color
 	fog_reg.fog_break_radius = fog_rev_radius*.5
+	fog_reg.active = true
 	if(actor_owner.actor_ID == 0):
 		get_parent().added_fog_revealer(self)
 		update_fog.emit(self,position)
+		fog_reg.activate_area()
 
 
 #Finish the building process
@@ -229,7 +231,7 @@ func check_collision(_buff_range):
 
 ## Check that building is in visible area
 func is_visible_area():	
-	for ar in fog_reg.detect_area.get_overlapping_areas():
+	for ar in det_area.get_overlapping_areas():
 		if(ar.has_meta("fog_owner_id")):
 			return true
 	return false

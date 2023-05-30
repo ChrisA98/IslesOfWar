@@ -98,6 +98,96 @@ fill_from = Vector2(0.5, 0.5)
 [sub_resource type="CameraAttributesPractical" id="CameraAttributesPractical_g3y50"]
 dof_blur_amount = 0.03
 
+[sub_resource type="Gradient" id="Gradient_12c41"]
+colors = PackedColorArray(0.8769, 0.632388, 1, 1, 1, 0.54902, 1, 0.247059)
+
+[sub_resource type="GradientTexture2D" id="GradientTexture2D_mljiv"]
+gradient = SubResource("Gradient_12c41")
+fill_to = Vector2(0, 1)
+
+[sub_resource type="StyleBoxTexture" id="StyleBoxTexture_e61bh"]
+texture = SubResource("GradientTexture2D_mljiv")
+
+[sub_resource type="Theme" id="Theme_ut02k"]
+AcceptDialog/styles/panel = null
+HSeparator/styles/separator = null
+ItemList/styles/panel = null
+Panel/styles/panel = SubResource("StyleBoxTexture_e61bh")
+PanelContainer/styles/panel = null
+PopupDialog/styles/panel = null
+PopupMenu/styles/labeled_separator_left = null
+PopupMenu/styles/labeled_separator_right = null
+PopupMenu/styles/panel = null
+PopupMenu/styles/panel_disabled = null
+PopupMenu/styles/separator = null
+PopupPanel/styles/panel = null
+ScrollContainer/styles/panel = null
+TabContainer/styles/panel = null
+TooltipPanel/styles/panel = null
+Tree/styles/panel = null
+VSeparator/styles/separator = null
+
+[sub_resource type="Gradient" id="Gradient_b6hmg"]
+interpolation_mode = 2
+colors = PackedColorArray(0.383293, 0.763558, 1, 1, 1.20327e-06, 0.337756, 0.401284, 1)
+
+[sub_resource type="GradientTexture1D" id="GradientTexture1D_8euv3"]
+gradient = SubResource("Gradient_b6hmg")
+
+[sub_resource type="FastNoiseLite" id="FastNoiseLite_6n0eb"]
+noise_type = 3
+fractal_type = 2
+fractal_octaves = 4
+fractal_lacunarity = 2.142
+fractal_gain = 1.916
+fractal_weighted_strength = 1.0
+fractal_ping_pong_strength = 7.072
+
+[sub_resource type="NoiseTexture2D" id="NoiseTexture2D_pd0fy"]
+seamless = true
+seamless_blend_skirt = 0.596
+as_normal_map = true
+noise = SubResource("FastNoiseLite_6n0eb")
+
+[sub_resource type="FastNoiseLite" id="FastNoiseLite_vgweg"]
+noise_type = 3
+seed = 3
+fractal_type = 2
+
+[sub_resource type="NoiseTexture2D" id="NoiseTexture2D_cxok4"]
+seamless = true
+as_normal_map = true
+bump_strength = 12.9
+noise = SubResource("FastNoiseLite_vgweg")
+
+[sub_resource type="ShaderMaterial" id="ShaderMaterial_5qp3h"]
+render_priority = 0
+shader = ExtResource("4_m0yv6")
+shader_parameter/t_height = 100.0
+shader_parameter/water_level = 7.0
+shader_parameter/tide = 2.871
+shader_parameter/water_turbulence = 6.652
+shader_parameter/water_alb = Color(0.392157, 0.831373, 0.898039, 1)
+shader_parameter/wave_direction_1 = Vector2(2, -2)
+shader_parameter/wave_direction_2 = Vector2(-2, 2)
+shader_parameter/time_scale = 0.01
+shader_parameter/heightmap = ExtResource("7_ubyyn")
+shader_parameter/water_alb_tex = SubResource("GradientTexture1D_8euv3")
+shader_parameter/water_disp_tex_1 = SubResource("NoiseTexture2D_pd0fy")
+shader_parameter/water_disp_tex_2 = SubResource("NoiseTexture2D_cxok4")
+
+[sub_resource type="PlaneMesh" id="PlaneMesh_02ixx"]
+material = SubResource("ShaderMaterial_5qp3h")
+size = Vector2(1000, 1000)
+subdivide_width = 750
+subdivide_depth = 750
+
+[sub_resource type="BoxShape3D" id="BoxShape3D_cixmr"]
+size = Vector3(1000, 100, 1000)
+
+[sub_resource type="BoxShape3D" id="BoxShape3D_gubrw"]
+size = Vector3(1000, 1, 1000)
+
 [sub_resource type="Gradient" id="Gradient_1g27v"]
 interpolation_mode = 2
 colors = PackedColorArray(0.442911, 0.442911, 0.442909, 1, 0.929412, 0.945098, 1, 1)
@@ -197,96 +287,6 @@ material = SubResource("ShaderMaterial_rie7d")
 size = Vector2(1000, 1000)
 subdivide_width = 1500
 subdivide_depth = 1500
-
-[sub_resource type="Gradient" id="Gradient_b6hmg"]
-interpolation_mode = 2
-colors = PackedColorArray(0.383293, 0.763558, 1, 1, 1.20327e-06, 0.337756, 0.401284, 1)
-
-[sub_resource type="GradientTexture1D" id="GradientTexture1D_8euv3"]
-gradient = SubResource("Gradient_b6hmg")
-
-[sub_resource type="FastNoiseLite" id="FastNoiseLite_6n0eb"]
-noise_type = 3
-fractal_type = 2
-fractal_octaves = 4
-fractal_lacunarity = 2.142
-fractal_gain = 1.916
-fractal_weighted_strength = 1.0
-fractal_ping_pong_strength = 7.072
-
-[sub_resource type="NoiseTexture2D" id="NoiseTexture2D_pd0fy"]
-seamless = true
-seamless_blend_skirt = 0.596
-as_normal_map = true
-noise = SubResource("FastNoiseLite_6n0eb")
-
-[sub_resource type="FastNoiseLite" id="FastNoiseLite_vgweg"]
-noise_type = 3
-seed = 3
-fractal_type = 2
-
-[sub_resource type="NoiseTexture2D" id="NoiseTexture2D_cxok4"]
-seamless = true
-as_normal_map = true
-bump_strength = 12.9
-noise = SubResource("FastNoiseLite_vgweg")
-
-[sub_resource type="ShaderMaterial" id="ShaderMaterial_5qp3h"]
-render_priority = 0
-shader = ExtResource("4_m0yv6")
-shader_parameter/t_height = 100.0
-shader_parameter/water_level = 7.0
-shader_parameter/tide = 2.871
-shader_parameter/water_turbulence = 6.652
-shader_parameter/water_alb = Color(0.392157, 0.831373, 0.898039, 1)
-shader_parameter/wave_direction_1 = Vector2(2, -2)
-shader_parameter/wave_direction_2 = Vector2(-2, 2)
-shader_parameter/time_scale = 0.01
-shader_parameter/heightmap = ExtResource("7_ubyyn")
-shader_parameter/water_alb_tex = SubResource("GradientTexture1D_8euv3")
-shader_parameter/water_disp_tex_1 = SubResource("NoiseTexture2D_pd0fy")
-shader_parameter/water_disp_tex_2 = SubResource("NoiseTexture2D_cxok4")
-
-[sub_resource type="PlaneMesh" id="PlaneMesh_02ixx"]
-material = SubResource("ShaderMaterial_5qp3h")
-size = Vector2(1000, 1000)
-subdivide_width = 750
-subdivide_depth = 750
-
-[sub_resource type="Gradient" id="Gradient_12c41"]
-colors = PackedColorArray(0.8769, 0.632388, 1, 1, 1, 0.54902, 1, 0.247059)
-
-[sub_resource type="GradientTexture2D" id="GradientTexture2D_mljiv"]
-gradient = SubResource("Gradient_12c41")
-fill_to = Vector2(0, 1)
-
-[sub_resource type="StyleBoxTexture" id="StyleBoxTexture_e61bh"]
-texture = SubResource("GradientTexture2D_mljiv")
-
-[sub_resource type="Theme" id="Theme_ut02k"]
-AcceptDialog/styles/panel = null
-HSeparator/styles/separator = null
-ItemList/styles/panel = null
-Panel/styles/panel = SubResource("StyleBoxTexture_e61bh")
-PanelContainer/styles/panel = null
-PopupDialog/styles/panel = null
-PopupMenu/styles/labeled_separator_left = null
-PopupMenu/styles/labeled_separator_right = null
-PopupMenu/styles/panel = null
-PopupMenu/styles/panel_disabled = null
-PopupMenu/styles/separator = null
-PopupPanel/styles/panel = null
-ScrollContainer/styles/panel = null
-TabContainer/styles/panel = null
-TooltipPanel/styles/panel = null
-Tree/styles/panel = null
-VSeparator/styles/separator = null
-
-[sub_resource type="BoxShape3D" id="BoxShape3D_cixmr"]
-size = Vector3(1000, 100, 1000)
-
-[sub_resource type="BoxShape3D" id="BoxShape3D_gubrw"]
-size = Vector3(1000, 1, 1000)
 
 [sub_resource type="StandardMaterial3D" id="StandardMaterial3D_01r5d"]
 render_priority = -1
@@ -699,6 +699,7 @@ scale = Vector2(2.25078, 2.25078)
 texture = SubResource("GradientTexture2D_uejnh")
 
 [node name="SubViewportContainer" type="SubViewportContainer" parent="UI_Node/Minimap"]
+layout_mode = 0
 offset_left = 45.0
 offset_top = -14.68
 offset_right = 220.0
@@ -719,18 +720,6 @@ cull_mask = 2
 attributes = SubResource("CameraAttributesPractical_g3y50")
 projection = 1
 size = 1000.0
-
-[node name="Visual_Ground" type="MeshInstance3D" parent="UI_Node/Minimap/SubViewportContainer/SubViewport"]
-layers = 3
-cast_shadow = 2
-mesh = SubResource("PlaneMesh_ssgws")
-skeleton = NodePath("")
-
-[node name="Water" type="MeshInstance3D" parent="UI_Node/Minimap/SubViewportContainer/SubViewport"]
-transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, 0, -7)
-layers = 32769
-mesh = SubResource("PlaneMesh_02ixx")
-skeleton = NodePath("../Visual_Ground")
 
 [node name="Clock_Back" type="Sprite2D" parent="UI_Node/Minimap"]
 position = Vector2(-958, -448.48)
@@ -943,7 +932,6 @@ shape = SubResource("BoxShape3D_gubrw")
 
 [node name="Visual_Ground" type="MeshInstance3D" parent="World"]
 layers = 3
-cast_shadow = 2
 mesh = SubResource("PlaneMesh_ssgws")
 skeleton = NodePath("")
 
@@ -1040,6 +1028,7 @@ draw_pass_3 = SubResource("PlaneMesh_wopk1")
 
 [node name="Selection_square" type="Decal" parent="Player"]
 visible = false
+layers = 2
 size = Vector3(1, 20, 1)
 texture_albedo = SubResource("NoiseTexture2D_p3d2n")
 
@@ -1054,6 +1043,7 @@ shape = SubResource("BoxShape3D_rb27j")
 own_world_3d = true
 world_3d = SubResource("World3D_s03bo")
 transparent_bg = true
+debug_draw = 1
 size = Vector2i(5000, 5000)
 render_target_update_mode = 4
 script = ExtResource("3_vc5fr")
@@ -1064,7 +1054,7 @@ projection = 1
 size = 1000.0
 
 [node name="Sun" type="DirectionalLight3D" parent="."]
-transform = Transform3D(2.21801e-08, 0.200172, 0.979761, -1.29113e-07, -0.979761, 0.200172, 1, -1.3094e-07, 4.11362e-09, 0, 0, 0)
+transform = Transform3D(2.21801e-08, 0.200172, 0.979761, -1.29113e-07, -0.979761, 0.200172, 1, -1.3094e-07, 4.11361e-09, 0, 0, 0)
 light_cull_mask = 4294967279
 shadow_enabled = true
 shadow_reverse_cull_face = true

@@ -50,8 +50,13 @@ process_priority = -1
 process_callback = 0
 
 [node name="Fog_Breaker" parent="." instance=ExtResource("2_510m0")]
-radius = 50.0
+
+[node name="RayCast3D" type="RayCast3D" parent="."]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, 250, 0)
+target_position = Vector3(0, -500, 0)
 
 [connection signal="input_event" from="." to="." method="_on_input_event"]
 [connection signal="navigation_finished" from="NavigationAgent3D" to="." method="_on_navigation_agent_3d_navigation_finished"]
 [connection signal="velocity_computed" from="NavigationAgent3D" to="." method="_on_NavigationAgent_velocity_computed"]
+
+[editable path="Fog_Breaker"]

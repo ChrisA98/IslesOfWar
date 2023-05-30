@@ -78,7 +78,7 @@ void fragment(){
 	ALBEDO = mix(sand_albedo, rockgrass_albedo, sand_rockgrass_weight);
 	SPECULAR = 0.02;
 	ROUGHNESS = .5;
-	NORMAL_MAP_DEPTH = mix(normal,mix(rock_normal, grass_normal, rock_grass_weight),0.5).y;
+	NORMAL_MAP_DEPTH = normal.y;
 	NORMAL_MAP = normalize(normal+mix(rock_normal, grass_normal, rock_grass_weight));
 	
 	vec4 fog_color = texture(fog, UV);

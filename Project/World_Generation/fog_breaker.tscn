@@ -12,6 +12,8 @@ script = ExtResource("1_xnjic")
 
 [node name="Area3D" type="Area3D" parent="."]
 input_ray_pickable = false
+monitoring = false
+monitorable = false
 metadata/is_fog_area = true
 metadata/fog_owner_id = 0
 

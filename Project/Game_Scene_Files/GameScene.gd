@@ -506,11 +506,14 @@ func click_mod_update(old, new):
 			# allow clicking of buildings again
 			for b in world_buildings:
 				b.hide_from_mouse(false)
+		["build", _]:
+			if(preview_building != null and new != "select"):
+				preview_building.queue_free()
+				preview_building = null
 
 
 ## Trigger when entity enters 
 func added_fog_revealer(child: Node):
 	if child.has_meta("reveals_fog"):
 		if(child.actor_owner == player_controller):
-			child.fog_reg.active = true
 			player_fog_manager.create_drawer(child)
