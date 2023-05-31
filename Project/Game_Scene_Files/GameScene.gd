@@ -75,6 +75,9 @@ func _ready():
 	player_controller.res_changed.connect(set_resource)
 	player_controller.pop_changed.connect(set_pop)
 	
+	# UI Signals
+	UI_controller.minimap_clicked.connect(_minimap_Clicked)
+	
 	# Connect gamescene signals
 	click_mode_changed.connect(click_mod_update)
 	
@@ -158,9 +161,9 @@ func _process(_delta):
 	$Moon.rotation_degrees = Vector3(-moon_rotation,90,-180)
 	$Moon.light_energy = moon_str - ((moon_str * (abs(moon_rotation-90)/180))*2) + moon_str*.02
 	if(day_cycle):
-		$UI_Node/Minimap/Clock_Back.rotation = deg_to_rad(sun_rotation-90)
+		$UI_Node/Time_Bar/Clock_Back.rotation = deg_to_rad(sun_rotation-90)
 	else:
-		$UI_Node/Minimap/Clock_Back.rotation = deg_to_rad(moon_rotation+90)
+		$UI_Node/Time_Bar/Clock_Back.rotation = deg_to_rad(moon_rotation+90)
 		
 
 
@@ -401,11 +404,11 @@ func building_pressed(building):
 
 ## Clicks on world
 func ground_click(_camera, event, pos, _normal, _shape_idx, shape):
-	#print(pos)
 	match click_mode:
 		"build":
 			preview_building.set_pos(pos)
 			if event is InputEventMouseButton and Input.is_action_just_released("lmb"):
+				print(pos)
 				if player_controller.place_building(shape.get_groups()[0], preview_building):
 					#Reset click mode
 					click_mode = "select"
@@ -513,6 +516,12 @@ func click_mod_update(old, new):
 				preview_building.queue_free()
 				preview_building = null
 
+
+## Minimap clicked signal recieved
+func _minimap_Clicked(command : String, pos : Vector2):
+	player_controller.get_child(0).position.x = pos.x
+	player_controller.get_child(0).position.y = 100
+	player_controller.get_child(0).position.z = pos.y
 
 ## Trigger when entity enters 
 func added_fog_revealer(child: Node):

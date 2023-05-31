@@ -2,6 +2,7 @@ extends Control
 
 #signals
 signal menu_opened
+signal minimap_clicked
 
 
 @onready var gamescene = get_node("..")
@@ -9,15 +10,14 @@ signal menu_opened
 @onready var menus = [$Build_Menu]
 @onready var unit_bar = get_node("Unit_List")
 @onready var minmap = get_node("Minimap")
-@onready var res_displays = {"wood": $Res_Bar/Wood/Amount,
-"stone": $Res_Bar/Stone/Amount,
-"riches": $Res_Bar/Riches/Amount,
-"crystals": $Res_Bar/Crystal/Amount,
-"food": $Res_Bar/Food/Amount,
+@onready var res_displays = {"wood": $Minimap/Res_Bar/Wood/Amount,
+"stone": $Minimap/Res_Bar/Stone/Amount,
+"riches": $Minimap/Res_Bar/Riches/Amount,
+"crystals": $Minimap/Res_Bar/Crystal/Amount,
+"food": $Minimap/Res_Bar/Food/Amount,
 "pop": $Minimap/Pop}
 @onready var global = get_node("/root/Global_Vars")
 var buttons := []
-@onready var snap_button := get_node("Minimap/Snap")
 var act_unit_rect := []
 
 ## Ref Vars
@@ -37,7 +37,7 @@ func _ready():
 		i.visible = false
 	
 	
-	for i in minmap.get_children():
+	for i in minmap.get_child(1).get_children():
 		if i.name.contains("Button"):
 			buttons.push_back(i)
 
@@ -109,6 +109,7 @@ func _on_build_button_pressed():
 
 ## Snap to grid button
 func _on_snap_pressed():
+	var snap_button = buttons[0]
 	match snap_button.text:
 		"Snap":
 			snap_button.text = "x5"
@@ -138,3 +139,16 @@ func update_clock():
 	$Time_Bar/BoxContainer/Date.clear()
 	$Time_Bar/BoxContainer/Date.push_color(Color.BLACK)
 	$Time_Bar/BoxContainer/Date.add_text(global.month_to_string(game_scene.year_day,game_scene.year))
+
+
+## Minimap input event
+func minimap_Input(event):
+	# Minimap is clicked once
+	if Input.is_action_just_released("lmb"):
+		var world_width = $"../World/Visual_Ground".mesh.size.x
+		var mtw_ration = world_width/$Minimap/Minimap_Container.size.x
+		var world_pos = (event.position * mtw_ration)
+		world_pos.x -= world_width/2
+		world_pos.y -= world_width/2
+		minimap_clicked.emit("move",world_pos)
+	

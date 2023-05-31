@@ -17,6 +17,8 @@ texture = SubResource("GradientTexture2D_iqgm3")
 
 [resource]
 AcceptDialog/styles/panel = null
+Button/colors/font_color = Color(0.478431, 0.180392, 0.47451, 1)
+Button/constants/outline_size = 6
 Button/styles/disabled = null
 Button/styles/focus = null
 Button/styles/hover = null

@@ -3,7 +3,7 @@ extends GPUParticles3D
 
 func enable_fog(state:bool = true):
 	emitting = state
-	$Area3D.monitoring = state
+	$Area3D.set_deferred("monitoring",state)
 
 
 func _body_exited(body):

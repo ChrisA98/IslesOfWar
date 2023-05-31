@@ -80,7 +80,7 @@ func _physics_process(delta):
 			return
 
 ## Initialize certain elements at start
-func init(pos, snap: int, actor: Node):
+func init(_pos, snap: int, actor: Node):
 	#position = pos
 	mesh.transparency = .55
 	static_body.set_ray_pickable(false)

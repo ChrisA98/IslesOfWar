@@ -1,4 +1,4 @@
-[gd_scene load_steps=94 format=3 uid="uid://d32tym6bcdu7c"]
+[gd_scene load_steps=99 format=3 uid="uid://d32tym6bcdu7c"]
 
 [ext_resource type="Script" path="res://Game_Scene_Files/GameScene.gd" id="1_7pjje"]
 [ext_resource type="Script" path="res://Game_Scene_Files/UI_Builder.gd" id="2_wj4ul"]
@@ -119,8 +119,8 @@ fill_to = Vector2(0.730769, 0.350427)
 [sub_resource type="CanvasItemMaterial" id="CanvasItemMaterial_fbdp7"]
 
 [sub_resource type="Gradient" id="Gradient_cwsep"]
-offsets = PackedFloat32Array(0, 0.574194, 0.593548)
-colors = PackedColorArray(0, 0, 0, 1, 0.232258, 0.232258, 0.232258, 1, 0, 0, 0, 0)
+offsets = PackedFloat32Array(0, 0.576271, 0.593548)
+colors = PackedColorArray(0.827451, 0.482353, 0.819608, 1, 0.905882, 0.701961, 0.960784, 1, 0, 0, 0, 0)
 
 [sub_resource type="GradientTexture2D" id="GradientTexture2D_g6uko"]
 gradient = SubResource("Gradient_cwsep")
@@ -142,6 +142,26 @@ default_font_size = 23
 
 [sub_resource type="CameraAttributesPractical" id="CameraAttributesPractical_g3y50"]
 dof_blur_amount = 0.03
+
+[sub_resource type="Theme" id="Theme_y65pn"]
+default_font_size = 15
+RichTextLabel/colors/default_color = Color(0, 0, 0, 1)
+
+[sub_resource type="Theme" id="Theme_wig44"]
+default_font_size = 15
+RichTextLabel/colors/default_color = Color(0, 0, 0, 1)
+
+[sub_resource type="Theme" id="Theme_tifnh"]
+default_font_size = 15
+RichTextLabel/colors/default_color = Color(0, 0, 0, 1)
+
+[sub_resource type="Theme" id="Theme_bmrq3"]
+default_font_size = 15
+RichTextLabel/colors/default_color = Color(0, 0, 0, 1)
+
+[sub_resource type="Theme" id="Theme_peh88"]
+default_font_size = 15
+RichTextLabel/colors/default_color = Color(0, 0, 0, 1)
 
 [sub_resource type="ParticleProcessMaterial" id="ParticleProcessMaterial_84dyp"]
 emission_shape = 3
@@ -577,24 +597,44 @@ grow_vertical = 2
 [node name="Time_Bar" type="Panel" parent="UI_Node"]
 self_modulate = Color(1, 1, 1, 0)
 layout_mode = 1
-anchors_preset = -1
-anchor_right = 0.214
-anchor_bottom = 0.161
-grow_horizontal = 0
 
-[node name="TextureRect" type="TextureRect" parent="UI_Node/Time_Bar"]
-offset_left = -39.0
-offset_top = -13.0
-offset_right = 276.0
-offset_bottom = 176.0
+[node name="Clock_Frame" type="TextureRect" parent="UI_Node/Time_Bar"]
+layout_mode = 1
+anchors_preset = -1
+offset_left = -55.0
+offset_top = -10.0
+offset_right = 315.0
+offset_bottom = 189.0
 texture = ExtResource("3_mxfke")
 expand_mode = 1
+stretch_mode = 4
+
+[node name="Clock_Back" type="TextureRect" parent="UI_Node/Time_Bar"]
+layout_mode = 1
+offset_left = 10.0
+offset_top = 15.0
+offset_right = 112.0
+offset_bottom = 117.0
+pivot_offset = Vector2(51, 51)
+texture = ExtResource("6_mffx0")
+expand_mode = 1
+stretch_mode = 4
+
+[node name="Clock_Front" type="TextureRect" parent="UI_Node/Time_Bar"]
+layout_mode = 1
+offset_left = 10.0
+offset_top = 15.0
+offset_right = 112.0
+offset_bottom = 117.0
+texture = ExtResource("7_rkqbs")
+expand_mode = 1
+stretch_mode = 4
 
 [node name="BoxContainer" type="BoxContainer" parent="UI_Node/Time_Bar"]
-layout_mode = 0
-offset_left = 132.0
+layout_mode = 1
+offset_left = 127.0
 offset_top = 38.0
-offset_right = 213.0
+offset_right = 208.0
 offset_bottom = 95.0
 theme = SubResource("Theme_8omj6")
 
@@ -669,75 +709,62 @@ text = "Resource"
 [node name="Minimap" type="Panel" parent="UI_Node"]
 self_modulate = Color(1, 1, 1, 0)
 layout_mode = 1
-anchors_preset = -1
-anchor_left = 0.8
-anchor_top = 0.7
+anchors_preset = 3
+anchor_left = 1.0
+anchor_top = 1.0
 anchor_right = 1.0
 anchor_bottom = 1.0
-offset_top = 14.0
+grow_horizontal = 0
+grow_vertical = 0
 theme = ExtResource("3_qtcio")
 
-[node name="Minimap_Frame" type="Sprite2D" parent="UI_Node/Minimap"]
-position = Vector2(25, -14.6799)
-scale = Vector2(0.45, 0.45)
+[node name="Minimap_Frame" type="TextureRect" parent="UI_Node/Minimap"]
+layout_mode = 1
+anchors_preset = 3
+anchor_left = 1.0
+anchor_top = 1.0
+anchor_right = 1.0
+anchor_bottom = 1.0
+offset_left = -468.0
+offset_top = -468.0
+grow_horizontal = 0
+grow_vertical = 0
 texture = ExtResource("4_f8kiy")
+expand_mode = 1
+stretch_mode = 4
 
-[node name="Snap_Button" type="Button" parent="UI_Node/Minimap"]
+[node name="Minimap_Framed_Buttons" type="HBoxContainer" parent="UI_Node/Minimap"]
 layout_mode = 1
 anchors_preset = -1
-anchor_right = 0.06
-anchor_bottom = 0.08
-offset_left = -72.0
-offset_top = -152.68
-offset_right = -15.36
-offset_bottom = -97.9856
+offset_left = -325.0
+offset_top = -375.0
+offset_bottom = -310.0
+theme = ExtResource("3_qtcio")
+
+[node name="Snap_Button" type="Button" parent="UI_Node/Minimap/Minimap_Framed_Buttons"]
+layout_mode = 2
 text = "Snap"
 icon = SubResource("GradientTexture2D_g6uko")
 flat = true
 icon_alignment = 1
 
-[node name="Build_Button" type="Button" parent="UI_Node/Minimap"]
-layout_mode = 1
-anchors_preset = -1
-anchor_left = 0.355
-anchor_top = -0.145
-anchor_right = 0.355
-anchor_bottom = -0.145
-offset_left = -100.88
-offset_top = -121.314
-offset_right = -28.88
-offset_bottom = -49.3136
+[node name="Build_Button" type="Button" parent="UI_Node/Minimap/Minimap_Framed_Buttons"]
+layout_mode = 2
 text = "Build"
 icon = SubResource("GradientTexture2D_mb71g")
 flat = true
 icon_alignment = 1
 
-[node name="Units_Button" type="Button" parent="UI_Node/Minimap"]
-layout_mode = 1
-anchors_preset = -1
-anchor_left = 0.57
-anchor_top = -0.145
-anchor_right = 0.57
-offset_left = -22.92
-offset_top = -122.314
-offset_right = 50.08
-offset_bottom = -81.68
+[node name="Units_Button" type="Button" parent="UI_Node/Minimap/Minimap_Framed_Buttons"]
+layout_mode = 2
 keep_pressed_outside = true
 text = "Units"
 icon = SubResource("GradientTexture2D_tausu")
 flat = true
 icon_alignment = 1
 
-[node name="Management_Button" type="Button" parent="UI_Node/Minimap"]
-layout_mode = 1
-anchors_preset = -1
-anchor_left = 0.57
-anchor_top = -0.145
-anchor_right = 0.57
-offset_left = -89.92
-offset_top = -121.314
-offset_right = -16.92
-offset_bottom = -80.6799
+[node name="Management_Button" type="Button" parent="UI_Node/Minimap/Minimap_Framed_Buttons"]
+layout_mode = 2
 keep_pressed_outside = true
 text = "Mgmt"
 icon = SubResource("GradientTexture2D_tausu")
@@ -745,11 +772,18 @@ flat = true
 icon_alignment = 1
 
 [node name="Pop" type="RichTextLabel" parent="UI_Node/Minimap"]
-layout_mode = 2
-offset_left = -92.0
-offset_top = -55.0
-offset_right = 18.0
-offset_bottom = -21.0
+layout_mode = 1
+anchors_preset = -1
+anchor_left = 1.0
+anchor_top = 1.0
+anchor_right = 1.0
+anchor_bottom = 1.0
+offset_left = -342.0
+offset_top = -275.0
+offset_right = -251.0
+offset_bottom = -244.0
+grow_horizontal = 0
+grow_vertical = 0
 size_flags_vertical = 4
 size_flags_stretch_ratio = 0.0
 theme = SubResource("Theme_27hc7")
@@ -758,64 +792,67 @@ text = "[center][color=BLACK]15 / 15[/color][/center]"
 fit_content = true
 autowrap_mode = 0
 
-[node name="SubViewportContainer" type="SubViewportContainer" parent="UI_Node/Minimap"]
+[node name="Minimap_Container" type="SubViewportContainer" parent="UI_Node/Minimap"]
 layout_mode = 1
 anchors_preset = -1
 anchor_left = 0.07
 anchor_top = 0.05
 anchor_right = 0.07
 anchor_bottom = 0.05
-offset_left = 11.08
-offset_top = -21.816
-offset_right = 176.08
-offset_bottom = 143.184
+offset_left = -230.0
+offset_top = -230.0
+offset_right = -60.0
+offset_bottom = -60.0
 pivot_offset = Vector2(87.5, 87)
 stretch = true
 
-[node name="SubViewport" type="SubViewport" parent="UI_Node/Minimap/SubViewportContainer"]
+[node name="SubViewport" type="SubViewport" parent="UI_Node/Minimap/Minimap_Container"]
 handle_input_locally = false
 debug_draw = 1
 scaling_3d_scale = 0.64
-size = Vector2i(165, 165)
+size = Vector2i(170, 170)
 render_target_update_mode = 4
 
-[node name="Camera3D" type="Camera3D" parent="UI_Node/Minimap/SubViewportContainer/SubViewport"]
+[node name="Camera3D" type="Camera3D" parent="UI_Node/Minimap/Minimap_Container/SubViewport"]
 transform = Transform3D(1, 0, 0, 0, -4.37114e-08, 1, 0, -1, -4.37114e-08, 0, 404.02, 0)
 cull_mask = 2
 attributes = SubResource("CameraAttributesPractical_g3y50")
 projection = 1
 size = 1000.0
 
-[node name="Minimap_Frame_Cover" type="Sprite2D" parent="UI_Node/Minimap"]
-position = Vector2(27, -16.6799)
-scale = Vector2(0.45, 0.45)
+[node name="Minimap_Frame_Cover" type="TextureRect" parent="UI_Node/Minimap"]
+layout_mode = 1
+anchors_preset = 3
+anchor_left = 1.0
+anchor_top = 1.0
+anchor_right = 1.0
+anchor_bottom = 1.0
+offset_left = -468.0
+offset_top = -468.0
+grow_horizontal = 0
+grow_vertical = 0
+mouse_filter = 2
 texture = ExtResource("5_0upqb")
+expand_mode = 1
+stretch_mode = 4
 
-[node name="Clock_Back" type="Sprite2D" parent="UI_Node/Minimap"]
-position = Vector2(-958, -448.48)
-scale = Vector2(0.2, 0.2)
-texture = ExtResource("6_mffx0")
-
-[node name="Clock_front" type="Sprite2D" parent="UI_Node/Minimap"]
-position = Vector2(-958, -448.48)
-scale = Vector2(0.2, 0.2)
-texture = ExtResource("7_rkqbs")
-
-[node name="Res_Bar" type="VBoxContainer" parent="UI_Node"]
+[node name="Res_Bar" type="VBoxContainer" parent="UI_Node/Minimap"]
 custom_minimum_size = Vector2(0, 20)
-layout_mode = 0
-offset_left = 888.0
-offset_top = 533.0
-offset_right = 989.0
-offset_bottom = 674.0
+layout_mode = 1
+offset_left = -398.0
+offset_top = -212.0
+offset_right = -297.0
+offset_bottom = -42.0
 
-[node name="Wood" type="RichTextLabel" parent="UI_Node/Res_Bar"]
+[node name="Wood" type="RichTextLabel" parent="UI_Node/Minimap/Res_Bar"]
 layout_mode = 2
 size_flags_vertical = 3
+theme = SubResource("Theme_y65pn")
 text = "Wood
 "
 
-[node name="ColorRect" type="ColorRect" parent="UI_Node/Res_Bar/Wood"]
+[node name="ColorRect" type="ColorRect" parent="UI_Node/Minimap/Res_Bar/Wood"]
+visible = false
 self_modulate = Color(1, 1, 1, 0.313726)
 show_behind_parent = true
 layout_mode = 1
@@ -826,7 +863,7 @@ grow_horizontal = 2
 grow_vertical = 2
 color = Color(0, 0, 0, 1)
 
-[node name="Amount" type="RichTextLabel" parent="UI_Node/Res_Bar/Wood"]
+[node name="Amount" type="RichTextLabel" parent="UI_Node/Minimap/Res_Bar/Wood"]
 layout_mode = 1
 anchors_preset = -1
 anchor_left = 0.5
@@ -836,12 +873,17 @@ text = "00"
 fit_content = true
 text_direction = 2
 
-[node name="Stone" type="RichTextLabel" parent="UI_Node/Res_Bar"]
+[node name="HSeparator" type="HSeparator" parent="UI_Node/Minimap/Res_Bar"]
+layout_mode = 2
+
+[node name="Stone" type="RichTextLabel" parent="UI_Node/Minimap/Res_Bar"]
 layout_mode = 2
 size_flags_vertical = 3
+theme = SubResource("Theme_wig44")
 text = "Stone"
 
-[node name="ColorRect" type="ColorRect" parent="UI_Node/Res_Bar/Stone"]
+[node name="ColorRect" type="ColorRect" parent="UI_Node/Minimap/Res_Bar/Stone"]
+visible = false
 self_modulate = Color(1, 1, 1, 0.313726)
 show_behind_parent = true
 layout_mode = 1
@@ -852,7 +894,7 @@ grow_horizontal = 2
 grow_vertical = 2
 color = Color(0, 0, 0, 1)
 
-[node name="Amount" type="RichTextLabel" parent="UI_Node/Res_Bar/Stone"]
+[node name="Amount" type="RichTextLabel" parent="UI_Node/Minimap/Res_Bar/Stone"]
 layout_mode = 1
 anchors_preset = -1
 anchor_left = 0.5
@@ -863,13 +905,17 @@ text = "00"
 fit_content = true
 text_direction = 2
 
-[node name="Food" type="RichTextLabel" parent="UI_Node/Res_Bar"]
+[node name="HSeparator2" type="HSeparator" parent="UI_Node/Minimap/Res_Bar"]
+layout_mode = 2
+
+[node name="Food" type="RichTextLabel" parent="UI_Node/Minimap/Res_Bar"]
 layout_mode = 2
 size_flags_vertical = 3
+theme = SubResource("Theme_tifnh")
 text = "Food"
 autowrap_mode = 2
 
-[node name="Amount" type="RichTextLabel" parent="UI_Node/Res_Bar/Food"]
+[node name="Amount" type="RichTextLabel" parent="UI_Node/Minimap/Res_Bar/Food"]
 layout_mode = 1
 anchors_preset = -1
 anchor_left = 0.5
@@ -879,7 +925,8 @@ text = "00"
 fit_content = true
 text_direction = 2
 
-[node name="ColorRect" type="ColorRect" parent="UI_Node/Res_Bar/Food"]
+[node name="ColorRect" type="ColorRect" parent="UI_Node/Minimap/Res_Bar/Food"]
+visible = false
 self_modulate = Color(1, 1, 1, 0.313726)
 show_behind_parent = true
 layout_mode = 1
@@ -890,13 +937,18 @@ grow_horizontal = 2
 grow_vertical = 2
 color = Color(0, 0, 0, 1)
 
-[node name="Crystal" type="RichTextLabel" parent="UI_Node/Res_Bar"]
+[node name="HSeparator3" type="HSeparator" parent="UI_Node/Minimap/Res_Bar"]
+layout_mode = 2
+
+[node name="Crystal" type="RichTextLabel" parent="UI_Node/Minimap/Res_Bar"]
 layout_mode = 2
 size_flags_vertical = 3
+theme = SubResource("Theme_bmrq3")
 text = "Crystal"
 autowrap_mode = 2
 
-[node name="ColorRect" type="ColorRect" parent="UI_Node/Res_Bar/Crystal"]
+[node name="ColorRect" type="ColorRect" parent="UI_Node/Minimap/Res_Bar/Crystal"]
+visible = false
 self_modulate = Color(1, 1, 1, 0.313726)
 show_behind_parent = true
 layout_mode = 1
@@ -907,7 +959,7 @@ grow_horizontal = 2
 grow_vertical = 2
 color = Color(0, 0, 0, 1)
 
-[node name="Amount" type="RichTextLabel" parent="UI_Node/Res_Bar/Crystal"]
+[node name="Amount" type="RichTextLabel" parent="UI_Node/Minimap/Res_Bar/Crystal"]
 layout_mode = 1
 anchors_preset = -1
 anchor_left = 0.5
@@ -917,13 +969,18 @@ text = "00"
 fit_content = true
 text_direction = 2
 
-[node name="Riches" type="RichTextLabel" parent="UI_Node/Res_Bar"]
+[node name="HSeparator4" type="HSeparator" parent="UI_Node/Minimap/Res_Bar"]
+layout_mode = 2
+
+[node name="Riches" type="RichTextLabel" parent="UI_Node/Minimap/Res_Bar"]
 layout_mode = 2
 size_flags_vertical = 3
+theme = SubResource("Theme_peh88")
 text = "Riches"
 autowrap_mode = 2
 
-[node name="ColorRect" type="ColorRect" parent="UI_Node/Res_Bar/Riches"]
+[node name="ColorRect" type="ColorRect" parent="UI_Node/Minimap/Res_Bar/Riches"]
+visible = false
 self_modulate = Color(1, 1, 1, 0.313726)
 show_behind_parent = true
 layout_mode = 1
@@ -934,7 +991,7 @@ grow_horizontal = 2
 grow_vertical = 2
 color = Color(0, 0, 0, 1)
 
-[node name="Amount" type="RichTextLabel" parent="UI_Node/Res_Bar/Riches"]
+[node name="Amount" type="RichTextLabel" parent="UI_Node/Minimap/Res_Bar/Riches"]
 layout_mode = 1
 anchors_preset = -1
 anchor_left = 0.5
@@ -1156,9 +1213,10 @@ sky_mode = 1
 [connection signal="mouse_entered" from="UI_Node/Viewport_Sectons/BottomBar" to="Player/Player_camera" method="_on_bottom_bar_mouse_entered"]
 [connection signal="mouse_exited" from="UI_Node/Viewport_Sectons/BottomBar" to="Player/Player_camera" method="_on_bottom_bar_mouse_exited"]
 [connection signal="timeout" from="UI_Node/Time_Bar/Day_Cycle_Timer" to="." method="_on_day_cycle_timer_timeout"]
-[connection signal="pressed" from="UI_Node/Minimap/Snap_Button" to="UI_Node" method="_on_snap_pressed"]
-[connection signal="pressed" from="UI_Node/Minimap/Build_Button" to="UI_Node" method="_on_build_button_pressed"]
-[connection signal="pressed" from="UI_Node/Minimap/Units_Button" to="UI_Node" method="_on_units_button_pressed"]
+[connection signal="pressed" from="UI_Node/Minimap/Minimap_Framed_Buttons/Snap_Button" to="UI_Node" method="_on_snap_pressed"]
+[connection signal="pressed" from="UI_Node/Minimap/Minimap_Framed_Buttons/Build_Button" to="UI_Node" method="_on_build_button_pressed"]
+[connection signal="pressed" from="UI_Node/Minimap/Minimap_Framed_Buttons/Units_Button" to="UI_Node" method="_on_units_button_pressed"]
+[connection signal="gui_input" from="UI_Node/Minimap/Minimap_Container" to="UI_Node" method="minimap_Input"]
 [connection signal="area_shape_entered" from="World/Forest/Affected_Area" to="World/Forest" method="_area_entered" flags=18]
 
 [editable path="World/Forest"]

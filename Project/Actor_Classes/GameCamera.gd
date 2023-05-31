@@ -38,7 +38,7 @@ func _input(event):
 			Input.set_mouse_mode(Input.MOUSE_MODE_CONFINED) 
 		if Input.is_mouse_button_pressed(MOUSE_BUTTON_MIDDLE):
 			rotate_y(event.get_relative().x/100)
-			$"../../UI_Node/Minimap/SubViewportContainer".set_rotation_degrees(rotation_degrees.y)
+			$"../../UI_Node/Minimap/Minimap_Container".set_rotation_degrees(rotation_degrees.y)
 			
 	#only read mouse position on screen while in game window
 	#scroll wheel input
@@ -46,6 +46,11 @@ func _input(event):
 		zoom -= 1
 	if event.is_action("scroll_down") and zoom < 75:
 		zoom += 1
+	
+	if Input.is_action_just_released("reset_map_rot"):
+		rotation_degrees = Vector3.ZERO
+		$"../../UI_Node/Minimap/Minimap_Container".set_rotation_degrees(0)
+		
 	
 	#close game, TESTING ONLY
 	if event.is_action_pressed(("esc")):
