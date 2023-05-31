@@ -1,14 +1,18 @@
-[gd_scene load_steps=86 format=3 uid="uid://d32tym6bcdu7c"]
+[gd_scene load_steps=94 format=3 uid="uid://d32tym6bcdu7c"]
 
 [ext_resource type="Script" path="res://Game_Scene_Files/GameScene.gd" id="1_7pjje"]
 [ext_resource type="Script" path="res://Game_Scene_Files/UI_Builder.gd" id="2_wj4ul"]
+[ext_resource type="Texture2D" uid="uid://3xhlohj6aya0" path="res://Assets/UI_Elements/Clock_Frame.png" id="3_mxfke"]
+[ext_resource type="Theme" uid="uid://deh567puimw8u" path="res://Assets/UI_Elements/Main_Theme.tres" id="3_qtcio"]
 [ext_resource type="Script" path="res://Game_Scene_Files/Fog_drawer.gd" id="3_vc5fr"]
 [ext_resource type="Shader" path="res://World_Generation/New_Terrain.gdshader" id="4_4qqhp"]
+[ext_resource type="Texture2D" uid="uid://dlouwybxh0tc4" path="res://Assets/UI_Elements/Minimap_Frame.png" id="4_f8kiy"]
 [ext_resource type="Script" path="res://World_Generation/NavMesh_Builder.gd" id="4_k22hi"]
 [ext_resource type="Shader" path="res://World_Generation/Water.gdshader" id="4_m0yv6"]
-[ext_resource type="Texture2D" uid="uid://b3577jsrsxu70" path="res://Assets/UI_Elements/Clock_Back.png" id="6_mffx0"]
+[ext_resource type="Texture2D" uid="uid://dre5gradwfado" path="res://Assets/UI_Elements/Minimap_Frame_Cover.png" id="5_0upqb"]
+[ext_resource type="Texture2D" uid="uid://cbgjewgpajluw" path="res://Assets/UI_Elements/Clock_Back.png" id="6_mffx0"]
 [ext_resource type="PackedScene" uid="uid://crswchumae5b0" path="res://World_Objects/Forest.tscn" id="7_1qpxy"]
-[ext_resource type="Texture2D" uid="uid://bw850x7murj01" path="res://Assets/UI_Elements/Clock_Front.png" id="7_rkqbs"]
+[ext_resource type="Texture2D" uid="uid://b3sq1bgs0ow0o" path="res://Assets/UI_Elements/Clock_Front.png" id="7_rkqbs"]
 [ext_resource type="Texture2D" uid="uid://drbfk3h3s6x1b" path="res://Test_Items/HeightMap.exr" id="7_ubyyn"]
 [ext_resource type="Script" path="res://Actor_Classes/Fort_Spawn.gd" id="8_viuko"]
 [ext_resource type="Script" path="res://Actor_Classes/Player.gd" id="9_3h23t"]
@@ -61,7 +65,56 @@ auto_exposure_scale = 0.25
 auto_exposure_speed = 0.01
 dof_blur_far_distance = 1000.0
 
+[sub_resource type="Theme" id="Theme_8omj6"]
+default_font_size = 11
+
 [sub_resource type="CanvasItemMaterial" id="CanvasItemMaterial_onle8"]
+
+[sub_resource type="Curve" id="Curve_p6iol"]
+min_value = -1.0
+_data = [Vector2(0, -0.309091), 0.0, 0.0, 0, 0, Vector2(1, 1), 0.0, 0.0, 0, 0]
+point_count = 2
+
+[sub_resource type="CurveTexture" id="CurveTexture_nsn7k"]
+curve = SubResource("Curve_p6iol")
+
+[sub_resource type="Curve" id="Curve_armqb"]
+_data = [Vector2(0, 1), 0.0, 0.0, 0, 0, Vector2(1, 0), -3.10813, 0.0, 0, 0]
+point_count = 2
+
+[sub_resource type="CurveTexture" id="CurveTexture_t5lmc"]
+curve = SubResource("Curve_armqb")
+
+[sub_resource type="ParticleProcessMaterial" id="ParticleProcessMaterial_g3xjd"]
+emission_shape = 6
+emission_ring_axis = Vector3(0, 0, 1)
+emission_ring_height = 120.0
+emission_ring_radius = 120.0
+emission_ring_inner_radius = 0.0
+particle_flag_disable_z = true
+direction = Vector3(0, -2, 0)
+gravity = Vector3(0, -10, 0)
+initial_velocity_min = 1.0
+initial_velocity_max = 10.0
+orbit_velocity_min = 0.0
+orbit_velocity_max = 0.0
+scale_min = 0.1
+scale_max = 0.85
+scale_curve = SubResource("CurveTexture_t5lmc")
+color = Color(0.905882, 0.701961, 0.960784, 1)
+hue_variation_min = -0.05
+hue_variation_max = 0.05
+hue_variation_curve = SubResource("CurveTexture_nsn7k")
+attractor_interaction_enabled = false
+
+[sub_resource type="Gradient" id="Gradient_b166q"]
+colors = PackedColorArray(1, 1, 1, 1, 1, 1, 1, 0)
+
+[sub_resource type="GradientTexture2D" id="GradientTexture2D_y3exv"]
+gradient = SubResource("Gradient_b166q")
+fill = 1
+fill_from = Vector2(0.512821, 0.521368)
+fill_to = Vector2(0.730769, 0.350427)
 
 [sub_resource type="CanvasItemMaterial" id="CanvasItemMaterial_fbdp7"]
 
@@ -84,48 +137,30 @@ gradient = SubResource("Gradient_cwsep")
 fill = 1
 fill_from = Vector2(0.5, 0.5)
 
-[sub_resource type="Gradient" id="Gradient_6anvw"]
-offsets = PackedFloat32Array(0, 0.59276, 0.651584, 0.665158)
-colors = PackedColorArray(0, 0, 0, 1, 0, 0, 0, 1, 0, 0, 0, 0.653061, 0, 0, 0, 0)
-
-[sub_resource type="GradientTexture2D" id="GradientTexture2D_uejnh"]
-gradient = SubResource("Gradient_6anvw")
-width = 128
-height = 128
-fill = 1
-fill_from = Vector2(0.5, 0.5)
+[sub_resource type="Theme" id="Theme_27hc7"]
+default_font_size = 23
 
 [sub_resource type="CameraAttributesPractical" id="CameraAttributesPractical_g3y50"]
 dof_blur_amount = 0.03
 
-[sub_resource type="Gradient" id="Gradient_12c41"]
-colors = PackedColorArray(0.8769, 0.632388, 1, 1, 1, 0.54902, 1, 0.247059)
-
-[sub_resource type="GradientTexture2D" id="GradientTexture2D_mljiv"]
-gradient = SubResource("Gradient_12c41")
-fill_to = Vector2(0, 1)
-
-[sub_resource type="StyleBoxTexture" id="StyleBoxTexture_e61bh"]
-texture = SubResource("GradientTexture2D_mljiv")
-
-[sub_resource type="Theme" id="Theme_ut02k"]
-AcceptDialog/styles/panel = null
-HSeparator/styles/separator = null
-ItemList/styles/panel = null
-Panel/styles/panel = SubResource("StyleBoxTexture_e61bh")
-PanelContainer/styles/panel = null
-PopupDialog/styles/panel = null
-PopupMenu/styles/labeled_separator_left = null
-PopupMenu/styles/labeled_separator_right = null
-PopupMenu/styles/panel = null
-PopupMenu/styles/panel_disabled = null
-PopupMenu/styles/separator = null
-PopupPanel/styles/panel = null
-ScrollContainer/styles/panel = null
-TabContainer/styles/panel = null
-TooltipPanel/styles/panel = null
-Tree/styles/panel = null
-VSeparator/styles/separator = null
+[sub_resource type="ParticleProcessMaterial" id="ParticleProcessMaterial_84dyp"]
+emission_shape = 3
+emission_box_extents = Vector3(1200, 1, 1)
+particle_flag_disable_z = true
+direction = Vector3(0, -2, 0)
+gravity = Vector3(0, -10, 0)
+initial_velocity_min = 1.0
+initial_velocity_max = 10.0
+orbit_velocity_min = 0.0
+orbit_velocity_max = 0.0
+scale_min = 0.1
+scale_max = 0.85
+scale_curve = SubResource("CurveTexture_t5lmc")
+color = Color(0.905882, 0.701961, 0.960784, 1)
+hue_variation_min = -0.05
+hue_variation_max = 0.05
+hue_variation_curve = SubResource("CurveTexture_nsn7k")
+attractor_interaction_enabled = false
 
 [sub_resource type="Gradient" id="Gradient_b6hmg"]
 interpolation_mode = 2
@@ -540,30 +575,59 @@ anchor_bottom = 1.0
 grow_vertical = 2
 
 [node name="Time_Bar" type="Panel" parent="UI_Node"]
+self_modulate = Color(1, 1, 1, 0)
 layout_mode = 1
 anchors_preset = -1
 anchor_right = 0.214
 anchor_bottom = 0.161
 grow_horizontal = 0
 
-[node name="Date" type="RichTextLabel" parent="UI_Node/Time_Bar"]
-layout_mode = 1
-anchors_preset = -1
-anchor_left = 0.469
-anchor_top = 0.191
-anchor_right = 1.0
-anchor_bottom = 1.0
+[node name="TextureRect" type="TextureRect" parent="UI_Node/Time_Bar"]
+offset_left = -39.0
+offset_top = -13.0
+offset_right = 276.0
+offset_bottom = 176.0
+texture = ExtResource("3_mxfke")
+expand_mode = 1
+
+[node name="BoxContainer" type="BoxContainer" parent="UI_Node/Time_Bar"]
+layout_mode = 0
+offset_left = 132.0
+offset_top = 38.0
+offset_right = 213.0
+offset_bottom = 95.0
+theme = SubResource("Theme_8omj6")
+
+[node name="Date" type="RichTextLabel" parent="UI_Node/Time_Bar/BoxContainer"]
+layout_mode = 2
+size_flags_horizontal = 3
+text = "642 corvusan Mal
+"
 
 [node name="Day_Cycle_Timer" type="Timer" parent="UI_Node/Time_Bar"]
 wait_time = 0.5
 
 [node name="Build_Menu" type="Panel" parent="UI_Node"]
+self_modulate = Color(1, 1, 1, 0.490196)
 material = SubResource("CanvasItemMaterial_onle8")
 layout_mode = 0
 offset_left = 1030.0
 offset_top = 89.0
 offset_right = 1230.0
 offset_bottom = 510.0
+theme = ExtResource("3_qtcio")
+
+[node name="Magic_Particles" type="GPUParticles2D" parent="UI_Node/Build_Menu"]
+self_modulate = Color(1, 1, 1, 0.490196)
+show_behind_parent = true
+position = Vector2(102, 357)
+amount = 80
+process_material = SubResource("ParticleProcessMaterial_g3xjd")
+texture = SubResource("GradientTexture2D_y3exv")
+lifetime = 10.0
+preprocess = 7.0
+speed_scale = 0.5
+randomness = 0.5
 
 [node name="Build_Menu_Container" type="VBoxContainer" parent="UI_Node/Build_Menu"]
 layout_mode = 1
@@ -572,29 +636,33 @@ anchor_right = 1.0
 anchor_bottom = 1.0
 grow_horizontal = 2
 grow_vertical = 2
+theme = ExtResource("3_qtcio")
 
 [node name="RichTextLabel" type="RichTextLabel" parent="UI_Node/Build_Menu/Build_Menu_Container"]
 layout_mode = 2
 bbcode_enabled = true
-text = "                [u][b]--BUILD--[/b][/u]
+text = "[color=7a2e79][outline_size=7][center][b]BUILD[/b][/center][/outline_size][/color]
 "
 fit_content = true
 
 [node name="General_Buttons" type="MenuButton" parent="UI_Node/Build_Menu/Build_Menu_Container"]
 material = SubResource("CanvasItemMaterial_fbdp7")
 layout_mode = 2
+theme = ExtResource("3_qtcio")
 toggle_mode = false
 text = "General"
 
 [node name="Military_Buttons" type="MenuButton" parent="UI_Node/Build_Menu/Build_Menu_Container"]
 material = SubResource("CanvasItemMaterial_fbdp7")
 layout_mode = 2
+theme = ExtResource("3_qtcio")
 toggle_mode = false
 text = "Military"
 
 [node name="Resource_Buttons" type="MenuButton" parent="UI_Node/Build_Menu/Build_Menu_Container"]
 material = SubResource("CanvasItemMaterial_fbdp7")
 layout_mode = 2
+theme = ExtResource("3_qtcio")
 toggle_mode = false
 text = "Resource"
 
@@ -606,17 +674,23 @@ anchor_left = 0.8
 anchor_top = 0.7
 anchor_right = 1.0
 anchor_bottom = 1.0
-offset_top = -0.320038
+offset_top = 14.0
+theme = ExtResource("3_qtcio")
 
-[node name="Snap" type="Button" parent="UI_Node/Minimap"]
+[node name="Minimap_Frame" type="Sprite2D" parent="UI_Node/Minimap"]
+position = Vector2(25, -14.6799)
+scale = Vector2(0.45, 0.45)
+texture = ExtResource("4_f8kiy")
+
+[node name="Snap_Button" type="Button" parent="UI_Node/Minimap"]
 layout_mode = 1
 anchors_preset = -1
 anchor_right = 0.06
 anchor_bottom = 0.08
-offset_left = -59.0
-offset_top = -66.68
-offset_right = -2.36
-offset_bottom = -11.9856
+offset_left = -72.0
+offset_top = -152.68
+offset_right = -15.36
+offset_bottom = -97.9856
 text = "Snap"
 icon = SubResource("GradientTexture2D_g6uko")
 flat = true
@@ -629,10 +703,10 @@ anchor_left = 0.355
 anchor_top = -0.145
 anchor_right = 0.355
 anchor_bottom = -0.145
-offset_left = -102.88
-offset_top = -70.3135
-offset_right = -30.88
-offset_bottom = 1.68646
+offset_left = -100.88
+offset_top = -121.314
+offset_right = -28.88
+offset_bottom = -49.3136
 text = "Build"
 icon = SubResource("GradientTexture2D_mb71g")
 flat = true
@@ -644,10 +718,10 @@ anchors_preset = -1
 anchor_left = 0.57
 anchor_top = -0.145
 anchor_right = 0.57
-offset_left = -41.92
-offset_top = -87.3136
-offset_right = 31.08
-offset_bottom = -46.68
+offset_left = -22.92
+offset_top = -122.314
+offset_right = 50.08
+offset_bottom = -81.68
 keep_pressed_outside = true
 text = "Units"
 icon = SubResource("GradientTexture2D_tausu")
@@ -660,50 +734,41 @@ anchors_preset = -1
 anchor_left = 0.57
 anchor_top = -0.145
 anchor_right = 0.57
-offset_left = -99.92
-offset_top = -93.3136
-offset_right = -26.92
-offset_bottom = -52.68
+offset_left = -89.92
+offset_top = -121.314
+offset_right = -16.92
+offset_bottom = -80.6799
 keep_pressed_outside = true
 text = "Mgmt"
 icon = SubResource("GradientTexture2D_tausu")
 flat = true
 icon_alignment = 1
 
-[node name="ColorRect" type="ColorRect" parent="UI_Node/Minimap"]
-self_modulate = Color(1, 1, 1, 0.313726)
-show_behind_parent = true
-layout_mode = 1
-anchors_preset = -1
-anchor_left = 0.589
-anchor_top = -0.47
-anchor_right = 1.0
-anchor_bottom = -0.275
-grow_horizontal = 2
-grow_vertical = 2
-color = Color(0, 0, 0, 1)
-
 [node name="Pop" type="RichTextLabel" parent="UI_Node/Minimap"]
-layout_mode = 1
-anchors_preset = -1
-anchor_left = 0.651
-anchor_top = -0.423
-anchor_right = 0.948
-anchor_bottom = -0.282
-text = "Population"
-autowrap_mode = 2
-
-[node name="Minimap_Placeholder" type="Sprite2D" parent="UI_Node/Minimap"]
-position = Vector2(132.95, 75.2701)
-scale = Vector2(2.25078, 2.25078)
-texture = SubResource("GradientTexture2D_uejnh")
+layout_mode = 2
+offset_left = -92.0
+offset_top = -55.0
+offset_right = 18.0
+offset_bottom = -21.0
+size_flags_vertical = 4
+size_flags_stretch_ratio = 0.0
+theme = SubResource("Theme_27hc7")
+bbcode_enabled = true
+text = "[center][color=BLACK]15 / 15[/color][/center]"
+fit_content = true
+autowrap_mode = 0
 
 [node name="SubViewportContainer" type="SubViewportContainer" parent="UI_Node/Minimap"]
-layout_mode = 0
-offset_left = 45.0
-offset_top = -14.68
-offset_right = 220.0
-offset_bottom = 160.32
+layout_mode = 1
+anchors_preset = -1
+anchor_left = 0.07
+anchor_top = 0.05
+anchor_right = 0.07
+anchor_bottom = 0.05
+offset_left = 11.08
+offset_top = -21.816
+offset_right = 176.08
+offset_bottom = 143.184
 pivot_offset = Vector2(87.5, 87)
 stretch = true
 
@@ -711,7 +776,7 @@ stretch = true
 handle_input_locally = false
 debug_draw = 1
 scaling_3d_scale = 0.64
-size = Vector2i(175, 175)
+size = Vector2i(165, 165)
 render_target_update_mode = 4
 
 [node name="Camera3D" type="Camera3D" parent="UI_Node/Minimap/SubViewportContainer/SubViewport"]
@@ -721,31 +786,32 @@ attributes = SubResource("CameraAttributesPractical_g3y50")
 projection = 1
 size = 1000.0
 
+[node name="Minimap_Frame_Cover" type="Sprite2D" parent="UI_Node/Minimap"]
+position = Vector2(27, -16.6799)
+scale = Vector2(0.45, 0.45)
+texture = ExtResource("5_0upqb")
+
 [node name="Clock_Back" type="Sprite2D" parent="UI_Node/Minimap"]
 position = Vector2(-958, -448.48)
-scale = Vector2(0.4, 0.4)
+scale = Vector2(0.2, 0.2)
 texture = ExtResource("6_mffx0")
 
 [node name="Clock_front" type="Sprite2D" parent="UI_Node/Minimap"]
 position = Vector2(-958, -448.48)
-scale = Vector2(0.4, 0.4)
+scale = Vector2(0.2, 0.2)
 texture = ExtResource("7_rkqbs")
 
-[node name="Res_Bar" type="Panel" parent="UI_Node"]
-self_modulate = Color(1, 1, 1, 0)
-layout_mode = 1
-anchors_preset = -1
-anchor_left = 0.7
-anchor_top = 0.7
-anchor_right = 0.8
-anchor_bottom = 1.0
-grow_horizontal = 0
+[node name="Res_Bar" type="VBoxContainer" parent="UI_Node"]
+custom_minimum_size = Vector2(0, 20)
+layout_mode = 0
+offset_left = 888.0
+offset_top = 533.0
+offset_right = 989.0
+offset_bottom = 674.0
 
 [node name="Wood" type="RichTextLabel" parent="UI_Node/Res_Bar"]
-layout_mode = 1
-anchors_preset = -1
-anchor_right = 1.055
-anchor_bottom = 0.125
+layout_mode = 2
+size_flags_vertical = 3
 text = "Wood
 "
 
@@ -766,16 +832,13 @@ anchors_preset = -1
 anchor_left = 0.5
 anchor_right = 1.0
 anchor_bottom = 1.0
+text = "00"
 fit_content = true
+text_direction = 2
 
 [node name="Stone" type="RichTextLabel" parent="UI_Node/Res_Bar"]
-layout_mode = 1
-anchors_preset = -1
-anchor_top = 0.125
-anchor_right = 1.0
-anchor_bottom = 0.25
-offset_top = 4.0
-offset_bottom = 4.0
+layout_mode = 2
+size_flags_vertical = 3
 text = "Stone"
 
 [node name="ColorRect" type="ColorRect" parent="UI_Node/Res_Bar/Stone"]
@@ -796,16 +859,67 @@ anchor_left = 0.5
 anchor_right = 1.0
 anchor_bottom = 1.0
 offset_bottom = -0.00705338
+text = "00"
 fit_content = true
+text_direction = 2
 
-[node name="Riches" type="RichTextLabel" parent="UI_Node/Res_Bar"]
+[node name="Food" type="RichTextLabel" parent="UI_Node/Res_Bar"]
+layout_mode = 2
+size_flags_vertical = 3
+text = "Food"
+autowrap_mode = 2
+
+[node name="Amount" type="RichTextLabel" parent="UI_Node/Res_Bar/Food"]
 layout_mode = 1
 anchors_preset = -1
-anchor_top = 0.25
+anchor_left = 0.5
 anchor_right = 1.0
-anchor_bottom = 0.375
-offset_top = 8.0
-offset_bottom = 8.0
+anchor_bottom = 1.0
+text = "00"
+fit_content = true
+text_direction = 2
+
+[node name="ColorRect" type="ColorRect" parent="UI_Node/Res_Bar/Food"]
+self_modulate = Color(1, 1, 1, 0.313726)
+show_behind_parent = true
+layout_mode = 1
+anchors_preset = 15
+anchor_right = 1.0
+anchor_bottom = 1.0
+grow_horizontal = 2
+grow_vertical = 2
+color = Color(0, 0, 0, 1)
+
+[node name="Crystal" type="RichTextLabel" parent="UI_Node/Res_Bar"]
+layout_mode = 2
+size_flags_vertical = 3
+text = "Crystal"
+autowrap_mode = 2
+
+[node name="ColorRect" type="ColorRect" parent="UI_Node/Res_Bar/Crystal"]
+self_modulate = Color(1, 1, 1, 0.313726)
+show_behind_parent = true
+layout_mode = 1
+anchors_preset = 15
+anchor_right = 1.0
+anchor_bottom = 1.0
+grow_horizontal = 2
+grow_vertical = 2
+color = Color(0, 0, 0, 1)
+
+[node name="Amount" type="RichTextLabel" parent="UI_Node/Res_Bar/Crystal"]
+layout_mode = 1
+anchors_preset = -1
+anchor_left = 0.5
+anchor_right = 1.0
+anchor_bottom = 1.0
+text = "00"
+fit_content = true
+text_direction = 2
+
+[node name="Riches" type="RichTextLabel" parent="UI_Node/Res_Bar"]
+layout_mode = 2
+size_flags_vertical = 3
 text = "Riches"
 autowrap_mode = 2
 
@@ -829,71 +943,13 @@ anchor_bottom = 1.0
 offset_top = 0.00847244
 offset_right = 0.00799561
 offset_bottom = 0.00847244
+text = "00"
 fit_content = true
-
-[node name="Crystal" type="RichTextLabel" parent="UI_Node/Res_Bar"]
-layout_mode = 1
-anchors_preset = -1
-anchor_top = 0.375
-anchor_right = 1.0
-anchor_bottom = 0.5
-offset_top = 12.0
-offset_bottom = 12.0
-text = "Crystal"
-autowrap_mode = 2
-
-[node name="ColorRect" type="ColorRect" parent="UI_Node/Res_Bar/Crystal"]
-self_modulate = Color(1, 1, 1, 0.313726)
-show_behind_parent = true
-layout_mode = 1
-anchors_preset = 15
-anchor_right = 1.0
-anchor_bottom = 1.0
-grow_horizontal = 2
-grow_vertical = 2
-color = Color(0, 0, 0, 1)
-
-[node name="Amount" type="RichTextLabel" parent="UI_Node/Res_Bar/Crystal"]
-layout_mode = 1
-anchors_preset = -1
-anchor_left = 0.5
-anchor_right = 1.0
-anchor_bottom = 1.0
-fit_content = true
-
-[node name="Food" type="RichTextLabel" parent="UI_Node/Res_Bar"]
-layout_mode = 1
-anchors_preset = -1
-anchor_top = 0.5
-anchor_right = 1.0
-anchor_bottom = 0.625
-offset_top = 16.0
-offset_right = 12.0
-offset_bottom = 16.0
-text = "Food"
-autowrap_mode = 2
-
-[node name="Amount" type="RichTextLabel" parent="UI_Node/Res_Bar/Food"]
-layout_mode = 1
-anchors_preset = -1
-anchor_left = 0.5
-anchor_right = 1.0
-anchor_bottom = 1.0
-fit_content = true
-
-[node name="ColorRect" type="ColorRect" parent="UI_Node/Res_Bar/Food"]
-self_modulate = Color(1, 1, 1, 0.313726)
-show_behind_parent = true
-layout_mode = 1
-anchors_preset = 15
-anchor_right = 1.0
-anchor_bottom = 1.0
-grow_horizontal = 2
-grow_vertical = 2
-color = Color(0, 0, 0, 1)
+text_direction = 2
 
 [node name="Unit_List" type="Panel" parent="UI_Node"]
 visible = false
+self_modulate = Color(1, 1, 1, 0.490196)
 layout_mode = 1
 anchors_preset = -1
 anchor_left = 0.02
@@ -901,7 +957,20 @@ anchor_top = 0.8
 anchor_right = 0.4
 anchor_bottom = 0.9
 grow_vertical = 0
-theme = SubResource("Theme_ut02k")
+theme = ExtResource("3_qtcio")
+
+[node name="Magic_Particles" type="GPUParticles2D" parent="UI_Node/Unit_List"]
+self_modulate = Color(1, 1, 1, 0.490196)
+show_behind_parent = true
+position = Vector2(243.4, 68)
+scale = Vector2(0.2, 0.2)
+amount = 160
+process_material = SubResource("ParticleProcessMaterial_84dyp")
+texture = SubResource("GradientTexture2D_y3exv")
+lifetime = 4.0
+preprocess = 4.0
+speed_scale = 0.5
+randomness = 0.5
 
 [node name="World" type="Node3D" parent="."]
 script = ExtResource("4_k22hi")
@@ -1087,7 +1156,7 @@ sky_mode = 1
 [connection signal="mouse_entered" from="UI_Node/Viewport_Sectons/BottomBar" to="Player/Player_camera" method="_on_bottom_bar_mouse_entered"]
 [connection signal="mouse_exited" from="UI_Node/Viewport_Sectons/BottomBar" to="Player/Player_camera" method="_on_bottom_bar_mouse_exited"]
 [connection signal="timeout" from="UI_Node/Time_Bar/Day_Cycle_Timer" to="." method="_on_day_cycle_timer_timeout"]
-[connection signal="pressed" from="UI_Node/Minimap/Snap" to="UI_Node" method="_on_snap_pressed"]
+[connection signal="pressed" from="UI_Node/Minimap/Snap_Button" to="UI_Node" method="_on_snap_pressed"]
 [connection signal="pressed" from="UI_Node/Minimap/Build_Button" to="UI_Node" method="_on_build_button_pressed"]
 [connection signal="pressed" from="UI_Node/Minimap/Units_Button" to="UI_Node" method="_on_units_button_pressed"]
 [connection signal="area_shape_entered" from="World/Forest/Affected_Area" to="World/Forest" method="_area_entered" flags=18]

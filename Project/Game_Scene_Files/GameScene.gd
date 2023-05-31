@@ -247,7 +247,9 @@ func set_resource(resource: String, value: int):
 ## Set player population on screen
 func set_pop(current: int, max_pop: int):
 	UI_controller.res_displays["pop"].clear()
-	UI_controller.res_displays["pop"].add_text(var_to_str(current)+" / " + var_to_str(max_pop))
+	UI_controller.res_displays["pop"].push_color(Color.BLACK)
+	UI_controller.res_displays["pop"].append_text("[center]")
+	UI_controller.res_displays["pop"].append_text("[center]"+var_to_str(current)+" / " + var_to_str(max_pop)+"[/center]")
 
 
 ###SIGNALS FUNCTIONS###
