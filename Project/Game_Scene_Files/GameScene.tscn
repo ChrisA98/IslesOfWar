@@ -650,11 +650,18 @@ wait_time = 0.5
 [node name="Build_Menu" type="Panel" parent="UI_Node"]
 self_modulate = Color(1, 1, 1, 0.490196)
 material = SubResource("CanvasItemMaterial_onle8")
-layout_mode = 0
-offset_left = 1030.0
-offset_top = 89.0
-offset_right = 1230.0
-offset_bottom = 510.0
+layout_mode = 1
+anchors_preset = 3
+anchor_left = 1.0
+anchor_top = 1.0
+anchor_right = 1.0
+anchor_bottom = 1.0
+offset_left = -270.0
+offset_top = -630.0
+offset_right = -70.0
+offset_bottom = -209.0
+grow_horizontal = 0
+grow_vertical = 0
 theme = ExtResource("3_qtcio")
 
 [node name="Magic_Particles" type="GPUParticles2D" parent="UI_Node/Build_Menu"]
