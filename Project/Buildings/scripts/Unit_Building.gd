@@ -10,7 +10,7 @@ func _ready():
 
 
 ## Spawn unit and validate spawning
-func use(_unit):
+func use():
 	var new_unit = units[0].instantiate()
 	if world.spawn_unit(actor_owner, new_unit):
 		new_unit.position = spawn.global_position

@@ -20,9 +20,10 @@ signal fog_radius_changed
 @onready var picker = get_node("StaticBody3D/RayCast3D")
 @onready var rally = $RallyPoint
 @onready var spawn = $SpawnPoint
-@onready var menu
+@onready var menu = $Menu
 #Materials
 @onready var prev_mat = preload("res://Materials/preview_building.tres")
+var base_mats = []
 @onready var build_shader
 
 @export var height : int = 1 
@@ -88,7 +89,11 @@ func init(_pos, snap: int, actor: Node):
 	faction = actor_owner.faction_data.name
 	faction_short_name = actor_owner.faction_data.short_name
 	
-	load_data(actor_owner.faction_data)
+	load_data(actor_owner.faction_data)	
+	# Populate base materials
+	for i in range(mesh.get_surface_override_material_count()):
+		base_mats.push_back(mesh.mesh.surface_get_material(i))
+
 	for i in range(mesh.get_surface_override_material_count()):
 		mesh.mesh.surface_set_material(i,ShaderMaterial.new())	##Later load materials here
 	set_all_over_mats(prev_mat)
@@ -177,6 +182,7 @@ func place():
 
 #Finish the building process
 func finish_building():
+	await get_tree().physics_frame
 	is_building = false
 	for i in range(mesh.get_surface_override_material_count()):
 		mesh.mesh.surface_get_material(i).set_shader_parameter("magic_color", Color.FLORAL_WHITE)
@@ -185,7 +191,11 @@ func finish_building():
 	await get_tree().physics_frame
 	fog_reg.fog_break_radius = fog_rev_radius
 	update_fog.emit(self,position)
-	fog_radius_changed.emit(self)
+	fog_radius_changed.emit(self)	
+		
+	# reset to base materials
+	for i in range(mesh.get_surface_override_material_count()):
+		mesh.mesh.surface_set_material(i,base_mats[i])
 
 
 ## Can place
@@ -276,6 +286,7 @@ func _on_static_body_3d_input_event(_camera, event, _position, _normal, _shape_i
 		return
 	if event is InputEventMouseButton and Input.is_action_just_released("lmb"):
 		pressed.emit(self)
+		show_menu()
 
 
 ## Call to see if purchasable
@@ -298,6 +309,7 @@ func align_to_ground():
 func snap_to_ground():
 	picker.force_raycast_update()
 	position.y = $StaticBody3D/RayCast3D.get_collision_point().y
+
 
 ## Delay delete and remove from lists
 func delayed_delete():

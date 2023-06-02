@@ -1,4 +1,8 @@
-[gd_resource type="Theme" load_steps=5 format=3 uid="uid://deh567puimw8u"]
+[gd_resource type="Theme" load_steps=7 format=3 uid="uid://deh567puimw8u"]
+
+[sub_resource type="StyleBoxEmpty" id="StyleBoxEmpty_0yino"]
+
+[sub_resource type="StyleBoxEmpty" id="StyleBoxEmpty_r5nft"]
 
 [sub_resource type="StyleBoxFlat" id="StyleBoxFlat_1b2eh"]
 bg_color = Color(1, 0.278431, 0.576471, 1)
@@ -18,12 +22,13 @@ texture = SubResource("GradientTexture2D_iqgm3")
 [resource]
 AcceptDialog/styles/panel = null
 Button/colors/font_color = Color(0.478431, 0.180392, 0.47451, 1)
+Button/colors/font_focus_color = Color(0.478431, 0.180392, 0.47451, 1)
 Button/constants/outline_size = 6
 Button/styles/disabled = null
-Button/styles/focus = null
+Button/styles/focus = SubResource("StyleBoxEmpty_0yino")
 Button/styles/hover = null
 Button/styles/normal = null
-Button/styles/pressed = null
+Button/styles/pressed = SubResource("StyleBoxEmpty_r5nft")
 CheckBox/styles/disabled = null
 CheckBox/styles/focus = null
 CheckBox/styles/hover = null

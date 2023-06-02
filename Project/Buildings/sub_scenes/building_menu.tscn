@@ -1,0 +1,305 @@
+[gd_scene load_steps=13 format=3 uid="uid://dk381vs3dbmou"]
+
+[ext_resource type="Theme" uid="uid://deh567puimw8u" path="res://Assets/UI_Elements/Main_Theme.tres" id="1_66gr2"]
+[ext_resource type="Script" path="res://Buildings/sub_scenes/Building_Menu.gd" id="2_sg2al"]
+
+[sub_resource type="Gradient" id="Gradient_cwsep"]
+offsets = PackedFloat32Array(0, 0.576271, 0.593548)
+colors = PackedColorArray(0.827451, 0.482353, 0.819608, 1, 0.905882, 0.701961, 0.960784, 1, 0, 0, 0, 0)
+
+[sub_resource type="GradientTexture2D" id="GradientTexture2D_tjbge"]
+gradient = SubResource("Gradient_cwsep")
+fill = 1
+fill_from = Vector2(0.5, 0.5)
+
+[sub_resource type="GradientTexture2D" id="GradientTexture2D_jpja1"]
+gradient = SubResource("Gradient_cwsep")
+fill = 1
+fill_from = Vector2(0.5, 0.5)
+
+[sub_resource type="GradientTexture2D" id="GradientTexture2D_qsxl7"]
+gradient = SubResource("Gradient_cwsep")
+fill = 1
+fill_from = Vector2(0.5, 0.5)
+
+[sub_resource type="Gradient" id="Gradient_kl7xi"]
+offsets = PackedFloat32Array(0)
+colors = PackedColorArray(0, 0, 0, 1)
+
+[sub_resource type="GradientTexture1D" id="GradientTexture1D_5qqxn"]
+gradient = SubResource("Gradient_kl7xi")
+
+[sub_resource type="Gradient" id="Gradient_1or08"]
+offsets = PackedFloat32Array(1)
+colors = PackedColorArray(0.827451, 0.482353, 0.819608, 0.490196)
+
+[sub_resource type="GradientTexture1D" id="GradientTexture1D_ul2pt"]
+gradient = SubResource("Gradient_1or08")
+
+[sub_resource type="Gradient" id="Gradient_67fsc"]
+offsets = PackedFloat32Array(0, 0.521531, 1)
+colors = PackedColorArray(1, 0.721569, 0.733333, 1, 0.162066, 0.162066, 0.162066, 1, 1, 0.721569, 0.733333, 1)
+
+[sub_resource type="GradientTexture1D" id="GradientTexture1D_fnu04"]
+gradient = SubResource("Gradient_67fsc")
+
+[node name="Menu" type="Panel"]
+self_modulate = Color(1, 1, 1, 0.490196)
+anchors_preset = -1
+anchor_bottom = 0.557
+offset_top = 148.262
+offset_right = 233.0
+theme = ExtResource("1_66gr2")
+script = ExtResource("2_sg2al")
+
+[node name="Building_Menu" type="VBoxContainer" parent="."]
+layout_mode = 1
+anchors_preset = 15
+anchor_right = 1.0
+anchor_bottom = 1.0
+grow_horizontal = 2
+grow_vertical = 2
+
+[node name="HSeparator3" type="HSeparator" parent="Building_Menu"]
+layout_mode = 2
+
+[node name="Building_Label" type="RichTextLabel" parent="Building_Menu"]
+custom_minimum_size = Vector2(0, 25)
+layout_mode = 2
+size_flags_vertical = 3
+size_flags_stretch_ratio = 0.07
+theme_override_font_sizes/normal_font_size = 25
+theme_override_font_sizes/bold_font_size = 0
+bbcode_enabled = true
+text = "[center][b]Building[/b][/center]"
+
+[node name="HSeparator" type="HSeparator" parent="Building_Menu"]
+layout_mode = 2
+
+[node name="Page_Buttons" type="HBoxContainer" parent="Building_Menu"]
+layout_mode = 2
+size_flags_vertical = 3
+size_flags_stretch_ratio = 0.0
+theme = ExtResource("1_66gr2")
+
+[node name="Unit Spawning" type="Button" parent="Building_Menu/Page_Buttons"]
+layout_mode = 2
+text = "pg1"
+icon = SubResource("GradientTexture2D_tjbge")
+flat = true
+icon_alignment = 1
+
+[node name="Research" type="Button" parent="Building_Menu/Page_Buttons"]
+layout_mode = 2
+text = "pg2"
+icon = SubResource("GradientTexture2D_jpja1")
+flat = true
+icon_alignment = 1
+
+[node name="Utility_1" type="Button" parent="Building_Menu/Page_Buttons"]
+visible = false
+layout_mode = 2
+keep_pressed_outside = true
+text = "pg3"
+icon = SubResource("GradientTexture2D_qsxl7")
+flat = true
+icon_alignment = 1
+
+[node name="Utility_2" type="Button" parent="Building_Menu/Page_Buttons"]
+visible = false
+layout_mode = 2
+keep_pressed_outside = true
+text = "pg3"
+icon = SubResource("GradientTexture2D_qsxl7")
+flat = true
+icon_alignment = 1
+
+[node name="HSeparator2" type="HSeparator" parent="Building_Menu"]
+layout_mode = 2
+
+[node name="Pages" type="TabContainer" parent="Building_Menu"]
+layout_mode = 2
+size_flags_vertical = 3
+tab_alignment = 1
+tabs_visible = false
+
+[node name="units_page" type="ScrollContainer" parent="Building_Menu/Pages"]
+layout_mode = 2
+size_flags_vertical = 3
+
+[node name="units_list" type="VBoxContainer" parent="Building_Menu/Pages/units_page"]
+layout_mode = 2
+size_flags_horizontal = 3
+
+[node name="unit_box_1" type="HBoxContainer" parent="Building_Menu/Pages/units_page/units_list"]
+layout_mode = 2
+alignment = 1
+
+[node name="train_count" type="VBoxContainer" parent="Building_Menu/Pages/units_page/units_list/unit_box_1"]
+custom_minimum_size = Vector2(50, 0)
+layout_mode = 2
+size_flags_stretch_ratio = 0.13
+
+[node name="increase" type="Button" parent="Building_Menu/Pages/units_page/units_list/unit_box_1/train_count"]
+layout_mode = 2
+text = "+"
+
+[node name="RichTextLabel" type="RichTextLabel" parent="Building_Menu/Pages/units_page/units_list/unit_box_1/train_count"]
+custom_minimum_size = Vector2(0, 25)
+layout_mode = 2
+size_flags_vertical = 3
+bbcode_enabled = true
+text = "[center]0[/center]"
+
+[node name="decrease" type="Button" parent="Building_Menu/Pages/units_page/units_list/unit_box_1/train_count"]
+layout_mode = 2
+text = "-
+"
+
+[node name="Panel" type="Panel" parent="Building_Menu/Pages/units_page/units_list/unit_box_1"]
+layout_mode = 2
+size_flags_horizontal = 3
+size_flags_stretch_ratio = 8.12
+
+[node name="RichTextLabel" type="RichTextLabel" parent="Building_Menu/Pages/units_page/units_list/unit_box_1/Panel"]
+layout_mode = 0
+offset_right = 139.0
+offset_bottom = 25.0
+text = "unit_Name"
+
+[node name="train_queue" type="TextureProgressBar" parent="Building_Menu/Pages/units_page/units_list/unit_box_1"]
+custom_minimum_size = Vector2(35, 0)
+layout_mode = 2
+size_flags_horizontal = 10
+fill_mode = 3
+nine_patch_stretch = true
+texture_under = SubResource("GradientTexture1D_5qqxn")
+texture_over = SubResource("GradientTexture1D_ul2pt")
+texture_progress = SubResource("GradientTexture1D_fnu04")
+
+[node name="unit_box_2" type="HBoxContainer" parent="Building_Menu/Pages/units_page/units_list"]
+layout_mode = 2
+alignment = 1
+
+[node name="train_count" type="VBoxContainer" parent="Building_Menu/Pages/units_page/units_list/unit_box_2"]
+custom_minimum_size = Vector2(50, 0)
+layout_mode = 2
+size_flags_stretch_ratio = 0.13
+
+[node name="increase" type="Button" parent="Building_Menu/Pages/units_page/units_list/unit_box_2/train_count"]
+layout_mode = 2
+text = "+"
+
+[node name="RichTextLabel" type="RichTextLabel" parent="Building_Menu/Pages/units_page/units_list/unit_box_2/train_count"]
+custom_minimum_size = Vector2(0, 25)
+layout_mode = 2
+size_flags_vertical = 3
+bbcode_enabled = true
+text = "[center]0[/center]"
+
+[node name="decrease" type="Button" parent="Building_Menu/Pages/units_page/units_list/unit_box_2/train_count"]
+layout_mode = 2
+text = "-
+"
+
+[node name="Panel" type="Panel" parent="Building_Menu/Pages/units_page/units_list/unit_box_2"]
+layout_mode = 2
+size_flags_horizontal = 3
+size_flags_stretch_ratio = 8.12
+
+[node name="RichTextLabel" type="RichTextLabel" parent="Building_Menu/Pages/units_page/units_list/unit_box_2/Panel"]
+layout_mode = 0
+offset_right = 139.0
+offset_bottom = 25.0
+text = "unit_Name"
+
+[node name="train_queue" type="TextureProgressBar" parent="Building_Menu/Pages/units_page/units_list/unit_box_2"]
+custom_minimum_size = Vector2(35, 0)
+layout_mode = 2
+size_flags_horizontal = 10
+fill_mode = 3
+nine_patch_stretch = true
+texture_under = SubResource("GradientTexture1D_5qqxn")
+texture_over = SubResource("GradientTexture1D_ul2pt")
+texture_progress = SubResource("GradientTexture1D_fnu04")
+
+[node name="unit_box_3" type="HBoxContainer" parent="Building_Menu/Pages/units_page/units_list"]
+layout_mode = 2
+alignment = 1
+
+[node name="train_count" type="VBoxContainer" parent="Building_Menu/Pages/units_page/units_list/unit_box_3"]
+custom_minimum_size = Vector2(50, 0)
+layout_mode = 2
+size_flags_stretch_ratio = 0.13
+
+[node name="increase" type="Button" parent="Building_Menu/Pages/units_page/units_list/unit_box_3/train_count"]
+layout_mode = 2
+text = "+"
+
+[node name="RichTextLabel" type="RichTextLabel" parent="Building_Menu/Pages/units_page/units_list/unit_box_3/train_count"]
+custom_minimum_size = Vector2(0, 25)
+layout_mode = 2
+size_flags_vertical = 3
+bbcode_enabled = true
+text = "[center]0[/center]"
+
+[node name="decrease" type="Button" parent="Building_Menu/Pages/units_page/units_list/unit_box_3/train_count"]
+layout_mode = 2
+text = "-
+"
+
+[node name="Panel" type="Panel" parent="Building_Menu/Pages/units_page/units_list/unit_box_3"]
+layout_mode = 2
+size_flags_horizontal = 3
+size_flags_stretch_ratio = 8.12
+
+[node name="RichTextLabel" type="RichTextLabel" parent="Building_Menu/Pages/units_page/units_list/unit_box_3/Panel"]
+layout_mode = 0
+offset_right = 139.0
+offset_bottom = 25.0
+text = "unit_Name"
+
+[node name="train_queue" type="TextureProgressBar" parent="Building_Menu/Pages/units_page/units_list/unit_box_3"]
+custom_minimum_size = Vector2(35, 0)
+layout_mode = 2
+size_flags_horizontal = 10
+fill_mode = 3
+nine_patch_stretch = true
+texture_under = SubResource("GradientTexture1D_5qqxn")
+texture_over = SubResource("GradientTexture1D_ul2pt")
+texture_progress = SubResource("GradientTexture1D_fnu04")
+
+[node name="Always_Buttons" type="HBoxContainer" parent="."]
+layout_mode = 1
+anchors_preset = -1
+anchor_top = 1.0
+anchor_bottom = 1.0
+offset_top = 0.261993
+offset_right = 232.0
+offset_bottom = 72.262
+size_flags_vertical = 3
+size_flags_stretch_ratio = 0.0
+theme = ExtResource("1_66gr2")
+
+[node name="Destroy Button" type="Button" parent="Always_Buttons"]
+layout_mode = 2
+text = "X
+"
+icon = SubResource("GradientTexture2D_tjbge")
+flat = true
+icon_alignment = 1
+
+[node name="Upgrade Button" type="Button" parent="Always_Buttons"]
+layout_mode = 2
+text = "↑"
+icon = SubResource("GradientTexture2D_jpja1")
+flat = true
+icon_alignment = 1
+
+[node name="Garrison Button" type="Button" parent="Always_Buttons"]
+layout_mode = 2
+keep_pressed_outside = true
+text = "->"
+icon = SubResource("GradientTexture2D_qsxl7")
+flat = true
+icon_alignment = 1

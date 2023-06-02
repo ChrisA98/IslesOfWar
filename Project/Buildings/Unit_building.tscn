@@ -21,3 +21,7 @@ transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, 0.0776555, 1.09582)
 
 [node name="SpawnPoint" parent="." index="3"]
 transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, 0.106123, 0.625176)
+
+[connection signal="pressed" from="Menu/Building_Menu/Pages/ScrollContainer/VBoxContainer/unit_1_Button" to="." method="use"]
+
+[editable path="Menu"]

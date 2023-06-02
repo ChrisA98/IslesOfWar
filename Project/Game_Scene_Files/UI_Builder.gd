@@ -40,6 +40,8 @@ func _ready():
 	for i in minmap.get_child(1).get_children():
 		if i.name.contains("Button"):
 			buttons.push_back(i)
+	
+	setup_particles()
 
 
 ## Called every frame. 'delta' is the elapsed time since the previous frame.
@@ -50,6 +52,18 @@ func _process(_delta):
 ## Toggle button (may not be useful)
 func unpress_button(id):
 	buttons[id].button_pressed = false
+
+
+func setup_particles():
+	#setup unit list particles
+	var trgt_w = $Unit_List.size.x
+	var trgt_p = Vector2($Unit_List.position.x+(trgt_w/2.1),$Unit_List.size.y)
+	
+	$Unit_List/Magic_Particles.position = trgt_p
+	var u_mat = $Unit_List/Magic_Particles.get_process_material()
+	u_mat.set_emission_box_extents(Vector3(trgt_w/2,0,1))
+
+	pass
 
 
 ## Show target menu

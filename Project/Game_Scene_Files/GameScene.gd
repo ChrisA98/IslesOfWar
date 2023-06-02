@@ -397,7 +397,6 @@ func building_pressed(building):
 		"Barracks":
 			player_controller.adj_resource("riches",10)
 			player_controller.adj_resource("crystals",10)
-			building.show_menu()
 		_:
 			pass
 

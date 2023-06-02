@@ -75,14 +75,14 @@ min_value = -1.0
 _data = [Vector2(0, -0.309091), 0.0, 0.0, 0, 0, Vector2(1, 1), 0.0, 0.0, 0, 0]
 point_count = 2
 
-[sub_resource type="CurveTexture" id="CurveTexture_nsn7k"]
+[sub_resource type="CurveTexture" id="CurveTexture_n0c2i"]
 curve = SubResource("Curve_p6iol")
 
 [sub_resource type="Curve" id="Curve_armqb"]
 _data = [Vector2(0, 1), 0.0, 0.0, 0, 0, Vector2(1, 0), -3.10813, 0.0, 0, 0]
 point_count = 2
 
-[sub_resource type="CurveTexture" id="CurveTexture_t5lmc"]
+[sub_resource type="CurveTexture" id="CurveTexture_7hefi"]
 curve = SubResource("Curve_armqb")
 
 [sub_resource type="ParticleProcessMaterial" id="ParticleProcessMaterial_g3xjd"]
@@ -100,40 +100,40 @@ orbit_velocity_min = 0.0
 orbit_velocity_max = 0.0
 scale_min = 0.1
 scale_max = 0.85
-scale_curve = SubResource("CurveTexture_t5lmc")
+scale_curve = SubResource("CurveTexture_7hefi")
 color = Color(0.905882, 0.701961, 0.960784, 1)
 hue_variation_min = -0.05
 hue_variation_max = 0.05
-hue_variation_curve = SubResource("CurveTexture_nsn7k")
+hue_variation_curve = SubResource("CurveTexture_n0c2i")
 attractor_interaction_enabled = false
 
-[sub_resource type="Gradient" id="Gradient_b166q"]
+[sub_resource type="Gradient" id="Gradient_14su2"]
 colors = PackedColorArray(1, 1, 1, 1, 1, 1, 1, 0)
 
 [sub_resource type="GradientTexture2D" id="GradientTexture2D_y3exv"]
-gradient = SubResource("Gradient_b166q")
+gradient = SubResource("Gradient_14su2")
 fill = 1
 fill_from = Vector2(0.512821, 0.521368)
 fill_to = Vector2(0.730769, 0.350427)
 
 [sub_resource type="CanvasItemMaterial" id="CanvasItemMaterial_fbdp7"]
 
-[sub_resource type="Gradient" id="Gradient_cwsep"]
+[sub_resource type="Gradient" id="Gradient_ue6bm"]
 offsets = PackedFloat32Array(0, 0.576271, 0.593548)
 colors = PackedColorArray(0.827451, 0.482353, 0.819608, 1, 0.905882, 0.701961, 0.960784, 1, 0, 0, 0, 0)
 
 [sub_resource type="GradientTexture2D" id="GradientTexture2D_g6uko"]
-gradient = SubResource("Gradient_cwsep")
+gradient = SubResource("Gradient_ue6bm")
 fill = 1
 fill_from = Vector2(0.5, 0.5)
 
 [sub_resource type="GradientTexture2D" id="GradientTexture2D_mb71g"]
-gradient = SubResource("Gradient_cwsep")
+gradient = SubResource("Gradient_ue6bm")
 fill = 1
 fill_from = Vector2(0.5, 0.5)
 
 [sub_resource type="GradientTexture2D" id="GradientTexture2D_tausu"]
-gradient = SubResource("Gradient_cwsep")
+gradient = SubResource("Gradient_ue6bm")
 fill = 1
 fill_from = Vector2(0.5, 0.5)
 
@@ -165,7 +165,7 @@ RichTextLabel/colors/default_color = Color(0, 0, 0, 1)
 
 [sub_resource type="ParticleProcessMaterial" id="ParticleProcessMaterial_84dyp"]
 emission_shape = 3
-emission_box_extents = Vector3(1200, 1, 1)
+emission_box_extents = Vector3(364, 1, 1)
 particle_flag_disable_z = true
 direction = Vector3(0, -2, 0)
 gravity = Vector3(0, -10, 0)
@@ -175,11 +175,11 @@ orbit_velocity_min = 0.0
 orbit_velocity_max = 0.0
 scale_min = 0.1
 scale_max = 0.85
-scale_curve = SubResource("CurveTexture_t5lmc")
+scale_curve = SubResource("CurveTexture_7hefi")
 color = Color(0.905882, 0.701961, 0.960784, 1)
 hue_variation_min = -0.05
 hue_variation_max = 0.05
-hue_variation_curve = SubResource("CurveTexture_nsn7k")
+hue_variation_curve = SubResource("CurveTexture_n0c2i")
 attractor_interaction_enabled = false
 
 [sub_resource type="Gradient" id="Gradient_b6hmg"]
@@ -1012,7 +1012,6 @@ fit_content = true
 text_direction = 2
 
 [node name="Unit_List" type="Panel" parent="UI_Node"]
-visible = false
 self_modulate = Color(1, 1, 1, 0.490196)
 layout_mode = 1
 anchors_preset = -1
@@ -1026,8 +1025,7 @@ theme = ExtResource("3_qtcio")
 [node name="Magic_Particles" type="GPUParticles2D" parent="UI_Node/Unit_List"]
 self_modulate = Color(1, 1, 1, 0.490196)
 show_behind_parent = true
-position = Vector2(243.4, 68)
-scale = Vector2(0.2, 0.2)
+position = Vector2(347, 0)
 amount = 160
 process_material = SubResource("ParticleProcessMaterial_84dyp")
 texture = SubResource("GradientTexture2D_y3exv")
@@ -1035,6 +1033,7 @@ lifetime = 4.0
 preprocess = 4.0
 speed_scale = 0.5
 randomness = 0.5
+visibility_rect = Rect2(-100, -100, 200, 400)
 
 [node name="World" type="Node3D" parent="."]
 script = ExtResource("4_k22hi")

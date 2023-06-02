@@ -16,19 +16,4 @@ build_time = 1.0
 mesh = SubResource("BoxMesh_8pvv5")
 surface_material_override/0 = SubResource("StandardMaterial3D_xyfiq")
 
-[node name="Barracks_Menu" type="Panel" parent="." index="4"]
-visible = false
-offset_left = 463.0
-offset_top = 191.0
-offset_right = 696.0
-offset_bottom = 432.0
-
-[node name="Unit_Test_Button" type="Button" parent="Barracks_Menu" index="0"]
-layout_mode = 0
-offset_left = 26.0
-offset_top = 16.0
-offset_right = 210.0
-offset_bottom = 83.0
-text = "Unit_Test"
-
-[connection signal="pressed" from="Barracks_Menu/Unit_Test_Button" to="." method="use" binds= [NodePath(".")]]
+[editable path="Menu"]
