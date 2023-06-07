@@ -8,6 +8,7 @@ func _ready():
 	super()
 	type = "Base"
 	pop_mod = 5
+	
 	update_radius(radius)
 
 

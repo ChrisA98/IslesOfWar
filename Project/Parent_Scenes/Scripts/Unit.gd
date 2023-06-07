@@ -1,31 +1,28 @@
+class_name Unit_Base
 extends CharacterBody3D
 
-
-class_name Unit_Base
-
-
-#signals
+''' Signals '''
 signal selected
 signal died
 signal update_fog
 
+''' Export Vars '''
+@export var fog_rev_radius : float = 50
 
+var rng = RandomNumberGenerator.new()
+''' Movement '''
 const MAX_SPEED = 10
 const ACCEL = 3
-var rng = RandomNumberGenerator.new()
 var gravity = ProjectSettings.get_setting("physics/3d/default_gravity")
-@onready var fog_reg = get_node("Fog_Breaker")
 
+''' Ai Controls '''
 var ai_mode :StringName = "idle_basic"
 var ai_methods : Dictionary = {
-	"idle_basic" : Callable(idling_basic),
-	"traveling_basic" : Callable(traveling_basic),
-	"attack_commanded" : Callable(targeted_attack)
+	"idle_basic" : Callable(_idling_basic),
+	"traveling_basic" : Callable(_traveling_basic),
+	"wandering_basic" : Callable(_wandering_basic),
+	"attack_commanded" : Callable(_targeted_attack),
 }
-
-## Navigation variables
-@onready var nav_agent: NavigationAgent3D = get_node("NavigationAgent3D")
-@onready var unit_radius = $CollisionShape3D.shape.get_radius()
 var intial_path_dist := 0.1
 var followers: Array
 var target_follow: Unit_Base:
@@ -37,15 +34,19 @@ var target_follow: Unit_Base:
 		else:
 			target_speed = value.MAX_SPEED
 		target_follow = value
-@onready var target_speed: int = MAX_SPEED
 
+''' Identifying Vars '''
 var actor_owner
 var unit_list
 var unit_name: String
+
 var is_selected: bool
-@export var fog_rev_radius : float = 50
+var is_visible: bool:
+	set(value):
+		is_visible = value
+		$MeshInstance3D.visible = is_visible
 
-
+''' Cost Vars '''
 var pop_cost := 0
 var res_cost := {"wood": 0,
 "stone": 0,
@@ -53,14 +54,13 @@ var res_cost := {"wood": 0,
 "crystals": 10,
 "food": 0}
 
-## Combat variables
-@onready var atk_timer := get_node("Attack_Timer")
-var health: float = 1
-var base_atk_str: float = 10
-var current_atk_str: float #with modifiers
-var base_atk_spd: float = 1
-var current_atk_spd: float #with modifiers
-var target_atk_rng: int = 5
+''' Combat vars '''
+var health : float = 1
+var base_atk_str : float = 10
+var current_atk_str : float #with modifiers
+var base_atk_spd : float = 1
+var current_atk_spd : float #with modifiers
+var target_atk_rng : int = 5
 var target_enemy:
 	get:
 		return target_enemy
@@ -69,33 +69,52 @@ var target_enemy:
 		if(value != null):
 			target_enemy.died.connect(target_killed)
 
+''' On-Ready Vars '''
+@onready var fog_reg = get_node("Fog_Breaker")
+@onready var grnd_ping = get_node("Ground_Checker")
+@onready var det_area = get_node("Detection_Area")
+## Combat vars
+@onready var atk_timer := get_node("Attack_Timer")
+## Navigation vars
+@onready var nav_agent: NavigationAgent3D = get_node("NavigationAgent3D")
+@onready var unit_radius = $CollisionShape3D.shape.get_radius()
+@onready var target_speed: int = MAX_SPEED
 
+'''### Built-In Methods ###'''
 func _ready():
 	nav_agent.path_desired_distance = 0.5
 	nav_agent.target_desired_distance = 0.5
 	
 	nav_agent.waypoint_reached.connect(waypoint)
 	atk_timer.timeout.connect(attack)
+	## Fog Setup
+	fog_reg.set_actor_owner(actor_owner.actor_ID)
+	fog_reg.fog_break_radius = fog_rev_radius
 	if(actor_owner.actor_ID == 0):
-		fog_reg.fog_break_radius = fog_rev_radius*.5
 		fog_reg.visible = true
 		fog_reg.active = true
 	get_parent().added_fog_revealer(self)
 	fog_reg.activate_area()
+	
+	if (actor_owner.actor_ID == 0):
+		is_visible = true
+	else:
+		is_visible = false
+		det_area.area_entered.connect(_det_area_entered)
+		det_area.area_exited.connect(_det_area_exited)
 
 
+func _physics_process(delta):
+	ai_methods[ai_mode].call(delta)
+
+'''### Public Methods ###'''
+''' Movement Methods Start '''
 ## Set target move location
 ##
 ## Called by outside functions
 func set_mov_target(mov_tar: Vector3):
-	set_target_position(mov_tar)
+	_set_target_position(mov_tar)
 	ai_mode = "traveling_basic"
-
-
-## set target move location 
-func set_target_position(mov_tar: Vector3):
-	nav_agent.set_target_position(mov_tar)
-	intial_path_dist = nav_agent.distance_to_target()
 
 
 ## Set folowing units
@@ -123,78 +142,17 @@ func clear_following():
 	followers.clear()
 
 
-func _physics_process(delta):
-	ai_methods[ai_mode].call(delta)
-
-
-### Process Paths ###
-
-## Has a target set by player
-func targeted_attack(delta):
-	# Attack targeting
-	if !is_instance_valid(target_enemy):
-		return
-	
-	if(position.distance_to(target_enemy.position) <= target_atk_rng):
-		if(nav_agent.is_navigation_finished() == false):
-			set_target_position(position)
-			attack()
-			travel(delta)
-			return
-	else:
-		travel(delta)
-		atk_timer.stop()
-		return
-
-
-func traveling_basic(delta):
-	travel(delta)
-
-
-func idling_basic(_delta):
-	pass
-
-
-func wandering_basic(_delta):
-	pass
-
-
-### End Process Paths ###
-
-
-## Move on process
-func travel(delta):
-	if nav_agent.is_navigation_finished():
-		return
-	
+# Get gound depth at certain point
+func get_ground_depth(pos = null):
+	if(pos !=null):
+		grnd_ping.position = Vector3(pos.x+position.x,250,pos.z+position.z)
+	grnd_ping.force_raycast_update()
+	var out =  grnd_ping.get_collision_point().y
+	grnd_ping.position = Vector3(0,250,0)	## Reset to on unit
 	update_fog.emit(self,position)
-	var current_agent_position: Vector3 = global_transform.origin
-	var next_path_position: Vector3 = nav_agent.get_next_path_position()
-	var new_velocity: Vector3 = next_path_position - current_agent_position
-	#Accelerate and decelerrate
-	if nav_agent.distance_to_target() > intial_path_dist*.1 or nav_agent.distance_to_target() > 3:
-		new_velocity = lerp_start(new_velocity, delta)
-	else:
-		new_velocity = lerp_stop(new_velocity, delta)
-		
-	set_velocity(new_velocity)
-	move_and_slide()
+	return out
 
-
-## Speed up when starting movement
-func lerp_start(nv, dx):
-	nv = nv.normalized()* target_speed
-	nv = lerp(velocity,nv,dx*ACCEL)
-	return nv
-
-
-## Speed up when starting movement
-func lerp_stop(nv, dx):
-	nv = nv.normalized() * 0.2
-	nv = lerp(velocity,nv,dx*ACCEL)
-	return nv
-
-
+''' Movement Methods End '''
 ## Check target position for other units
 func check_pos(pos):
 	var new_pos = pos
@@ -207,18 +165,27 @@ func check_pos(pos):
 
 
 ## Call to see if purchasable
-func can_afford(builder_res, ):
+func can_afford(builder_res):
 	for res in builder_res:
 		if builder_res[res] < res_cost[res] :
 			return false
 	return true
 
-
+''' Player Input Methods Start '''
 ## Unit is selected and make selection visible
 func select(state : bool = true):
 	$Selection.visible = state
 
 
+#signal being selected on click
+func _on_input_event(_camera, event, _position, _normal, _shape_idx):
+	if event is InputEventMouseButton and Input.is_action_just_released("lmb"):
+		selected.emit(self, event)
+		ai_mode = "wandering_basic"
+
+''' Player Input Methods End '''
+
+''' Combat Methods Start '''
 ## Damage dealt
 ##
 ## returns true if killed or false if survived
@@ -233,28 +200,136 @@ func damage(amt: float, _type: String):
 	return false
 
 
-## Decalres enemy from outside unit thinking
+## Declares enemy
 func declare_enemy(unit):
 	ai_mode = "attack_commanded"
 	target_enemy = unit
 	if(target_follow == null):
-		set_target_position(unit.position)
+		_set_target_position(unit.position)
 
 
-###SIGNAL FUNCTIONS##
-#signal being selected on click
-func _on_input_event(_camera, event, _position, _normal, _shape_idx):
-	if event is InputEventMouseButton and Input.is_action_just_released("lmb"):
-		selected.emit(self, event)
+## Attack function
+func attack():
+	if is_instance_valid(target_enemy) == false:
+		return
+	atk_timer.start(base_atk_spd)
+	target_enemy.damage(base_atk_str,"physical")
+
+''' Combat Methods End '''
+
+''' Destroy Unit Methods Start '''
+## Signal from target dying
+func target_killed():
+	target_enemy = null
+	atk_timer.stop()
+
+
+## Delay delete and remove from lists
+func delayed_delete():
+	await get_tree().physics_frame
+	actor_owner.units.erase(self)
+	actor_owner.update_pop()
+	unit_list.erase(self)
+	queue_free()
+
+''' Destroy Unit Methods End '''
+
+'''### Private Methods ###'''
+''' Movement Methods Start '''
+## set target move location 
+func _set_target_position(mov_tar: Vector3):
+	nav_agent.set_target_position(mov_tar)
+	intial_path_dist = nav_agent.distance_to_target()
+
+
+## Speed up when starting movement
+func _lerp_start(nv, dx):
+	nv = nv.normalized()* target_speed
+	nv = lerp(velocity,nv,dx*ACCEL)
+	return nv
+
+
+## Speed up when starting movement
+func _lerp_stop(nv, dx):
+	nv = nv.normalized() * 0.2
+	nv = lerp(velocity,nv,dx*ACCEL)
+	return nv
+
+
+func _det_area_entered(area):
+	if(area.has_meta("fog_owner_id")):
+		if (area.get_meta("fog_owner_id") == 0):
+			is_visible = true
+
+func _det_area_exited(area):
+	if(area.has_meta("fog_owner_id")):
+		if (area.get_meta("fog_owner_id") == 0):
+			is_visible = false
+
+
+''' Movement Methods end '''
+''' AI Processes  Methods Start '''
+## Has a target set by player
+func _targeted_attack(delta):
+	# Attack targeting
+	if !is_instance_valid(target_enemy):
+		return
+	
+	if(position.distance_to(target_enemy.position) <= target_atk_rng):
+		if(nav_agent.is_navigation_finished() == false):
+			_set_target_position(position)
+			attack()
+			_travel(delta)
+			return
+	else:
+		_travel(delta)
+		atk_timer.stop()
+		return
+
+
+func _traveling_basic(delta):
+	_travel(delta)
+
+
+func _idling_basic(_delta):
+	pass
+
+
+func _wandering_basic(delta):	
+	if nav_agent.is_navigation_finished():
+		var pos = Vector3(rng.randf_range(-100,100),250,rng.randf_range(-100,100))
+		pos.y = get_ground_depth(pos)
+		_set_target_position(pos)
+		return
+	_travel(delta)
+
+
+## Move on process
+func _travel(delta):
+	if nav_agent.is_navigation_finished():
+		return
+	
+	update_fog.emit(self,position)
+	var current_agent_position: Vector3 = global_transform.origin
+	var next_path_position: Vector3 = nav_agent.get_next_path_position()
+	var new_velocity: Vector3 = next_path_position - current_agent_position
+	#Accelerate and decelerrate
+	if nav_agent.distance_to_target() > intial_path_dist*.1 or nav_agent.distance_to_target() > 3:
+		new_velocity = _lerp_start(new_velocity, delta)
+	else:
+		new_velocity = _lerp_stop(new_velocity, delta)
+		
+	set_velocity(new_velocity)
+	move_and_slide()
 
 
 func _on_navigation_agent_3d_navigation_finished():
 	var targ = check_pos(position)
 	if(targ.is_equal_approx(position) == false):
-		set_target_position(targ)
+		_set_target_position(targ)
 	clear_following()
 	if target_follow != null:
-		set_target_position(target_follow.position)
+		_set_target_position(target_follow.position)
 		return
 
 
@@ -269,25 +344,4 @@ func waypoint(_details):
 		for i in followers:
 			i.set_target_position(nav_agent.get_next_path_position())
 
-
-## Attack function
-func attack():
-	if is_instance_valid(target_enemy) == false:
-		return
-	atk_timer.start(base_atk_spd)
-	target_enemy.damage(base_atk_str,"physical")
-
-
-## Signal from target dying
-func target_killed():
-	target_enemy = null
-	atk_timer.stop()
-
-
-## Delay delete and remove from lists
-func delayed_delete():
-	await get_tree().physics_frame
-	actor_owner.units.erase(self)
-	actor_owner.update_pop()
-	unit_list.erase(self)
-	queue_free()
+''' AI Processes Methods End '''

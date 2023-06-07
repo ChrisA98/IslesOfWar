@@ -1,21 +1,44 @@
 extends SubViewport
 
-@onready var visual_ground = $"../../World/Visual_Ground"
-@onready var test_guide = $"../Player_camera"
+@export var minimap_markers_parameter := "friendly_markers"
+@export var draws_fog := true
+@export var markers_path : String = "../../UI_Node/Minimap/Minimap_Container/SubViewport/player_markers"
+
+var updates := []
+var marker_colors : Color
+
+var visual_ground
 
 #draw fog and mirror parents
 var drawers = {}
 
 # Called when the node enters the scene tree for the first time.
 func _ready():
-	pass
+	if(draws_fog):
+		visual_ground = get_node("../../World/Visual_Ground")
+		updates.push_back(_update_fog)
+		marker_colors = Color.BLUE
+	else:		
+		marker_colors = Color.RED
+	updates.push_back(_update_markers)
+	
 
 
 # Called every frame. 'delta' is the elapsed time since the previous frame.
 func _process(_delta):	
 	var tex = get_texture()
+	for c in updates:
+		c.call(tex)
+
+##Update player minimap fog
+func _update_fog(tex):
 	visual_ground.mesh.surface_get_material(0).set_shader_parameter("fog", tex)
 
+## Update markers
+## should be added always
+func _update_markers(tex):
+	get_node(markers_path).material.set_shader_parameter(minimap_markers_parameter, tex)
+	
 
 ## Create the radius drawers
 func create_drawer(parent):
@@ -27,6 +50,8 @@ func create_drawer(parent):
 	m.mesh.set_radial_segments(32)
 	m.mesh.set_rings(1)
 	m.mesh.set_top_radius(parent.fog_reg.fog_break_radius)
+	m.mesh.surface_set_material(0,StandardMaterial3D.new())
+	m.mesh.surface_get_material(0).set_albedo(marker_colors)
 	
 	m.position = parent.position
 	add_child(m)

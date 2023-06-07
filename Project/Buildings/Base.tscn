@@ -52,11 +52,15 @@ build_time = 0.0
 fog_rev_radius = 75.0
 metadata/show_base_radius = false
 
-[node name="MeshInstance3D" parent="." index="0"]
+[node name="MeshInstance3D" parent="." index="2"]
 transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, 0, 0)
 mesh = SubResource("BoxMesh_txyb7")
 
-[node name="StaticBody3D" parent="." index="1"]
+[node name="Hiding" parent="MeshInstance3D" index="0"]
+transform = Transform3D(0.999994, 0.00318968, -0.000583429, -0.00318933, 0.999994, 0.000606472, 0.00058536, -0.000604608, 0.999999, 0, 1, 0)
+size = Vector3(2.4, 2.4, 2.4)
+
+[node name="StaticBody3D" parent="." index="3"]
 transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, 0.504915, 0)
 
 [node name="CollisionShape3D" parent="StaticBody3D" index="0"]
@@ -67,14 +71,9 @@ shape = SubResource("BoxShape3D_r4gvb")
 transform = Transform3D(0.2, 0, 0, 0, 0.2, 0, 0, 0, 0.2, 0, 0, 1.7338)
 disabled = true
 
-[node name="RallyPoint" parent="." index="2"]
-transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, 0.0986839, 1.75751)
-
-[node name="SpawnPoint" parent="." index="3"]
-transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, -0.0193124, 1.17912)
-
 [node name="Valid_Region" type="Node3D" parent="." index="4"]
 transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, -0.00605364, 0.0253027)
+visible = false
 
 [node name="GPUParticles3D" type="GPUParticles3D" parent="Valid_Region" index="0"]
 transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0.101, -0.150815, -0.0473027)
@@ -85,6 +84,12 @@ visibility_aabb = AABB(-5.55879, -1.53446, -5.77225, 11.1176, 3.06891, 11.5445)
 draw_order = 2
 process_material = SubResource("ParticleProcessMaterial_wbdji")
 draw_pass_1 = SubResource("CylinderMesh_5guih")
+
+[node name="RallyPoint" parent="." index="5"]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, 0.0803117, 3.12781)
+
+[node name="SpawnPoint" parent="." index="6"]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, 0.0231627, 2.67383)
 
 [node name="CollisionShape3D" parent="Detection_Area" index="0"]
 shape = SubResource("BoxShape3D_rep37")

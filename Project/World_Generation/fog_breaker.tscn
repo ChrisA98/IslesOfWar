@@ -2,11 +2,13 @@
 
 [ext_resource type="Script" path="res://World_Generation/fog_breaker.gd" id="1_xnjic"]
 
-[sub_resource type="SphereShape3D" id="SphereShape3D_kb6g3"]
+[sub_resource type="SphereShape3D" id="SphereShape3D_tysrl"]
+resource_local_to_scene = true
 radius = 25.0
 
 [node name="Fog_Breaker" type="GPUParticlesCollisionSphere3D"]
 layers = 0
+cull_mask = 4293918720
 radius = 25.0
 script = ExtResource("1_xnjic")
 
@@ -18,5 +20,5 @@ metadata/is_fog_area = true
 metadata/fog_owner_id = 0
 
 [node name="CollisionShape3D" type="CollisionShape3D" parent="Area3D"]
-shape = SubResource("SphereShape3D_kb6g3")
+shape = SubResource("SphereShape3D_tysrl")
 metadata/is_fog_breaker = true

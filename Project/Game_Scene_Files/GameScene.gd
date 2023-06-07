@@ -1,24 +1,18 @@
 extends Node3D
 
-#ref vars
-@onready var UI_controller = $UI_Node
-@onready var world = $World
-@onready var player_controller = $Player
-@onready var faction_data = [preload("res://Faction_Resources/Amerulf_Resource.json"),
-preload("res://Faction_Resources/Amerulf_Resource.json")]
-@onready var game_actors = [$Player]
-@onready var global = get_node("/root/Global_Vars")
-@onready var player_fog_manager = get_node("Player/Fog_drawer")
+''' Signals '''
+signal nav_ready
+signal click_mode_changed(old, new)
+
+
+''' Unit and Building vars '''
+## World lists
 var loaded_buildings = []
 var world_units = []
-
 var menu_buildings = {}
-var active_build_menu : String
 var world_buildings = []
 
-var rng = RandomNumberGenerator.new()
-
-#Game logic vars
+## Preview Building Info
 var building_snap = 0
 var preview_building: Node3D:
 	get:
@@ -34,18 +28,19 @@ var preview_building: Node3D:
 		if(preview_building.get_meta("show_base_radius") or preview_building.get_meta("show_base_radius")):
 			for i in player_controller.bases:
 				i.preview_radius()
+
+''' User input vars '''
+var activated_building = null
+var selected_units = []
+var selection_square_points = [Vector3.ZERO,Vector3.ZERO]
 var click_mode: String = "select":
 	get:
 		return click_mode
 	set(value):
 		click_mode_changed.emit(click_mode, value)
 		click_mode = value
-var activated_building = null
-var selected_units = []
-@onready var selection_square = get_node("Player/Selection_square")
-var selection_square_points = [Vector3.ZERO,Vector3.ZERO]
 
-#time keeping
+''' Time keeping vars '''
 var year_day = 270
 var year = 603
 var day_cycle = true
@@ -54,12 +49,20 @@ var moon_rotation = 0
 var sun_str = 1.3
 var moon_str = .427
 
-##Signals
-signal nav_ready
-signal click_mode_changed(old, new)
+''' onready vars '''
+@onready var UI_controller = $UI_Node
+@onready var world = $World
+@onready var player_controller = $Player
+@onready var faction_data = [preload("res://Faction_Resources/Amerulf_Resource.json"),
+preload("res://Faction_Resources/Amerulf_Resource.json")]
+@onready var game_actors = [$Player]
+@onready var global = get_node("/root/Global_Vars")
+@onready var player_fog_manager = get_node("Player/Fog_drawer")
+@onready var enemy_marker_manager = get_node("UI_Node/Minimap/Enemy_minimap_markers")
+@onready var selection_square = get_node("Player/Selection_square")
 
 
-###BUILT IN FUNCTIONS###
+'''### BUILT-IN METHODS ###'''
 #Called when the node enters the scene tree for the first time.
 func _ready():
 	# Connect ground signals
@@ -71,9 +74,6 @@ func _ready():
 	$Sun.rotation_degrees = Vector3(0,90,-180)
 	$Moon.rotation_degrees = Vector3(0,90,-180)
 	
-	# Connect player signals
-	player_controller.res_changed.connect(set_resource)
-	player_controller.pop_changed.connect(set_pop)
 	
 	# UI Signals
 	UI_controller.minimap_clicked.connect(_minimap_Clicked)
@@ -103,8 +103,8 @@ func _ready():
 	for fac in range(faction_data.size()):
 		loaded_buildings.push_back({})
 		game_actors[fac].faction_data = faction_data[fac].data
-		for b in faction_data[fac].data.buildings:
-			
+		game_actors[fac].load_units()
+		for b in faction_data[fac].data.buildings:			
 			#check for file and load if exists
 			if(FileAccess.file_exists ("res://Buildings/"+b+".tscn")):
 				loaded_buildings[fac][b] = load("res://Buildings/"+b+".tscn")
@@ -127,31 +127,6 @@ func _ready():
 	call_deferred("custom_nav_setup")
 
 
-## Place starting bases
-func prepare_bases():
-	await get_tree().physics_frame ## fix for collision issue
-	# Place enemy starting Bases
-	for enemy in range(1,game_actors.size()):
-		var spawn = get_node("World/Enemy"+str(enemy)+"_Base_Spawn")
-		var bldg = prep_other_building(game_actors[enemy],"Base")
-		bldg.set_pos(spawn.position)
-		var grp = game_actors[enemy].ping_ground(bldg.position).get_parent().get_groups()[0]		
-		bldg.set_pos(Vector3(spawn.position.x,game_actors[enemy].ping_ground_depth(bldg.position),spawn.position.z))
-		game_actors[enemy].place_building(grp, bldg)
-		
-	# Add player first Base
-	var p_spawn = get_node("World/Player_Base_Spawn")
-	player_controller.set_cam_pos(p_spawn.position + Vector3(0,20,0))
-	player_controller.get_child(0).get_child(1).force_raycast_update()
-	# inelegent solution, but it works
-	var grp = player_controller.get_child(0).get_child(1).get_collider().get_parent().get_groups()[0]
-	prep_player_building(0, null)
-	preview_building.set_pos(p_spawn.position)
-	player_controller.place_building(grp, preview_building)
-	preview_building = null
-	click_mode = "select"
-
-
 #Called every frame. 'delta' is the elapsed time since the previous frame.
 func _process(_delta):
 	sun_rotation = clampf(180-(180*($UI_Node/Time_Bar/Day_Cycle_Timer.time_left/global.DAY_LENGTH)),0,180)
@@ -164,7 +139,6 @@ func _process(_delta):
 		$UI_Node/Time_Bar/Clock_Back.rotation = deg_to_rad(sun_rotation-90)
 	else:
 		$UI_Node/Time_Bar/Clock_Back.rotation = deg_to_rad(moon_rotation+90)
-		
 
 
 ## on player input event
@@ -174,30 +148,11 @@ func _input(event):
 			selected_units.push_back(u)
 
 
-###GAME FUNCTIONS###
+'''### PUBLIC METHODS ###'''
 func set_map_snap(snp):
 	building_snap = snp
 	if preview_building != null:
 		preview_building.set_snap(snp)
-
-
-## Places building into world
-##
-## To be called by actors to ensure it connects to player
-func place_building(grp, building):
-	if building.is_valid == false:
-		return null
-	
-	#Connect signals
-	building.pressed.connect(building_pressed)
-	
-	#Place building in world
-	world_buildings.push_back(building)
-	building.place()
-	building.add_to_group(grp)
-	update_navigation(grp)
-	
-	return world_buildings[-1]
 
 
 ## Update target navmeshes
@@ -209,17 +164,6 @@ func update_navigation(region = null):
 
 ## Spawn unit with ownership assigned to o_player
 func spawn_unit(o_player, unit):
-	# Check pop
-	if unit.pop_cost + o_player.pop >= o_player.max_pop:
-		return false
-	# Check cost
-	for res in unit.res_cost:
-		if o_player.resources[res] - unit.res_cost[res] < 0:
-			return false
-	# Spend Resources
-	for res in unit.res_cost:
-		o_player.adj_resource(res,unit.res_cost[res]*-1)
-		
 	unit.actor_owner = o_player
 	add_child(unit)
 	o_player.units.push_back(unit)
@@ -241,22 +185,7 @@ func custom_nav_setup():
 	update_navigation()
 
 
-## Set player resource on screen
-func set_resource(resource: String, value: int):
-	UI_controller.res_displays[resource].clear()
-	UI_controller.res_displays[resource].add_text(var_to_str(value))
-
-
-## Set player population on screen
-func set_pop(current: int, max_pop: int):
-	UI_controller.res_displays["pop"].clear()
-	UI_controller.res_displays["pop"].push_color(Color.BLACK)
-	UI_controller.res_displays["pop"].append_text("[center]")
-	UI_controller.res_displays["pop"].append_text("[center]"+var_to_str(current)+" / " + var_to_str(max_pop)+"[/center]")
-
-
-###SIGNALS FUNCTIONS###
-
+''' Unit Selection Start '''
 ## Check what unit is being clicked and what to do with it
 func unit_selected(unit, event):
 	UI_controller.close_menus()
@@ -286,7 +215,7 @@ func start_select_square(pos):
 	selection_square_points = [pos, pos]
 
 
-## update dimesnions and move Selection Square
+## update dimensions and move Selection Square
 func update_select_square(pos):
 	if (selection_square_points[0] == Vector3.ZERO):
 		start_select_square(pos)
@@ -346,6 +275,35 @@ func group_selected_units():
 			u[i.unit_name] = [i]
 	UI_controller.set_unit_list(u)
 
+''' Unit Selection End '''
+
+''' Building Placement Start '''
+## Place starting bases
+func prepare_bases():
+	await get_tree().physics_frame ## fix for collision issue
+	# Place enemy starting Bases
+	for enemy in range(1,game_actors.size()):
+		var spawn = get_node("World/Enemy"+str(enemy)+"_Base_Spawn")
+		var bldg = prep_other_building(game_actors[enemy],"Base")
+		bldg.set_pos(spawn.position)
+		var grp = game_actors[enemy].ping_ground(bldg.position).get_parent().get_groups()[0]		
+		bldg.set_pos(Vector3(spawn.position.x,game_actors[enemy].ping_ground_depth(bldg.position),spawn.position.z))
+		game_actors[enemy].place_building(grp, bldg)
+		bldg.spawn_unit("Scout")
+		
+	# Add player first Base
+	var p_spawn = get_node("World/Player_Base_Spawn")
+	player_controller.set_cam_pos(p_spawn.position + Vector3(0,20,0))
+	player_controller.get_child(0).get_child(1).force_raycast_update()
+	# inelegent solution, but it works
+	var grp = player_controller.get_child(0).get_child(1).get_collider().get_parent().get_groups()[0]
+	prep_player_building(0, null)
+	preview_building.set_pos(p_spawn.position)
+	player_controller.place_building(grp, preview_building)
+	preview_building.spawn_unit("Scout")
+	preview_building = null
+	click_mode = "select"
+
 
 ##  Prepare new building for player
 func prep_player_building(id, menu):
@@ -378,6 +336,25 @@ func prep_other_building(actor, bldg_name):
 	return new_build
 
 
+## Places building into world
+##
+## To be called by actors to ensure it connects to player
+func place_building(grp, building):
+	if building.is_valid == false:
+		return null
+	
+	#Connect signals
+	building.pressed.connect(building_pressed)
+	
+	#Place building in world
+	world_buildings.push_back(building)
+	building.place()
+	building.add_to_group(grp)
+	update_navigation(grp)
+	
+	return world_buildings[-1]
+
+
 ## Activate buildings menu
 func building_pressed(building):
 	if !player_controller.owns_building(building):
@@ -400,14 +377,15 @@ func building_pressed(building):
 		_:
 			pass
 
+''' Building Placement End '''
 
+''' Player Input Start '''
 ## Clicks on world
 func ground_click(_camera, event, pos, _normal, _shape_idx, shape):
 	match click_mode:
 		"build":
 			preview_building.set_pos(pos)
 			if event is InputEventMouseButton and Input.is_action_just_released("lmb"):
-				print(pos)
 				if player_controller.place_building(shape.get_groups()[0], preview_building):
 					#Reset click mode
 					click_mode = "select"
@@ -463,32 +441,6 @@ func _on_ui_node_menu_opened():
 	click_mode = "menu"
 
 
-## Day/Night Cycle
-func _on_day_cycle_timer_timeout():
-	for f in game_actors:
-		f.adj_resource("food", f.units.size()* -1)
-	
-	if(day_cycle):
-		$Sun.visible = false
-		$Moon.visible = true
-		$Moon.rotation_degrees = Vector3(0,90,-180)
-		moon_rotation = 0
-	else:
-		year_day+=1
-		$Sun.visible = true
-		$Moon.visible = false
-		$Sun.rotation_degrees = Vector3(0,90,-180)
-		sun_rotation = 0
-	
-	day_cycle = !day_cycle
-		
-	if year_day >= global.YEAR_LENGTH:
-		year_day = 0
-		year += 1	
-	
-	UI_controller.update_clock()
-
-
 ## Signal when updating click mode
 func click_mod_update(old, new):
 	var t = [old,new]
@@ -517,13 +469,43 @@ func click_mod_update(old, new):
 
 
 ## Minimap clicked signal recieved
-func _minimap_Clicked(command : String, pos : Vector2):
+func _minimap_Clicked(_command : String, pos : Vector2):
 	player_controller.get_child(0).position.x = pos.x
 	player_controller.get_child(0).position.y = 100
 	player_controller.get_child(0).position.z = pos.y
 
+''' Player Input End '''
+
+## Day/Night Cycle
+func _on_day_cycle_timer_timeout():
+	for f in game_actors:
+		f.adj_resource("food", f.units.size()* -1)
+	
+	if(day_cycle):
+		$Sun.visible = false
+		$Moon.visible = true
+		$Moon.rotation_degrees = Vector3(0,90,-180)
+		moon_rotation = 0
+	else:
+		year_day+=1
+		$Sun.visible = true
+		$Moon.visible = false
+		$Sun.rotation_degrees = Vector3(0,90,-180)
+		sun_rotation = 0
+	
+	day_cycle = !day_cycle
+		
+	if year_day >= global.YEAR_LENGTH:
+		year_day = 0
+		year += 1	
+	
+	UI_controller.update_clock()
+
+
 ## Trigger when entity enters 
 func added_fog_revealer(child: Node):
 	if child.has_meta("reveals_fog"):
-		if(child.actor_owner == player_controller):
+		if(child.actor_owner.actor_ID == 0):
 			player_fog_manager.create_drawer(child)
+		else:
+			enemy_marker_manager.create_drawer(child)

@@ -12,12 +12,12 @@ gradient = SubResource("Gradient_cwsep")
 fill = 1
 fill_from = Vector2(0.5, 0.5)
 
-[sub_resource type="GradientTexture2D" id="GradientTexture2D_jpja1"]
+[sub_resource type="GradientTexture2D" id="GradientTexture2D_qsxl7"]
 gradient = SubResource("Gradient_cwsep")
 fill = 1
 fill_from = Vector2(0.5, 0.5)
 
-[sub_resource type="GradientTexture2D" id="GradientTexture2D_qsxl7"]
+[sub_resource type="GradientTexture2D" id="GradientTexture2D_jpja1"]
 gradient = SubResource("Gradient_cwsep")
 fill = 1
 fill_from = Vector2(0.5, 0.5)
@@ -51,6 +51,12 @@ offset_top = 148.262
 offset_right = 233.0
 theme = ExtResource("1_66gr2")
 script = ExtResource("2_sg2al")
+visible_pages = {
+"page_4": false,
+"research": true,
+"sec_units": true,
+"units": true
+}
 
 [node name="Building_Menu" type="VBoxContainer" parent="."]
 layout_mode = 1
@@ -82,22 +88,14 @@ size_flags_vertical = 3
 size_flags_stretch_ratio = 0.0
 theme = ExtResource("1_66gr2")
 
-[node name="Unit Spawning" type="Button" parent="Building_Menu/Page_Buttons"]
+[node name="units" type="Button" parent="Building_Menu/Page_Buttons"]
 layout_mode = 2
-text = "pg1"
+text = "units"
 icon = SubResource("GradientTexture2D_tjbge")
 flat = true
 icon_alignment = 1
 
-[node name="Research" type="Button" parent="Building_Menu/Page_Buttons"]
-layout_mode = 2
-text = "pg2"
-icon = SubResource("GradientTexture2D_jpja1")
-flat = true
-icon_alignment = 1
-
-[node name="Utility_1" type="Button" parent="Building_Menu/Page_Buttons"]
-visible = false
+[node name="sec_units" type="Button" parent="Building_Menu/Page_Buttons"]
 layout_mode = 2
 keep_pressed_outside = true
 text = "pg3"
@@ -105,7 +103,14 @@ icon = SubResource("GradientTexture2D_qsxl7")
 flat = true
 icon_alignment = 1
 
-[node name="Utility_2" type="Button" parent="Building_Menu/Page_Buttons"]
+[node name="research" type="Button" parent="Building_Menu/Page_Buttons"]
+layout_mode = 2
+text = "pg2"
+icon = SubResource("GradientTexture2D_jpja1")
+flat = true
+icon_alignment = 1
+
+[node name="page_4" type="Button" parent="Building_Menu/Page_Buttons"]
 visible = false
 layout_mode = 2
 keep_pressed_outside = true
@@ -131,43 +136,43 @@ size_flags_vertical = 3
 layout_mode = 2
 size_flags_horizontal = 3
 
-[node name="unit_box_1" type="HBoxContainer" parent="Building_Menu/Pages/units_page/units_list"]
+[node name="unit_box_0" type="HBoxContainer" parent="Building_Menu/Pages/units_page/units_list"]
 layout_mode = 2
 alignment = 1
 
-[node name="train_count" type="VBoxContainer" parent="Building_Menu/Pages/units_page/units_list/unit_box_1"]
+[node name="train_count" type="VBoxContainer" parent="Building_Menu/Pages/units_page/units_list/unit_box_0"]
 custom_minimum_size = Vector2(50, 0)
 layout_mode = 2
 size_flags_stretch_ratio = 0.13
 
-[node name="increase" type="Button" parent="Building_Menu/Pages/units_page/units_list/unit_box_1/train_count"]
+[node name="increase" type="Button" parent="Building_Menu/Pages/units_page/units_list/unit_box_0/train_count"]
 layout_mode = 2
 text = "+"
 
-[node name="RichTextLabel" type="RichTextLabel" parent="Building_Menu/Pages/units_page/units_list/unit_box_1/train_count"]
+[node name="RichTextLabel" type="RichTextLabel" parent="Building_Menu/Pages/units_page/units_list/unit_box_0/train_count"]
 custom_minimum_size = Vector2(0, 25)
 layout_mode = 2
 size_flags_vertical = 3
 bbcode_enabled = true
 text = "[center]0[/center]"
 
-[node name="decrease" type="Button" parent="Building_Menu/Pages/units_page/units_list/unit_box_1/train_count"]
+[node name="decrease" type="Button" parent="Building_Menu/Pages/units_page/units_list/unit_box_0/train_count"]
 layout_mode = 2
 text = "-
 "
 
-[node name="Panel" type="Panel" parent="Building_Menu/Pages/units_page/units_list/unit_box_1"]
+[node name="Panel" type="Panel" parent="Building_Menu/Pages/units_page/units_list/unit_box_0"]
 layout_mode = 2
 size_flags_horizontal = 3
 size_flags_stretch_ratio = 8.12
 
-[node name="RichTextLabel" type="RichTextLabel" parent="Building_Menu/Pages/units_page/units_list/unit_box_1/Panel"]
+[node name="RichTextLabel" type="RichTextLabel" parent="Building_Menu/Pages/units_page/units_list/unit_box_0/Panel"]
 layout_mode = 0
 offset_right = 139.0
 offset_bottom = 25.0
 text = "unit_Name"
 
-[node name="train_queue" type="TextureProgressBar" parent="Building_Menu/Pages/units_page/units_list/unit_box_1"]
+[node name="train_queue" type="TextureProgressBar" parent="Building_Menu/Pages/units_page/units_list/unit_box_0"]
 custom_minimum_size = Vector2(35, 0)
 layout_mode = 2
 size_flags_horizontal = 10
@@ -177,97 +182,9 @@ texture_under = SubResource("GradientTexture1D_5qqxn")
 texture_over = SubResource("GradientTexture1D_ul2pt")
 texture_progress = SubResource("GradientTexture1D_fnu04")
 
-[node name="unit_box_2" type="HBoxContainer" parent="Building_Menu/Pages/units_page/units_list"]
+[node name="Panel" type="Panel" parent="Building_Menu/Pages"]
+visible = false
 layout_mode = 2
-alignment = 1
-
-[node name="train_count" type="VBoxContainer" parent="Building_Menu/Pages/units_page/units_list/unit_box_2"]
-custom_minimum_size = Vector2(50, 0)
-layout_mode = 2
-size_flags_stretch_ratio = 0.13
-
-[node name="increase" type="Button" parent="Building_Menu/Pages/units_page/units_list/unit_box_2/train_count"]
-layout_mode = 2
-text = "+"
-
-[node name="RichTextLabel" type="RichTextLabel" parent="Building_Menu/Pages/units_page/units_list/unit_box_2/train_count"]
-custom_minimum_size = Vector2(0, 25)
-layout_mode = 2
-size_flags_vertical = 3
-bbcode_enabled = true
-text = "[center]0[/center]"
-
-[node name="decrease" type="Button" parent="Building_Menu/Pages/units_page/units_list/unit_box_2/train_count"]
-layout_mode = 2
-text = "-
-"
-
-[node name="Panel" type="Panel" parent="Building_Menu/Pages/units_page/units_list/unit_box_2"]
-layout_mode = 2
-size_flags_horizontal = 3
-size_flags_stretch_ratio = 8.12
-
-[node name="RichTextLabel" type="RichTextLabel" parent="Building_Menu/Pages/units_page/units_list/unit_box_2/Panel"]
-layout_mode = 0
-offset_right = 139.0
-offset_bottom = 25.0
-text = "unit_Name"
-
-[node name="train_queue" type="TextureProgressBar" parent="Building_Menu/Pages/units_page/units_list/unit_box_2"]
-custom_minimum_size = Vector2(35, 0)
-layout_mode = 2
-size_flags_horizontal = 10
-fill_mode = 3
-nine_patch_stretch = true
-texture_under = SubResource("GradientTexture1D_5qqxn")
-texture_over = SubResource("GradientTexture1D_ul2pt")
-texture_progress = SubResource("GradientTexture1D_fnu04")
-
-[node name="unit_box_3" type="HBoxContainer" parent="Building_Menu/Pages/units_page/units_list"]
-layout_mode = 2
-alignment = 1
-
-[node name="train_count" type="VBoxContainer" parent="Building_Menu/Pages/units_page/units_list/unit_box_3"]
-custom_minimum_size = Vector2(50, 0)
-layout_mode = 2
-size_flags_stretch_ratio = 0.13
-
-[node name="increase" type="Button" parent="Building_Menu/Pages/units_page/units_list/unit_box_3/train_count"]
-layout_mode = 2
-text = "+"
-
-[node name="RichTextLabel" type="RichTextLabel" parent="Building_Menu/Pages/units_page/units_list/unit_box_3/train_count"]
-custom_minimum_size = Vector2(0, 25)
-layout_mode = 2
-size_flags_vertical = 3
-bbcode_enabled = true
-text = "[center]0[/center]"
-
-[node name="decrease" type="Button" parent="Building_Menu/Pages/units_page/units_list/unit_box_3/train_count"]
-layout_mode = 2
-text = "-
-"
-
-[node name="Panel" type="Panel" parent="Building_Menu/Pages/units_page/units_list/unit_box_3"]
-layout_mode = 2
-size_flags_horizontal = 3
-size_flags_stretch_ratio = 8.12
-
-[node name="RichTextLabel" type="RichTextLabel" parent="Building_Menu/Pages/units_page/units_list/unit_box_3/Panel"]
-layout_mode = 0
-offset_right = 139.0
-offset_bottom = 25.0
-text = "unit_Name"
-
-[node name="train_queue" type="TextureProgressBar" parent="Building_Menu/Pages/units_page/units_list/unit_box_3"]
-custom_minimum_size = Vector2(35, 0)
-layout_mode = 2
-size_flags_horizontal = 10
-fill_mode = 3
-nine_patch_stretch = true
-texture_under = SubResource("GradientTexture1D_5qqxn")
-texture_over = SubResource("GradientTexture1D_ul2pt")
-texture_progress = SubResource("GradientTexture1D_fnu04")
 
 [node name="Always_Buttons" type="HBoxContainer" parent="."]
 layout_mode = 1

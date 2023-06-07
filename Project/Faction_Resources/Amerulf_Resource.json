@@ -80,7 +80,8 @@
 						"riches": 1,
 						"crystals": 1,
 						"food": 0,
-					}
+					},
+					"pop_cost": 1
 				},
 				"Division Captain": {
 					"base_cost": {
@@ -89,7 +90,8 @@
 						"riches": 10,
 						"crystals": 10,
 						"food": 0,
-					}
+					},
+					"pop_cost": 1
 				},
 				"Archer": {
 					"base_cost": {
@@ -98,7 +100,8 @@
 						"riches": 10,
 						"crystals": 10,
 						"food": 0,
-					}
+					},
+					"pop_cost": 1
 				}
 			},
 			"base_display_name": "Barracks",
@@ -127,7 +130,8 @@
 					"riches": 10,
 					"crystals": 10,
 					"food": 0,
-					}
+					},
+					"pop_cost": 1
 				},
 				"Catapult": {
 					"base_cost": {
@@ -136,7 +140,8 @@
 						"riches": 10,
 						"crystals": 10,
 						"food": 0,
-					}
+					},
+					"pop_cost": 1
 				},
 				"Cavalry Scout": {
 					"base_cost": {
@@ -145,7 +150,8 @@
 						"riches": 10,
 						"crystals": 10,
 						"food": 0,
-					}
+					},
+					"pop_cost": 1
 				},
 				"Wyvern Riders": {
 					"base_cost": {
@@ -154,7 +160,8 @@
 						"riches": 10,
 						"crystals": 10,
 						"food": 0,
-					}
+					},
+					"pop_cost": 1
 				}
 			},
 			"base_display_name": "Depot",
@@ -183,7 +190,8 @@
 					"riches": 10,
 					"crystals": 10,
 					"food": 0,
-					}
+					},
+					"pop_cost": 1
 				},
 				"Knights Barge": {
 					"base_cost": {
@@ -192,7 +200,8 @@
 						"riches": 10,
 						"crystals": 10,
 						"food": 0,
-					}
+					},
+					"pop_cost": 1
 				},
 				"Transport Ship": {
 					"base_cost": {
@@ -201,7 +210,8 @@
 						"riches": 10,
 						"crystals": 10,
 						"food": 0,
-					}
+					},
+					"pop_cost": 1
 				}
 			},
 			"base_display_name": "Dock",

@@ -23,3 +23,6 @@ var active : bool = false:
 func activate_area():
 	detect_area.monitorable = true
 	detect_area.monitoring = true
+
+func set_actor_owner(id):
+	$Area3D.set_meta("fog_owner_id",id)

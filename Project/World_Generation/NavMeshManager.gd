@@ -26,8 +26,9 @@ func set_nav_region():
 	navigation_mesh.region_min_size = min_size
 	navigation_mesh.cell_size = cell_size
 	navigation_mesh.set_cell_height(cell_height)
-	navigation_mesh.edge_max_length = edge_max_length
+	navigation_mesh.edge_max_length = cell_size*400
 	navigation_mesh.agent_max_slope = agent_max_slope
+	navigation_mesh.region_merge_size = cell_size*100
 	navigation_mesh.set_agent_radius(agent_radius)
 	navigation_mesh.set_source_group_name(get_groups()[0])
 	

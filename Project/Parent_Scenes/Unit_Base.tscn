@@ -1,4 +1,4 @@
-[gd_scene load_steps=7 format=3 uid="uid://cs2p3v3o53aki"]
+[gd_scene load_steps=9 format=3 uid="uid://cs2p3v3o53aki"]
 
 [ext_resource type="Script" path="res://Parent_Scenes/Scripts/Unit.gd" id="1_xwgnb"]
 [ext_resource type="PackedScene" uid="uid://p576jcs2kqxc" path="res://World_Generation/fog_breaker.tscn" id="2_510m0"]
@@ -17,6 +17,12 @@ gradient = SubResource("Gradient_8n0cr")
 fill = 1
 fill_from = Vector2(0.509709, 0.504854)
 fill_to = Vector2(0.495146, 0.0242718)
+
+[sub_resource type="SphereShape3D" id="SphereShape3D_cp7kh"]
+resource_local_to_scene = true
+radius = 25.0
+
+[sub_resource type="CylinderShape3D" id="CylinderShape3D_jn7np"]
 
 [node name="Unit_Base" type="CharacterBody3D"]
 collision_mask = 0
@@ -41,7 +47,7 @@ visible = false
 
 [node name="Decal" type="Decal" parent="Selection"]
 transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, -0.0626185, 0)
-size = Vector3(4, 2, 4)
+size = Vector3(4, 4, 4)
 texture_albedo = SubResource("GradientTexture2D_0hiou")
 cull_mask = 1048574
 
@@ -51,9 +57,21 @@ process_callback = 0
 
 [node name="Fog_Breaker" parent="." instance=ExtResource("2_510m0")]
 
-[node name="RayCast3D" type="RayCast3D" parent="."]
+[node name="CollisionShape3D" parent="Fog_Breaker/Area3D" index="0"]
+shape = SubResource("SphereShape3D_cp7kh")
+
+[node name="Ground_Checker" type="RayCast3D" parent="."]
 transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, 250, 0)
 target_position = Vector3(0, -500, 0)
+collision_mask = 32769
+
+[node name="Detection_Area" type="Area3D" parent="."]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, 1, 0)
+input_ray_pickable = false
+monitorable = false
+
+[node name="CollisionShape3D" type="CollisionShape3D" parent="Detection_Area"]
+shape = SubResource("CylinderShape3D_jn7np")
 
 [connection signal="input_event" from="." to="." method="_on_input_event"]
 [connection signal="navigation_finished" from="NavigationAgent3D" to="." method="_on_navigation_agent_3d_navigation_finished"]

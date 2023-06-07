@@ -58,6 +58,7 @@ func _ready():
 	get_child(-1).set_name("water_navigation")	
 	wtr_nav_region.set_nav_region()
 	wtr_nav_region.navigation_mesh.set_filter_baking_aabb(AABB(Vector3(-chunk_size,-1.9,-chunk_size),Vector3(chunks*chunk_size,10,chunks*chunk_size)))
+	wtr_nav_region.enter_cost = 1000
 	wtr_nav_region.update_navigation_mesh()
 	
 	## Prepare Ground with level info
@@ -140,7 +141,6 @@ func update_navigation_meshes(grp):
 	for i in get_children():
 		if i.name.contains(targ):
 			i.update_navigation_mesh()	
-	
 
 
 func build_map(img, pos, adj):	

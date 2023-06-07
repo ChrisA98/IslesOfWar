@@ -1,4 +1,4 @@
-[gd_scene load_steps=99 format=3 uid="uid://d32tym6bcdu7c"]
+[gd_scene load_steps=102 format=3 uid="uid://d32tym6bcdu7c"]
 
 [ext_resource type="Script" path="res://Game_Scene_Files/GameScene.gd" id="1_7pjje"]
 [ext_resource type="Script" path="res://Game_Scene_Files/UI_Builder.gd" id="2_wj4ul"]
@@ -14,6 +14,7 @@
 [ext_resource type="PackedScene" uid="uid://crswchumae5b0" path="res://World_Objects/Forest.tscn" id="7_1qpxy"]
 [ext_resource type="Texture2D" uid="uid://b3sq1bgs0ow0o" path="res://Assets/UI_Elements/Clock_Front.png" id="7_rkqbs"]
 [ext_resource type="Texture2D" uid="uid://drbfk3h3s6x1b" path="res://Test_Items/HeightMap.exr" id="7_ubyyn"]
+[ext_resource type="Shader" path="res://Materials/Minimap_Markers.gdshader" id="8_ka2n4"]
 [ext_resource type="Script" path="res://Actor_Classes/Fort_Spawn.gd" id="8_viuko"]
 [ext_resource type="Script" path="res://Actor_Classes/Player.gd" id="9_3h23t"]
 [ext_resource type="PackedScene" uid="uid://76wslx0hq568" path="res://World_Objects/Stone_deposit.tscn" id="9_b7fca"]
@@ -33,9 +34,9 @@ sky_material = SubResource("ProceduralSkyMaterial_46wwo")
 background_mode = 2
 sky = SubResource("Sky_4kxja")
 ambient_light_source = 3
-ambient_light_color = Color(0.768627, 1, 0.898039, 1)
-ambient_light_sky_contribution = 0.37
-ambient_light_energy = 0.2
+ambient_light_color = Color(0, 0.847059, 0.678431, 1)
+ambient_light_sky_contribution = 0.75
+ambient_light_energy = 0.4
 reflected_light_source = 2
 tonemap_mode = 3
 tonemap_exposure = 1.06
@@ -56,8 +57,9 @@ volumetric_fog_detail_spread = 0.933033
 volumetric_fog_sky_affect = 0.656
 volumetric_fog_temporal_reprojection_amount = 0.89
 adjustment_enabled = true
+adjustment_brightness = 1.2
 adjustment_contrast = 1.2
-adjustment_saturation = 1.2
+adjustment_saturation = 2.0
 
 [sub_resource type="CameraAttributesPractical" id="CameraAttributesPractical_d3i0u"]
 exposure_multiplier = 0.717
@@ -139,6 +141,22 @@ fill_from = Vector2(0.5, 0.5)
 
 [sub_resource type="Theme" id="Theme_27hc7"]
 default_font_size = 23
+
+[sub_resource type="Environment" id="Environment_fgh2p"]
+ambient_light_source = 2
+ambient_light_color = Color(1, 1, 1, 1)
+ambient_light_energy = 16.0
+
+[sub_resource type="World3D" id="World3D_s03bo"]
+environment = SubResource("Environment_fgh2p")
+
+[sub_resource type="ShaderMaterial" id="ShaderMaterial_sybgk"]
+shader = ExtResource("8_ka2n4")
+shader_parameter/space = 45
+shader_parameter/clear = Quaternion(0, 0, 0, 0)
+
+[sub_resource type="PlaceholderTexture2D" id="PlaceholderTexture2D_145v6"]
+size = Vector2(170, 170)
 
 [sub_resource type="CameraAttributesPractical" id="CameraAttributesPractical_g3y50"]
 dof_blur_amount = 0.03
@@ -325,7 +343,7 @@ shader = ExtResource("4_4qqhp")
 shader_parameter/t_height = 100.0
 shader_parameter/water_table = 7.0
 shader_parameter/max_sand_height = 9.0
-shader_parameter/universal_tex_scaling = 6.0
+shader_parameter/universal_tex_scaling = 10.972
 shader_parameter/min_rock_slope = 0.156
 shader_parameter/max_grass_slope = 0.362
 shader_parameter/heightmap = ExtResource("7_ubyyn")
@@ -522,14 +540,6 @@ color_ramp = SubResource("Gradient_eofwo")
 noise = SubResource("FastNoiseLite_kogvw")
 
 [sub_resource type="BoxShape3D" id="BoxShape3D_rb27j"]
-
-[sub_resource type="Environment" id="Environment_fgh2p"]
-ambient_light_source = 2
-ambient_light_color = Color(1, 1, 1, 1)
-ambient_light_energy = 16.0
-
-[sub_resource type="World3D" id="World3D_s03bo"]
-environment = SubResource("Environment_fgh2p")
 
 [node name="GameScene" type="Node3D"]
 script = ExtResource("1_7pjje")
@@ -799,6 +809,27 @@ text = "[center][color=BLACK]15 / 15[/color][/center]"
 fit_content = true
 autowrap_mode = 0
 
+[node name="Enemy_minimap_markers" type="SubViewport" parent="UI_Node/Minimap"]
+own_world_3d = true
+world_3d = SubResource("World3D_s03bo")
+transparent_bg = true
+debug_draw = 1
+positional_shadow_atlas_quad_0 = 0
+positional_shadow_atlas_quad_1 = 0
+positional_shadow_atlas_quad_2 = 0
+positional_shadow_atlas_quad_3 = 0
+size = Vector2i(170, 170)
+render_target_update_mode = 4
+script = ExtResource("3_vc5fr")
+minimap_markers_parameter = "enemy_markers"
+draws_fog = false
+markers_path = "../Minimap_Container/SubViewport/player_markers"
+
+[node name="Camera3D" type="Camera3D" parent="UI_Node/Minimap/Enemy_minimap_markers"]
+transform = Transform3D(1, 0, 0, 0, -4.37114e-08, 1, 0, -1, -4.37114e-08, 0, 404.02, 0)
+projection = 1
+size = 1000.0
+
 [node name="Minimap_Container" type="SubViewportContainer" parent="UI_Node/Minimap"]
 layout_mode = 1
 anchors_preset = -1
@@ -820,6 +851,15 @@ scaling_3d_scale = 0.64
 size = Vector2i(170, 170)
 render_target_update_mode = 4
 
+[node name="player_markers" type="TextureRect" parent="UI_Node/Minimap/Minimap_Container/SubViewport"]
+material = SubResource("ShaderMaterial_sybgk")
+anchors_preset = 15
+anchor_right = 1.0
+anchor_bottom = 1.0
+grow_horizontal = 2
+grow_vertical = 2
+texture = SubResource("PlaceholderTexture2D_145v6")
+
 [node name="Camera3D" type="Camera3D" parent="UI_Node/Minimap/Minimap_Container/SubViewport"]
 transform = Transform3D(1, 0, 0, 0, -4.37114e-08, 1, 0, -1, -4.37114e-08, 0, 404.02, 0)
 cull_mask = 2
@@ -828,6 +868,7 @@ projection = 1
 size = 1000.0
 
 [node name="Minimap_Frame_Cover" type="TextureRect" parent="UI_Node/Minimap"]
+visible = false
 layout_mode = 1
 anchors_preset = 3
 anchor_left = 1.0
@@ -1012,6 +1053,7 @@ fit_content = true
 text_direction = 2
 
 [node name="Unit_List" type="Panel" parent="UI_Node"]
+visible = false
 self_modulate = Color(1, 1, 1, 0.490196)
 layout_mode = 1
 anchors_preset = -1
@@ -1063,7 +1105,7 @@ collision_mask = 32768
 shape = SubResource("BoxShape3D_gubrw")
 
 [node name="Visual_Ground" type="MeshInstance3D" parent="World"]
-layers = 3
+layers = 2
 mesh = SubResource("PlaneMesh_ssgws")
 skeleton = NodePath("")
 
@@ -1104,6 +1146,7 @@ transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 107.985, 17.8461, -12.6955)
 transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 344.647, 17.3313, 5.01563)
 
 [node name="Explorable_Fog" type="Node3D" parent="World"]
+visible = false
 
 [node name="RayCast3D" type="RayCast3D" parent="World/Explorable_Fog"]
 transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, 200, 0)
@@ -1159,7 +1202,6 @@ draw_pass_2 = SubResource("PlaneMesh_nulpy")
 draw_pass_3 = SubResource("PlaneMesh_wopk1")
 
 [node name="Selection_square" type="Decal" parent="Player"]
-visible = false
 layers = 2
 size = Vector3(1, 20, 1)
 texture_albedo = SubResource("NoiseTexture2D_p3d2n")
@@ -1176,6 +1218,10 @@ own_world_3d = true
 world_3d = SubResource("World3D_s03bo")
 transparent_bg = true
 debug_draw = 1
+positional_shadow_atlas_quad_0 = 0
+positional_shadow_atlas_quad_1 = 0
+positional_shadow_atlas_quad_2 = 0
+positional_shadow_atlas_quad_3 = 0
 size = Vector2i(5000, 5000)
 render_target_update_mode = 4
 script = ExtResource("3_vc5fr")

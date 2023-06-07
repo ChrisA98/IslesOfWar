@@ -1,6 +1,6 @@
 [gd_scene load_steps=11 format=3 uid="uid://dbdak3gjtpx88"]
 
-[ext_resource type="Script" path="res://Explorable_Fog.gd" id="1_rin6b"]
+[ext_resource type="Script" path="res://World_Generation/Explorable_Fog.gd" id="1_hxsc5"]
 
 [sub_resource type="Gradient" id="Gradient_iuqrm"]
 interpolation_mode = 2
@@ -83,7 +83,7 @@ collision_base_size = 1.25
 visibility_aabb = AABB(-25, -40, -25, 50, 200, 50)
 process_material = SubResource("ParticleProcessMaterial_amkef")
 draw_pass_1 = SubResource("SphereMesh_em45m")
-script = ExtResource("1_rin6b")
+script = ExtResource("1_hxsc5")
 
 [node name="Area3D" type="Area3D" parent="."]
 input_ray_pickable = false

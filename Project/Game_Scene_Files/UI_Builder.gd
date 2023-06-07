@@ -4,6 +4,9 @@ extends Control
 signal menu_opened
 signal minimap_clicked
 
+## minimap vars
+@onready var world_width = $"../World/Visual_Ground".mesh.size.x
+@onready var mtw_ratio = world_width/$Minimap/Minimap_Container.size.x
 
 @onready var gamescene = get_node("..")
 ## UI Elements
@@ -157,12 +160,9 @@ func update_clock():
 
 ## Minimap input event
 func minimap_Input(event):
-	# Minimap is clicked once
+	var world_pos = (event.position * mtw_ratio)
+	# Minimap is left clicked once
 	if Input.is_action_just_released("lmb"):
-		var world_width = $"../World/Visual_Ground".mesh.size.x
-		var mtw_ration = world_width/$Minimap/Minimap_Container.size.x
-		var world_pos = (event.position * mtw_ration)
 		world_pos.x -= world_width/2
 		world_pos.y -= world_width/2
-		minimap_clicked.emit("move",world_pos)
-	
+		minimap_clicked.emit("move_cam",world_pos)	

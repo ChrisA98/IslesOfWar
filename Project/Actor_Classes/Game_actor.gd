@@ -14,9 +14,10 @@ signal pop_changed(curr_pop: int, max_pop: int)
 
 
 # Actor structure and units
-var bases = []
-var buildings = []
-var units = []
+var bases := []
+var buildings := []
+var units := []
+var loaded_units := {}
 
 # Actor Resources
 @onready var resources = {
@@ -47,7 +48,13 @@ func prepare_resources():
 	
 	update_pop()
 
-
+func load_units():	
+	loaded_units["Infantry"] = load("res://Units/Infantry.tscn")
+	for b in faction_data.buildings:
+		if faction_data.buildings[b].has("unit_list"):
+			for un in faction_data.buildings[b]["unit_list"]:
+				loaded_units[un] = load("res://Units/"+un+".tscn")
+	
 # Called every frame. 'delta' is the elapsed time since the previous frame.
 func _process(_delta):
 	pass
@@ -115,3 +122,10 @@ func update_pop():
 ## Checks for building ownership
 func owns_building(bldg):
 	return buildings.has(bldg)
+
+## Check if game actor can afford unit
+func can_afford_unit(unit:String, bldg: String):
+	for res in faction_data.buildings[bldg]["unit_list"][unit]["base_cost"]:
+		if resources[res] < faction_data.buildings[bldg]["unit_list"][unit]["base_cost"][res] :
+			return res
+	return true

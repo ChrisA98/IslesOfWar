@@ -2,8 +2,8 @@
 
 importer="texture"
 type="CompressedTexture2D"
-uid="uid://qlf7kgk48uvj"
-path.bptc="res://.godot/imported/chunk_0_0.exr-920fe9ab4412b1acf5d0a949f3bd98f2.bptc.ctex"
+uid="uid://dwejmjvt754e"
+path.s3tc="res://.godot/imported/Stone_01.png-2b6f306397d40570522e2c5dcd1c9bd8.s3tc.ctex"
 metadata={
 "imported_formats": ["s3tc_bptc"],
 "vram_texture": true
@@ -11,8 +11,8 @@ metadata={
 
 [deps]
 
-source_file="res://Test_Items/Map_data/chunk_0_0.exr"
-dest_files=["res://.godot/imported/chunk_0_0.exr-920fe9ab4412b1acf5d0a949f3bd98f2.bptc.ctex"]
+source_file="res://Models/Amerulf/Tex/Stone_01.png"
+dest_files=["res://.godot/imported/Stone_01.png-2b6f306397d40570522e2c5dcd1c9bd8.s3tc.ctex"]
 
 [params]
 

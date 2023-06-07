@@ -1,19 +1,38 @@
-[gd_scene load_steps=5 format=3 uid="uid://c33jxgp8lmppl"]
+[gd_scene load_steps=3 format=3 uid="uid://s8v1hdp4b7u2"]
 
-[ext_resource type="PackedScene" uid="uid://s8v1hdp4b7u2" path="res://Buildings/Unit_building.tscn" id="1_r1xwx"]
+[ext_resource type="PackedScene" uid="uid://ccoruw5j562l7" path="res://Parent_Scenes/Building_Base.tscn" id="1_ddopr"]
 [ext_resource type="Script" path="res://Buildings/scripts/Barracks.gd" id="2_t33jg"]
 
-[sub_resource type="BoxMesh" id="BoxMesh_8pvv5"]
-
-[sub_resource type="StandardMaterial3D" id="StandardMaterial3D_xyfiq"]
-albedo_color = Color(0.384314, 0.541176, 0.996078, 1)
-
-[node name="Barracks" instance=ExtResource("1_r1xwx")]
+[node name="Barracks" instance=ExtResource("1_ddopr")]
+transform = Transform3D(5, 0, 0, 0, 5, 0, 0, 0, 5, 0, 0, 0)
 script = ExtResource("2_t33jg")
+menu_pages = {
+"page_4": "",
+"research": "",
+"sec_units": "",
+"units": "Infantry"
+}
 build_time = 1.0
 
-[node name="MeshInstance3D" parent="." index="0"]
-mesh = SubResource("BoxMesh_8pvv5")
-surface_material_override/0 = SubResource("StandardMaterial3D_xyfiq")
+[node name="Menu" parent="." index="1"]
+visible_pages = {
+"page_4": false,
+"research": false,
+"sec_units": true,
+"units": true
+}
 
-[editable path="Menu"]
+[node name="MeshInstance3D" parent="." index="2"]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, -0.0027564, 0)
+
+[node name="StaticBody3D" parent="." index="3"]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, 0.496792, 0)
+
+[node name="CollisionShape3D2" parent="StaticBody3D" index="1"]
+transform = Transform3D(0.2, 0, 0, 0, 0.2, 0, 0, 0, 0.2, 0, 0, 1.08503)
+
+[node name="RallyPoint" parent="." index="4"]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, 0.0776555, 1.09582)
+
+[node name="SpawnPoint" parent="." index="5"]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, 0.106123, 0.625176)
