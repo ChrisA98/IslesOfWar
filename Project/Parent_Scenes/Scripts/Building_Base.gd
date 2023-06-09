@@ -38,7 +38,7 @@ var discovered : bool:
 var is_visible : bool:
 	set(value):
 		is_visible = value
-		$MeshInstance3D/Hiding.visible = !value
+		$MeshInstance3D/Hiding.visible = true
 
 ''' Building Logic Vars '''
 var is_valid = false
@@ -88,9 +88,9 @@ func _ready():
 	position = Vector3(0,-100,0)
 	fog_reg.set_actor_owner(actor_owner.actor_ID)
 	if (actor_owner.actor_ID == 0):
-		discovered == true
+		discovered = true
 	else:
-		$MeshInstance3D.visible = false
+		$MeshInstance3D.visible = true
 		discovered = false
 		det_area.area_entered.connect(_detection_area_entered)
 		det_area.area_exited.connect(_detection_area_exited)
@@ -429,7 +429,7 @@ func push_train_queue(unit: String):
 	if(trn_timer.is_stopped()):
 		trn_timer.start(3)
 		is_training = true
-	return true
+	return "true"
 
 
 ## Remove unit from training queue

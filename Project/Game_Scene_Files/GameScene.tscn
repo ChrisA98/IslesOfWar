@@ -868,7 +868,6 @@ projection = 1
 size = 1000.0
 
 [node name="Minimap_Frame_Cover" type="TextureRect" parent="UI_Node/Minimap"]
-visible = false
 layout_mode = 1
 anchors_preset = 3
 anchor_left = 1.0
@@ -1131,7 +1130,7 @@ mesh = SubResource("CapsuleMesh_x5v2n")
 surface_material_override/0 = SubResource("StandardMaterial3D_0q7om")
 
 [node name="Forest" parent="World" instance=ExtResource("7_1qpxy")]
-transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 65.0753, 44.4939, -302.653)
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 70.241, 44.4939, -302.653)
 
 [node name="GPUParticles3D" parent="World/Forest" index="1"]
 transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, 0, 4.89764)
@@ -1173,6 +1172,12 @@ draw_pass_1 = SubResource("SphereMesh_cyqkr")
 [node name="Player" type="Node" parent="."]
 script = ExtResource("9_3h23t")
 
+[node name="RayCast3D" type="RayCast3D" parent="Player"]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, 250, 0)
+target_position = Vector3(0, -500, 0)
+collision_mask = 32768
+hit_from_inside = true
+
 [node name="Player_camera" type="Node3D" parent="Player"]
 script = ExtResource("10_jjfcj")
 
@@ -1181,12 +1186,6 @@ transform = Transform3D(1, 0, 0, 0, 0.573577, 0.819152, 0, -0.819152, 0.573577, 
 doppler_tracking = 1
 current = true
 fov = 37.8493
-
-[node name="RayCast3D" type="RayCast3D" parent="Player/Player_camera"]
-transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, 15, 0)
-target_position = Vector3(0, -500, 0)
-collision_mask = 32768
-hit_from_inside = true
 
 [node name="Grass Scatter" type="GPUParticles3D" parent="Player/Player_camera"]
 transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, 0, 16.457)
@@ -1235,6 +1234,7 @@ size = 1000.0
 transform = Transform3D(2.21801e-08, 0.200172, 0.979761, -1.29113e-07, -0.979761, 0.200172, 1, -1.3094e-07, 4.11361e-09, 0, 0, 0)
 light_cull_mask = 4294967279
 shadow_enabled = true
+shadow_bias = 0.04
 shadow_reverse_cull_face = true
 shadow_blur = 2.275
 directional_shadow_max_distance = 800.0

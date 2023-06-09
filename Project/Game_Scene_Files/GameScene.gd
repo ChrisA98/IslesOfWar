@@ -208,6 +208,7 @@ func unit_selected(unit, event):
 
 ## Start Selection Square
 func start_select_square(pos):
+	selection_square_points = [Vector3.ZERO,Vector3.ZERO]
 	selection_square.size.x = 1
 	selection_square.size.y = 5
 	selection_square.size.z = 1
@@ -241,7 +242,6 @@ func select_from_square():
 			return false
 		click_mode = "select"
 		return false
-	selection_square_points.sort()
 	selection_square.get_child(0).get_child(0).shape.size = selection_square.size
 	selection_square.get_child(0).get_child(0).shape.size.y = 50
 	await get_tree().physics_frame
@@ -294,9 +294,9 @@ func prepare_bases():
 	# Add player first Base
 	var p_spawn = get_node("World/Player_Base_Spawn")
 	player_controller.set_cam_pos(p_spawn.position + Vector3(0,20,0))
-	player_controller.get_child(0).get_child(1).force_raycast_update()
+	player_controller.get_child(0).force_raycast_update()
 	# inelegent solution, but it works
-	var grp = player_controller.get_child(0).get_child(1).get_collider().get_parent().get_groups()[0]
+	var grp = player_controller.get_child(0).get_collider().get_parent().get_groups()[0]
 	prep_player_building(0, null)
 	preview_building.set_pos(p_spawn.position)
 	player_controller.place_building(grp, preview_building)
@@ -354,6 +354,10 @@ func place_building(grp, building):
 	
 	return world_buildings[-1]
 
+''' Building Placement End '''
+
+''' Player Input Start '''
+
 
 ## Activate buildings menu
 func building_pressed(building):
@@ -377,9 +381,7 @@ func building_pressed(building):
 		_:
 			pass
 
-''' Building Placement End '''
 
-''' Player Input Start '''
 ## Clicks on world
 func ground_click(_camera, event, pos, _normal, _shape_idx, shape):
 	match click_mode:
@@ -470,9 +472,10 @@ func click_mod_update(old, new):
 
 ## Minimap clicked signal recieved
 func _minimap_Clicked(_command : String, pos : Vector2):
-	player_controller.get_child(0).position.x = pos.x
-	player_controller.get_child(0).position.y = 100
-	player_controller.get_child(0).position.z = pos.y
+	
+	player_controller.get_child(1).position.x = pos.x
+	player_controller.get_child(1).position.y = world.heightmap.get_pixel(int(pos.x)+500,int(pos.y)+500).r*world.terrain_amplitude + player_controller.cam.zoom
+	player_controller.get_child(1).position.z = pos.y
 
 ''' Player Input End '''
 

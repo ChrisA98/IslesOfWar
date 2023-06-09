@@ -20,12 +20,14 @@ var accel = 2
 #REF vars
 @onready var gamescene = $"../.."
 @onready var cam = get_node("./Player_view")
-@onready var ground_check = get_node("./RayCast3D")
+@onready var ground_check = get_node("../RayCast3D")
 @onready var game_window = $"../../UI_Node/Viewport_Sectons"
 var menu_buildings
 
 
 func _ready():
+	ground_check.position.x = position.x
+	ground_check.position.z = position.z
 	Input.set_mouse_mode(Input.MOUSE_MODE_CONFINED) 
 
 
@@ -42,10 +44,10 @@ func _input(event):
 			
 	#only read mouse position on screen while in game window
 	#scroll wheel input
-	if Input.is_action_just_released("scroll_up") and zoom > 3.5:
-		zoom -= 1
-	if event.is_action("scroll_down") and zoom < 75:
-		zoom += 1
+	if Input.is_action_just_released("scroll_up") and zoom > 0:
+		zoom -= 5
+	if event.is_action("scroll_down") and zoom < 50:
+		zoom += 5
 	
 	if Input.is_action_just_released("reset_map_rot"):
 		rotation_degrees = Vector3.ZERO
@@ -73,7 +75,7 @@ func check_menus():
 
 
 func _physics_process(delta):
-			
+		
 	if Input.is_action_pressed(("cam_move_forward")):
 		key_direct -= transform.basis.z
 	if Input.is_action_pressed(("cam_move_backward")):
@@ -89,14 +91,17 @@ func _physics_process(delta):
 		tot_direct	= mouse_direct.normalized()
 		
 	# Add zoom
-	var height = position.distance_to(ground_check.get_collision_point())
+	ground_check.position.x = position.x
+	ground_check.position.z = position.z
+	ground_check.force_raycast_update()
+	var height = ground_check.get_collision_point().y
+	var trgt = height+zoom
+	var distance_to_trgt = abs(position.y - trgt)
+	if(ground_check.is_colliding()):
+		velocity.y = clamp((position.y - trgt)*-1,-1,1)
+	elif(distance_to_trgt or !ground_check.is_colliding()):
+		velocity.y = 1
 	
-	if(abs(height - zoom) < 5):
-		tot_direct.y = 0
-	elif(height > zoom and ground_check.is_colliding()):
-		tot_direct.y = -1
-	elif(height < zoom or ground_check.is_colliding() == false):
-		tot_direct.y = 1
 	velocity = velocity.lerp(tot_direct * maxSpeed, accel * delta)
 	speed.z = velocity.z
 	speed.x = velocity.x

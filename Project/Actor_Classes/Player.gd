@@ -12,6 +12,9 @@ func _ready():
 
 
 func set_cam_pos(pos: Vector3):
+	$RayCast3D.position.x = pos.x
+	$RayCast3D.position.z = pos.z
+	$RayCast3D.force_raycast_update()
 	cam.position = pos
 
 

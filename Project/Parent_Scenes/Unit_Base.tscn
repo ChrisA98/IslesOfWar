@@ -39,7 +39,9 @@ transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, 1.00365, 0)
 mesh = SubResource("CylinderMesh_ggawr")
 
 [node name="NavigationAgent3D" type="NavigationAgent3D" parent="."]
+path_desired_distance = 5.54
 target_desired_distance = 3.0
+max_speed = 20.0
 ignore_y = false
 
 [node name="Selection" type="Node3D" parent="."]

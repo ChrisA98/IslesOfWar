@@ -25,6 +25,8 @@ var rpd_goal := {
 "riches": 0,
 "crystals": 0,
 "food": 0}
+var exp_pop := 0 #expected population after training current users
+var selected_units = []
 
 ## Goal processing variables
 var current_goal : String
@@ -55,7 +57,7 @@ func _ready():
 	think_timer = Timer.new()
 	add_child(think_timer)
 	think_timer.timeout.connect(think_caller)
-	think_timer.start(speed_of_thought)
+	think_timer.start(4)
 	
 	## -- DEBUG/TESTING STUFF -- ##
 	resource_locations["Lumber_mill"] = [gamescene.find_child("World").get_children()[4]]
@@ -77,7 +79,8 @@ func _think():
 			var barr = get_target_buildings("Barracks")
 			var trgt = barr[rng.randi_range(0,barr.size()-1)]
 			var u_res = can_afford(faction_data["buildings"]["Barracks"]["unit_list"]["Knight"]["base_cost"])
-			if trgt.use("Infantry"):
+			if trgt.push_train_queue("Knight"):
+				exp_pop += faction_data["buildings"]["Barracks"]["unit_list"]["Knight"]["pop_cost"]
 				complete_goal()
 				return
 			else:
@@ -111,13 +114,19 @@ func _think():
 							return
 					"Lumber_mill","Mine_crystal","Mine_stone":	#Resource Node Buildings
 						var res_node = resource_locations[target_item][rng.randi_range(0,bases.size()-1)]
-						if(await find_build_spot(res_node,bldg)):
-							place_building(ping_ground(bldg.position).get_parent().get_groups()[0],bldg)
-							complete_goal()
-						else:
-							bldg.queue_free()
-							add_goal("find",target_item)
-							return
+						match (await find_build_spot(res_node,bldg)):
+							"clear":
+								place_building(ping_ground(bldg.position).get_parent().get_groups()[0],bldg)
+								complete_goal()								
+							"uncover_loc":
+								## needs to move unit to target location
+								bldg.queue_free()
+								add_goal("uncover_loc", res_node)
+								return
+							_:
+								bldg.queue_free()
+								add_goal("find",target_item)
+								return
 			else:
 				var ttb = build_patience_decide(m_res, faction_data["buildings"][target_item]["base_cost"][m_res])
 				if(ttb == -1):
@@ -125,8 +134,12 @@ func _think():
 					return
 				think_timer.start(ttb)
 				return
-		"move troop to":
-			pass
+		"uncover_loc":
+			## Replace with heirarchy base Selection later
+			var r_unit = units[rng.randi_range(0,units.size()-1)]	# Select random unit
+			r_unit.set_mov_target(target_item.position)
+			think_timer.stop()
+			r_unit.uncovered_area.connect(unit_uncovered)
 		_:
 			if !ponder():
 				return
@@ -186,8 +199,10 @@ func get_target_buildings(bldg):
 func find_build_spot(targ, bldg):
 	var center = targ.position + Vector3(0,15,0)
 	var attempts = 50
+	var sure = false #not sure if avaialable area exists
 	bldg.set_pos(center+Vector3(rng.randf_range(-targ.radius,targ.radius),0,rng.randf_range(-targ.radius,targ.radius)))
 	while bldg.is_valid == false:
+		await get_tree().physics_frame
 		var variation = Vector3(rng.randf_range(1,targ.radius),0,rng.randf_range(1,targ.radius))
 		variation.y = ping_ground_depth(center + variation)
 		if(!ping_ground(center + variation + Vector3(0,10,0)).name.contains("Floor")):
@@ -195,14 +210,19 @@ func find_build_spot(targ, bldg):
 			continue
 		var np = center + variation
 		np.y -= center.y
-		if bldg.set_pos(np) == "cant see":
-			add_goal("move troop to", np, false) ## move troop to location to see it
-			return false
-		await get_tree().physics_frame
+		if bldg.set_pos(np) == "cant see" and !sure:
+			if(targ.has_meta("reveals_fog")):
+				sure = true
+			else:
+				for ar in targ.local_area.get_overlapping_areas():
+					if(ar.has_meta("fog_owner_id")):
+						sure = true
+			if !sure:
+				return "uncover_loc"  ## move troop to location to see it
 		attempts -= 1
 		if(attempts < 0):
-			return false
-	return true
+			return "find"
+	return "clear"
 
 
 ## Check for Buildings in buildings array based on building type
@@ -276,19 +296,27 @@ func ponder():
 			return false
 	
 	## Ensure minimum units are met
-	if units.size() < few_troops_threshold:
+	if exp_pop < few_troops_threshold:
 		add_goal("get units","something")#add unit build decision code here
 		return true
 	
 	for goal in goal_hierarchy:
 		match goal:
 			"attack":
-				if(units.size() < min_troop_attack):
-					add_goal("get units","something")#add unit build decision code here
-					return true
+				if(pop < min_troop_attack):
+					if(exp_pop < min_troop_attack):
+						add_goal("get units","something")#add unit build decision code here
+						return true
 				else:
-					## HOW DO ATTACK??
-					pass 
+					for i in units:
+						## Select all units
+						##Maybe change this to keep defensive units
+						selected_units.push_back(i)
+					selected_units[0].declare_enemy(gamescene.world_buildings[1])
+					if(selected_units.size() > 1):
+						for j in range(1,selected_units.size()):
+							selected_units[0].add_following(selected_units[j])
+					selected_units = [] 
 			_:
 				pass
 	return false
@@ -307,3 +335,10 @@ func calc_res_rate():
 		if(b.has_method("generate_resource")):
 			rpd[b.resource] += b.rpc * ((global.DAY_LENGTH+global.NIGHT_LENGTH)/b.generate_time)
 
+
+func unit_uncovered(unit, area):
+	if(area.get_parent() == target_item):
+		unit.uncovered_area.disconnect(unit_uncovered)
+		complete_goal()
+		think_timer.start(speed_of_thought)
+		print("FOUND IT!")

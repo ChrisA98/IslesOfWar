@@ -5,13 +5,14 @@ extends CharacterBody3D
 signal selected
 signal died
 signal update_fog
+signal uncovered_area #area enters det area
 
 ''' Export Vars '''
 @export var fog_rev_radius : float = 50
 
 var rng = RandomNumberGenerator.new()
 ''' Movement '''
-const MAX_SPEED = 10
+const MAX_SPEED = 20
 const ACCEL = 3
 var gravity = ProjectSettings.get_setting("physics/3d/default_gravity")
 
@@ -43,7 +44,7 @@ var unit_name: String
 var is_selected: bool
 var is_visible: bool:
 	set(value):
-		is_visible = value
+		is_visible = true
 		$MeshInstance3D.visible = is_visible
 
 ''' Cost Vars '''
@@ -137,7 +138,7 @@ func add_following(unit):
 func clear_following():	
 	if followers.size() > 0:
 		for i in followers:
-			i.set_target_position(position)
+			i._set_target_position(position)
 			i.target_follow = null
 	followers.clear()
 
@@ -257,6 +258,7 @@ func _lerp_stop(nv, dx):
 
 
 func _det_area_entered(area):
+	uncovered_area.emit(self, area)
 	if(area.has_meta("fog_owner_id")):
 		if (area.get_meta("fog_owner_id") == 0):
 			is_visible = true
@@ -297,7 +299,7 @@ func _idling_basic(_delta):
 
 func _wandering_basic(delta):	
 	if nav_agent.is_navigation_finished():
-		var pos = Vector3(rng.randf_range(-100,100),250,rng.randf_range(-100,100))
+		var pos = Vector3(rng.randf_range(-100,100),250,rng.randf_range(-100,100))+position
 		pos.y = get_ground_depth(pos)
 		_set_target_position(pos)
 		return
@@ -342,6 +344,6 @@ func _on_NavigationAgent_velocity_computed(_safe_velocity):
 func waypoint(_details):
 	if followers.size() > 0:
 		for i in followers:
-			i.set_target_position(nav_agent.get_next_path_position())
+			i._set_target_position(nav_agent.get_next_path_position())
 
 ''' AI Processes Methods End '''

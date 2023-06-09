@@ -11,6 +11,7 @@ extends Node3D
 @export var water_table : float = 7
 @onready var ground = get_node("Visual_Ground")
 @onready var water = get_node("Water")
+var heightmap : Image
 
 
 var rng = RandomNumberGenerator.new()
@@ -27,15 +28,16 @@ var normals = PackedVector3Array()
 
 func _ready():
 	var chunks = sqrt(find_files())
+	heightmap = load(heightmap_dir+"master"+".exr").get_image()
 	
 	## Prepare chucnks
 	for y in range(0,chunks):
 		for x in range(0,chunks):
-			var img = Image.new()
-			var _img = load(heightmap_dir+"chunk_"+str(y)+"_"+str(x)+".exr")
-			img = _img.get_image()
-			chunk_size = img.get_width()
-			build_map(img, Vector3(x-1,0,y),Vector2i(x,y))
+			var _img = Image.new()
+			var __img = load(heightmap_dir+"chunk_"+str(y)+"_"+str(x)+".exr")
+			_img = __img.get_image()
+			chunk_size = _img.get_width()
+			build_map(_img, Vector3(x-1,0,y),Vector2i(x,y))
 	
 	## Assign Regions to terrain mesh chunks
 	for i in get_children():
@@ -121,7 +123,7 @@ func build_fog_war(chunks):
 #check if .exr files exist in target path
 func find_files():
 	var dir = DirAccess.open(heightmap_dir)
-	var cnt = 0
+	var cnt = -1
 	if dir:
 		dir.list_dir_begin()
 		var file_name = dir.get_next()
@@ -178,13 +180,13 @@ func create_mesh(img):
 	UVs.resize(0)
 	normals.resize(0)
 	
-	var heightmap = img
+	var _heightmap = img
 	
 	for x in range(width):
 		if x % meshres == 0:
 			for y in range(height):
 				if y % meshres == 0:
-					height_data[Vector2(x,y)] = heightmap.get_pixel(x,y).r * terrain_amplitude
+					height_data[Vector2(x,y)] = _heightmap.get_pixel(x,y).r * terrain_amplitude
 					if(height_data[Vector2(x,y)] < water_table-1):
 						height_data[Vector2(x,y)] -= (100 + rng.randf_range(10,50))
 		
