@@ -858,7 +858,6 @@ offset_bottom = 64.0
 texture = ExtResource("9_odtsh")
 
 [node name="player_markers" type="TextureRect" parent="UI_Node/Minimap/Minimap_Container/SubViewport"]
-visible = false
 material = SubResource("ShaderMaterial_sybgk")
 anchors_preset = 15
 anchor_right = 1.0

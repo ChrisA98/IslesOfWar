@@ -283,6 +283,7 @@ func prepare_bases():
 	await get_tree().physics_frame ## fix for collision issue
 	# Place enemy starting Bases
 	for enemy in range(1,game_actors.size()):
+		game_actors[enemy].build_enemy_list()
 		var spawn = get_node("World/Enemy"+str(enemy)+"_Base_Spawn")
 		var bldg = prep_other_building(game_actors[enemy],"Base")
 		bldg.set_pos(spawn.position)

@@ -334,6 +334,8 @@ func _on_navigation_agent_3d_navigation_finished():
 	if target_follow != null:
 		_set_target_position(target_follow.position)
 		return
+	if(ai_mode.contains("travel")):
+		ai_mode = "idle_basic"
 
 
 func _on_NavigationAgent_velocity_computed(_safe_velocity):

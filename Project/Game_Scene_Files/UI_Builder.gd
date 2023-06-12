@@ -51,8 +51,8 @@ func _ready():
 
 ## Called every frame. 'delta' is the elapsed time since the previous frame.
 func _process(_delta):	
-	viewport_ref.position.x = ((player_cam.position.x + world_width/2)*mtw_ratio) - (viewport_ref.size.x/2)
-	viewport_ref.position.y = (player_cam.position.z + world_width/2) - (viewport_ref.size.y/2)*mtw_ratio
+	viewport_ref.position.x = ((player_cam.position.x + (world_width/2))/mtw_ratio) - (viewport_ref.size.x/2)
+	viewport_ref.position.y = ((player_cam.position.z + (world_width/2))/mtw_ratio) - (viewport_ref.size.y/1.5)
 
 
 ## Toggle button (may not be useful)
