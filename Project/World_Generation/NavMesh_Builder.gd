@@ -62,6 +62,8 @@ func _ready():
 	wtr_nav_region.navigation_mesh.set_filter_baking_aabb(AABB(Vector3(-chunk_size,-1.9,-chunk_size),Vector3(chunks*chunk_size,10,chunks*chunk_size)))
 	wtr_nav_region.enter_cost = 1000
 	wtr_nav_region.update_navigation_mesh()
+	wtr_nav_region.set_navigation_layer_value(1, false)
+	wtr_nav_region.set_navigation_layer_value(2, true)
 	
 	## Prepare Ground with level info
 	ground.mesh.surface_get_material(0).set_shader_parameter("water_table", water_table)

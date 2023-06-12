@@ -7,6 +7,7 @@ signal pressed
 signal died
 signal update_fog
 signal fog_radius_changed
+signal spawned_unit
 
 
 ''' Export Vars '''
@@ -288,7 +289,8 @@ func near_base(buildings) -> bool:
 func is_visible_area():	
 	for ar in det_area.get_overlapping_areas():
 		if(ar.has_meta("fog_owner_id")):
-			return true
+			if(ar.get_meta("fog_owner_id") == actor_owner.actor_ID and ar.get_parent() != det_area.get_parent()):
+				return true
 	return false
 
 
@@ -375,9 +377,6 @@ func damage(amt: float, _type: String):
 ''' User Input Start '''
 ## Pass press to signal activate signal
 func _on_static_body_3d_input_event(_camera, event, _position, _normal, _shape_idx):
-	if(is_building):
-		## Building is being built
-		return
 	if event is InputEventMouseButton and Input.is_action_just_released("lmb"):
 		pressed.emit(self)
 		if(actor_owner.actor_ID == 0):
@@ -386,6 +385,9 @@ func _on_static_body_3d_input_event(_camera, event, _position, _normal, _shape_i
 
 ## Show buildings menu
 func show_menu(state: = true):
+	if(is_building):
+		## Building is being built
+		return
 	if is_instance_valid(menu):
 		menu.visible = state
 
@@ -415,7 +417,7 @@ func push_train_queue(unit: String):
 	if actor_owner.faction_data.buildings[type]["unit_list"][unit]["pop_cost"] + actor_owner.pop >= actor_owner.max_pop:
 		menu.unit_queue_edit(-1,unit)
 		return "pop"
-	#check then spend resources
+	# Check then spend resources
 	var tres = actor_owner.can_afford_unit(unit,type)
 	if(typeof(tres) == TYPE_STRING):
 		menu.unit_queue_edit(-1,unit)
@@ -475,5 +477,6 @@ func spawn_unit(unit_override: String):
 		world.spawn_unit(actor_owner, new_unit)
 		new_unit.position = spawn.global_position
 		new_unit.position.y = new_unit.get_ground_depth()
+	spawned_unit.emit(self,new_unit)
 
 ''' Training End '''

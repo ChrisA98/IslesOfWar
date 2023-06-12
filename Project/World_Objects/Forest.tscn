@@ -32,6 +32,7 @@ bottom_radius = 0.459
 height = 7.269
 
 [node name="Forest" instance=ExtResource("1_3227v")]
+metadata/res_building = "Lumber_mill"
 
 [node name="GPUParticles3D" type="GPUParticles3D" parent="." index="1"]
 amount = 500

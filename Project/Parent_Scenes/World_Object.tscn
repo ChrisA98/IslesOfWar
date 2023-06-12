@@ -11,6 +11,7 @@ radius = 54.9732
 
 [node name="World_Object" type="Node3D"]
 script = ExtResource("1_y0jv7")
+metadata/res_building = "na"
 
 [node name="Editor_Mesh" type="MeshInstance3D" parent="."]
 transform = Transform3D(3.075, 0, 0, 0, 3.075, 0, 0, 0, 3.075, 0, 2.471, 0)

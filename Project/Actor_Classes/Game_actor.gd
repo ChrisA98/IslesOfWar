@@ -53,7 +53,10 @@ func load_units():
 	for b in faction_data.buildings:
 		if faction_data.buildings[b].has("unit_list"):
 			for un in faction_data.buildings[b]["unit_list"]:
-				loaded_units[un] = load("res://Units/"+un+".tscn")
+				if(FileAccess.file_exists("res://Units/"+un+".tscn")):
+					loaded_units[un] = load("res://Units/"+un+".tscn")
+				else:
+					loaded_units[un] = load("res://Units/"+"Infantry"+".tscn")
 	
 # Called every frame. 'delta' is the elapsed time since the previous frame.
 func _process(_delta):

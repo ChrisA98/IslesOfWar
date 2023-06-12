@@ -7,6 +7,8 @@ signal minimap_clicked
 ## minimap vars
 @onready var world_width = $"../World/Visual_Ground".mesh.size.x
 @onready var mtw_ratio = world_width/$Minimap/Minimap_Container.size.x
+@onready var player_cam = get_node("../Player/Player_camera")
+@onready var viewport_ref = get_node("Minimap/Minimap_Container/SubViewport/Viewport")
 
 @onready var gamescene = get_node("..")
 ## UI Elements
@@ -48,8 +50,9 @@ func _ready():
 
 
 ## Called every frame. 'delta' is the elapsed time since the previous frame.
-func _process(_delta):
-	pass
+func _process(_delta):	
+	viewport_ref.position.x = ((player_cam.position.x + world_width/2)*mtw_ratio) - (viewport_ref.size.x/2)
+	viewport_ref.position.y = (player_cam.position.z + world_width/2) - (viewport_ref.size.y/2)*mtw_ratio
 
 
 ## Toggle button (may not be useful)

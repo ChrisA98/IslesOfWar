@@ -26,6 +26,5 @@ void fragment() {
 	if(texture(friendly_markers,UV).a > 0.1){
 		COLOR += texture(enemy_markers,UV);
 	}
-	COLOR += texture(enemy_markers,UV);
 	
 }

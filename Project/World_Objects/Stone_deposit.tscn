@@ -30,6 +30,7 @@ shader_parameter/map_heightmap = ExtResource("3_7ewqd")
 [sub_resource type="SphereMesh" id="SphereMesh_wfmrl"]
 
 [node name="Stone_deposit" instance=ExtResource("1_a36sy")]
+metadata/res_building = "Mine_stone"
 
 [node name="GPUParticles3D" type="GPUParticles3D" parent="." index="2"]
 amount = 500

@@ -33,6 +33,7 @@ bottom_radius = 1.033
 height = 3.905
 
 [node name="Crystal_deposit" instance=ExtResource("1_rj2sw")]
+metadata/res_building = "Mine_crystal"
 
 [node name="GPUParticles3D" type="GPUParticles3D" parent="." index="2"]
 amount = 500

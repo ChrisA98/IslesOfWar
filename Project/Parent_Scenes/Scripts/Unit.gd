@@ -68,7 +68,8 @@ var target_enemy:
 	set(value):
 		target_enemy = value
 		if(value != null):
-			target_enemy.died.connect(target_killed)
+			if(!target_enemy.died.is_connected(target_killed)):
+				target_enemy.died.connect(target_killed)
 
 ''' On-Ready Vars '''
 @onready var fog_reg = get_node("Fog_Breaker")

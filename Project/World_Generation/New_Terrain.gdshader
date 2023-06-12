@@ -83,6 +83,6 @@ void fragment(){
 	
 	vec4 fog_color = texture(fog, UV);
 	if(fog_color.a < 0.1){
-		ALBEDO = mix(ALBEDO, vec3 (0,0,0), .55);
+		ALBEDO = mix(ALBEDO, vec3 (0,0,0), .75);
 	}
 }

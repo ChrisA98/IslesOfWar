@@ -1,4 +1,4 @@
-[gd_scene load_steps=102 format=3 uid="uid://d32tym6bcdu7c"]
+[gd_scene load_steps=103 format=3 uid="uid://d32tym6bcdu7c"]
 
 [ext_resource type="Script" path="res://Game_Scene_Files/GameScene.gd" id="1_7pjje"]
 [ext_resource type="Script" path="res://Game_Scene_Files/UI_Builder.gd" id="2_wj4ul"]
@@ -18,6 +18,7 @@
 [ext_resource type="Script" path="res://Actor_Classes/Fort_Spawn.gd" id="8_viuko"]
 [ext_resource type="Script" path="res://Actor_Classes/Player.gd" id="9_3h23t"]
 [ext_resource type="PackedScene" uid="uid://76wslx0hq568" path="res://World_Objects/Stone_deposit.tscn" id="9_b7fca"]
+[ext_resource type="Texture2D" uid="uid://dnrjlcvb1yulp" path="res://Assets/UI_Elements/Minimap_Viewport.png" id="9_odtsh"]
 [ext_resource type="PackedScene" uid="uid://dire4xft8ffrx" path="res://World_Objects/Crystal_deposit.tscn" id="10_07s6x"]
 [ext_resource type="Script" path="res://Actor_Classes/GameCamera.gd" id="10_jjfcj"]
 [ext_resource type="Shader" uid="uid://cmyeclhrvhn2o" path="res://World_Generation/Foliage_Shader.tres" id="10_l3sfk"]
@@ -851,7 +852,13 @@ scaling_3d_scale = 0.64
 size = Vector2i(170, 170)
 render_target_update_mode = 4
 
+[node name="Viewport" type="TextureRect" parent="UI_Node/Minimap/Minimap_Container/SubViewport"]
+offset_right = 64.0
+offset_bottom = 64.0
+texture = ExtResource("9_odtsh")
+
 [node name="player_markers" type="TextureRect" parent="UI_Node/Minimap/Minimap_Container/SubViewport"]
+visible = false
 material = SubResource("ShaderMaterial_sybgk")
 anchors_preset = 15
 anchor_right = 1.0

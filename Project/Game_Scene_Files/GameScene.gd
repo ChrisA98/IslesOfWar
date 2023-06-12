@@ -88,8 +88,8 @@ func _ready():
 		e.set_script(e_script)
 		e.name = "Enemy_"+str(i)
 		e.actor_ID = i
-		add_child(e)
 		game_actors.push_back(e)
+		add_child(e)
 	
 	# Get building buttons UI element ref
 	var res_bldgs = get_node("UI_Node/Build_Menu/Build_Menu_Container/Resource_Buttons").get_popup()
