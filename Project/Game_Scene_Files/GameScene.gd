@@ -4,6 +4,10 @@ extends Node3D
 signal nav_ready
 signal click_mode_changed(old, new)
 
+''' Time keeping vars '''
+@export var year_day = 270
+@export var year = 603
+@export var day_cycle = true
 
 ''' Unit and Building vars '''
 ## World lists
@@ -41,9 +45,6 @@ var click_mode: String = "select":
 		click_mode = value
 
 ''' Time keeping vars '''
-var year_day = 270
-var year = 603
-var day_cycle = true
 var sun_rotation = 0
 var moon_rotation = 0
 var sun_str = 1.3
@@ -184,7 +185,7 @@ func custom_nav_setup():
 	NavigationServer3D.map_set_edge_connection_margin(get_world_3d().get_navigation_map(),2)
 	update_navigation()
 
-
+'''-------------------------------------------------------------------------------------'''
 ''' Unit Selection Start '''
 ## Check what unit is being clicked and what to do with it
 func unit_selected(unit, event):
@@ -276,7 +277,7 @@ func group_selected_units():
 	UI_controller.set_unit_list(u)
 
 ''' Unit Selection End '''
-
+'''-------------------------------------------------------------------------------------'''
 ''' Building Placement Start '''
 ## Place starting bases
 func prepare_bases():
@@ -356,7 +357,7 @@ func place_building(grp, building):
 	return world_buildings[-1]
 
 ''' Building Placement End '''
-
+'''-------------------------------------------------------------------------------------'''
 ''' Player Input Start '''
 
 
@@ -472,14 +473,27 @@ func click_mod_update(old, new):
 
 
 ## Minimap clicked signal recieved
-func _minimap_Clicked(_command : String, pos : Vector2):
-	
-	player_controller.get_child(1).position.x = pos.x
-	player_controller.get_child(1).position.y = world.heightmap.get_pixel(int(pos.x)+500,int(pos.y)+500).r*world.terrain_amplitude + player_controller.cam.zoom
-	player_controller.get_child(1).position.z = pos.y
+func _minimap_Clicked(command : String, pos : Vector2):
+	var world_pos = Vector3()
+	world_pos.x = pos.x
+	world_pos.y = world.heightmap.get_pixel(int(pos.x)+500,int(pos.y)+500).r*world.terrain_amplitude + player_controller.cam.zoom
+	world_pos.z = pos.y 
+	match command:
+		"move_cam":
+			player_controller.get_child(1).position = world_pos
+		"ping":
+			match click_mode:
+				"command_unit":
+					selected_units[0].set_mov_target(world_pos)
+					selected_units[0].target_enemy = null
+					if(selected_units.size() > 1):
+						for i in range(1,selected_units.size()):
+							selected_units[0].add_following(selected_units[i])
+							selected_units[1].target_enemy = null
+				
 
 ''' Player Input End '''
-
+'''-------------------------------------------------------------------------------------'''
 ## Day/Night Cycle
 func _on_day_cycle_timer_timeout():
 	for f in game_actors:

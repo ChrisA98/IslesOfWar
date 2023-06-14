@@ -48,6 +48,7 @@ func prepare_resources():
 	
 	update_pop()
 
+
 func load_units():	
 	loaded_units["Infantry"] = load("res://Units/Infantry.tscn")
 	for b in faction_data.buildings:

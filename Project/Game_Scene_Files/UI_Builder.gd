@@ -37,7 +37,7 @@ func _ready():
 	$Time_Bar/Day_Cycle_Timer.start(global.DAY_LENGTH)
 	update_clock()
 	
-	#place menus
+	# Place menus
 	for i in menus:
 		i.visible = false
 	
@@ -52,7 +52,7 @@ func _ready():
 ## Called every frame. 'delta' is the elapsed time since the previous frame.
 func _process(_delta):	
 	viewport_ref.position.x = ((player_cam.position.x + (world_width/2))/mtw_ratio) - (viewport_ref.size.x/2)
-	viewport_ref.position.y = ((player_cam.position.z + (world_width/2))/mtw_ratio) - (viewport_ref.size.y/1.5)
+	viewport_ref.position.y = ((player_cam.position.z + (world_width/2))/mtw_ratio) - (viewport_ref.size.y/2.6)
 
 
 ## Toggle button (may not be useful)
@@ -164,8 +164,12 @@ func update_clock():
 ## Minimap input event
 func minimap_Input(event):
 	var world_pos = (event.position * mtw_ratio)
+	world_pos.x -= world_width/2
+	world_pos.y -= world_width/2
 	# Minimap is left clicked once
-	if Input.is_action_just_released("lmb"):
-		world_pos.x -= world_width/2
-		world_pos.y -= world_width/2
-		minimap_clicked.emit("move_cam",world_pos)	
+	if Input.is_action_pressed("lmb"):
+		if(abs(world_pos.x) < world_width/2 and abs(world_pos.y) < world_width/2):
+			world_pos.y += (viewport_ref.size.y/2.6)/2 * mtw_ratio
+			minimap_clicked.emit("move_cam",world_pos)
+	if Input.is_action_just_released("rmb"):
+		minimap_clicked.emit("ping",world_pos)	

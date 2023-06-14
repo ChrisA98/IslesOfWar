@@ -36,10 +36,12 @@ var discovered : bool:
 		if value:
 			$MeshInstance3D.visible = true
 			hide_from_mouse(false)
+			if(is_building):
+				$GPUParticles3D.visible = true
 var is_visible : bool:
 	set(value):
 		is_visible = value
-		$MeshInstance3D/Hiding.visible = true
+		$MeshInstance3D/Hiding.visible = !value
 
 ''' Building Logic Vars '''
 var is_valid = false
@@ -91,7 +93,7 @@ func _ready():
 	if (actor_owner.actor_ID == 0):
 		discovered = true
 	else:
-		$MeshInstance3D.visible = true
+		$MeshInstance3D.visible = false
 		discovered = false
 		det_area.area_entered.connect(_detection_area_entered)
 		det_area.area_exited.connect(_detection_area_exited)
@@ -112,7 +114,7 @@ func _process(delta):
 		menu.update_train_prog(train_queue[0],trn_timer.get_time_left()/trn_timer.get_wait_time())
 
 '''### Public Methods ###'''
-
+'''-------------------------------------------------------------------------------------'''
 ''' Initialization Start '''
 ## Initialize certain elements at start
 func init(_pos, snap: int, actor: Node):
@@ -170,9 +172,9 @@ func load_data(data):
 		menu.pop_train_queue.connect(pop_train_queue)
 
 ''' Initialization End '''
-
+'''-------------------------------------------------------------------------------------'''
 ''' Placing logic Start '''
-func set_pos(pos):
+func set_pos(pos, wait = false):
 	transform = base_transform
 	position = pos
 	align_to_ground()
@@ -184,12 +186,12 @@ func set_pos(pos):
 		position.x = ceil(position.x/snapping)*snapping
 		position.z = ceil(position.z/snapping)*snapping
 	
-	
 	# Check can afford
 	if can_afford(actor_owner.resources) !=null:
 		make_invalid()
 		return "cant afford"
-	
+	if(wait):
+		await get_tree().physics_frame
 	##check for collisions
 	if check_collision():
 		make_invalid()
@@ -228,13 +230,14 @@ func place():
 		mesh.mesh.surface_get_material(i).set_shader_parameter("magic_color", magic_color)
 	# Start building
 	is_building = true
-	build_particles.visible = true
+	if(discovered):
+		build_particles.visible = true
 	build_particles.draw_pass_1.surface_get_material(0).albedo_color = magic_color
 	# Activate Fog interactions
 	fog_reg.fog_break_radius = fog_rev_radius*.5
 	get_parent().added_fog_revealer(self)
 	fog_reg.activate_area()
-	update_fog.emit(self,position)
+	update_fog.emit(self,position, is_visible)
 	if(actor_owner.actor_ID == 0):
 		fog_reg.active = true
 
@@ -312,7 +315,7 @@ func snap_to_ground():
 	position.y = $StaticBody3D/RayCast3D.get_collision_point().y
 
 ''' Placing logic End '''
-
+'''-------------------------------------------------------------------------------------'''
 ''' Building and Fog logic Start '''
 #Finish the building process
 func finish_building():
@@ -321,7 +324,7 @@ func finish_building():
 	build_particles.visible = false
 	mesh.transparency = 0
 	fog_reg.fog_break_radius = fog_rev_radius
-	update_fog.emit(self,position)
+	update_fog.emit(self, position, true)
 	fog_radius_changed.emit(self)	
 		
 	# Reset to base materials
@@ -340,8 +343,10 @@ func _detection_area_exited(area):
 	if(area.has_meta("fog_owner_id")):
 		if (area.get_meta("fog_owner_id") == 0):
 			is_visible = false
-''' Building logic End '''
 
+
+''' Building logic End '''
+'''-------------------------------------------------------------------------------------'''
 ''' Material Setting Start '''
 ## Set all surfaces to override material
 func set_all_over_mats(mat):
@@ -361,7 +366,7 @@ func set_all_shader(shad):
 		mesh.mesh.surface_get_material(i).set_shader(shad)
 
 ''' Material Setting End '''
-
+'''-------------------------------------------------------------------------------------'''
 ''' Combat Start '''
 func damage(amt: float, _type: String):
 	health -= amt-armor
@@ -373,7 +378,7 @@ func damage(amt: float, _type: String):
 	return false
 
 ''' Combat End '''
-
+'''-------------------------------------------------------------------------------------'''
 ''' User Input Start '''
 ## Pass press to signal activate signal
 func _on_static_body_3d_input_event(_camera, event, _position, _normal, _shape_idx):
@@ -397,7 +402,7 @@ func hide_from_mouse(state: = true):
 	static_body.input_ray_pickable = !state
 
 ''' User Input End '''
-
+'''-------------------------------------------------------------------------------------'''
 ''' Destruction Start '''
 ## Delay delete and remove from lists
 func delayed_delete():
@@ -409,7 +414,7 @@ func delayed_delete():
 	world.update_navigation(get_groups()[0])
 
 ''' Destruction End '''
-
+'''-------------------------------------------------------------------------------------'''
 ''' Training Start '''
 ## Place new unit to end of queue
 func push_train_queue(unit: String):

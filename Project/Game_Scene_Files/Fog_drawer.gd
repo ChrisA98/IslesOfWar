@@ -58,12 +58,17 @@ func create_drawer(parent):
 	parent.update_fog.connect(update_draw)
 	if(parent.has_signal("fog_radius_changed")):
 		parent.fog_radius_changed.connect(update_drawer_radius)
+		m.mesh.surface_get_material(0).set_albedo(Color.BLACK)
+		m.position.y = -30
 	drawers[parent] = m
 
 
 ## Move drawers
-func update_draw(parent, pos):
-	drawers[parent].position = pos
+func update_draw(parent, pos, visible):
+	drawers[parent].visible = visible
+	drawers[parent].position.x = pos.x
+	drawers[parent].position.z = pos.z
+	
 
 
 ## Update drawe mesh

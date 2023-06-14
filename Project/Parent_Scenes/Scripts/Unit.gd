@@ -44,8 +44,9 @@ var unit_name: String
 var is_selected: bool
 var is_visible: bool:
 	set(value):
-		is_visible = true
+		is_visible = value
 		$MeshInstance3D.visible = is_visible
+		update_fog.emit(self,position, is_visible)
 
 ''' Cost Vars '''
 var pop_cost := 0
@@ -151,7 +152,7 @@ func get_ground_depth(pos = null):
 	grnd_ping.force_raycast_update()
 	var out =  grnd_ping.get_collision_point().y
 	grnd_ping.position = Vector3(0,250,0)	## Reset to on unit
-	update_fog.emit(self,position)
+	update_fog.emit(self,position, is_visible)
 	return out
 
 ''' Movement Methods End '''
@@ -172,7 +173,7 @@ func can_afford(builder_res):
 		if builder_res[res] < res_cost[res] :
 			return false
 	return true
-
+'''-------------------------------------------------------------------------------------'''
 ''' Player Input Methods Start '''
 ## Unit is selected and make selection visible
 func select(state : bool = true):
@@ -186,7 +187,7 @@ func _on_input_event(_camera, event, _position, _normal, _shape_idx):
 		ai_mode = "wandering_basic"
 
 ''' Player Input Methods End '''
-
+'''-------------------------------------------------------------------------------------'''
 ''' Combat Methods Start '''
 ## Damage dealt
 ##
@@ -218,7 +219,7 @@ func attack():
 	target_enemy.damage(base_atk_str,"physical")
 
 ''' Combat Methods End '''
-
+'''-------------------------------------------------------------------------------------'''
 ''' Destroy Unit Methods Start '''
 ## Signal from target dying
 func target_killed():
@@ -235,7 +236,7 @@ func delayed_delete():
 	queue_free()
 
 ''' Destroy Unit Methods End '''
-
+'''-------------------------------------------------------------------------------------'''
 '''### Private Methods ###'''
 ''' Movement Methods Start '''
 ## set target move location 
@@ -268,9 +269,15 @@ func _det_area_exited(area):
 	if(area.has_meta("fog_owner_id")):
 		if (area.get_meta("fog_owner_id") == 0):
 			is_visible = false
+		for ar in area.get_overlapping_areas():
+			if(ar.has_meta("fog_owner_id")):
+				if (ar.get_meta("fog_owner_id") == 0):
+					is_visible = true
+			
 
 
 ''' Movement Methods end '''
+'''-------------------------------------------------------------------------------------'''
 ''' AI Processes  Methods Start '''
 ## Has a target set by player
 func _targeted_attack(delta):
@@ -312,7 +319,7 @@ func _travel(delta):
 	if nav_agent.is_navigation_finished():
 		return
 	
-	update_fog.emit(self,position)
+	update_fog.emit(self,position, is_visible)
 	var current_agent_position: Vector3 = global_transform.origin
 	var next_path_position: Vector3 = nav_agent.get_next_path_position()
 	var new_velocity: Vector3 = next_path_position - current_agent_position
