@@ -3,6 +3,7 @@ render_mode diffuse_lambert_wrap;
 
 uniform sampler2D heightmap : repeat_disable;
 uniform float t_height;
+uniform float fog_darkness:hint_range(0,1) = 1;
 uniform float water_table:hint_range(-50.0,50.0) = 1;
 uniform float max_sand_height:hint_range(-50.0,50.0) = 1;
 uniform float universal_tex_scaling = 6;

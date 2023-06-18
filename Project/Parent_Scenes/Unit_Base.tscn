@@ -4,6 +4,8 @@
 [ext_resource type="PackedScene" uid="uid://p576jcs2kqxc" path="res://World_Generation/fog_breaker.tscn" id="2_510m0"]
 
 [sub_resource type="CylinderShape3D" id="CylinderShape3D_603ul"]
+height = 3.5
+radius = 2.0
 
 [sub_resource type="CylinderMesh" id="CylinderMesh_ggawr"]
 
@@ -23,33 +25,53 @@ resource_local_to_scene = true
 radius = 25.0
 
 [sub_resource type="CylinderShape3D" id="CylinderShape3D_jn7np"]
+radius = 2.0
 
 [node name="Unit_Base" type="CharacterBody3D"]
 collision_mask = 0
+floor_max_angle = 0.610865
 script = ExtResource("1_xwgnb")
-fog_rev_radius = 25.0
+fog_rev_radius = 35.0
 metadata/reveals_fog = 0
 
 [node name="CollisionShape3D" type="CollisionShape3D" parent="."]
-transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, 0.995465, 0)
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, 1.75, 0)
 shape = SubResource("CylinderShape3D_603ul")
 
-[node name="MeshInstance3D" type="MeshInstance3D" parent="."]
-transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, 1.00365, 0)
+[node name="Node3D" type="Node3D" parent="."]
+
+[node name="MeshInstance3D" type="MeshInstance3D" parent="Node3D"]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, -0.961931, 0.981501, -0.791413)
 mesh = SubResource("CylinderMesh_ggawr")
+skeleton = NodePath("../..")
+
+[node name="MeshInstance3D2" type="MeshInstance3D" parent="Node3D"]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0.23631, 0.988431, -1.32474)
+mesh = SubResource("CylinderMesh_ggawr")
+skeleton = NodePath("../..")
+
+[node name="MeshInstance3D3" type="MeshInstance3D" parent="Node3D"]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, -0.407311, 0.981501, 0.940965)
+mesh = SubResource("CylinderMesh_ggawr")
+skeleton = NodePath("../..")
+
+[node name="MeshInstance3D4" type="MeshInstance3D" parent="Node3D"]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 1.11459, 0.981501, 0.0255227)
+mesh = SubResource("CylinderMesh_ggawr")
+skeleton = NodePath("../..")
 
 [node name="NavigationAgent3D" type="NavigationAgent3D" parent="."]
-path_desired_distance = 5.54
+path_desired_distance = 7.0
 target_desired_distance = 3.0
+path_max_distance = 7.01
 max_speed = 20.0
 ignore_y = false
 
 [node name="Selection" type="Node3D" parent="."]
-visible = false
 
 [node name="Decal" type="Decal" parent="Selection"]
 transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, -0.0626185, 0)
-size = Vector3(4, 4, 4)
+size = Vector3(6, 6, 6)
 texture_albedo = SubResource("GradientTexture2D_0hiou")
 cull_mask = 1048574
 

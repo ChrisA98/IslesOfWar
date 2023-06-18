@@ -32,8 +32,8 @@ func set_pop(current: int, _max_pop: int):
 	UI_controller.res_displays["pop"].append_text("[center]"+var_to_str(current)+" / " + var_to_str(_max_pop)+"[/center]")
 
 
-func place_building(grp, bld):
-	var out = super(grp, bld) 
+func place_building(bld):
+	var out = await super(bld) 
 	if !out:
 		return false
 	#Hide base radius

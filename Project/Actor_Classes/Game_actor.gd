@@ -66,24 +66,33 @@ func _process(_delta):
 
 ###GAME FUNCTIONS###
 ## group to add to a
-func place_building(grp, bld):
-	var building = gamescene.place_building(grp, bld)
-	if building == null:
-		return false
+func place_building(bld):
+	if bld.is_valid == false:
+		return null
+	#Connect signals
+	bld.pressed.connect(gamescene.building_pressed)
+	
+	bld.place()
+	#update navigation
+	await get_tree().physics_frame
+	for g in bld.get_groups():
+		gamescene.update_navigation(g)
+	
 		
-	#Place building in player's list
-	buildings.push_back(building)
+	#Place building in lists
+	gamescene.world_buildings.push_back(bld)
+	buildings.push_back(bld)
 	
 	#Spend resources
-	for res in building.cost:
-		adj_resource(res,building.cost[res]*-1)
+	for res in bld.cost:
+		adj_resource(res,bld.cost[res]*-1)
 		
 	#Place bases in bases list
-	if building.type == "Base":
-		bases.push_back(building)
+	if bld.type == "Base":
+		bases.push_back(bld)
 	
 	#Adjust max pop
-	adj_max_pop(building.pop_mod)
+	adj_max_pop(bld.pop_mod)
 	buildings.sort()
 	return true
 

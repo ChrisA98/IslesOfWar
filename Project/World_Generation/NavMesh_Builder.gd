@@ -11,7 +11,7 @@ extends Node3D
 @export var water_table : float = 7
 @onready var ground = get_node("Visual_Ground")
 @onready var water = get_node("Water")
-var heightmap : Image
+var heightmap
 
 
 var rng = RandomNumberGenerator.new()
@@ -30,7 +30,7 @@ func _ready():
 	var chunks = sqrt(find_files())
 	heightmap = load(heightmap_dir+"master"+".exr").get_image()
 	
-	## Prepare chucnks
+	## Prepare chunks
 	for y in range(0,chunks):
 		for x in range(0,chunks):
 			var _img = Image.new()
@@ -49,6 +49,8 @@ func _ready():
 			i.get_child(0).get_child(0).set_meta("is_ground", true)
 			i.set_nav_region()
 	
+	
+	$Water/StaticBody3D.input_event.connect(gamescene.ground_click.bind($Water/StaticBody3D)) 
 	
 	var wtr_nav_region = NavigationRegion3D.new()
 	wtr_nav_region.set_script(nav_manager)
@@ -189,7 +191,7 @@ func create_mesh(img):
 			for y in range(height):
 				if y % meshres == 0:
 					height_data[Vector2(x,y)] = _heightmap.get_pixel(x,y).r * terrain_amplitude
-					if(height_data[Vector2(x,y)] < water_table-1):
+					if(height_data[Vector2(x,y)] < water_table):
 						height_data[Vector2(x,y)] -= (100 + rng.randf_range(10,50))
 		
 	

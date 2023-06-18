@@ -1,7 +1,16 @@
-[gd_scene load_steps=3 format=3 uid="uid://cf6pa153818x2"]
+[gd_scene load_steps=4 format=3 uid="uid://cf6pa153818x2"]
 
 [ext_resource type="PackedScene" uid="uid://cs2p3v3o53aki" path="res://Parent_Scenes/Unit_Base.tscn" id="1_3ybrw"]
 [ext_resource type="Script" path="res://Units/Infantry.gd" id="1_somxn"]
 
+[sub_resource type="SphereShape3D" id="SphereShape3D_umiqv"]
+resource_local_to_scene = true
+radius = 25.0
+
 [node name="Infantry" instance=ExtResource("1_3ybrw")]
 script = ExtResource("1_somxn")
+
+[node name="CollisionShape3D" parent="Fog_Breaker/Area3D" index="0"]
+shape = SubResource("SphereShape3D_umiqv")
+
+[editable path="Fog_Breaker"]

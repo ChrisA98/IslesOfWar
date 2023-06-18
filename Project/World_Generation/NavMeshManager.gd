@@ -4,12 +4,12 @@ signal finished_baking
 
 @onready var baking_mesh = false
 @onready var global = get_node("/root/Global_Vars")
-@export var min_size: float = 30
+@export var min_size: float = 60
 @export var cell_size: float = .35
 @export var cell_height: float = .25
 @export var edge_max_length: float = 11.9
 @export var agent_max_slope: float = 35
-@export var agent_radius: float = .35
+@export var agent_radius: float = 2
 @export var connects: bool = true
 var baking = false
 

@@ -17,7 +17,7 @@ func load_data(data):
 	set_radius_color(magic_color)
 
 
-func set_pos(pos, wait = false):
+func set_pos(pos, _wait = false):
 	super(pos, false)
 	get_node("Valid_Region/GPUParticles3D").restart()
 	if near_base(actor_owner.bases):

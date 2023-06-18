@@ -47,6 +47,7 @@ var is_visible : bool:
 var is_valid = false
 var is_building : bool = false
 var snapping = 0
+var rot = 0
 #Cost to build
 var cost = {"wood": 0,
 "stone": 0,
@@ -175,16 +176,18 @@ func load_data(data):
 '''-------------------------------------------------------------------------------------'''
 ''' Placing logic Start '''
 func set_pos(pos, wait = false):
+	if snapping > 1:
+		pos.x = ceil(pos.x/snapping)*snapping
+		pos.z = ceil(pos.z/snapping)*snapping
+	
 	transform = base_transform
+	rotate_y(rot)
 	position = pos
 	align_to_ground()
 	position = pos
 	snap_to_ground()
 	det_area.force_update_transform()
 	
-	if snapping > 1:
-		position.x = ceil(position.x/snapping)*snapping
-		position.z = ceil(position.z/snapping)*snapping
 	
 	# Check can afford
 	if can_afford(actor_owner.resources) !=null:
@@ -213,6 +216,11 @@ func set_pos(pos, wait = false):
 		make_invalid()
 		return "cant see"
 	
+	## check for water on center
+	if in_water():
+		make_invalid()
+		return "in water"
+	
 	make_valid()
 
 
@@ -240,6 +248,8 @@ func place():
 	update_fog.emit(self,position, is_visible)
 	if(actor_owner.actor_ID == 0):
 		fog_reg.active = true
+	await get_tree().physics_frame
+	get_ground_groups()
 
 
 ## Set snap for building placement
@@ -278,6 +288,14 @@ func check_collision():
 	return false
 
 
+func in_water():
+	picker.force_raycast_update()
+	if(picker.get_collider() != null):
+		if(picker.get_collider().get_groups().size() == 0):
+			return false
+	return true
+
+
 ## Check if close to any buildings in buildings
 func near_base(buildings) -> bool:
 	if buildings == null:
@@ -306,13 +324,25 @@ func align_to_ground():
 	var norm = picker.get_collision_normal()
 	var cosa = Vector3.UP.dot(norm)
 	var alph = acos(cosa)
-	var axis = Vector3.UP.cross(norm)
-	transform = transform.rotated(axis.normalized(),alph)
+	var axis = Vector3.UP.cross(norm).normalized()
+	if(axis.is_normalized()):
+		transform = transform.rotated(axis,alph)
 
 
 func snap_to_ground():
 	picker.force_raycast_update()
 	position.y = $StaticBody3D/RayCast3D.get_collision_point().y
+
+
+## Get groups from ground raycasts
+func get_ground_groups():
+	var corners = static_body.find_children("Corner*")
+	for c in corners:
+		var t = (c.get_collider().get_parent().get_parent().get_groups())
+		if(t.size() == 0):
+			continue
+		if !get_groups().has(t[0]):
+			add_to_group(c.get_collider().get_parent().get_parent().get_groups()[0])	
 
 ''' Placing logic End '''
 '''-------------------------------------------------------------------------------------'''

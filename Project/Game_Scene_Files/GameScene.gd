@@ -43,6 +43,7 @@ var click_mode: String = "select":
 	set(value):
 		click_mode_changed.emit(click_mode, value)
 		click_mode = value
+var mouse_loc_stored
 
 ''' Time keeping vars '''
 var sun_rotation = 0
@@ -182,7 +183,7 @@ func custom_nav_setup():
 	NavigationServer3D.map_set_up(map, Vector3.UP)
 	NavigationServer3D.map_set_active(map, true)
 	nav_ready.emit()
-	NavigationServer3D.map_set_edge_connection_margin(get_world_3d().get_navigation_map(),2)
+	NavigationServer3D.map_set_edge_connection_margin(get_world_3d().get_navigation_map(),8)
 	update_navigation()
 
 '''-------------------------------------------------------------------------------------'''
@@ -288,20 +289,17 @@ func prepare_bases():
 		var spawn = get_node("World/Enemy"+str(enemy)+"_Base_Spawn")
 		var bldg = prep_other_building(game_actors[enemy],"Base")
 		bldg.set_pos(spawn.position)
-		var grp = game_actors[enemy].ping_ground(bldg.position).get_parent().get_groups()[0]		
 		bldg.set_pos(Vector3(spawn.position.x,game_actors[enemy].ping_ground_depth(bldg.position),spawn.position.z))
-		game_actors[enemy].place_building(grp, bldg)
+		game_actors[enemy].place_building(bldg)
 		bldg.spawn_unit("Scout")
 		
 	# Add player first Base
 	var p_spawn = get_node("World/Player_Base_Spawn")
 	player_controller.set_cam_pos(p_spawn.position + Vector3(0,20,0))
 	player_controller.get_child(0).force_raycast_update()
-	# inelegent solution, but it works
-	var grp = player_controller.get_child(0).get_collider().get_parent().get_groups()[0]
 	prep_player_building(0, null)
 	preview_building.set_pos(p_spawn.position)
-	player_controller.place_building(grp, preview_building)
+	player_controller.place_building(preview_building)
 	preview_building.spawn_unit("Scout")
 	preview_building = null
 	click_mode = "select"
@@ -338,24 +336,6 @@ func prep_other_building(actor, bldg_name):
 	return new_build
 
 
-## Places building into world
-##
-## To be called by actors to ensure it connects to player
-func place_building(grp, building):
-	if building.is_valid == false:
-		return null
-	
-	#Connect signals
-	building.pressed.connect(building_pressed)
-	
-	#Place building in world
-	world_buildings.push_back(building)
-	building.place()
-	building.add_to_group(grp)
-	update_navigation(grp)
-	
-	return world_buildings[-1]
-
 ''' Building Placement End '''
 '''-------------------------------------------------------------------------------------'''
 ''' Player Input Start '''
@@ -385,12 +365,21 @@ func building_pressed(building):
 
 
 ## Clicks on world
-func ground_click(_camera, event, pos, _normal, _shape_idx, shape):
+func ground_click(_camera, event, pos, _normal, _shape_idx, _shape):
 	match click_mode:
 		"build":
+			if(Input.is_action_just_pressed("rmb")):
+				mouse_loc_stored = get_viewport().get_mouse_position()
+			if event is InputEventMouseMotion and Input.is_mouse_button_pressed(MOUSE_BUTTON_RIGHT):
+				preview_building.rotate_y(event.get_relative().x/100)
+				preview_building.rot += event.get_relative().x/100
+				return			
+			if(Input.is_action_just_released("rmb")):
+				get_viewport().warp_mouse(mouse_loc_stored)
+				return
 			preview_building.set_pos(pos)
 			if event is InputEventMouseButton and Input.is_action_just_released("lmb"):
-				if player_controller.place_building(shape.get_groups()[0], preview_building):
+				if await player_controller.place_building(preview_building):
 					#Reset click mode
 					click_mode = "select"
 					preview_building = null

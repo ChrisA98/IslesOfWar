@@ -59,7 +59,10 @@ void fragment() {
 	}	
 	float fresnel = fresnel(5.0, NORMAL,VIEW);
 	vec3 surface_color = mix(albedo1, water_alb, fresnel);
-	ALPHA = clamp(depth*2.3,0.0,1.0);
+	ALPHA = clamp(depth*2.3,0.4,1.0);
+	if(depth <= 0.005){
+		ALPHA = 0.0;
+	}
 	ALBEDO = surface_color;
 	NORMAL_MAP = normal_blend;
 	METALLIC = 0.0;

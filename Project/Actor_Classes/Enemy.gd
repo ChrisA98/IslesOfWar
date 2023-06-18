@@ -190,6 +190,7 @@ func __build():
 	var m_res = can_afford(faction_data["buildings"][target_item]["base_cost"])
 	if m_res == null:
 		prepared_building = gamescene.prep_other_building(self,target_item)
+		prepared_building.rot = rng.randf_range(-180,180)
 		prepared_building.visible = false
 		match target_item:
 			"Barracks","Trade_post", "Farm":	#Fort Buildings
@@ -335,6 +336,7 @@ func can_afford(res):
 			return r
 	return null
 
+
 ## Update expexcted units when building spawns units
 func upate_exp_units(_bldg, unit):
 	exp_pop -= unit.pop_cost
@@ -378,7 +380,7 @@ func find_build_spot(targ, bldg):
 			if !sure:
 				return "uncover_loc"  ## move troop to location to see it
 		if(bldg.is_valid):
-			place_building(ping_ground(prepared_building.position).get_parent().get_groups()[0],prepared_building)
+			place_building(prepared_building)
 			return "clear"
 		if !sure:
 			attempts -= 1
@@ -410,8 +412,8 @@ func ping_ground_depth(pos):
 	return picker.get_collision_point().y
 
 
-func place_building(grp, bld):
-	super(grp, bld)
+func place_building(bld):
+	await super(bld)
 	prepared_building = null
 	bld.visible = true
 	bld.spawned_unit.connect(upate_exp_units)

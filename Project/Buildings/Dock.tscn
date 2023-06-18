@@ -1,0 +1,22 @@
+[gd_scene load_steps=3 format=3 uid="uid://x073djafeq1u"]
+
+[ext_resource type="PackedScene" uid="uid://ccoruw5j562l7" path="res://Parent_Scenes/Building_Base.tscn" id="1_wuqpt"]
+[ext_resource type="Script" path="res://Dock.gd" id="2_xu1jq"]
+
+[node name="Dock" instance=ExtResource("1_wuqpt")]
+script = ExtResource("2_xu1jq")
+type = "Dock"
+
+[node name="CollisionShape3D2" parent="StaticBody3D" index="1"]
+transform = Transform3D(0.2, 0, 0, 0, 0.2, 0, 0, 0, 0.2, 0, 0, 0.898475)
+
+[node name="Water_Check" type="RayCast3D" parent="StaticBody3D" index="7"]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, 1, 0.910313)
+target_position = Vector3(0, -5, 0)
+collision_mask = 65535
+
+[node name="RallyPoint" parent="." index="4"]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, 0.0733881, 1.92666)
+
+[node name="SpawnPoint" parent="." index="5"]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, -0.0474244, 0.886082)

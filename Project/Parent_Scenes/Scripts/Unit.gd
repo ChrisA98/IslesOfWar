@@ -12,7 +12,7 @@ signal uncovered_area #area enters det area
 
 var rng = RandomNumberGenerator.new()
 ''' Movement '''
-const MAX_SPEED = 20
+const MAX_SPEED = 10
 const ACCEL = 3
 var gravity = ProjectSettings.get_setting("physics/3d/default_gravity")
 
@@ -45,7 +45,7 @@ var is_selected: bool
 var is_visible: bool:
 	set(value):
 		is_visible = value
-		$MeshInstance3D.visible = is_visible
+		$Node3D.visible = is_visible
 		update_fog.emit(self,position, is_visible)
 
 ''' Cost Vars '''
@@ -337,12 +337,12 @@ func _on_navigation_agent_3d_navigation_finished():
 	var targ = check_pos(position)
 	if(targ.is_equal_approx(position) == false):
 		_set_target_position(targ)
+	elif(ai_mode.contains("travel")):
+		ai_mode = "idle_basic"
 	clear_following()
 	if target_follow != null:
 		_set_target_position(target_follow.position)
 		return
-	if(ai_mode.contains("travel")):
-		ai_mode = "idle_basic"
 
 
 func _on_NavigationAgent_velocity_computed(_safe_velocity):

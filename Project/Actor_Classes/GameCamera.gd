@@ -38,6 +38,7 @@ func _input(event):
 			Input.set_mouse_mode(Input.MOUSE_MODE_CONFINED_HIDDEN)
 		else:
 			Input.set_mouse_mode(Input.MOUSE_MODE_CONFINED) 
+		## Rotate Camera
 		if Input.is_mouse_button_pressed(MOUSE_BUTTON_MIDDLE):
 			rotate_y(event.get_relative().x/100)
 			$"../../UI_Node/Minimap/Minimap_Container".set_rotation_degrees(rotation_degrees.y)
