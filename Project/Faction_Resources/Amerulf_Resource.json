@@ -73,7 +73,7 @@
 				"food": 0,
 			},
 			"unit_list":{
-				"Knight": {
+				"Infantry": {
 					"base_cost": {
 						"wood": 1,
 						"stone": 0,

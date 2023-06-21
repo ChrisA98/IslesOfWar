@@ -1,13 +1,26 @@
-[gd_scene load_steps=9 format=3 uid="uid://cs2p3v3o53aki"]
+[gd_scene load_steps=12 format=3 uid="uid://cs2p3v3o53aki"]
 
 [ext_resource type="Script" path="res://Parent_Scenes/Scripts/Unit.gd" id="1_xwgnb"]
 [ext_resource type="PackedScene" uid="uid://p576jcs2kqxc" path="res://World_Generation/fog_breaker.tscn" id="2_510m0"]
 
 [sub_resource type="CylinderShape3D" id="CylinderShape3D_603ul"]
+resource_local_to_scene = true
 height = 3.5
 radius = 2.0
 
-[sub_resource type="CylinderMesh" id="CylinderMesh_ggawr"]
+[sub_resource type="StandardMaterial3D" id="StandardMaterial3D_llv7b"]
+albedo_color = Color(0, 1, 1, 1)
+
+[sub_resource type="CylinderMesh" id="CylinderMesh_66sgl"]
+material = SubResource("StandardMaterial3D_llv7b")
+
+[sub_resource type="StandardMaterial3D" id="StandardMaterial3D_p8cia"]
+albedo_color = Color(0, 1, 1, 1)
+
+[sub_resource type="CylinderMesh" id="CylinderMesh_em3lt"]
+material = SubResource("StandardMaterial3D_p8cia")
+top_radius = 0.0
+bottom_radius = 1.0
 
 [sub_resource type="Gradient" id="Gradient_8n0cr"]
 interpolation_mode = 2
@@ -25,6 +38,7 @@ resource_local_to_scene = true
 radius = 25.0
 
 [sub_resource type="CylinderShape3D" id="CylinderShape3D_jn7np"]
+resource_local_to_scene = true
 radius = 2.0
 
 [node name="Unit_Base" type="CharacterBody3D"]
@@ -38,27 +52,18 @@ metadata/reveals_fog = 0
 transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, 1.75, 0)
 shape = SubResource("CylinderShape3D_603ul")
 
-[node name="Node3D" type="Node3D" parent="."]
+[node name="UnitModels" type="Node3D" parent="."]
 
-[node name="MeshInstance3D" type="MeshInstance3D" parent="Node3D"]
-transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, -0.961931, 0.981501, -0.791413)
-mesh = SubResource("CylinderMesh_ggawr")
+[node name="Editor forward Arrow" type="MeshInstance3D" parent="UnitModels"]
+transform = Transform3D(-1.889, -5.8923e-08, 3.82137e-17, 0, -2.94615e-08, -0.01, 1.65142e-07, -0.674, 4.37114e-10, 0, 0, -2.37531)
+layers = 524288
+mesh = SubResource("CylinderMesh_66sgl")
 skeleton = NodePath("../..")
 
-[node name="MeshInstance3D2" type="MeshInstance3D" parent="Node3D"]
-transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0.23631, 0.988431, -1.32474)
-mesh = SubResource("CylinderMesh_ggawr")
-skeleton = NodePath("../..")
-
-[node name="MeshInstance3D3" type="MeshInstance3D" parent="Node3D"]
-transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, -0.407311, 0.981501, 0.940965)
-mesh = SubResource("CylinderMesh_ggawr")
-skeleton = NodePath("../..")
-
-[node name="MeshInstance3D4" type="MeshInstance3D" parent="Node3D"]
-transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 1.11459, 0.981501, 0.0255227)
-mesh = SubResource("CylinderMesh_ggawr")
-skeleton = NodePath("../..")
+[node name="more_arrow" type="MeshInstance3D" parent="UnitModels/Editor forward Arrow"]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, 1.97062, -8.61384e-08)
+layers = 524288
+mesh = SubResource("CylinderMesh_em3lt")
 
 [node name="NavigationAgent3D" type="NavigationAgent3D" parent="."]
 path_desired_distance = 7.0

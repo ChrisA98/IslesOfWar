@@ -1,16 +1,57 @@
-[gd_scene load_steps=4 format=3 uid="uid://cf6pa153818x2"]
+[gd_scene load_steps=7 format=3 uid="uid://cf6pa153818x2"]
 
 [ext_resource type="PackedScene" uid="uid://cs2p3v3o53aki" path="res://Parent_Scenes/Unit_Base.tscn" id="1_3ybrw"]
 [ext_resource type="Script" path="res://Units/Infantry.gd" id="1_somxn"]
+
+[sub_resource type="CylinderShape3D" id="CylinderShape3D_fxkcp"]
+resource_local_to_scene = true
+height = 3.5
+radius = 2.0
+
+[sub_resource type="CylinderMesh" id="CylinderMesh_wu772"]
 
 [sub_resource type="SphereShape3D" id="SphereShape3D_umiqv"]
 resource_local_to_scene = true
 radius = 25.0
 
+[sub_resource type="CylinderShape3D" id="CylinderShape3D_xwf7k"]
+resource_local_to_scene = true
+radius = 2.0
+
 [node name="Infantry" instance=ExtResource("1_3ybrw")]
 script = ExtResource("1_somxn")
+travel_type = [true, false, false]
+
+[node name="CollisionShape3D" parent="." index="0"]
+shape = SubResource("CylinderShape3D_fxkcp")
+
+[node name="MeshInstance3D" type="MeshInstance3D" parent="UnitModels" index="0"]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, -0.961931, 0.981501, -0.791413)
+mesh = SubResource("CylinderMesh_wu772")
+skeleton = NodePath("../..")
+
+[node name="MeshInstance3D2" type="MeshInstance3D" parent="UnitModels" index="1"]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0.23631, 0.988431, -1.32474)
+mesh = SubResource("CylinderMesh_wu772")
+skeleton = NodePath("../..")
+
+[node name="MeshInstance3D3" type="MeshInstance3D" parent="UnitModels" index="2"]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, -0.407311, 0.981501, 0.940965)
+mesh = SubResource("CylinderMesh_wu772")
+skeleton = NodePath("../..")
+
+[node name="MeshInstance3D4" type="MeshInstance3D" parent="UnitModels" index="3"]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 1.11459, 0.981501, 0.0255227)
+mesh = SubResource("CylinderMesh_wu772")
+skeleton = NodePath("../..")
+
+[node name="NavigationAgent3D" parent="." index="2"]
+navigation_layers = 0
 
 [node name="CollisionShape3D" parent="Fog_Breaker/Area3D" index="0"]
 shape = SubResource("SphereShape3D_umiqv")
+
+[node name="CollisionShape3D" parent="Detection_Area" index="0"]
+shape = SubResource("CylinderShape3D_xwf7k")
 
 [editable path="Fog_Breaker"]

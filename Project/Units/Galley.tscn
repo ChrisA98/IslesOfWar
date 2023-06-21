@@ -1,0 +1,85 @@
+[gd_scene load_steps=9 format=3 uid="uid://b8dhteip20elq"]
+
+[ext_resource type="PackedScene" uid="uid://cs2p3v3o53aki" path="res://Parent_Scenes/Unit_Base.tscn" id="1_2rm4p"]
+
+[sub_resource type="CylinderShape3D" id="CylinderShape3D_eg3oh"]
+resource_local_to_scene = true
+height = 3.5
+radius = 2.0
+
+[sub_resource type="SphereMesh" id="SphereMesh_o3v51"]
+radius = 0.934
+radial_segments = 6
+rings = 3
+is_hemisphere = true
+
+[sub_resource type="CylinderMesh" id="CylinderMesh_jjcuw"]
+top_radius = 0.093
+bottom_radius = 0.093
+height = 2.165
+
+[sub_resource type="BoxMesh" id="BoxMesh_j7d8u"]
+size = Vector3(0.101, 1.354, 1.854)
+
+[sub_resource type="SphereMesh" id="SphereMesh_uldu6"]
+radius = 0.661
+radial_segments = 6
+rings = 3
+is_hemisphere = true
+
+[sub_resource type="SphereShape3D" id="SphereShape3D_6oof3"]
+resource_local_to_scene = true
+radius = 25.0
+
+[sub_resource type="CylinderShape3D" id="CylinderShape3D_temck"]
+resource_local_to_scene = true
+radius = 2.0
+
+[node name="Galley" instance=ExtResource("1_2rm4p")]
+travel_type = [false, true, false]
+
+[node name="CollisionShape3D" parent="." index="0"]
+shape = SubResource("CylinderShape3D_eg3oh")
+
+[node name="MeshInstance3D2" type="MeshInstance3D" parent="UnitModels" index="0"]
+transform = Transform3D(-1.31134e-07, 1.14641e-14, -1, -8.74228e-08, -1, 0, -1, 8.74228e-08, 1.31134e-07, 0.177232, 0.345916, -0.252817)
+mesh = SubResource("SphereMesh_o3v51")
+
+[node name="MeshInstance3D3" type="MeshInstance3D" parent="UnitModels" index="1"]
+transform = Transform3D(-1.31134e-07, 1.14641e-14, -1, -8.74228e-08, -1, 0, -1, 8.74228e-08, 1.31134e-07, 0.177232, 0.319377, 0.45191)
+mesh = SubResource("SphereMesh_o3v51")
+
+[node name="MeshInstance3D4" type="MeshInstance3D" parent="UnitModels" index="2"]
+transform = Transform3D(9.71522e-08, -1.88238e-09, -0.741, 0.0143546, 0.740861, 1.91976e-17, 0.740861, -0.0143546, 9.71704e-08, 0.177233, 0.319377, 0.664889)
+mesh = SubResource("SphereMesh_o3v51")
+
+[node name="MeshInstance3D5" type="MeshInstance3D" parent="UnitModels" index="3"]
+transform = Transform3D(9.71522e-08, -1.88238e-09, -0.741, 0.0143546, 0.740861, 1.91976e-17, 0.740861, -0.0143546, 9.71704e-08, 0.177232, 1.201, -0.485936)
+mesh = SubResource("CylinderMesh_jjcuw")
+
+[node name="MeshInstance3D7" type="MeshInstance3D" parent="UnitModels" index="4"]
+transform = Transform3D(9.71522e-08, -1.88238e-09, -0.741, 0.0143546, 0.740861, 1.91976e-17, 0.740861, -0.0143546, 9.71704e-08, 0.177232, 1.46157, -0.485936)
+mesh = SubResource("BoxMesh_j7d8u")
+
+[node name="MeshInstance3D8" type="MeshInstance3D" parent="UnitModels" index="5"]
+transform = Transform3D(9.71522e-08, -1.88238e-09, -0.741, 0.0143546, 0.740861, 1.91976e-17, 0.740861, -0.0143546, 9.71704e-08, 0.177233, 1.91421, 0.699625)
+mesh = SubResource("BoxMesh_j7d8u")
+
+[node name="MeshInstance3D6" type="MeshInstance3D" parent="UnitModels" index="6"]
+transform = Transform3D(9.71522e-08, -1.88238e-09, -0.741, 0.0143546, 0.740861, 1.91976e-17, 0.740861, -0.0143546, 9.71704e-08, 0.177233, 1.70313, 0.673116)
+mesh = SubResource("CylinderMesh_jjcuw")
+
+[node name="MeshInstance3D" type="MeshInstance3D" parent="UnitModels" index="7"]
+transform = Transform3D(-1.31134e-07, 1.14641e-14, -1, -8.74228e-08, -1, 0, -1, 8.74228e-08, 1.31134e-07, 0.177232, 0.397768, -1.26485)
+mesh = SubResource("SphereMesh_uldu6")
+
+[node name="NavigationAgent3D" parent="." index="2"]
+navigation_layers = 2
+
+[node name="CollisionShape3D" parent="Fog_Breaker/Area3D" index="0"]
+shape = SubResource("SphereShape3D_6oof3")
+
+[node name="CollisionShape3D" parent="Detection_Area" index="0"]
+shape = SubResource("CylinderShape3D_temck")
+
+[editable path="Fog_Breaker"]

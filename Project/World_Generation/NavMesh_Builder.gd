@@ -10,7 +10,7 @@ extends Node3D
 ## Level terrain info
 @export var water_table : float = 7
 @onready var ground = get_node("Visual_Ground")
-@onready var water = get_node("Water")
+@onready var water = get_node("../Player/Player_camera/Visual_Ground/Water")
 var heightmap
 
 

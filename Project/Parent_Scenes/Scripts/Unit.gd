@@ -7,8 +7,21 @@ signal died
 signal update_fog
 signal uncovered_area #area enters det area
 
+'''Enums'''
+enum {GROUND, NAVAL, AERIAL}
+
+'''Consts'''
+
 ''' Export Vars '''
+## Area this unit reveals fog in
 @export var fog_rev_radius : float = 50
+
+## Navigaion layers to enable
+## 0 = GROUND
+## 1 = NAVAL
+## 2 = AERIAL
+@export var travel_type := [false, false, false]
+@export var unit_name: String
 
 var rng = RandomNumberGenerator.new()
 ''' Movement '''
@@ -39,13 +52,13 @@ var target_follow: Unit_Base:
 ''' Identifying Vars '''
 var actor_owner
 var unit_list
-var unit_name: String
 
 var is_selected: bool
 var is_visible: bool:
 	set(value):
 		is_visible = value
-		$Node3D.visible = is_visible
+		$CollisionShape3D.visible = is_visible
+		$Selection.visible = is_visible
 		update_fog.emit(self,position, is_visible)
 
 ''' Cost Vars '''
@@ -85,6 +98,9 @@ var target_enemy:
 
 '''### Built-In Methods ###'''
 func _ready():
+	for t in range(travel_type.size()):
+		if travel_type[t]:
+			nav_agent.set_navigation_layers(t+1)
 	nav_agent.path_desired_distance = 0.5
 	nav_agent.target_desired_distance = 0.5
 	
@@ -106,11 +122,20 @@ func _ready():
 		det_area.area_entered.connect(_det_area_entered)
 		det_area.area_exited.connect(_det_area_exited)
 
-
 func _physics_process(delta):
 	ai_methods[ai_mode].call(delta)
 
 '''### Public Methods ###'''
+''' Startup Methods Start '''
+## Load data from owning building
+func load_data(data):	
+	pop_cost = data["pop_cost"]
+	for r in data["base_cost"]:
+		res_cost[r] = data["base_cost"][r]
+
+
+''' Startup Methods End '''
+'''-------------------------------------------------------------------------------------'''
 ''' Movement Methods Start '''
 ## Set target move location
 ##
@@ -328,8 +353,13 @@ func _travel(delta):
 		new_velocity = _lerp_start(new_velocity, delta)
 	else:
 		new_velocity = _lerp_stop(new_velocity, delta)
-		
-	set_velocity(new_velocity)
+	
+	
+	var lookdir = atan2(-new_velocity.x, -new_velocity.z)
+	$UnitModels.rotation.y = lookdir
+	
+	set_velocity(new_velocity)	
+	
 	move_and_slide()
 
 
@@ -337,7 +367,7 @@ func _on_navigation_agent_3d_navigation_finished():
 	var targ = check_pos(position)
 	if(targ.is_equal_approx(position) == false):
 		_set_target_position(targ)
-	elif(ai_mode.contains("travel")):
+	elif(ai_mode.contains("travel") and target_follow==null):
 		ai_mode = "idle_basic"
 	clear_following()
 	if target_follow != null:

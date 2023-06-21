@@ -1,7 +1,7 @@
 [gd_scene load_steps=3 format=3 uid="uid://x073djafeq1u"]
 
 [ext_resource type="PackedScene" uid="uid://ccoruw5j562l7" path="res://Parent_Scenes/Building_Base.tscn" id="1_wuqpt"]
-[ext_resource type="Script" path="res://Dock.gd" id="2_xu1jq"]
+[ext_resource type="Script" path="res://Buildings/scripts/Dock.gd" id="2_xu1jq"]
 
 [node name="Dock" instance=ExtResource("1_wuqpt")]
 script = ExtResource("2_xu1jq")

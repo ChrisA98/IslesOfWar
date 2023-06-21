@@ -165,16 +165,16 @@ func __get_units():
 		return
 	var barr = get_target_buildings("Barracks")
 	var trgt = barr[rng.randi_range(0,barr.size()-1)]
-	var u_res = can_afford(faction_data["buildings"]["Barracks"]["unit_list"]["Knight"]["base_cost"])
+	var u_res = can_afford(faction_data["buildings"]["Barracks"]["unit_list"]["Infantry"]["base_cost"])
 	if u_res == null:
-		if trgt.push_train_queue("Knight") == "true":
-			exp_pop += faction_data["buildings"]["Barracks"]["unit_list"]["Knight"]["pop_cost"]
+		if trgt.push_train_queue("Infantry") == "true":
+			exp_pop += faction_data["buildings"]["Barracks"]["unit_list"]["Infantry"]["pop_cost"]
 			complete_goal()
 		else:
 			_attempt_add("build","Barracks")
 			return
 	else:
-		var ttt = troop_train_patience_decide(u_res, faction_data["buildings"]["Barracks"]["unit_list"]["Knight"]["base_cost"][u_res])
+		var ttt = troop_train_patience_decide(u_res, faction_data["buildings"]["Barracks"]["unit_list"]["Infantry"]["base_cost"][u_res])
 		if(ttt == -1):
 			decide_resource_goal(u_res)
 			return

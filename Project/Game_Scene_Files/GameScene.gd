@@ -112,7 +112,7 @@ func _ready():
 				loaded_buildings[fac][b] = load("res://Buildings/"+b+".tscn")
 			else:
 				loaded_buildings[fac][b] = null
-				print_debug("Scene file: "+b+" does not exist")
+				push_warning("Scene file ["+b+".tscn] not found")
 			if(fac == 0):
 				menu_buildings[faction_data[fac]["data"]["buildings"][b].base_display_name] = b
 				match faction_data[fac]["data"]["buildings"][b].category:
@@ -370,14 +370,17 @@ func ground_click(_camera, event, pos, _normal, _shape_idx, _shape):
 		"build":
 			if(Input.is_action_just_pressed("rmb")):
 				mouse_loc_stored = get_viewport().get_mouse_position()
+				Input.set_mouse_mode(Input.MOUSE_MODE_CONFINED_HIDDEN)
 			if event is InputEventMouseMotion and Input.is_mouse_button_pressed(MOUSE_BUTTON_RIGHT):
 				preview_building.rotate_y(event.get_relative().x/100)
-				preview_building.rot += event.get_relative().x/100
+				preview_building.rot += event.get_relative().x/100				
 				return			
 			if(Input.is_action_just_released("rmb")):
 				get_viewport().warp_mouse(mouse_loc_stored)
+				Input.set_mouse_mode(Input.MOUSE_MODE_CONFINED)
 				return
-			preview_building.set_pos(pos)
+			if(preview_building != null):
+				preview_building.set_pos(pos)
 			if event is InputEventMouseButton and Input.is_action_just_released("lmb"):
 				if await player_controller.place_building(preview_building):
 					#Reset click mode

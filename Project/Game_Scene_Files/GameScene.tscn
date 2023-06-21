@@ -1,4 +1,4 @@
-[gd_scene load_steps=103 format=3 uid="uid://d32tym6bcdu7c"]
+[gd_scene load_steps=107 format=3 uid="uid://d32tym6bcdu7c"]
 
 [ext_resource type="Script" path="res://Game_Scene_Files/GameScene.gd" id="1_7pjje"]
 [ext_resource type="Script" path="res://Game_Scene_Files/UI_Builder.gd" id="2_wj4ul"]
@@ -151,6 +151,8 @@ ambient_light_energy = 16.0
 [sub_resource type="World3D" id="World3D_s03bo"]
 environment = SubResource("Environment_fgh2p")
 
+[sub_resource type="World3D" id="World3D_8clv5"]
+
 [sub_resource type="ShaderMaterial" id="ShaderMaterial_sybgk"]
 shader = ExtResource("8_ka2n4")
 shader_parameter/space = 50
@@ -160,6 +162,184 @@ size = Vector2(170, 170)
 
 [sub_resource type="CameraAttributesPractical" id="CameraAttributesPractical_g3y50"]
 dof_blur_amount = 0.03
+
+[sub_resource type="Gradient" id="Gradient_b6hmg"]
+interpolation_mode = 2
+colors = PackedColorArray(0.383293, 0.763558, 1, 1, 1.20327e-06, 0.337756, 0.401284, 1)
+
+[sub_resource type="GradientTexture1D" id="GradientTexture1D_8euv3"]
+gradient = SubResource("Gradient_b6hmg")
+
+[sub_resource type="FastNoiseLite" id="FastNoiseLite_6n0eb"]
+noise_type = 3
+fractal_type = 2
+fractal_octaves = 4
+fractal_lacunarity = 2.142
+fractal_gain = 1.916
+fractal_weighted_strength = 1.0
+fractal_ping_pong_strength = 7.072
+
+[sub_resource type="NoiseTexture2D" id="NoiseTexture2D_pd0fy"]
+width = 1000
+height = 1000
+seamless = true
+seamless_blend_skirt = 0.596
+as_normal_map = true
+noise = SubResource("FastNoiseLite_6n0eb")
+
+[sub_resource type="FastNoiseLite" id="FastNoiseLite_vgweg"]
+noise_type = 3
+seed = 3
+fractal_type = 2
+
+[sub_resource type="NoiseTexture2D" id="NoiseTexture2D_cxok4"]
+width = 1000
+height = 1000
+seamless = true
+as_normal_map = true
+bump_strength = 12.9
+noise = SubResource("FastNoiseLite_vgweg")
+
+[sub_resource type="ShaderMaterial" id="ShaderMaterial_5qp3h"]
+render_priority = 0
+shader = ExtResource("4_m0yv6")
+shader_parameter/t_height = 100.0
+shader_parameter/water_level = 7.0
+shader_parameter/tide = 2.871
+shader_parameter/water_turbulence = 6.652
+shader_parameter/water_alb = Color(0.392157, 0.831373, 0.898039, 1)
+shader_parameter/wave_direction_1 = Vector2(2, -2)
+shader_parameter/wave_direction_2 = Vector2(-2, 2)
+shader_parameter/time_scale = 0.01
+shader_parameter/tex_size = Vector2(1000, 1000)
+shader_parameter/wtr_tex_size = Vector2(1000, 1000)
+shader_parameter/heightmap = ExtResource("7_ubyyn")
+shader_parameter/water_alb_tex = SubResource("GradientTexture1D_8euv3")
+shader_parameter/water_disp_tex_1 = SubResource("NoiseTexture2D_pd0fy")
+shader_parameter/water_disp_tex_2 = SubResource("NoiseTexture2D_cxok4")
+
+[sub_resource type="PlaneMesh" id="PlaneMesh_c47cn"]
+material = SubResource("ShaderMaterial_5qp3h")
+size = Vector2(1000, 1000)
+subdivide_width = 50
+subdivide_depth = 50
+
+[sub_resource type="Gradient" id="Gradient_1g27v"]
+interpolation_mode = 2
+colors = PackedColorArray(0.442911, 0.442911, 0.442909, 1, 0.929412, 0.945098, 1, 1)
+
+[sub_resource type="FastNoiseLite" id="FastNoiseLite_dlv7m"]
+noise_type = 4
+frequency = 0.015
+fractal_type = 2
+fractal_octaves = 3
+fractal_lacunarity = 2.416
+fractal_gain = 0.239
+fractal_weighted_strength = 1.0
+fractal_ping_pong_strength = 2.037
+domain_warp_enabled = true
+domain_warp_amplitude = 30.168
+domain_warp_frequency = 0.032
+domain_warp_fractal_octaves = 1
+domain_warp_fractal_lacunarity = 6.086
+
+[sub_resource type="NoiseTexture2D" id="NoiseTexture2D_hn25n"]
+width = 1000
+height = 1000
+seamless = true
+color_ramp = SubResource("Gradient_1g27v")
+noise = SubResource("FastNoiseLite_dlv7m")
+
+[sub_resource type="NoiseTexture2D" id="NoiseTexture2D_fcitg"]
+width = 1000
+height = 1000
+seamless = true
+as_normal_map = true
+bump_strength = 10.8
+noise = SubResource("FastNoiseLite_dlv7m")
+
+[sub_resource type="ViewportTexture" id="ViewportTexture_gwand"]
+viewport_path = NodePath("Player/Fog_drawer")
+
+[sub_resource type="Gradient" id="Gradient_im8lq"]
+colors = PackedColorArray(0, 0.260467, 0, 1, 0.305169, 0.557647, 0.256383, 1)
+
+[sub_resource type="FastNoiseLite" id="FastNoiseLite_al3lm"]
+noise_type = 0
+frequency = 0.018
+fractal_octaves = 10
+fractal_lacunarity = 2.123
+fractal_gain = 0.874
+domain_warp_enabled = true
+domain_warp_amplitude = 30.164
+domain_warp_frequency = -0.03
+domain_warp_fractal_type = 2
+domain_warp_fractal_lacunarity = 6.062
+domain_warp_fractal_gain = 0.971
+
+[sub_resource type="NoiseTexture2D" id="NoiseTexture2D_p0d1b"]
+width = 1000
+height = 1000
+seamless = true
+color_ramp = SubResource("Gradient_im8lq")
+noise = SubResource("FastNoiseLite_al3lm")
+
+[sub_resource type="NoiseTexture2D" id="NoiseTexture2D_e22tc"]
+width = 1000
+height = 1000
+invert = true
+seamless = true
+as_normal_map = true
+bump_strength = 3.5
+noise = SubResource("FastNoiseLite_al3lm")
+
+[sub_resource type="Gradient" id="Gradient_2i80b"]
+colors = PackedColorArray(0.859586, 0.873469, 0.643777, 1, 0.550264, 0.542165, 0.456681, 1)
+
+[sub_resource type="FastNoiseLite" id="FastNoiseLite_l7c1p"]
+
+[sub_resource type="NoiseTexture2D" id="NoiseTexture2D_x1bul"]
+width = 1000
+height = 1000
+seamless = true
+color_ramp = SubResource("Gradient_2i80b")
+noise = SubResource("FastNoiseLite_l7c1p")
+
+[sub_resource type="NoiseTexture2D" id="NoiseTexture2D_23uga"]
+width = 1000
+height = 1000
+seamless = true
+as_normal_map = true
+normalize = false
+color_ramp = SubResource("Gradient_2i80b")
+noise = SubResource("FastNoiseLite_l7c1p")
+
+[sub_resource type="ShaderMaterial" id="ShaderMaterial_rie7d"]
+resource_local_to_scene = true
+render_priority = 0
+shader = ExtResource("4_4qqhp")
+shader_parameter/t_height = 100.0
+shader_parameter/fog_darkness = 0.75
+shader_parameter/water_table = 7.0
+shader_parameter/max_sand_height = 9.0
+shader_parameter/universal_tex_scaling = 10.972
+shader_parameter/min_rock_slope = 0.156
+shader_parameter/max_grass_slope = 0.362
+shader_parameter/tex_size = Vector2(1000, 1000)
+shader_parameter/heightmap = ExtResource("7_ubyyn")
+shader_parameter/grass_alb_tex = SubResource("NoiseTexture2D_p0d1b")
+shader_parameter/grass_norm_tex = SubResource("NoiseTexture2D_e22tc")
+shader_parameter/cliff_alb_tex = SubResource("NoiseTexture2D_hn25n")
+shader_parameter/cliff_norm_tex = SubResource("NoiseTexture2D_fcitg")
+shader_parameter/sand_alb_tex = SubResource("NoiseTexture2D_x1bul")
+shader_parameter/sand_norm_tex = SubResource("NoiseTexture2D_23uga")
+shader_parameter/fog = SubResource("ViewportTexture_gwand")
+
+[sub_resource type="PlaneMesh" id="PlaneMesh_ct43f"]
+material = SubResource("ShaderMaterial_rie7d")
+size = Vector2(1000, 1000)
+subdivide_width = 50
+subdivide_depth = 50
 
 [sub_resource type="Theme" id="Theme_y65pn"]
 default_font_size = 15
@@ -200,161 +380,11 @@ hue_variation_max = 0.05
 hue_variation_curve = SubResource("CurveTexture_n0c2i")
 attractor_interaction_enabled = false
 
-[sub_resource type="Gradient" id="Gradient_b6hmg"]
-interpolation_mode = 2
-colors = PackedColorArray(0.383293, 0.763558, 1, 1, 1.20327e-06, 0.337756, 0.401284, 1)
-
-[sub_resource type="GradientTexture1D" id="GradientTexture1D_8euv3"]
-gradient = SubResource("Gradient_b6hmg")
-
-[sub_resource type="FastNoiseLite" id="FastNoiseLite_6n0eb"]
-noise_type = 3
-fractal_type = 2
-fractal_octaves = 4
-fractal_lacunarity = 2.142
-fractal_gain = 1.916
-fractal_weighted_strength = 1.0
-fractal_ping_pong_strength = 7.072
-
-[sub_resource type="NoiseTexture2D" id="NoiseTexture2D_pd0fy"]
-seamless = true
-seamless_blend_skirt = 0.596
-as_normal_map = true
-noise = SubResource("FastNoiseLite_6n0eb")
-
-[sub_resource type="FastNoiseLite" id="FastNoiseLite_vgweg"]
-noise_type = 3
-seed = 3
-fractal_type = 2
-
-[sub_resource type="NoiseTexture2D" id="NoiseTexture2D_cxok4"]
-seamless = true
-as_normal_map = true
-bump_strength = 12.9
-noise = SubResource("FastNoiseLite_vgweg")
-
-[sub_resource type="ShaderMaterial" id="ShaderMaterial_5qp3h"]
-render_priority = 0
-shader = ExtResource("4_m0yv6")
-shader_parameter/t_height = 100.0
-shader_parameter/water_level = 7.0
-shader_parameter/tide = 2.871
-shader_parameter/water_turbulence = 6.652
-shader_parameter/water_alb = Color(0.392157, 0.831373, 0.898039, 1)
-shader_parameter/wave_direction_1 = Vector2(2, -2)
-shader_parameter/wave_direction_2 = Vector2(-2, 2)
-shader_parameter/time_scale = 0.01
-shader_parameter/heightmap = ExtResource("7_ubyyn")
-shader_parameter/water_alb_tex = SubResource("GradientTexture1D_8euv3")
-shader_parameter/water_disp_tex_1 = SubResource("NoiseTexture2D_pd0fy")
-shader_parameter/water_disp_tex_2 = SubResource("NoiseTexture2D_cxok4")
-
-[sub_resource type="PlaneMesh" id="PlaneMesh_02ixx"]
-material = SubResource("ShaderMaterial_5qp3h")
-size = Vector2(1000, 1000)
-subdivide_width = 750
-subdivide_depth = 750
-
 [sub_resource type="BoxShape3D" id="BoxShape3D_cixmr"]
 size = Vector3(1000, 100, 1000)
 
 [sub_resource type="BoxShape3D" id="BoxShape3D_gubrw"]
 size = Vector3(1000, 1, 1000)
-
-[sub_resource type="Gradient" id="Gradient_1g27v"]
-interpolation_mode = 2
-colors = PackedColorArray(0.442911, 0.442911, 0.442909, 1, 0.929412, 0.945098, 1, 1)
-
-[sub_resource type="FastNoiseLite" id="FastNoiseLite_dlv7m"]
-noise_type = 4
-frequency = 0.015
-fractal_type = 2
-fractal_octaves = 3
-fractal_lacunarity = 2.416
-fractal_gain = 0.239
-fractal_weighted_strength = 1.0
-fractal_ping_pong_strength = 2.037
-domain_warp_enabled = true
-domain_warp_amplitude = 30.168
-domain_warp_frequency = 0.032
-domain_warp_fractal_octaves = 1
-domain_warp_fractal_lacunarity = 6.086
-
-[sub_resource type="NoiseTexture2D" id="NoiseTexture2D_hn25n"]
-seamless = true
-color_ramp = SubResource("Gradient_1g27v")
-noise = SubResource("FastNoiseLite_dlv7m")
-
-[sub_resource type="NoiseTexture2D" id="NoiseTexture2D_fcitg"]
-seamless = true
-as_normal_map = true
-bump_strength = 10.8
-noise = SubResource("FastNoiseLite_dlv7m")
-
-[sub_resource type="ViewportTexture" id="ViewportTexture_gwand"]
-viewport_path = NodePath("Player/Fog_drawer")
-
-[sub_resource type="Gradient" id="Gradient_im8lq"]
-colors = PackedColorArray(0, 0.260467, 0, 1, 0.305169, 0.557647, 0.256383, 1)
-
-[sub_resource type="FastNoiseLite" id="FastNoiseLite_al3lm"]
-noise_type = 0
-frequency = 0.018
-fractal_octaves = 10
-fractal_lacunarity = 2.123
-fractal_gain = 0.874
-domain_warp_enabled = true
-domain_warp_amplitude = 30.164
-domain_warp_frequency = -0.03
-domain_warp_fractal_type = 2
-domain_warp_fractal_lacunarity = 6.062
-domain_warp_fractal_gain = 0.971
-
-[sub_resource type="NoiseTexture2D" id="NoiseTexture2D_p0d1b"]
-seamless = true
-color_ramp = SubResource("Gradient_im8lq")
-noise = SubResource("FastNoiseLite_al3lm")
-
-[sub_resource type="NoiseTexture2D" id="NoiseTexture2D_e22tc"]
-seamless = true
-as_normal_map = true
-bump_strength = 3.5
-noise = SubResource("FastNoiseLite_al3lm")
-
-[sub_resource type="Gradient" id="Gradient_2i80b"]
-colors = PackedColorArray(0.859586, 0.873469, 0.643777, 1, 0.550264, 0.542165, 0.456681, 1)
-
-[sub_resource type="FastNoiseLite" id="FastNoiseLite_l7c1p"]
-
-[sub_resource type="NoiseTexture2D" id="NoiseTexture2D_x1bul"]
-seamless = true
-color_ramp = SubResource("Gradient_2i80b")
-noise = SubResource("FastNoiseLite_l7c1p")
-
-[sub_resource type="NoiseTexture2D" id="NoiseTexture2D_23uga"]
-seamless = true
-color_ramp = SubResource("Gradient_2i80b")
-noise = SubResource("FastNoiseLite_l7c1p")
-
-[sub_resource type="ShaderMaterial" id="ShaderMaterial_rie7d"]
-resource_local_to_scene = true
-render_priority = 0
-shader = ExtResource("4_4qqhp")
-shader_parameter/t_height = 100.0
-shader_parameter/fog_darkness = 1.0
-shader_parameter/water_table = 4.277
-shader_parameter/max_sand_height = 9.0
-shader_parameter/universal_tex_scaling = 10.972
-shader_parameter/min_rock_slope = 0.156
-shader_parameter/max_grass_slope = 0.362
-shader_parameter/heightmap = ExtResource("7_ubyyn")
-shader_parameter/grass_alb_tex = SubResource("NoiseTexture2D_p0d1b")
-shader_parameter/grass_norm_tex = SubResource("NoiseTexture2D_e22tc")
-shader_parameter/cliff_alb_tex = SubResource("NoiseTexture2D_hn25n")
-shader_parameter/cliff_norm_tex = SubResource("NoiseTexture2D_fcitg")
-shader_parameter/sand_alb_tex = SubResource("NoiseTexture2D_x1bul")
-shader_parameter/sand_norm_tex = SubResource("NoiseTexture2D_23uga")
-shader_parameter/fog = SubResource("ViewportTexture_gwand")
 
 [sub_resource type="PlaneMesh" id="PlaneMesh_ssgws"]
 material = SubResource("ShaderMaterial_rie7d")
@@ -463,6 +493,18 @@ radius = 1.25
 height = 2.5
 radial_segments = 8
 rings = 2
+
+[sub_resource type="PlaneMesh" id="PlaneMesh_ssghn"]
+material = SubResource("ShaderMaterial_rie7d")
+size = Vector2(300, 300)
+subdivide_width = 100
+subdivide_depth = 100
+
+[sub_resource type="PlaneMesh" id="PlaneMesh_pqxku"]
+material = SubResource("ShaderMaterial_5qp3h")
+size = Vector2(300, 300)
+subdivide_width = 100
+subdivide_depth = 100
 
 [sub_resource type="FastNoiseLite" id="FastNoiseLite_oe4h0"]
 seed = 2
@@ -846,6 +888,8 @@ pivot_offset = Vector2(87.5, 87)
 stretch = true
 
 [node name="SubViewport" type="SubViewport" parent="UI_Node/Minimap/Minimap_Container"]
+own_world_3d = true
+world_3d = SubResource("World3D_8clv5")
 handle_input_locally = false
 debug_draw = 1
 scaling_3d_scale = 0.64
@@ -873,6 +917,18 @@ cull_mask = 2
 attributes = SubResource("CameraAttributesPractical_g3y50")
 projection = 1
 size = 1000.0
+
+[node name="Water" type="MeshInstance3D" parent="UI_Node/Minimap/Minimap_Container/SubViewport"]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, -23.7143, 7, -56.4582)
+layers = 32771
+mesh = SubResource("PlaneMesh_c47cn")
+skeleton = NodePath("../Visual_Ground")
+
+[node name="Visual_Ground" type="MeshInstance3D" parent="UI_Node/Minimap/Minimap_Container/SubViewport"]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, -23.7143, 0, -56.4582)
+layers = 2
+mesh = SubResource("PlaneMesh_ct43f")
+skeleton = NodePath("")
 
 [node name="Minimap_Frame_Cover" type="TextureRect" parent="UI_Node/Minimap"]
 layout_mode = 1
@@ -1089,7 +1145,6 @@ script = ExtResource("4_k22hi")
 [node name="Water" type="MeshInstance3D" parent="World"]
 transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, 7, 0)
 layers = 32771
-mesh = SubResource("PlaneMesh_02ixx")
 skeleton = NodePath("../Visual_Ground")
 
 [node name="Area3D" type="Area3D" parent="World/Water"]
@@ -1112,6 +1167,7 @@ collision_mask = 32768
 shape = SubResource("BoxShape3D_gubrw")
 
 [node name="Visual_Ground" type="MeshInstance3D" parent="World"]
+visible = false
 layers = 2
 mesh = SubResource("PlaneMesh_ssgws")
 skeleton = NodePath("")
@@ -1186,6 +1242,7 @@ collision_mask = 32768
 hit_from_inside = true
 
 [node name="Player_camera" type="Node3D" parent="Player"]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 353, 0, 28)
 script = ExtResource("10_jjfcj")
 
 [node name="Player_view" type="Camera3D" parent="Player/Player_camera"]
@@ -1193,6 +1250,17 @@ transform = Transform3D(1, 0, 0, 0, 0.573577, 0.819152, 0, -0.819152, 0.573577, 
 doppler_tracking = 1
 current = true
 fov = 37.8493
+
+[node name="Visual_Ground" type="MeshInstance3D" parent="Player/Player_camera"]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, -8.01169, 0, -16)
+layers = 2
+mesh = SubResource("PlaneMesh_ssghn")
+skeleton = NodePath("")
+
+[node name="Water" type="MeshInstance3D" parent="Player/Player_camera/Visual_Ground"]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, 7, 0)
+layers = 32771
+mesh = SubResource("PlaneMesh_pqxku")
 
 [node name="Grass Scatter" type="GPUParticles3D" parent="Player/Player_camera"]
 transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, 0, 16.457)

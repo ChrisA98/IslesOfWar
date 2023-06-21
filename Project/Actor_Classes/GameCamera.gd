@@ -1,5 +1,7 @@
 extends Node3D
 
+var rng = RandomNumberGenerator.new()
+
 #Camera stats
 var zoom = 20
 
@@ -33,14 +35,15 @@ func _ready():
 
 func _input(event):	
 	if event is InputEventMouseMotion:
-		#Hide moue off screen
+		#Hide mouse off screen
 		if get_viewport().get_mouse_position().x > (get_viewport().size.x-8) or get_viewport().get_mouse_position().y > (get_viewport().size.y-8):
 			Input.set_mouse_mode(Input.MOUSE_MODE_CONFINED_HIDDEN)
-		else:
+		elif(gamescene.click_mode != "build"):
 			Input.set_mouse_mode(Input.MOUSE_MODE_CONFINED) 
 		## Rotate Camera
 		if Input.is_mouse_button_pressed(MOUSE_BUTTON_MIDDLE):
 			rotate_y(event.get_relative().x/100)
+			$Visual_Ground.rotate_y((event.get_relative().x*-1)/100)
 			$"../../UI_Node/Minimap/Minimap_Container".set_rotation_degrees(rotation_degrees.y)
 			
 	#only read mouse position on screen while in game window
@@ -52,6 +55,7 @@ func _input(event):
 	
 	if Input.is_action_just_released("reset_map_rot"):
 		rotation_degrees = Vector3.ZERO
+		$Visual_Ground.set_rotation_degrees(Vector3.ZERO)
 		$"../../UI_Node/Minimap/Minimap_Container".set_rotation_degrees(0)
 		
 	
@@ -76,7 +80,10 @@ func check_menus():
 
 
 func _physics_process(delta):
-		
+	
+	$Visual_Ground.position.x = fmod(position.x,3.0)*-1
+	$Visual_Ground.position.z = fmod(position.z,3.0)*-1
+	
 	if Input.is_action_pressed(("cam_move_forward")):
 		key_direct -= transform.basis.z
 	if Input.is_action_pressed(("cam_move_backward")):

@@ -1,4 +1,5 @@
 shader_type spatial;
+
 uniform sampler2D heightmap : repeat_disable;
 uniform float t_height;
 uniform float water_level;
@@ -14,6 +15,16 @@ uniform vec2 wave_direction_2 = vec2(-2.0,2);
 uniform float time_scale : hint_range(0.0,0.2) = 0.025;
 
 varying float height;
+uniform vec2 tex_size = vec2(1000.0,1000.0);
+uniform vec2 wtr_tex_size = vec2(512.0,512.0);
+varying vec2 pos_uv;
+varying vec2 wtr_pos_uv;
+
+varying vec3 norm1;
+varying vec3 norm2;
+
+varying vec2 time_1;
+varying vec2 time_2;
 
 float fresnel(float amt, vec3 normal, vec3 view){
 	return pow((1.0 - clamp(dot(normalize(normal), normalize(view)), 0.0, 1.0)), amt);
@@ -29,29 +40,26 @@ float get_height(vec2 x){
 }
 
 void vertex() {
-	height = get_height(UV);
+	pos_uv = vec2((NODE_POSITION_WORLD.x)/tex_size.x,(NODE_POSITION_WORLD.z)/tex_size.y)+((vec2(VERTEX.x,VERTEX.z)/tex_size)) + vec2(.5);
+	wtr_pos_uv = vec2((NODE_POSITION_WORLD.x)/wtr_tex_size.x,(NODE_POSITION_WORLD.z)/wtr_tex_size.y)+((vec2(VERTEX.x,VERTEX.z)/wtr_tex_size)) + vec2(.5);
+	height = get_height(pos_uv);
 	float depth = clamp((water_level-height)/tide,0.001,0.99);
 	
-	vec2 time_1 = (TIME * wave_direction_1) * time_scale;
-	vec2 time_2 = (TIME * wave_direction_2) * time_scale;
+	time_1 = (TIME * wave_direction_1) * time_scale;
+	time_2 = (TIME * wave_direction_2) * time_scale;
 	
-	vec3 normal_1 = texture(water_disp_tex_1,UV + time_1).rgb;
-	vec3 normal_2 = texture(water_disp_tex_2,UV + time_2).rgb;
-	vec3 normal_blend = mix(mix(normal_1,normal_2,0.5),vec3(0,0,0),1.2-depth);
+	norm1 = texture(water_disp_tex_1,wtr_pos_uv + time_1).rgb;
+	norm2 = texture(water_disp_tex_2,wtr_pos_uv + time_2).rgb;
+	vec3 normal_blend = mix(mix(norm1,norm2,0.5),vec3(0,0,0),1.2-depth);
 	
-	VERTEX.y += normal_blend.g*water_turbulence * depth * depth*2.0;
+	VERTEX.y = water_level - NODE_POSITION_WORLD.y;
 }
 
 void fragment() {
 	
-	vec2 time_1 = (TIME * wave_direction_1) * time_scale;
-	vec2 time_2 = (TIME * wave_direction_2) * time_scale;
-	
-	vec3 normal_1 = texture(water_disp_tex_1,UV + time_1).rgb;
-	vec3 normal_2 = texture(water_disp_tex_2,UV + time_2).rgb;
-	float _tide =  tide + normal_1.r;
-	float depth = clamp((water_level-height)/_tide,0.001,0.99);
-	vec3 normal_blend = mix(mix(normal_1,normal_2,0.5),vec3(0,0,0),1.0-depth);
+	float _tide =  tide + norm1.r;
+	float depth = clamp((water_level-height)/_tide,0,1);
+	vec3 normal_blend = mix(mix(norm1,norm2,0.5),vec3(0,0,0),1.0-depth);
 	
 	vec3 albedo1 = normalize(water_depth_gradient(depth/1.2)).xyz;
 	if(abs(water_level-height) < 0.5){
@@ -59,13 +67,15 @@ void fragment() {
 	}	
 	float fresnel = fresnel(5.0, NORMAL,VIEW);
 	vec3 surface_color = mix(albedo1, water_alb, fresnel);
-	ALPHA = clamp(depth*2.3,0.4,1.0);
-	if(depth <= 0.005){
+	
+	if(height >= water_level-.005){
 		ALPHA = 0.0;
+	}else{
+		ALPHA = clamp(depth*2.3,0.3,1.0);
+		ALBEDO = surface_color;
+		NORMAL_MAP = normal_blend;
+		METALLIC = 0.2;
+		ROUGHNESS = 0.02;
+		SPECULAR = .75;
 	}
-	ALBEDO = surface_color;
-	NORMAL_MAP = normal_blend;
-	METALLIC = 0.0;
-	ROUGHNESS = 0.02;
-	SPECULAR = .75;
 }

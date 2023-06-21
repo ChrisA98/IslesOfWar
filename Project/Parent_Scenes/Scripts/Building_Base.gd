@@ -152,7 +152,7 @@ func load_data(data):
 					mesh.mesh.surface_get_material(s).set_albedo(magic_color)
 	else:
 		mesh.set_mesh(BoxMesh.new())
-		print_debug("Building model:"+type+" does not exist")
+		push_warning ("Building model ["+type+"] not found")
 	## Set Cost
 	for res in cost:
 		cost[res] = data.buildings[type].base_cost[res]
@@ -168,7 +168,10 @@ func load_data(data):
 		units["Infantry"] = actor_owner.loaded_units["Infantry"]
 		#load unit scenes
 		for un in data.buildings[type]["unit_list"]:
+			if !actor_owner.loaded_units.has(un):
+				actor_owner.loaded_units[un] = load("res://Units/"+un+".tscn")
 			units[un] = actor_owner.loaded_units[un]
+		
 		menu.push_train_queue.connect(push_train_queue)
 		menu.pop_train_queue.connect(pop_train_queue)
 
@@ -176,6 +179,8 @@ func load_data(data):
 '''-------------------------------------------------------------------------------------'''
 ''' Placing logic Start '''
 func set_pos(pos, wait = false):
+	if(is_building):
+		return
 	if snapping > 1:
 		pos.x = ceil(pos.x/snapping)*snapping
 		pos.z = ceil(pos.z/snapping)*snapping
@@ -245,10 +250,11 @@ func place():
 	fog_reg.fog_break_radius = fog_rev_radius*.5
 	get_parent().added_fog_revealer(self)
 	fog_reg.activate_area()
-	update_fog.emit(self,position, is_visible)
 	if(actor_owner.actor_ID == 0):
 		fog_reg.active = true
 	await get_tree().physics_frame
+	update_fog.emit(self,position, is_visible)
+	fog_radius_changed.emit(self)
 	get_ground_groups()
 
 
@@ -470,6 +476,8 @@ func push_train_queue(unit: String):
 
 
 ## Remove unit from training queue
+## nan is used for finished trainng units to update the queue
+## call with specific unit to remove unit from queue
 func pop_train_queue(unit: String = ""):
 	## Removing unit by button press
 	if(train_queue.has(unit)):
@@ -485,13 +493,14 @@ func pop_train_queue(unit: String = ""):
 			trn_timer.start(3)
 		return
 	## pop front when doing training
-	train_queue.pop_front()	##delete front of queue
+	var out = train_queue.pop_front()	##delete front of queue and add it to out to be returned
 	is_training = !(train_queue.size() == 0)
 	if(train_queue.size()>0):		
 		trn_timer.start(3)
-		return
+		return out
 	trn_timer.stop()
 	is_training = false
+	return out
 
 
 ## Spawn unit and validate spawning
@@ -502,8 +511,9 @@ func spawn_unit(unit_override: String):
 	if(unit_override == "nan"):
 		menu.unit_queue_edit(-1,train_queue[0])
 		menu.update_train_prog(train_queue[0],1)
-		pop_train_queue()
-		new_unit = units["Infantry"].instantiate()
+		var u_name = pop_train_queue()
+		new_unit = units[u_name].instantiate()
+		new_unit.load_data(actor_owner.faction_data.buildings[type]["unit_list"][u_name])
 		world.spawn_unit(actor_owner, new_unit)
 		new_unit.position = spawn.global_position
 		new_unit.set_mov_target(rally.global_position)

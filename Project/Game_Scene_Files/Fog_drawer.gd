@@ -55,7 +55,7 @@ func create_drawer(parent):
 	
 	m.position = parent.position
 	add_child(m)
-	parent.update_fog.connect(update_draw)
+	parent.update_fog.connect(update_draw, CONNECT_DEFERRED)
 	if(parent.has_signal("fog_radius_changed")):
 		parent.fog_radius_changed.connect(update_drawer_radius)
 		m.mesh.surface_get_material(0).set_albedo(Color.BLACK)
