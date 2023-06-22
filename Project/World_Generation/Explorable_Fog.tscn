@@ -86,11 +86,41 @@ draw_pass_1 = SubResource("SphereMesh_em45m")
 script = ExtResource("1_hxsc5")
 
 [node name="Area3D" type="Area3D" parent="."]
+collision_layer = 524289
+collision_mask = 524289
 input_ray_pickable = false
 metadata/is_fog_area = true
 
 [node name="CollisionShape3D" type="CollisionShape3D" parent="Area3D"]
 shape = SubResource("BoxShape3D_dqk14")
+
+[node name="neighbor_reader_x+" type="RayCast3D" parent="."]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, 10, 0)
+target_position = Vector3(40, 20, 0)
+collision_mask = 524289
+collide_with_areas = true
+collide_with_bodies = false
+
+[node name="neighbor_reader_x-" type="RayCast3D" parent="."]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, 10, 0)
+target_position = Vector3(-40, 20, 0)
+collision_mask = 524289
+collide_with_areas = true
+collide_with_bodies = false
+
+[node name="neighbor_reader_z+" type="RayCast3D" parent="."]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, 10, 0)
+target_position = Vector3(0, 20, 40)
+collision_mask = 524289
+collide_with_areas = true
+collide_with_bodies = false
+
+[node name="neighbor_reader_z-" type="RayCast3D" parent="."]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, 10, 0)
+target_position = Vector3(0, 20, -40)
+collision_mask = 524289
+collide_with_areas = true
+collide_with_bodies = false
 
 [connection signal="area_entered" from="Area3D" to="." method="_area_entered"]
 [connection signal="body_exited" from="Area3D" to="." method="_body_exited"]

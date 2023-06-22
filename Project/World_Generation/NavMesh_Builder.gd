@@ -121,6 +121,12 @@ func build_fog_war(chunks):
 			picker.force_raycast_update()
 			te.position.y = picker.get_collision_point().y
 			$Explorable_Fog.add_child(te)
+	
+	
+	await get_tree().physics_frame
+	## Assign fog network
+	for fog in range(1,$Explorable_Fog.get_children().size()-1):
+		$Explorable_Fog.get_children()[fog].get_neighbors()
 
 
 #check if .exr files exist in target path

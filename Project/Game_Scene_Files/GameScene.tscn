@@ -24,50 +24,6 @@
 [ext_resource type="Shader" uid="uid://cmyeclhrvhn2o" path="res://World_Generation/Foliage_Shader.tres" id="10_l3sfk"]
 [ext_resource type="PackedScene" uid="uid://dbdak3gjtpx88" path="res://World_Generation/Explorable_Fog.tscn" id="12_875hf"]
 
-[sub_resource type="ProceduralSkyMaterial" id="ProceduralSkyMaterial_46wwo"]
-sky_horizon_color = Color(0.647059, 0.654902, 0.670588, 1)
-sun_curve = 0.310578
-
-[sub_resource type="Sky" id="Sky_4kxja"]
-sky_material = SubResource("ProceduralSkyMaterial_46wwo")
-
-[sub_resource type="Environment" id="Environment_0xqwl"]
-background_mode = 2
-sky = SubResource("Sky_4kxja")
-ambient_light_source = 3
-ambient_light_color = Color(0, 0.847059, 0.678431, 1)
-ambient_light_sky_contribution = 0.75
-ambient_light_energy = 0.4
-reflected_light_source = 2
-tonemap_mode = 3
-tonemap_exposure = 1.06
-tonemap_white = 6.0
-ssao_light_affect = 0.78
-ssil_radius = 8.03
-ssil_intensity = 0.08
-ssil_sharpness = 0.0
-sdfgi_use_occlusion = true
-fog_aerial_perspective = 1.0
-fog_height = 720.0
-fog_height_density = 0.029
-volumetric_fog_density = 0.1466
-volumetric_fog_albedo = Color(0.254902, 0.254902, 0.254902, 1)
-volumetric_fog_emission = Color(0.411765, 0.411765, 0.411765, 1)
-volumetric_fog_gi_inject = 0.0
-volumetric_fog_detail_spread = 0.933033
-volumetric_fog_sky_affect = 0.656
-volumetric_fog_temporal_reprojection_amount = 0.89
-adjustment_enabled = true
-adjustment_brightness = 1.2
-adjustment_contrast = 1.2
-adjustment_saturation = 2.0
-
-[sub_resource type="CameraAttributesPractical" id="CameraAttributesPractical_d3i0u"]
-exposure_multiplier = 0.717
-auto_exposure_scale = 0.25
-auto_exposure_speed = 0.01
-dof_blur_far_distance = 1000.0
-
 [sub_resource type="Theme" id="Theme_8omj6"]
 default_font_size = 11
 
@@ -380,6 +336,50 @@ hue_variation_max = 0.05
 hue_variation_curve = SubResource("CurveTexture_n0c2i")
 attractor_interaction_enabled = false
 
+[sub_resource type="ProceduralSkyMaterial" id="ProceduralSkyMaterial_46wwo"]
+sky_horizon_color = Color(0.647059, 0.654902, 0.670588, 1)
+sun_curve = 0.310578
+
+[sub_resource type="Sky" id="Sky_4kxja"]
+sky_material = SubResource("ProceduralSkyMaterial_46wwo")
+
+[sub_resource type="Environment" id="Environment_0xqwl"]
+background_mode = 2
+sky = SubResource("Sky_4kxja")
+ambient_light_source = 3
+ambient_light_color = Color(0, 0.847059, 0.678431, 1)
+ambient_light_sky_contribution = 0.75
+ambient_light_energy = 0.4
+reflected_light_source = 2
+tonemap_mode = 3
+tonemap_exposure = 1.06
+tonemap_white = 6.0
+ssao_light_affect = 0.78
+ssil_radius = 8.03
+ssil_intensity = 0.08
+ssil_sharpness = 0.0
+sdfgi_use_occlusion = true
+fog_aerial_perspective = 1.0
+fog_height = 720.0
+fog_height_density = 0.029
+volumetric_fog_density = 0.1466
+volumetric_fog_albedo = Color(0.254902, 0.254902, 0.254902, 1)
+volumetric_fog_emission = Color(0.411765, 0.411765, 0.411765, 1)
+volumetric_fog_gi_inject = 0.0
+volumetric_fog_detail_spread = 0.933033
+volumetric_fog_sky_affect = 0.656
+volumetric_fog_temporal_reprojection_amount = 0.89
+adjustment_enabled = true
+adjustment_brightness = 1.2
+adjustment_contrast = 1.2
+adjustment_saturation = 2.0
+
+[sub_resource type="CameraAttributesPractical" id="CameraAttributesPractical_d3i0u"]
+exposure_multiplier = 0.717
+auto_exposure_scale = 0.25
+auto_exposure_speed = 0.01
+dof_blur_far_distance = 1000.0
+
 [sub_resource type="BoxShape3D" id="BoxShape3D_cixmr"]
 size = Vector3(1000, 100, 1000)
 
@@ -580,10 +580,6 @@ noise = SubResource("FastNoiseLite_kogvw")
 
 [node name="GameScene" type="Node3D"]
 script = ExtResource("1_7pjje")
-
-[node name="WorldEnvironment" type="WorldEnvironment" parent="."]
-environment = SubResource("Environment_0xqwl")
-camera_attributes = SubResource("CameraAttributesPractical_d3i0u")
 
 [node name="UI_Node" type="Control" parent="."]
 layout_mode = 3
@@ -1135,6 +1131,10 @@ visibility_rect = Rect2(-100, -100, 200, 400)
 
 [node name="World" type="Node3D" parent="."]
 script = ExtResource("4_k22hi")
+
+[node name="WorldEnvironment" type="WorldEnvironment" parent="World"]
+environment = SubResource("Environment_0xqwl")
+camera_attributes = SubResource("CameraAttributesPractical_d3i0u")
 
 [node name="Water" type="MeshInstance3D" parent="World"]
 transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, 7, 0)

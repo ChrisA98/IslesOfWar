@@ -3,6 +3,7 @@ extends Node3D
 ''' Signals '''
 signal nav_ready
 signal click_mode_changed(old, new)
+signal prep_ready
 
 ''' Time keeping vars '''
 @export var year_day = 270
@@ -303,6 +304,9 @@ func prepare_bases():
 	preview_building.spawn_unit("Scout")
 	preview_building = null
 	click_mode = "select"
+	
+	await get_tree().physics_frame
+	prep_ready.emit()
 
 
 ##  Prepare new building for player
