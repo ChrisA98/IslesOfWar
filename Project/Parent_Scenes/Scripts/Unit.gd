@@ -23,11 +23,18 @@ enum {GROUND, NAVAL, AERIAL}
 @export var travel_type := [false, false, false]
 @export var unit_name: String
 
-var rng = RandomNumberGenerator.new()
 ''' Movement '''
-const MAX_SPEED = 10
-const ACCEL = 3
-var gravity = ProjectSettings.get_setting("physics/3d/default_gravity")
+@export var max_speed = 10
+@export var accel = 3
+@export var deccel = 3
+
+''' Export Combat vars '''
+@export var health : float = 1
+@export var base_atk_str : float = 10
+@export var base_atk_spd : float = 1
+@export var target_atk_rng : int = 5
+
+var rng = RandomNumberGenerator.new()
 
 ''' Ai Controls '''
 var ai_mode :StringName = "idle_basic"
@@ -44,9 +51,9 @@ var target_follow: Unit_Base:
 		return target_follow
 	set(value):
 		if value == null:
-			target_speed = MAX_SPEED
+			target_speed = max_speed
 		else:
-			target_speed = value.MAX_SPEED
+			target_speed = value.max_speed
 		target_follow = value
 
 ''' Identifying Vars '''
@@ -69,13 +76,9 @@ var res_cost := {"wood": 0,
 "crystals": 10,
 "food": 0}
 
-''' Combat vars '''
-var health : float = 1
-var base_atk_str : float = 10
+''' Derived and assigned Combat vars '''
 var current_atk_str : float #with modifiers
-var base_atk_spd : float = 1
 var current_atk_spd : float #with modifiers
-var target_atk_rng : int = 5
 var target_enemy:
 	get:
 		return target_enemy
@@ -84,6 +87,8 @@ var target_enemy:
 		if(value != null):
 			if(!target_enemy.died.is_connected(target_killed)):
 				target_enemy.died.connect(target_killed)
+var visible_enemies := []
+var visible_allies := []
 
 ''' On-Ready Vars '''
 @onready var fog_reg = get_node("Fog_Breaker")
@@ -94,7 +99,7 @@ var target_enemy:
 ## Navigation vars
 @onready var nav_agent: NavigationAgent3D = get_node("NavigationAgent3D")
 @onready var unit_radius = $CollisionShape3D.shape.get_radius()
-@onready var target_speed: int = MAX_SPEED
+@onready var target_speed: int = max_speed
 
 '''### Built-In Methods ###'''
 func _ready():
@@ -273,14 +278,14 @@ func _set_target_position(mov_tar: Vector3):
 ## Speed up when starting movement
 func _lerp_start(nv, dx):
 	nv = nv.normalized()* target_speed
-	nv = lerp(velocity,nv,dx*ACCEL)
+	nv = lerp(velocity,nv,dx*accel)
 	return nv
 
 
 ## Speed up when starting movement
 func _lerp_stop(nv, dx):
 	nv = nv.normalized() * 0.2
-	nv = lerp(velocity,nv,dx*ACCEL)
+	nv = lerp(velocity,nv,dx*deccel)
 	return nv
 
 
@@ -354,12 +359,11 @@ func _travel(delta):
 	else:
 		new_velocity = _lerp_stop(new_velocity, delta)
 	
-	
+	# Look in walk direction
 	var lookdir = atan2(-new_velocity.x, -new_velocity.z)
 	$UnitModels.rotation.y = lookdir
 	
 	set_velocity(new_velocity)	
-	
 	move_and_slide()
 
 

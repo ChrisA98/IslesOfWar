@@ -6,6 +6,12 @@
 [node name="Dock" instance=ExtResource("1_wuqpt")]
 script = ExtResource("2_xu1jq")
 type = "Dock"
+menu_pages = {
+"page_4": "",
+"research": "",
+"sec_units": "",
+"units": "Ships"
+}
 
 [node name="CollisionShape3D2" parent="StaticBody3D" index="1"]
 transform = Transform3D(0.2, 0, 0, 0, 0.2, 0, 0, 0, 0.2, 0, 0, 0.898475)

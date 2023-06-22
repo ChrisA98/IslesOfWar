@@ -5,7 +5,7 @@ signal menu_opened
 signal minimap_clicked
 
 ## minimap vars
-@onready var world_width = $"../World/Visual_Ground".mesh.size.x
+@onready var world_width = $Minimap/Minimap_Container/SubViewport/Visual_Ground.mesh.size.x
 @onready var mtw_ratio = world_width/$Minimap/Minimap_Container.size.x
 @onready var player_cam = get_node("../Player/Player_camera")
 @onready var viewport_ref = get_node("Minimap/Minimap_Container/SubViewport/Viewport")

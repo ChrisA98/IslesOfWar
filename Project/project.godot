@@ -98,10 +98,9 @@ reset_map_rot={
 
 [layer_names]
 
-3d_render/layer_2="Basic_Naval"
-3d_render/layer_3="Basic_Aerial"
+3d_render/layer_2="Ground"
 3d_render/layer_5="Fog_of_War"
 3d_render/layer_20="Editor_Tools"
 3d_navigation/layer_1="Basic_Infantry"
-3d_navigation/layer_2="Basic_Naval"
+3d_navigation/layer_2="Ground"
 3d_navigation/layer_3="Basic_Aerial"

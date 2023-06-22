@@ -36,17 +36,25 @@ resource_local_to_scene = true
 radius = 2.0
 
 [node name="Galley" instance=ExtResource("1_2rm4p")]
+fog_rev_radius = 45.0
 travel_type = [false, true, false]
+unit_name = "Galley"
+max_speed = 20
+accel = 2
+deccel = 1
 
 [node name="CollisionShape3D" parent="." index="0"]
 shape = SubResource("CylinderShape3D_eg3oh")
+
+[node name="UnitModels" parent="." index="1"]
+transform = Transform3D(2, 0, 0, 0, 2, 0, 0, 0, 2, 0, 0, 0)
 
 [node name="MeshInstance3D2" type="MeshInstance3D" parent="UnitModels" index="0"]
 transform = Transform3D(-1.31134e-07, 1.14641e-14, -1, -8.74228e-08, -1, 0, -1, 8.74228e-08, 1.31134e-07, 0.177232, 0.345916, -0.252817)
 mesh = SubResource("SphereMesh_o3v51")
 
 [node name="MeshInstance3D3" type="MeshInstance3D" parent="UnitModels" index="1"]
-transform = Transform3D(-1.31134e-07, 1.14641e-14, -1, -8.74228e-08, -1, 0, -1, 8.74228e-08, 1.31134e-07, 0.177232, 0.319377, 0.45191)
+transform = Transform3D(-1.31134e-07, 1.14641e-14, -1, -8.74228e-08, -1, 0, -1, 8.74228e-08, 1.31134e-07, 0.177232, 0.335968, 0.45191)
 mesh = SubResource("SphereMesh_o3v51")
 
 [node name="MeshInstance3D4" type="MeshInstance3D" parent="UnitModels" index="2"]
@@ -70,10 +78,13 @@ transform = Transform3D(9.71522e-08, -1.88238e-09, -0.741, 0.0143546, 0.740861, 
 mesh = SubResource("CylinderMesh_jjcuw")
 
 [node name="MeshInstance3D" type="MeshInstance3D" parent="UnitModels" index="7"]
-transform = Transform3D(-1.31134e-07, 1.14641e-14, -1, -8.74228e-08, -1, 0, -1, 8.74228e-08, 1.31134e-07, 0.177232, 0.397768, -1.26485)
+transform = Transform3D(-1.31134e-07, 1.14641e-14, -1, -8.74228e-08, -1, 0, -1, 8.74228e-08, 1.31134e-07, 0.177232, 0.353071, -1.26485)
 mesh = SubResource("SphereMesh_uldu6")
 
 [node name="NavigationAgent3D" parent="." index="2"]
+path_desired_distance = 25.0
+target_desired_distance = 8.0
+path_max_distance = 25.01
 navigation_layers = 2
 
 [node name="CollisionShape3D" parent="Fog_Breaker/Area3D" index="0"]

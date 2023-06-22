@@ -15,7 +15,7 @@ var drawers = {}
 # Called when the node enters the scene tree for the first time.
 func _ready():
 	if(draws_fog):
-		visual_ground = get_node("../../World/Visual_Ground")
+		visual_ground = get_node("../Visual_Ground")
 		updates.push_back(_update_fog)
 		marker_colors = Color.BLUE
 	else:		
@@ -56,6 +56,8 @@ func create_drawer(parent):
 	m.position = parent.position
 	add_child(m)
 	parent.update_fog.connect(update_draw, CONNECT_DEFERRED)
+	parent.died.connect(remove_drawer.bind(parent))
+	
 	if(parent.has_signal("fog_radius_changed")):
 		parent.fog_radius_changed.connect(update_drawer_radius)
 		m.mesh.surface_get_material(0).set_albedo(Color.BLACK)
@@ -68,10 +70,15 @@ func update_draw(parent, pos, visible):
 	drawers[parent].visible = visible
 	drawers[parent].position.x = pos.x
 	drawers[parent].position.z = pos.z
-	
 
 
 ## Update drawe mesh
 func update_drawer_radius(parent):
 	drawers[parent].mesh.set_bottom_radius(parent.fog_reg.fog_break_radius)
 	drawers[parent].mesh.set_top_radius(parent.fog_reg.fog_break_radius)
+
+
+func remove_drawer(drawer):
+	drawer.update_fog.disconnect(update_draw)
+	drawers[drawer].queue_free()
+	drawers.erase(drawer)

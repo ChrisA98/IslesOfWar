@@ -1,7 +1,6 @@
-[gd_scene load_steps=7 format=3 uid="uid://cf6pa153818x2"]
+[gd_scene load_steps=6 format=3 uid="uid://cf6pa153818x2"]
 
 [ext_resource type="PackedScene" uid="uid://cs2p3v3o53aki" path="res://Parent_Scenes/Unit_Base.tscn" id="1_3ybrw"]
-[ext_resource type="Script" path="res://Units/Infantry.gd" id="1_somxn"]
 
 [sub_resource type="CylinderShape3D" id="CylinderShape3D_fxkcp"]
 resource_local_to_scene = true
@@ -19,8 +18,8 @@ resource_local_to_scene = true
 radius = 2.0
 
 [node name="Infantry" instance=ExtResource("1_3ybrw")]
-script = ExtResource("1_somxn")
 travel_type = [true, false, false]
+unit_name = "Infantry"
 
 [node name="CollisionShape3D" parent="." index="0"]
 shape = SubResource("CylinderShape3D_fxkcp")

@@ -9,8 +9,8 @@ extends Node3D
 
 ## Level terrain info
 @export var water_table : float = 7
-@onready var ground = get_node("Visual_Ground")
-@onready var water = get_node("../Player/Player_camera/Visual_Ground/Water")
+@onready var ground = get_node("../Player/Visual_Ground")
+@onready var water = get_node("../Player/Visual_Ground/Water")
 var heightmap
 
 
@@ -61,7 +61,7 @@ func _ready():
 	add_child(wtr_nav_region)
 	get_child(-1).set_name("water_navigation")	
 	wtr_nav_region.set_nav_region()
-	wtr_nav_region.navigation_mesh.set_filter_baking_aabb(AABB(Vector3(-chunk_size,-1.9,-chunk_size),Vector3(chunks*chunk_size,10,chunks*chunk_size)))
+	wtr_nav_region.navigation_mesh.set_filter_baking_aabb(AABB(Vector3(-chunk_size,-2.5,-chunk_size),Vector3(chunks*chunk_size,10,chunks*chunk_size)))
 	wtr_nav_region.enter_cost = 1000
 	wtr_nav_region.update_navigation_mesh()
 	wtr_nav_region.set_navigation_layer_value(1, false)
@@ -92,15 +92,14 @@ func _ready():
 	for j in range(fog_wall_size+1):
 		var te = base_fog_wall.duplicate()
 		te.position.x -= 65*j
-		te.position.z = 555
+		te.position.z = (chunk_size*chunks/2)+65
 		$Great_Fog_Wall.add_child(te)
 	for j in range(fog_wall_size+1):
 		var te = base_fog_wall.duplicate()
 		te.position.z += 65*j
-		te.position.x = -555
+		te.position.x = -((chunk_size*chunks/2)+65)
 		$Great_Fog_Wall.add_child(te)
 	call_deferred("build_fog_war",chunks)
-	
 
 
 func build_fog_war(chunks):
@@ -111,7 +110,7 @@ func build_fog_war(chunks):
 	var base_fog = $Explorable_Fog.find_children("Fog*","Node",false)[-1]
 	base_fog.position.x = ((chunk_size*chunks)/2) - 25
 	base_fog.position.z = ((chunk_size*chunks*-1)/2) + 25
-	var picker  = $Explorable_Fog/RayCast3D
+	var picker = $Explorable_Fog/RayCast3D
 	for i in range(fog_explor_range):
 		for j in range(fog_explor_range):
 			var te = base_fog.duplicate()
