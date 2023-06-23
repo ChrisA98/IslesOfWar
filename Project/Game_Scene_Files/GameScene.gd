@@ -54,7 +54,7 @@ var moon_str = .427
 
 ''' onready vars '''
 @onready var UI_controller = $UI_Node
-@onready var world = $World
+@onready var world = $Level
 @onready var player_controller = $Player
 @onready var faction_data = [preload("res://Faction_Resources/Amerulf_Resource.json"),
 preload("res://Faction_Resources/Amerulf_Resource.json")]
@@ -287,7 +287,7 @@ func prepare_bases():
 	# Place enemy starting Bases
 	for enemy in range(1,game_actors.size()):
 		game_actors[enemy].build_enemy_list()
-		var spawn = get_node("World/Enemy"+str(enemy)+"_Base_Spawn")
+		var spawn = get_node("Level/Enemy"+str(enemy)+"_Base_Spawn")
 		var bldg = prep_other_building(game_actors[enemy],"Base")
 		bldg.set_pos(spawn.position)
 		bldg.set_pos(Vector3(spawn.position.x,game_actors[enemy].ping_ground_depth(bldg.position),spawn.position.z))
@@ -295,7 +295,7 @@ func prepare_bases():
 		bldg.spawn_unit("Scout")
 		
 	# Add player first Base
-	var p_spawn = get_node("World/Player_Base_Spawn")
+	var p_spawn = get_node("Level/Player_Base_Spawn")
 	player_controller.set_cam_pos(p_spawn.position + Vector3(0,20,0))
 	player_controller.get_child(0).force_raycast_update()
 	prep_player_building(0, null)
@@ -476,7 +476,7 @@ func _minimap_Clicked(command : String, pos : Vector2):
 	world_pos.z = pos.y 
 	match command:
 		"move_cam":
-			player_controller.get_child(1).position = world_pos
+			player_controller.cam.position = world_pos
 		"ping":
 			match click_mode:
 				"command_unit":

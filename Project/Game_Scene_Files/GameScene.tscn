@@ -1,4 +1,4 @@
-[gd_scene load_steps=106 format=3 uid="uid://d32tym6bcdu7c"]
+[gd_scene load_steps=107 format=3 uid="uid://d32tym6bcdu7c"]
 
 [ext_resource type="Script" path="res://Game_Scene_Files/GameScene.gd" id="1_7pjje"]
 [ext_resource type="Script" path="res://Game_Scene_Files/UI_Builder.gd" id="2_wj4ul"]
@@ -379,6 +379,12 @@ exposure_multiplier = 0.717
 auto_exposure_scale = 0.25
 auto_exposure_speed = 0.01
 dof_blur_far_distance = 1000.0
+
+[sub_resource type="PlaneMesh" id="PlaneMesh_17eok"]
+material = SubResource("ShaderMaterial_rie7d")
+size = Vector2(1000, 1000)
+subdivide_width = 100
+subdivide_depth = 100
 
 [sub_resource type="BoxShape3D" id="BoxShape3D_cixmr"]
 size = Vector3(1000, 100, 1000)
@@ -1129,85 +1135,93 @@ speed_scale = 0.5
 randomness = 0.5
 visibility_rect = Rect2(-100, -100, 200, 400)
 
-[node name="World" type="Node3D" parent="."]
+[node name="Level" type="Node3D" parent="."]
 script = ExtResource("4_k22hi")
 
-[node name="WorldEnvironment" type="WorldEnvironment" parent="World"]
+[node name="WorldEnvironment" type="WorldEnvironment" parent="Level"]
 environment = SubResource("Environment_0xqwl")
 camera_attributes = SubResource("CameraAttributesPractical_d3i0u")
 
-[node name="Water" type="MeshInstance3D" parent="World"]
-transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, 7, 0)
-layers = 32771
+[node name="Visual_Ground" type="MeshInstance3D" parent="Level"]
+transform = Transform3D(1, 0, -2.98023e-08, 0, 1, 0, 2.98023e-08, 0, 1, 0, 0, 0)
+visible = false
+layers = 262144
+mesh = SubResource("PlaneMesh_17eok")
 skeleton = NodePath("")
 
-[node name="Area3D" type="Area3D" parent="World/Water"]
+[node name="Water" type="MeshInstance3D" parent="Level"]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, 7, 0)
+layers = 262144
+skeleton = NodePath("")
+
+[node name="Area3D" type="Area3D" parent="Level/Water"]
 input_ray_pickable = false
 gravity_space_override = 3
 linear_damp_space_override = 3
 linear_damp = 0.206
 metadata/is_water = true
 
-[node name="CollisionShape3D" type="CollisionShape3D" parent="World/Water/Area3D"]
+[node name="CollisionShape3D" type="CollisionShape3D" parent="Level/Water/Area3D"]
 transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, -50, 0)
 shape = SubResource("BoxShape3D_cixmr")
 
-[node name="StaticBody3D" type="StaticBody3D" parent="World/Water" groups=["water"]]
+[node name="StaticBody3D" type="StaticBody3D" parent="Level/Water" groups=["water"]]
 transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, -0.75, 0)
 collision_layer = 32768
 collision_mask = 32768
 
-[node name="CollisionShape3D" type="CollisionShape3D" parent="World/Water/StaticBody3D"]
+[node name="CollisionShape3D" type="CollisionShape3D" parent="Level/Water/StaticBody3D"]
 shape = SubResource("BoxShape3D_gubrw")
 
-[node name="Player_Base_Spawn" type="Node3D" parent="World"]
+[node name="Player_Base_Spawn" type="Node3D" parent="Level"]
 transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 262.322, 13.3671, 25.0396)
 script = ExtResource("8_viuko")
 group = "reg_0_1"
 
-[node name="MeshInstance3D" type="MeshInstance3D" parent="World/Player_Base_Spawn"]
+[node name="MeshInstance3D" type="MeshInstance3D" parent="Level/Player_Base_Spawn"]
 material_override = SubResource("StandardMaterial3D_01r5d")
 mesh = SubResource("CapsuleMesh_x5v2n")
 surface_material_override/0 = SubResource("StandardMaterial3D_fjj8m")
 
-[node name="Enemy1_Base_Spawn" type="Node3D" parent="World"]
+[node name="Enemy1_Base_Spawn" type="Node3D" parent="Level"]
 transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 250.659, 20.7904, -267.06)
 script = ExtResource("8_viuko")
 group = "reg_1_0"
 actor_id = 1
 
-[node name="MeshInstance3D" type="MeshInstance3D" parent="World/Enemy1_Base_Spawn"]
+[node name="MeshInstance3D" type="MeshInstance3D" parent="Level/Enemy1_Base_Spawn"]
 mesh = SubResource("CapsuleMesh_x5v2n")
 surface_material_override/0 = SubResource("StandardMaterial3D_0q7om")
 
-[node name="Forest" parent="World" instance=ExtResource("7_1qpxy")]
+[node name="Forest" parent="Level" instance=ExtResource("7_1qpxy")]
 transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 70.241, 44.4939, -302.653)
 
-[node name="GPUParticles3D" parent="World/Forest" index="1"]
+[node name="GPUParticles3D" parent="Level/Forest" index="1"]
 transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, 0, 4.89764)
 amount = 250
 visibility_aabb = AABB(-38.4773, -66.4526, -36.144, 76.9545, 132.905, 72.288)
 process_material = SubResource("ShaderMaterial_twvxw")
 
-[node name="Stone_deposit" parent="World" instance=ExtResource("9_b7fca")]
+[node name="Stone_deposit" parent="Level" instance=ExtResource("9_b7fca")]
 transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 107.985, 17.8461, -12.6955)
 
-[node name="Crystal_deposit" parent="World" instance=ExtResource("10_07s6x")]
+[node name="Crystal_deposit" parent="Level" instance=ExtResource("10_07s6x")]
 transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 344.647, 17.3313, 5.01563)
 
-[node name="Explorable_Fog" type="Node3D" parent="World"]
+[node name="Explorable_Fog" type="Node3D" parent="Level"]
 
-[node name="RayCast3D" type="RayCast3D" parent="World/Explorable_Fog"]
+[node name="RayCast3D" type="RayCast3D" parent="Level/Explorable_Fog"]
 transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, 200, 0)
 exclude_parent = false
 target_position = Vector3(0, -500, 0)
 collision_mask = 32768
 
-[node name="Fog_Of_War" parent="World/Explorable_Fog" instance=ExtResource("12_875hf")]
+[node name="Fog_Of_War" parent="Level/Explorable_Fog" instance=ExtResource("12_875hf")]
 
-[node name="Great_Fog_Wall" type="Node3D" parent="World"]
+[node name="Great_Fog_Wall" type="Node3D" parent="Level"]
+visible = false
 
-[node name="Fog_Of_War_Edge" type="GPUParticles3D" parent="World/Great_Fog_Wall"]
+[node name="Fog_Of_War_Edge" type="GPUParticles3D" parent="Level/Great_Fog_Wall"]
 transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 555, 10, -555)
 layers = 16
 sorting_offset = 100.0
@@ -1229,7 +1243,7 @@ collision_mask = 32768
 hit_from_inside = true
 
 [node name="Visual_Ground" type="MeshInstance3D" parent="Player"]
-transform = Transform3D(1, 0, -2.98023e-08, 0, 1, 0, 2.98023e-08, 0, 1, 300.434, 0, 19.5452)
+transform = Transform3D(1, 0, -2.98023e-08, 0, 1, 0, 2.98023e-08, 0, 1, 283.54, -3.05176e-05, 6.85637)
 layers = 2
 mesh = SubResource("PlaneMesh_ssghn")
 skeleton = NodePath("")
@@ -1245,6 +1259,7 @@ script = ExtResource("10_jjfcj")
 
 [node name="Player_view" type="Camera3D" parent="Player/Player_camera"]
 transform = Transform3D(1, 0, 0, 0, 0.573577, 0.819152, 0, -0.819152, 0.573577, 0, 50, 15)
+cull_mask = 786431
 doppler_tracking = 1
 current = true
 fov = 37.8493
@@ -1331,8 +1346,8 @@ sky_mode = 1
 [connection signal="pressed" from="UI_Node/Minimap/Minimap_Framed_Buttons/Build_Button" to="UI_Node" method="_on_build_button_pressed"]
 [connection signal="pressed" from="UI_Node/Minimap/Minimap_Framed_Buttons/Units_Button" to="UI_Node" method="_on_units_button_pressed"]
 [connection signal="gui_input" from="UI_Node/Minimap/Minimap_Container" to="UI_Node" method="minimap_Input"]
-[connection signal="area_shape_entered" from="World/Forest/Affected_Area" to="World/Forest" method="_area_entered" flags=18]
+[connection signal="area_shape_entered" from="Level/Forest/Affected_Area" to="Level/Forest" method="_area_entered" flags=18]
 
-[editable path="World/Forest"]
-[editable path="World/Stone_deposit"]
-[editable path="World/Explorable_Fog/Fog_Of_War"]
+[editable path="Level/Forest"]
+[editable path="Level/Stone_deposit"]
+[editable path="Level/Explorable_Fog/Fog_Of_War"]

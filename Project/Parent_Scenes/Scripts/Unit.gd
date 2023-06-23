@@ -6,6 +6,7 @@ signal selected
 signal died
 signal update_fog
 signal uncovered_area #area enters det area
+signal attacked #did an attack
 
 '''Enums'''
 enum {GROUND, NAVAL, AERIAL}
@@ -29,7 +30,10 @@ enum {GROUND, NAVAL, AERIAL}
 @export var deccel = 3
 
 ''' Export Combat vars '''
-@export var health : float = 1
+@export var base_health : float = 1
+@export var base_armor : float = 1
+@export var is_ranged : bool = false	## Is a ranged attacker
+@export var damage_type : String
 @export var base_atk_str : float = 10
 @export var base_atk_spd : float = 1
 @export var target_atk_rng : int = 5
@@ -40,6 +44,8 @@ var rng = RandomNumberGenerator.new()
 var ai_mode :StringName = "idle_basic"
 var ai_methods : Dictionary = {
 	"idle_basic" : Callable(_idling_basic),
+	"idle_aggressive" : Callable(_idling_aggressive),
+	"idle_defensive": Callable(_idling_defensive),
 	"traveling_basic" : Callable(_traveling_basic),
 	"wandering_basic" : Callable(_wandering_basic),
 	"attack_commanded" : Callable(_targeted_attack),
@@ -77,6 +83,10 @@ var res_cost := {"wood": 0,
 "food": 0}
 
 ''' Derived and assigned Combat vars '''
+var max_health : float = base_health ##max health after any modifiers
+var health : float = max_health ## active health after any modifiers
+var armor : float = base_armor ## base armor after modifers
+var attack_method : Callable # method to attack with
 var current_atk_str : float #with modifiers
 var current_atk_spd : float #with modifiers
 var target_enemy:
@@ -103,14 +113,20 @@ var visible_allies := []
 
 '''### Built-In Methods ###'''
 func _ready():
+	## Set Navigation Layer base don movement type
 	for t in range(travel_type.size()):
 		if travel_type[t]:
 			nav_agent.set_navigation_layers(t+1)
+	## Set navigation information
 	nav_agent.path_desired_distance = 0.5
 	nav_agent.target_desired_distance = 0.5
-	
+	## Connect navigation signals
 	nav_agent.waypoint_reached.connect(waypoint)
-	atk_timer.timeout.connect(attack)
+	atk_timer.timeout.connect(_attack)
+	
+	## set meta data
+	set_meta("owner_id",actor_owner.actor_ID)
+	
 	## Fog Setup
 	fog_reg.set_actor_owner(actor_owner.actor_ID)
 	fog_reg.fog_break_radius = fog_rev_radius
@@ -126,8 +142,19 @@ func _ready():
 		is_visible = false
 		det_area.area_entered.connect(_det_area_entered)
 		det_area.area_exited.connect(_det_area_exited)
+	
+	fog_reg.detect_area.body_entered.connect(_vision_body_entered)
+	fog_reg.detect_area.body_exited.connect(_vision_body_exited)
+	
+	## Set attack type
+	if is_ranged:
+		attack_method = Callable(__ranged_attack)
+	else:
+		attack_method = Callable(__melee_attack)
 
 func _physics_process(delta):
+	if(is_queued_for_deletion()):
+		return
 	ai_methods[ai_mode].call(delta)
 
 '''### Public Methods ###'''
@@ -177,13 +204,16 @@ func clear_following():
 
 # Get gound depth at certain point
 func get_ground_depth(pos = null):
+	grnd_ping.enabled = true
 	if(pos !=null):
 		grnd_ping.position = Vector3(pos.x+position.x,250,pos.z+position.z)
 	grnd_ping.force_raycast_update()
 	var out =  grnd_ping.get_collision_point().y
 	grnd_ping.position = Vector3(0,250,0)	## Reset to on unit
 	update_fog.emit(self,position, is_visible)
+	grnd_ping.enabled = false
 	return out
+
 
 ''' Movement Methods End '''
 ## Check target position for other units
@@ -203,6 +233,8 @@ func can_afford(builder_res):
 		if builder_res[res] < res_cost[res] :
 			return false
 	return true
+
+
 '''-------------------------------------------------------------------------------------'''
 ''' Player Input Methods Start '''
 ## Unit is selected and make selection visible
@@ -210,11 +242,10 @@ func select(state : bool = true):
 	$Selection.visible = state
 
 
-#signal being selected on click
+## Signal being selected on click
 func _on_input_event(_camera, event, _position, _normal, _shape_idx):
 	if event is InputEventMouseButton and Input.is_action_just_released("lmb"):
 		selected.emit(self, event)
-		ai_mode = "wandering_basic"
 
 ''' Player Input Methods End '''
 '''-------------------------------------------------------------------------------------'''
@@ -240,13 +271,6 @@ func declare_enemy(unit):
 	if(target_follow == null):
 		_set_target_position(unit.position)
 
-
-## Attack function
-func attack():
-	if is_instance_valid(target_enemy) == false:
-		return
-	atk_timer.start(base_atk_spd)
-	target_enemy.damage(base_atk_str,"physical")
 
 ''' Combat Methods End '''
 '''-------------------------------------------------------------------------------------'''
@@ -288,12 +312,13 @@ func _lerp_stop(nv, dx):
 	nv = lerp(velocity,nv,dx*deccel)
 	return nv
 
-
+## detection area code
 func _det_area_entered(area):
 	uncovered_area.emit(self, area)
 	if(area.has_meta("fog_owner_id")):
 		if (area.get_meta("fog_owner_id") == 0):
 			is_visible = true
+
 
 func _det_area_exited(area):
 	if(area.has_meta("fog_owner_id")):
@@ -303,10 +328,38 @@ func _det_area_exited(area):
 			if(ar.has_meta("fog_owner_id")):
 				if (ar.get_meta("fog_owner_id") == 0):
 					is_visible = true
-			
+
+
+## Vision detection Code
+func _vision_body_entered(body):
+	if body.has_meta("owner_id") and body.get_meta("owner_id") != actor_owner.actor_ID:
+		visible_enemies.push_back(body)
+
+## Remove enemies from sight array
+func _vision_body_exited(body):
+	if visible_enemies.has(body):
+		visible_enemies.pop_at(visible_enemies.find(body))
 
 
 ''' Movement Methods end '''
+'''-------------------------------------------------------------------------------------'''
+''' Combat Methods Start '''
+## Attack function
+func _attack():
+	atk_timer.start(base_atk_spd)
+	attack_method.call()
+	attacked.emit()
+
+## ranged attack callable
+func __ranged_attack():
+	pass
+
+## melee attack callable
+func __melee_attack():
+	target_enemy.damage(base_atk_str,"physical")
+
+
+''' Combat Methods End '''
 '''-------------------------------------------------------------------------------------'''
 ''' AI Processes  Methods Start '''
 ## Has a target set by player
@@ -318,10 +371,11 @@ func _targeted_attack(delta):
 	if(position.distance_to(target_enemy.position) <= target_atk_rng):
 		if(nav_agent.is_navigation_finished() == false):
 			_set_target_position(position)
-			attack()
+			_attack()
 			_travel(delta)
 			return
 	else:
+		_set_target_position(target_enemy.position)
 		_travel(delta)
 		atk_timer.stop()
 		return
@@ -331,10 +385,25 @@ func _traveling_basic(delta):
 	_travel(delta)
 
 
+## Idle Functions
 func _idling_basic(_delta):
 	pass
 
 
+## Flee from enemies
+func _idling_defensive(_delta):
+	if(visible_enemies.size() > 0):
+		_set_target_position(actor_owner.forts[rng.randi_range(0,actor_owner.forts.size()-1)].position)
+		ai_mode = "traveling_basic"
+
+
+## Fight encountered enemies
+func _idling_aggressive(_delta):
+	if(visible_enemies.size() > 0):
+		declare_enemy(visible_enemies[0])
+
+
+## Wander randomly
 func _wandering_basic(delta):	
 	if nav_agent.is_navigation_finished():
 		var pos = Vector3(rng.randf_range(-100,100),250,rng.randf_range(-100,100))+position
@@ -372,7 +441,7 @@ func _on_navigation_agent_3d_navigation_finished():
 	if(targ.is_equal_approx(position) == false):
 		_set_target_position(targ)
 	elif(ai_mode.contains("travel") and target_follow==null):
-		ai_mode = "idle_basic"
+		ai_mode = "idle_aggressive"
 	clear_following()
 	if target_follow != null:
 		_set_target_position(target_follow.position)
@@ -389,5 +458,9 @@ func waypoint(_details):
 	if followers.size() > 0:
 		for i in followers:
 			i._set_target_position(nav_agent.get_next_path_position())
+
+
+func _flee(delta):
+	pass
 
 ''' AI Processes Methods End '''

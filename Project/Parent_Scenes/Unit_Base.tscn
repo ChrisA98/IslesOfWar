@@ -47,6 +47,7 @@ floor_max_angle = 0.610865
 script = ExtResource("1_xwgnb")
 fog_rev_radius = 35.0
 metadata/reveals_fog = 0
+metadata/owner_id = 0
 
 [node name="CollisionShape3D" type="CollisionShape3D" parent="."]
 transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, 1.75, 0)
@@ -91,6 +92,7 @@ shape = SubResource("SphereShape3D_cp7kh")
 
 [node name="Ground_Checker" type="RayCast3D" parent="."]
 transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, 250, 0)
+enabled = false
 target_position = Vector3(0, -500, 0)
 collision_mask = 32769
 

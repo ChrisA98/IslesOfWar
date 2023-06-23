@@ -79,6 +79,8 @@ func update_drawer_radius(parent):
 
 
 func remove_drawer(drawer):
+	print(drawer.update_fog.get_connections())
 	drawer.update_fog.disconnect(update_draw)
-	drawers[drawer].queue_free()
+	print(drawer.update_fog.get_connections())
 	drawers.erase(drawer)
+	drawer.queue_free()

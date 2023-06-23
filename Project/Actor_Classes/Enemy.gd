@@ -256,6 +256,8 @@ func __find():
 	_defer_goal()
 	if(!r_unit.uncovered_area.is_connected(unit_uncovered)):
 		r_unit.uncovered_area.connect(unit_uncovered)
+		r_unit.died.connect(_searcher_died.bind(r_unit))
+		
 
 
 func __attack():
@@ -448,7 +450,7 @@ func _defer_goal():
 	deferred_goals.push_back(goal_queue[-1])
 	goal_queue.clear()
 	current_goal = "ponder"
-	target_item = "the world"
+	target_item = "za warudo"
 	return true
 
 
@@ -509,6 +511,18 @@ func unit_uncovered(unit, area):
 					searching_units.erase(unit)
 
 
+func _searcher_died(unit):
+	if(searching_units.has(unit)):
+		goal_queue.clear()
+		current_goal = "ponder"
+		target_item = "za warudo"
+		for i in range(deferred_goals.size()):
+			if(typeof(deferred_goals[i][1]) == typeof(searching_units[unit]) and deferred_goals[i][1] == searching_units[unit]):
+				deferred_goals.pop_at(i)
+		searching_units.erase(unit)
+		unit.died.disconnect(_searcher_died)
+
+
 ''' Unit Commanding end '''
 '''-------------------------------------------------------------------------------------'''
 ''' Enemy targeting start '''
@@ -521,7 +535,7 @@ func searched_too_long(timer, unit, target):
 	timer.stop()
 	timer.queue_free()
 	if(typeof(target) == TYPE_STRING):
-		for nod in gamescene.get_child(2).get_children():
+		for nod in gamescene.get_child(1).get_children():
 			if nod.name.contains(target):
 				unit.set_mov_target(nod.position)
 	else:
