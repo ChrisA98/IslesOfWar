@@ -19,5 +19,8 @@ transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, 0.512184, 0)
 mesh = SubResource("BoxMesh_8pvv5")
 surface_material_override/0 = SubResource("StandardMaterial3D_xyfiq")
 
+[node name="CollisionShape3D" parent="StaticBody3D" index="0"]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, 0, 0)
+
 [node name="Fog_Breaker" parent="." index="9"]
 visible = false

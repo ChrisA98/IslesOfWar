@@ -102,6 +102,7 @@ collision_layer = 2
 input_ray_pickable = false
 
 [node name="CollisionShape3D" type="CollisionShape3D" parent="StaticBody3D"]
+transform = Transform3D(0.8, 0, 0, 0, 0.8, 0, 0, 0, 0.8, 0, 0, 0)
 shape = SubResource("BoxShape3D_ibp2k")
 
 [node name="CollisionShape3D2" type="CollisionShape3D" parent="StaticBody3D"]

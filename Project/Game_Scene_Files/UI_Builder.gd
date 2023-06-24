@@ -96,7 +96,7 @@ func close_menu(menu):
 
 ## Show unit build menu
 func set_unit_list(unit_list = null):
-	if(unit_list == null):
+	if(unit_list == null or unit_list.size() == 0):
 		unit_bar.visible = false
 		return	
 	for i in act_unit_rect:

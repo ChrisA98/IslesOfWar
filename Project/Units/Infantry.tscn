@@ -21,6 +21,8 @@ radius = 2.0
 travel_type = [true, false, false]
 unit_name = "Infantry"
 base_health = 50.0
+base_atk_str = 5.0
+target_atk_rng = 8
 
 [node name="CollisionShape3D" parent="." index="0"]
 shape = SubResource("CylinderShape3D_fxkcp")

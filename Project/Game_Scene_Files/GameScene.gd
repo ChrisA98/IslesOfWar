@@ -199,7 +199,7 @@ func unit_selected(unit, event):
 		if event.is_shift_pressed():
 			selected_units.push_back(unit)
 		else:
-			selected_units = [unit]		
+			selected_units = [unit]
 		group_selected_units()
 	else:
 		if click_mode == "command_unit":
@@ -207,6 +207,13 @@ func unit_selected(unit, event):
 			if(selected_units.size() > 1):
 				for j in range(1,selected_units.size()):
 					selected_units[0].add_following(selected_units[j])
+
+
+##remove selected unit from list
+func deselect_unit(unit):
+	if selected_units.has(unit):
+		selected_units.erase(unit)
+	group_selected_units()
 
 
 ## Start Selection Square

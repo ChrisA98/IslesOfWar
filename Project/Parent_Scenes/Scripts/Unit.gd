@@ -41,7 +41,13 @@ enum {GROUND, NAVAL, AERIAL}
 var rng = RandomNumberGenerator.new()
 
 ''' Ai Controls '''
-var ai_mode :StringName = "idle_basic"
+var ai_mode :StringName = "idle_basic":
+	set(value):
+		ai_mode = value
+		if value.contains("attack"):
+			atk_timer.start(current_atk_spd)
+		else:
+			atk_timer.stop()
 var ai_methods : Dictionary = {
 	"idle_basic" : Callable(_idling_basic),
 	"idle_aggressive" : Callable(_idling_aggressive),
@@ -66,12 +72,16 @@ var target_follow: Unit_Base:
 var actor_owner
 var unit_list
 
-var is_selected: bool
+var is_selected: bool:
+	set(value):
+		is_selected = value
+		$Selection.visible = is_visible
+		
 var is_visible: bool:
 	set(value):
 		is_visible = value
 		$CollisionShape3D.visible = is_visible
-		$Selection.visible = is_visible
+		$Selection.visible = is_selected
 		update_fog.emit(self,position, is_visible)
 
 ''' Cost Vars '''
@@ -83,20 +93,24 @@ var res_cost := {"wood": 0,
 "food": 0}
 
 ''' Derived and assigned Combat vars '''
-var max_health : float = base_health ##max health after any modifiers
-var health : float = max_health ## active health after any modifiers
+@onready var max_health : float = base_health ##max health after any modifiers
+@onready var health : float = max_health ## active health after any modifiers
 var armor : float = base_armor ## base armor after modifers
 var attack_method : Callable # method to attack with
 var current_atk_str : float #with modifiers
-var current_atk_spd : float #with modifiers
+var current_atk_spd : float: #with modifiers
+	set(value):
+		current_atk_spd = value
+		atk_timer.start(current_atk_spd)
 var target_enemy:
-	get:
-		return target_enemy
 	set(value):
 		target_enemy = value
 		if(value != null):
+			atk_timer.start(current_atk_spd)
 			if(!target_enemy.died.is_connected(target_killed)):
 				target_enemy.died.connect(target_killed)
+		else:
+			atk_timer.stop()
 var visible_enemies := []
 var visible_allies := []
 
@@ -120,7 +134,7 @@ func _ready():
 	## Set navigation information
 	nav_agent.path_desired_distance = 0.5
 	nav_agent.target_desired_distance = 0.5
-	## Connect navigation signals
+	## Connect signals
 	nav_agent.waypoint_reached.connect(waypoint)
 	atk_timer.timeout.connect(_attack)
 	
@@ -188,15 +202,25 @@ func set_following(units):
 ## Add folowing units
 func add_following(unit):
 	followers.push_back(unit)
+	unit.died.connect(remove_following.bind(unit))
 	unit.target_follow = self
 	unit.ai_mode = ai_mode
 	if(target_enemy != null):
 		unit.target_enemy = target_enemy
 
 
+## Remove following unit
+func remove_following(unit):
+	if(followers.has(unit)):
+		followers.erase(unit)
+	else:
+		unit.died.disconnect(remove_following)
+
+
 func clear_following():	
 	if followers.size() > 0:
 		for i in followers:
+			remove_following(i)
 			i._set_target_position(position)
 			i.target_follow = null
 	followers.clear()
@@ -239,7 +263,7 @@ func can_afford(builder_res):
 ''' Player Input Methods Start '''
 ## Unit is selected and make selection visible
 func select(state : bool = true):
-	$Selection.visible = state
+	is_selected = state
 
 
 ## Signal being selected on click
@@ -256,6 +280,10 @@ func _on_input_event(_camera, event, _position, _normal, _shape_idx):
 ## type is for later implementation
 func damage(amt: float, _type: String):
 	health -= amt
+	print(str(self) + " was hit for " + str(amt) + " points of damage")
+	$attack_indicator_temp.visible = true
+	await get_tree().create_timer(.25).timeout
+	$attack_indicator_temp.visible = false
 	## DIE
 	if(health <= 0):
 		died.emit()
@@ -283,11 +311,15 @@ func target_killed():
 
 ## Delay delete and remove from lists
 func delayed_delete():
-	await get_tree().physics_frame
+	ai_mode = "idle_basic"
+	## Deselect if selected
+	get_parent().deselect_unit(self)
 	actor_owner.units.erase(self)
 	actor_owner.update_pop()
 	unit_list.erase(self)
+	await get_tree().physics_frame
 	queue_free()
+
 
 ''' Destroy Unit Methods End '''
 '''-------------------------------------------------------------------------------------'''
@@ -346,6 +378,11 @@ func _vision_body_exited(body):
 ''' Combat Methods Start '''
 ## Attack function
 func _attack():
+	# Attack targeting
+	if !is_instance_valid(target_enemy):
+		return
+	if (position.distance_to(target_enemy.position) > target_atk_rng):
+		return
 	atk_timer.start(base_atk_spd)
 	attack_method.call()
 	attacked.emit()
@@ -368,17 +405,16 @@ func _targeted_attack(delta):
 	if !is_instance_valid(target_enemy):
 		return
 	
+	## Handle tracking target
 	if(position.distance_to(target_enemy.position) <= target_atk_rng):
-		if(nav_agent.is_navigation_finished() == false):
-			_set_target_position(position)
-			_attack()
-			_travel(delta)
+		if nav_agent.is_navigation_finished():
 			return
+		_set_target_position(position)
 	else:
 		_set_target_position(target_enemy.position)
-		_travel(delta)
-		atk_timer.stop()
-		return
+	
+	_travel(delta)
+		
 
 
 func _traveling_basic(delta):
@@ -459,8 +495,5 @@ func waypoint(_details):
 		for i in followers:
 			i._set_target_position(nav_agent.get_next_path_position())
 
-
-func _flee(delta):
-	pass
 
 ''' AI Processes Methods End '''

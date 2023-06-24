@@ -1,4 +1,4 @@
-[gd_scene load_steps=12 format=3 uid="uid://cs2p3v3o53aki"]
+[gd_scene load_steps=14 format=3 uid="uid://cs2p3v3o53aki"]
 
 [ext_resource type="Script" path="res://Parent_Scenes/Scripts/Unit.gd" id="1_xwgnb"]
 [ext_resource type="PackedScene" uid="uid://p576jcs2kqxc" path="res://World_Generation/fog_breaker.tscn" id="2_510m0"]
@@ -40,6 +40,12 @@ radius = 25.0
 [sub_resource type="CylinderShape3D" id="CylinderShape3D_jn7np"]
 resource_local_to_scene = true
 radius = 2.0
+
+[sub_resource type="Gradient" id="Gradient_dgplu"]
+colors = PackedColorArray(1, 0, 0, 1, 1, 0, 0, 1)
+
+[sub_resource type="GradientTexture1D" id="GradientTexture1D_pwnjg"]
+gradient = SubResource("Gradient_dgplu")
 
 [node name="Unit_Base" type="CharacterBody3D"]
 collision_mask = 0
@@ -103,6 +109,14 @@ monitorable = false
 
 [node name="CollisionShape3D" type="CollisionShape3D" parent="Detection_Area"]
 shape = SubResource("CylinderShape3D_jn7np")
+
+[node name="attack_indicator_temp" type="Decal" parent="."]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, 0, -4)
+visible = false
+size = Vector3(5, 7.265, 15.746)
+texture_albedo = SubResource("GradientTexture1D_pwnjg")
+upper_fade = 0.0104022
+lower_fade = 1566.18
 
 [connection signal="input_event" from="." to="." method="_on_input_event"]
 [connection signal="navigation_finished" from="NavigationAgent3D" to="." method="_on_navigation_agent_3d_navigation_finished"]
