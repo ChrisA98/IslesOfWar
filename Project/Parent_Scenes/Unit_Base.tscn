@@ -8,6 +8,12 @@ resource_local_to_scene = true
 height = 3.5
 radius = 2.0
 
+[sub_resource type="Gradient" id="Gradient_dgplu"]
+colors = PackedColorArray(1, 0, 0, 1, 1, 0, 0, 1)
+
+[sub_resource type="GradientTexture1D" id="GradientTexture1D_pwnjg"]
+gradient = SubResource("Gradient_dgplu")
+
 [sub_resource type="StandardMaterial3D" id="StandardMaterial3D_llv7b"]
 albedo_color = Color(0, 1, 1, 1)
 
@@ -41,14 +47,9 @@ radius = 25.0
 resource_local_to_scene = true
 radius = 2.0
 
-[sub_resource type="Gradient" id="Gradient_dgplu"]
-colors = PackedColorArray(1, 0, 0, 1, 1, 0, 0, 1)
-
-[sub_resource type="GradientTexture1D" id="GradientTexture1D_pwnjg"]
-gradient = SubResource("Gradient_dgplu")
-
-[node name="Unit_Base" type="CharacterBody3D"]
-collision_mask = 0
+[node name="Unit_Base" type="CharacterBody3D" groups=["pickable_object"]]
+collision_layer = 5
+collision_mask = 4
 floor_max_angle = 0.610865
 script = ExtResource("1_xwgnb")
 fog_rev_radius = 35.0
@@ -60,6 +61,14 @@ transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, 1.75, 0)
 shape = SubResource("CylinderShape3D_603ul")
 
 [node name="UnitModels" type="Node3D" parent="."]
+
+[node name="attack_indicator_temp" type="Decal" parent="UnitModels"]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, 0, -4)
+visible = false
+size = Vector3(5, 7.265, 15.746)
+texture_albedo = SubResource("GradientTexture1D_pwnjg")
+upper_fade = 0.0104022
+lower_fade = 1566.18
 
 [node name="Editor forward Arrow" type="MeshInstance3D" parent="UnitModels"]
 transform = Transform3D(-1.889, -5.8923e-08, 3.82137e-17, 0, -2.94615e-08, -0.01, 1.65142e-07, -0.674, 4.37114e-10, 0, 0, -2.37531)
@@ -78,6 +87,7 @@ target_desired_distance = 3.0
 path_max_distance = 7.01
 max_speed = 20.0
 ignore_y = false
+debug_enabled = true
 
 [node name="Selection" type="Node3D" parent="."]
 
@@ -109,14 +119,6 @@ monitorable = false
 
 [node name="CollisionShape3D" type="CollisionShape3D" parent="Detection_Area"]
 shape = SubResource("CylinderShape3D_jn7np")
-
-[node name="attack_indicator_temp" type="Decal" parent="."]
-transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, 0, -4)
-visible = false
-size = Vector3(5, 7.265, 15.746)
-texture_albedo = SubResource("GradientTexture1D_pwnjg")
-upper_fade = 0.0104022
-lower_fade = 1566.18
 
 [connection signal="input_event" from="." to="." method="_on_input_event"]
 [connection signal="navigation_finished" from="NavigationAgent3D" to="." method="_on_navigation_agent_3d_navigation_finished"]

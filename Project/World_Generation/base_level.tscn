@@ -1,0 +1,425 @@
+[gd_scene load_steps=44 format=3 uid="uid://1gj112g47vqj"]
+
+[ext_resource type="Script" path="res://World_Generation/Level_Controller.gd" id="1_ql81r"]
+[ext_resource type="Shader" path="res://World_Generation/New_Terrain.gdshader" id="2_ueirr"]
+[ext_resource type="Texture2D" uid="uid://drbfk3h3s6x1b" path="res://Test_Items/HeightMap.exr" id="3_6mwi0"]
+[ext_resource type="Script" path="res://Actor_Classes/Fort_Spawn.gd" id="4_axe35"]
+[ext_resource type="PackedScene" uid="uid://crswchumae5b0" path="res://World_Objects/Forest.tscn" id="5_8idnn"]
+[ext_resource type="Shader" uid="uid://cmyeclhrvhn2o" path="res://World_Generation/Foliage_Shader.tres" id="6_328lh"]
+[ext_resource type="PackedScene" uid="uid://76wslx0hq568" path="res://World_Objects/Stone_deposit.tscn" id="7_7rj6j"]
+[ext_resource type="PackedScene" uid="uid://dire4xft8ffrx" path="res://World_Objects/Crystal_deposit.tscn" id="8_wyj8d"]
+[ext_resource type="PackedScene" uid="uid://dbdak3gjtpx88" path="res://World_Generation/Explorable_Fog.tscn" id="9_ac8rt"]
+
+[sub_resource type="ProceduralSkyMaterial" id="ProceduralSkyMaterial_46wwo"]
+sky_horizon_color = Color(0.647059, 0.654902, 0.670588, 1)
+sun_curve = 0.310578
+
+[sub_resource type="Sky" id="Sky_4kxja"]
+sky_material = SubResource("ProceduralSkyMaterial_46wwo")
+
+[sub_resource type="Environment" id="Environment_0xqwl"]
+background_mode = 2
+sky = SubResource("Sky_4kxja")
+ambient_light_source = 3
+ambient_light_color = Color(0, 0.847059, 0.678431, 1)
+ambient_light_sky_contribution = 0.75
+ambient_light_energy = 0.4
+reflected_light_source = 2
+tonemap_mode = 3
+tonemap_exposure = 1.06
+tonemap_white = 6.0
+ssao_light_affect = 0.78
+ssil_radius = 8.03
+ssil_intensity = 0.08
+ssil_sharpness = 0.0
+sdfgi_use_occlusion = true
+fog_aerial_perspective = 1.0
+fog_height = 720.0
+fog_height_density = 0.029
+volumetric_fog_density = 0.1466
+volumetric_fog_albedo = Color(0.254902, 0.254902, 0.254902, 1)
+volumetric_fog_emission = Color(0.411765, 0.411765, 0.411765, 1)
+volumetric_fog_gi_inject = 0.0
+volumetric_fog_detail_spread = 0.933033
+volumetric_fog_sky_affect = 0.656
+volumetric_fog_temporal_reprojection_amount = 0.89
+adjustment_enabled = true
+adjustment_brightness = 1.2
+adjustment_contrast = 1.2
+adjustment_saturation = 2.0
+
+[sub_resource type="CameraAttributesPractical" id="CameraAttributesPractical_d3i0u"]
+exposure_multiplier = 0.717
+auto_exposure_scale = 0.25
+auto_exposure_speed = 0.01
+dof_blur_far_distance = 1000.0
+
+[sub_resource type="Gradient" id="Gradient_1g27v"]
+interpolation_mode = 2
+colors = PackedColorArray(0.442911, 0.442911, 0.442909, 1, 0.929412, 0.945098, 1, 1)
+
+[sub_resource type="FastNoiseLite" id="FastNoiseLite_dlv7m"]
+noise_type = 4
+frequency = 0.015
+fractal_type = 2
+fractal_octaves = 3
+fractal_lacunarity = 2.416
+fractal_gain = 0.239
+fractal_weighted_strength = 1.0
+fractal_ping_pong_strength = 2.037
+domain_warp_enabled = true
+domain_warp_amplitude = 30.168
+domain_warp_frequency = 0.032
+domain_warp_fractal_octaves = 1
+domain_warp_fractal_lacunarity = 6.086
+
+[sub_resource type="NoiseTexture2D" id="NoiseTexture2D_hn25n"]
+width = 1000
+height = 1000
+seamless = true
+color_ramp = SubResource("Gradient_1g27v")
+noise = SubResource("FastNoiseLite_dlv7m")
+
+[sub_resource type="NoiseTexture2D" id="NoiseTexture2D_fcitg"]
+width = 1000
+height = 1000
+seamless = true
+as_normal_map = true
+bump_strength = 10.8
+noise = SubResource("FastNoiseLite_dlv7m")
+
+[sub_resource type="ViewportTexture" id="ViewportTexture_gwand"]
+viewport_path = NodePath("Player/Fog_drawer")
+
+[sub_resource type="Gradient" id="Gradient_im8lq"]
+colors = PackedColorArray(0, 0.260467, 0, 1, 0.305169, 0.557647, 0.256383, 1)
+
+[sub_resource type="FastNoiseLite" id="FastNoiseLite_al3lm"]
+noise_type = 0
+frequency = 0.018
+fractal_octaves = 10
+fractal_lacunarity = 2.123
+fractal_gain = 0.874
+domain_warp_enabled = true
+domain_warp_amplitude = 30.164
+domain_warp_frequency = -0.03
+domain_warp_fractal_type = 2
+domain_warp_fractal_lacunarity = 6.062
+domain_warp_fractal_gain = 0.971
+
+[sub_resource type="NoiseTexture2D" id="NoiseTexture2D_p0d1b"]
+width = 1000
+height = 1000
+seamless = true
+color_ramp = SubResource("Gradient_im8lq")
+noise = SubResource("FastNoiseLite_al3lm")
+
+[sub_resource type="NoiseTexture2D" id="NoiseTexture2D_e22tc"]
+width = 1000
+height = 1000
+invert = true
+seamless = true
+as_normal_map = true
+bump_strength = 3.5
+noise = SubResource("FastNoiseLite_al3lm")
+
+[sub_resource type="Gradient" id="Gradient_2i80b"]
+colors = PackedColorArray(0.859586, 0.873469, 0.643777, 1, 0.550264, 0.542165, 0.456681, 1)
+
+[sub_resource type="FastNoiseLite" id="FastNoiseLite_l7c1p"]
+
+[sub_resource type="NoiseTexture2D" id="NoiseTexture2D_x1bul"]
+width = 1000
+height = 1000
+seamless = true
+color_ramp = SubResource("Gradient_2i80b")
+noise = SubResource("FastNoiseLite_l7c1p")
+
+[sub_resource type="NoiseTexture2D" id="NoiseTexture2D_23uga"]
+width = 1000
+height = 1000
+seamless = true
+as_normal_map = true
+normalize = false
+color_ramp = SubResource("Gradient_2i80b")
+noise = SubResource("FastNoiseLite_l7c1p")
+
+[sub_resource type="ShaderMaterial" id="ShaderMaterial_rie7d"]
+resource_local_to_scene = true
+render_priority = 0
+shader = ExtResource("2_ueirr")
+shader_parameter/t_height = 100.0
+shader_parameter/fog_darkness = 0.75
+shader_parameter/water_table = 7.0
+shader_parameter/max_sand_height = 9.0
+shader_parameter/universal_tex_scaling = 10.972
+shader_parameter/min_rock_slope = 0.156
+shader_parameter/max_grass_slope = 0.362
+shader_parameter/tex_size = Vector2(1000, 1000)
+shader_parameter/heightmap = ExtResource("3_6mwi0")
+shader_parameter/grass_alb_tex = SubResource("NoiseTexture2D_p0d1b")
+shader_parameter/grass_norm_tex = SubResource("NoiseTexture2D_e22tc")
+shader_parameter/cliff_alb_tex = SubResource("NoiseTexture2D_hn25n")
+shader_parameter/cliff_norm_tex = SubResource("NoiseTexture2D_fcitg")
+shader_parameter/sand_alb_tex = SubResource("NoiseTexture2D_x1bul")
+shader_parameter/sand_norm_tex = SubResource("NoiseTexture2D_23uga")
+shader_parameter/fog = SubResource("ViewportTexture_gwand")
+
+[sub_resource type="PlaneMesh" id="PlaneMesh_17eok"]
+material = SubResource("ShaderMaterial_rie7d")
+size = Vector2(1000, 1000)
+subdivide_width = 100
+subdivide_depth = 100
+
+[sub_resource type="BoxShape3D" id="BoxShape3D_cixmr"]
+size = Vector3(1000, 100, 1000)
+
+[sub_resource type="BoxShape3D" id="BoxShape3D_gubrw"]
+size = Vector3(1000, 1, 1000)
+
+[sub_resource type="StandardMaterial3D" id="StandardMaterial3D_01r5d"]
+render_priority = -1
+
+[sub_resource type="CapsuleMesh" id="CapsuleMesh_x5v2n"]
+radius = 2.431
+height = 10.0
+
+[sub_resource type="StandardMaterial3D" id="StandardMaterial3D_fjj8m"]
+albedo_color = Color(0, 0.290196, 1, 1)
+
+[sub_resource type="StandardMaterial3D" id="StandardMaterial3D_0q7om"]
+albedo_color = Color(1, 0, 0.0313726, 1)
+
+[sub_resource type="ShaderMaterial" id="ShaderMaterial_twvxw"]
+shader = ExtResource("6_328lh")
+shader_parameter/instance_rows = 15.0
+shader_parameter/instance_rot_randomize = 2.5
+shader_parameter/instance_spacing = 4.829
+shader_parameter/instance_scale_x = 1.0
+shader_parameter/instance_scale_y = 1.0
+shader_parameter/instance_scale_z = 1.0
+shader_parameter/instance_scale_randomize = 1.0
+shader_parameter/instance_pos_randomize = 4.713
+shader_parameter/instance_scale_min = 0.8
+shader_parameter/instance_scale_max = 1.2
+shader_parameter/_coverage_altitude = 10.0
+shader_parameter/_coverage_range = 100.0
+shader_parameter/_slope_coverage = 0.1
+shader_parameter/clumping_strength = 20.0
+shader_parameter/terrain_normal_basis = null
+shader_parameter/instance_orient_to_normal = true
+shader_parameter/instance_orientation_influence = 1.0
+shader_parameter/__terrain_amplitude = 100.0
+shader_parameter/map_heightmap_size = Vector2(1000, 1000)
+shader_parameter/map_heightmap = ExtResource("3_6mwi0")
+
+[sub_resource type="Gradient" id="Gradient_bbpcy"]
+interpolation_mode = 2
+offsets = PackedFloat32Array(0.621212, 1)
+colors = PackedColorArray(1, 1, 1, 1, 1, 1, 1, 0)
+
+[sub_resource type="GradientTexture1D" id="GradientTexture1D_wy17f"]
+gradient = SubResource("Gradient_bbpcy")
+
+[sub_resource type="ParticleProcessMaterial" id="ParticleProcessMaterial_p133b"]
+lifetime_randomness = 0.16
+emission_shape = 3
+emission_box_extents = Vector3(65, 10, 65)
+direction = Vector3(0, 1, 0)
+gravity = Vector3(0, 0, 0)
+initial_velocity_min = 1.0
+initial_velocity_max = 1.0
+linear_accel_min = 1.0
+linear_accel_max = 1.0
+scale_min = 14.83
+scale_max = 17.73
+color = Color(0.835294, 0.835294, 0.835294, 1)
+color_ramp = SubResource("GradientTexture1D_wy17f")
+sub_emitter_mode = 2
+sub_emitter_amount_at_end = 1
+collision_mode = 2
+collision_use_scale = true
+
+[sub_resource type="Gradient" id="Gradient_xpn55"]
+colors = PackedColorArray(0.74558, 0.74558, 0.74558, 1, 1, 1, 1, 1)
+
+[sub_resource type="FastNoiseLite" id="FastNoiseLite_xswe7"]
+frequency = 0.0045
+
+[sub_resource type="NoiseTexture2D" id="NoiseTexture2D_hexlv"]
+seamless = true
+color_ramp = SubResource("Gradient_xpn55")
+noise = SubResource("FastNoiseLite_xswe7")
+
+[sub_resource type="StandardMaterial3D" id="StandardMaterial3D_y0vbv"]
+transparency = 1
+shading_mode = 2
+vertex_color_use_as_albedo = true
+metallic_specular = 0.0
+roughness_texture = SubResource("NoiseTexture2D_hexlv")
+emission_enabled = true
+emission = Color(0.596078, 0.596078, 0.596078, 1)
+rim = 0.29
+rim_tint = 1.0
+heightmap_scale = 8.393
+subsurf_scatter_enabled = true
+subsurf_scatter_strength = 0.79
+subsurf_scatter_transmittance_depth = 8.0
+subsurf_scatter_transmittance_boost = 1.0
+refraction_scale = 0.38
+shadow_to_opacity = true
+proximity_fade_distance = 0.0
+distance_fade_mode = 2
+
+[sub_resource type="SphereMesh" id="SphereMesh_cyqkr"]
+lightmap_size_hint = Vector2i(41, 11)
+material = SubResource("StandardMaterial3D_y0vbv")
+radius = 1.25
+height = 2.5
+radial_segments = 8
+rings = 2
+
+[node name="Level" type="Node3D"]
+script = ExtResource("1_ql81r")
+
+[node name="WorldEnvironment" type="WorldEnvironment" parent="."]
+environment = SubResource("Environment_0xqwl")
+camera_attributes = SubResource("CameraAttributesPractical_d3i0u")
+
+[node name="Visual_Ground" type="MeshInstance3D" parent="."]
+transform = Transform3D(1, 0, -2.98023e-08, 0, 1, 0, 2.98023e-08, 0, 1, 0, 0, 0)
+layers = 262144
+mesh = SubResource("PlaneMesh_17eok")
+skeleton = NodePath("")
+
+[node name="Water" type="MeshInstance3D" parent="."]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, 7, 0)
+layers = 262144
+skeleton = NodePath("")
+
+[node name="Area3D" type="Area3D" parent="Water"]
+input_ray_pickable = false
+gravity_space_override = 3
+linear_damp_space_override = 3
+linear_damp = 0.206
+metadata/is_water = true
+
+[node name="CollisionShape3D" type="CollisionShape3D" parent="Water/Area3D"]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, -50, 0)
+shape = SubResource("BoxShape3D_cixmr")
+
+[node name="StaticBody3D" type="StaticBody3D" parent="Water" groups=["water"]]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, -0.75, 0)
+collision_layer = 32768
+collision_mask = 32768
+
+[node name="CollisionShape3D" type="CollisionShape3D" parent="Water/StaticBody3D"]
+shape = SubResource("BoxShape3D_gubrw")
+
+[node name="Player_Base_Spawn" type="Node3D" parent="."]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 262.322, 13.3671, 25.0396)
+script = ExtResource("4_axe35")
+group = "reg_0_1"
+
+[node name="MeshInstance3D" type="MeshInstance3D" parent="Player_Base_Spawn"]
+material_override = SubResource("StandardMaterial3D_01r5d")
+mesh = SubResource("CapsuleMesh_x5v2n")
+surface_material_override/0 = SubResource("StandardMaterial3D_fjj8m")
+
+[node name="Enemy1_Base_Spawn" type="Node3D" parent="."]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 250.659, 20.7904, -267.06)
+script = ExtResource("4_axe35")
+group = "reg_1_0"
+actor_id = 1
+
+[node name="MeshInstance3D" type="MeshInstance3D" parent="Enemy1_Base_Spawn"]
+mesh = SubResource("CapsuleMesh_x5v2n")
+surface_material_override/0 = SubResource("StandardMaterial3D_0q7om")
+
+[node name="Forest" parent="." instance=ExtResource("5_8idnn")]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 249.093, 44.4939, -330.54)
+
+[node name="GPUParticles3D" parent="Forest" index="1"]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, 0, 4.89764)
+amount = 250
+visibility_aabb = AABB(-38.4773, -66.4526, -36.144, 76.9545, 132.905, 72.288)
+process_material = SubResource("ShaderMaterial_twvxw")
+
+[node name="Forest2" parent="." instance=ExtResource("5_8idnn")]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 118.71, 24.9789, 86.8703)
+
+[node name="GPUParticles3D" parent="Forest2" index="1"]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, 0, 4.89764)
+amount = 250
+visibility_aabb = AABB(-38.4773, -66.4526, -36.144, 76.9545, 132.905, 72.288)
+process_material = SubResource("ShaderMaterial_twvxw")
+
+[node name="Stone_deposit" parent="." instance=ExtResource("7_7rj6j")]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 118.343, 17.8461, -203.279)
+
+[node name="Stone_deposit2" parent="." instance=ExtResource("7_7rj6j")]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 58.6758, 17.8461, 41.6406)
+
+[node name="Crystal_deposit" parent="." instance=ExtResource("8_wyj8d")]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, -48.7732, 17.3313, -364.716)
+
+[node name="Crystal_deposit2" parent="." instance=ExtResource("8_wyj8d")]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 341.53, 17.3313, 6.41168)
+
+[node name="Explorable_Fog" type="Node3D" parent="."]
+
+[node name="RayCast3D" type="RayCast3D" parent="Explorable_Fog"]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, 200, 0)
+exclude_parent = false
+target_position = Vector3(0, -500, 0)
+collision_mask = 32768
+
+[node name="Fog_Of_War" parent="Explorable_Fog" instance=ExtResource("9_ac8rt")]
+
+[node name="Great_Fog_Wall" type="Node3D" parent="."]
+
+[node name="Fog_Of_War_Edge" type="GPUParticles3D" parent="Great_Fog_Wall"]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 555, 10, -555)
+layers = 16
+sorting_offset = 100.0
+amount = 200
+lifetime = 8.0
+preprocess = 7.0
+randomness = 0.6
+visibility_aabb = AABB(-100, -50, -100, 200, 200, 200)
+process_material = SubResource("ParticleProcessMaterial_p133b")
+draw_pass_1 = SubResource("SphereMesh_cyqkr")
+
+[node name="Sun" type="DirectionalLight3D" parent="."]
+transform = Transform3D(2.21801e-08, 0.200172, 0.979761, -1.29113e-07, -0.979761, 0.200172, 1, -1.3094e-07, 4.11361e-09, 0, 0, 0)
+light_cull_mask = 4294967279
+shadow_enabled = true
+shadow_bias = 0.04
+shadow_reverse_cull_face = true
+shadow_blur = 2.275
+directional_shadow_max_distance = 800.0
+directional_shadow_pancake_size = 76.6
+
+[node name="Moon" type="DirectionalLight3D" parent="."]
+transform = Transform3D(-4.37114e-08, 0, 1, 0, 1, 0, -1, 0, -4.37114e-08, 0, 0, 0)
+visible = false
+light_color = Color(0.745098, 1, 1, 1)
+light_energy = 0.427
+light_indirect_energy = 0.819
+light_cull_mask = 4294967279
+shadow_enabled = true
+shadow_blur = 7.224
+directional_shadow_mode = 1
+directional_shadow_blend_splits = true
+directional_shadow_max_distance = 800.0
+directional_shadow_pancake_size = 76.6
+sky_mode = 1
+
+[connection signal="area_shape_entered" from="Forest/Affected_Area" to="Forest" method="_area_entered" flags=18]
+[connection signal="area_shape_entered" from="Forest2/Affected_Area" to="Forest2" method="_area_entered" flags=18]
+
+[editable path="Forest"]
+[editable path="Forest2"]
+[editable path="Stone_deposit"]
+[editable path="Stone_deposit2"]
+[editable path="Explorable_Fog/Fog_Of_War"]

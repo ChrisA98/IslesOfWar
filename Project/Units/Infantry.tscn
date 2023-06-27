@@ -18,8 +18,8 @@ resource_local_to_scene = true
 radius = 2.0
 
 [node name="Infantry" instance=ExtResource("1_3ybrw")]
-travel_type = [true, false, false]
 unit_name = "Infantry"
+travel_type = [true, false, false]
 base_health = 50.0
 base_atk_str = 5.0
 target_atk_rng = 8

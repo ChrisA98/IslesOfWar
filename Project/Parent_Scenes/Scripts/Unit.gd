@@ -15,28 +15,34 @@ enum {GROUND, NAVAL, AERIAL}
 
 ''' Export Vars '''
 ## Area this unit reveals fog in
+@export var unit_name: String
 @export var fog_rev_radius : float = 50
 
+''' Movement '''
+@export_group("Travel")
+@export var max_speed = 10
 ## Navigaion layers to enable
 ## 0 = GROUND
 ## 1 = NAVAL
 ## 2 = AERIAL
 @export var travel_type := [false, false, false]
-@export var unit_name: String
-
-''' Movement '''
-@export var max_speed = 10
 @export var accel = 3
 @export var deccel = 3
 
 ''' Export Combat vars '''
+@export_group("Combat")
 @export var base_health : float = 1
-@export var base_armor : float = 1
+@export_range(0,.99) var base_armor : float = 0.1
 @export var is_ranged : bool = false	## Is a ranged attacker
 @export var damage_type : String
 @export var base_atk_str : float = 10
 @export var base_atk_spd : float = 1
 @export var target_atk_rng : int = 5
+## added variation to unit attacking
+## can be improved by research
+## melee numbers should be lower
+@export_range(0,.5) var m_attack_damage_variance : float = .25
+@export_range(0,.25) var r_attack_attack_spread : float = .125
 
 var rng = RandomNumberGenerator.new()
 
@@ -59,8 +65,6 @@ var ai_methods : Dictionary = {
 var intial_path_dist := 0.1
 var followers: Array
 var target_follow: Unit_Base:
-	get:
-		return target_follow
 	set(value):
 		if value == null:
 			target_speed = max_speed
@@ -75,12 +79,12 @@ var unit_list
 var is_selected: bool:
 	set(value):
 		is_selected = value
-		$Selection.visible = is_visible
+		$Selection.visible = value
 		
 var is_visible: bool:
 	set(value):
 		is_visible = value
-		$CollisionShape3D.visible = is_visible
+		$UnitModels.visible = is_visible
 		$Selection.visible = is_selected
 		update_fog.emit(self,position, is_visible)
 
@@ -94,8 +98,12 @@ var res_cost := {"wood": 0,
 
 ''' Derived and assigned Combat vars '''
 @onready var max_health : float = base_health ##max health after any modifiers
-@onready var health : float = max_health ## active health after any modifiers
-var armor : float = base_armor ## base armor after modifers
+@onready var health : float = max_health :## active health after any modifiers
+	set(value):
+		health = clampf(value,-1,max_health)
+@onready var armor : float = base_armor ## base armor after modifers
+@onready var m_dmg_var : float = m_attack_damage_variance ## base armor after modifers
+@onready var r_atk_sprd : float = r_attack_attack_spread ## base armor after modifers
 var attack_method : Callable # method to attack with
 var current_atk_str : float #with modifiers
 var current_atk_spd : float: #with modifiers
@@ -138,6 +146,25 @@ func _ready():
 	nav_agent.waypoint_reached.connect(waypoint)
 	atk_timer.timeout.connect(_attack)
 	
+	## Set attack type
+	if is_ranged:
+		attack_method = Callable(__ranged_attack)
+	else:
+		attack_method = Callable(__melee_attack)
+
+func _physics_process(delta):
+	if(is_queued_for_deletion()):
+		return
+	ai_methods[ai_mode].call(delta)
+
+'''### Public Methods ###'''
+''' Startup Methods Start '''
+## Load data from owning building
+func load_data(data):	
+	pop_cost = data["pop_cost"]
+	for r in data["base_cost"]:
+		res_cost[r] = data["base_cost"][r]
+	
 	## set meta data
 	set_meta("owner_id",actor_owner.actor_ID)
 	
@@ -160,24 +187,6 @@ func _ready():
 	fog_reg.detect_area.body_entered.connect(_vision_body_entered)
 	fog_reg.detect_area.body_exited.connect(_vision_body_exited)
 	
-	## Set attack type
-	if is_ranged:
-		attack_method = Callable(__ranged_attack)
-	else:
-		attack_method = Callable(__melee_attack)
-
-func _physics_process(delta):
-	if(is_queued_for_deletion()):
-		return
-	ai_methods[ai_mode].call(delta)
-
-'''### Public Methods ###'''
-''' Startup Methods Start '''
-## Load data from owning building
-func load_data(data):	
-	pop_cost = data["pop_cost"]
-	for r in data["base_cost"]:
-		res_cost[r] = data["base_cost"][r]
 
 
 ''' Startup Methods End '''
@@ -201,8 +210,11 @@ func set_following(units):
 
 ## Add folowing units
 func add_following(unit):
+	if(followers.has(unit)):
+		return
 	followers.push_back(unit)
-	unit.died.connect(remove_following.bind(unit))
+	if(!unit.died.is_connected(remove_following)):
+		unit.died.connect(remove_following.bind(unit))
 	unit.target_follow = self
 	unit.ai_mode = ai_mode
 	if(target_enemy != null):
@@ -279,13 +291,10 @@ func _on_input_event(_camera, event, _position, _normal, _shape_idx):
 ## returns true if killed or false if survived
 ## type is for later implementation
 func damage(amt: float, _type: String):
-	health -= amt
-	print(str(self) + " was hit for " + str(amt) + " points of damage")
-	$attack_indicator_temp.visible = true
-	await get_tree().create_timer(.25).timeout
-	$attack_indicator_temp.visible = false
+	health -= (amt - amt*armor)
 	## DIE
 	if(health <= 0):
+		clear_following()
 		died.emit()
 		delayed_delete()
 		return true
@@ -356,7 +365,8 @@ func _det_area_exited(area):
 	if(area.has_meta("fog_owner_id")):
 		if (area.get_meta("fog_owner_id") == 0):
 			is_visible = false
-		for ar in area.get_overlapping_areas():
+		await get_tree().physics_frame
+		for ar in det_area.get_overlapping_areas():
 			if(ar.has_meta("fog_owner_id")):
 				if (ar.get_meta("fog_owner_id") == 0):
 					is_visible = true
@@ -383,9 +393,15 @@ func _attack():
 		return
 	if (position.distance_to(target_enemy.position) > target_atk_rng):
 		return
-	atk_timer.start(base_atk_spd)
+	
+	## Temporasry Code for attack visualization
+	$UnitModels/attack_indicator_temp.visible = true
+	
+	atk_timer.start(base_atk_spd + rng.randf_range(-.15,.15))
 	attack_method.call()
 	attacked.emit()
+	await get_tree().create_timer(.25).timeout
+	$UnitModels/attack_indicator_temp.visible = false
 
 ## ranged attack callable
 func __ranged_attack():
@@ -393,7 +409,8 @@ func __ranged_attack():
 
 ## melee attack callable
 func __melee_attack():
-	target_enemy.damage(base_atk_str,"physical")
+	var variance = rng.randf_range(-current_atk_str*m_dmg_var,current_atk_str*m_dmg_var)
+	target_enemy.damage(current_atk_str+variance,"physical")
 
 
 ''' Combat Methods End '''
@@ -406,12 +423,16 @@ func _targeted_attack(delta):
 		return
 	
 	## Handle tracking target
-	if(position.distance_to(target_enemy.position) <= target_atk_rng):
-		if nav_agent.is_navigation_finished():
-			return
-		_set_target_position(position)
-	else:
-		_set_target_position(target_enemy.position)
+	if nav_agent.is_navigation_finished():
+		if(position.distance_to(target_enemy.position) <= target_atk_rng):
+			if nav_agent.is_navigation_finished():
+				var trgt = position.direction_to(target_enemy.position)
+				var lookdir = atan2(-trgt.x, -trgt.z)
+				$UnitModels.rotation.y = lerp($UnitModels.rotation.y, lookdir, 0.1)
+				return
+			_set_target_position(position)
+		else:
+			_set_target_position(target_enemy.position)
 	
 	_travel(delta)
 		
@@ -466,13 +487,14 @@ func _travel(delta):
 	
 	# Look in walk direction
 	var lookdir = atan2(-new_velocity.x, -new_velocity.z)
-	$UnitModels.rotation.y = lookdir
+	$UnitModels.rotation.y = lerp($UnitModels.rotation.y, lookdir, 0.25)
 	
 	set_velocity(new_velocity)	
 	move_and_slide()
 
 
 func _on_navigation_agent_3d_navigation_finished():
+	## Don't stop on other units
 	var targ = check_pos(position)
 	if(targ.is_equal_approx(position) == false):
 		_set_target_position(targ)
@@ -493,6 +515,9 @@ func _on_NavigationAgent_velocity_computed(_safe_velocity):
 func waypoint(_details):
 	if followers.size() > 0:
 		for i in followers:
+			if(!is_instance_valid(i)):
+				followers.erase(i)
+				continue
 			i._set_target_position(nav_agent.get_next_path_position())
 
 

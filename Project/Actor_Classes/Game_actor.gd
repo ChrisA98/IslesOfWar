@@ -21,11 +21,11 @@ var loaded_units := {}
 
 # Actor Resources
 @onready var resources = {
-"wood": 20,
-"stone": 20,
-"riches": 20,
-"crystals": 20,
-"food": 20}
+"wood": 200,
+"stone": 200,
+"riches": 200,
+"crystals": 200,
+"food": 200}
 var pop: int = 0
 var max_pop: int = 0
 
@@ -44,7 +44,7 @@ func prepare_resources():
 	
 	#Set resourcest to 0 at start
 	for r in resources:
-		set_resource(r,20)
+		set_resource(r,200)
 	
 	update_pop()
 

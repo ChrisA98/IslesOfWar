@@ -8,17 +8,19 @@ size = Vector3(1.27026, 0.8, 1.11899)
 
 [node name="Resource_Building" instance=ExtResource("1_5db2t")]
 script = ExtResource("2_8girq")
-resource = "wood"
+resource = ""
+rpc = 0
+generate_time = 10
 metadata/show_base_radius = false
 
-[node name="RallyPoint" parent="." index="2"]
+[node name="RallyPoint" parent="." index="4"]
 visible = false
 
-[node name="Detection_Area" parent="." index="4"]
+[node name="Timer" type="Timer" parent="." index="5"]
+
+[node name="Detection_Area" parent="." index="7"]
 metadata/res_bldg_area = ""
 
 [node name="CollisionShape3D" parent="Detection_Area" index="0"]
 transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, -0.0803504, -0.00812383)
 shape = SubResource("BoxShape3D_gt6nr")
-
-[node name="Timer" type="Timer" parent="." index="5"]

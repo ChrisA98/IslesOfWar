@@ -5,13 +5,9 @@ signal nav_ready
 signal click_mode_changed(old, new)
 signal prep_ready
 
-''' Time keeping vars '''
-@export var year_day = 270
-@export var year = 603
-@export var day_cycle = true
-
 ''' Unit and Building vars '''
 ## World lists
+var world
 var loaded_buildings = []
 var world_units = []
 var menu_buildings = {}
@@ -46,15 +42,8 @@ var click_mode: String = "select":
 		click_mode = value
 var mouse_loc_stored
 
-''' Time keeping vars '''
-var sun_rotation = 0
-var moon_rotation = 0
-var sun_str = 1.3
-var moon_str = .427
-
 ''' onready vars '''
 @onready var UI_controller = $UI_Node
-@onready var world = $Level
 @onready var player_controller = $Player
 @onready var faction_data = [preload("res://Faction_Resources/Amerulf_Resource.json"),
 preload("res://Faction_Resources/Amerulf_Resource.json")]
@@ -68,80 +57,23 @@ preload("res://Faction_Resources/Amerulf_Resource.json")]
 '''### BUILT-IN METHODS ###'''
 #Called when the node enters the scene tree for the first time.
 func _ready():
-	# Connect ground signals
-	for i in world.find_children("Region*"):
-		for j in i.find_children("Floor"):
-			j.get_child(0).input_event.connect(ground_click)
-	
-	# Set Sun and moon in place
-	$Sun.rotation_degrees = Vector3(0,90,-180)
-	$Moon.rotation_degrees = Vector3(0,90,-180)
-	
-	
-	# UI Signals
-	UI_controller.minimap_clicked.connect(_minimap_Clicked)
-	
-	# Connect gamescene signals
-	click_mode_changed.connect(click_mod_update)
-	
-	# Generate enemy actors
-	var e_script = load("res://Actor_Classes/Enemy.gd")
-	for i in range(1,faction_data.size()):
-		var e = Node.new()
-		e.set_script(e_script)
-		e.name = "Enemy_"+str(i)
-		e.actor_ID = i
-		game_actors.push_back(e)
-		add_child(e)
-	
-	# Get building buttons UI element ref
-	var res_bldgs = get_node("UI_Node/Build_Menu/Build_Menu_Container/Resource_Buttons").get_popup()
-	res_bldgs.id_pressed.connect(prep_player_building.bind(res_bldgs))
-	var mil_bldgs = get_node("UI_Node/Build_Menu/Build_Menu_Container/Military_Buttons").get_popup()
-	mil_bldgs.id_pressed.connect(prep_player_building.bind(mil_bldgs))
-	var gen_bldgs = get_node("UI_Node/Build_Menu/Build_Menu_Container/General_Buttons").get_popup()
-	gen_bldgs.id_pressed.connect(prep_player_building.bind(gen_bldgs))
-	
-	# Load building scenes from JSON data
-	for fac in range(faction_data.size()):
-		loaded_buildings.push_back({})
-		game_actors[fac].faction_data = faction_data[fac].data
-		game_actors[fac].load_units()
-		for b in faction_data[fac].data.buildings:			
-			#check for file and load if exists
-			if(FileAccess.file_exists ("res://Buildings/"+b+".tscn")):
-				loaded_buildings[fac][b] = load("res://Buildings/"+b+".tscn")
-			else:
-				loaded_buildings[fac][b] = null
-				push_warning("Scene file ["+b+".tscn] not found")
-			if(fac == 0):
-				menu_buildings[faction_data[fac]["data"]["buildings"][b].base_display_name] = b
-				match faction_data[fac]["data"]["buildings"][b].category:
-					"resource":
-						res_bldgs.add_item(faction_data[fac]["data"]["buildings"][b].base_display_name)
-					"military":
-						mil_bldgs.add_item(faction_data[fac]["data"]["buildings"][b].base_display_name)
-					"base":
-						gen_bldgs.add_item(faction_data[fac]["data"]["buildings"][b].base_display_name)
-					_:
-						pass
-	
-	call_deferred("prepare_bases")
-	call_deferred("custom_nav_setup")
-
+	# Load level
+	var lvl = load("res://World_Generation/base_level.tscn").instantiate()
+	world = lvl
+	add_child(lvl)
 
 #Called every frame. 'delta' is the elapsed time since the previous frame.
 func _process(_delta):
-	sun_rotation = clampf(180-(180*($UI_Node/Time_Bar/Day_Cycle_Timer.time_left/global.DAY_LENGTH)),0,180)
-	$Sun.rotation_degrees = Vector3(-sun_rotation,90,-180)
-	$Sun.light_energy = clampf(sun_str - ((sun_str * (abs(sun_rotation-90)/180))*2), sun_str*.15,sun_str)
-	moon_rotation = 180-(180*($UI_Node/Time_Bar/Day_Cycle_Timer.time_left/global.NIGHT_LENGTH))
-	$Moon.rotation_degrees = Vector3(-moon_rotation,90,-180)
-	$Moon.light_energy = moon_str - ((moon_str * (abs(moon_rotation-90)/180))*2) + moon_str*.02
-	if(day_cycle):
-		$UI_Node/Time_Bar/Clock_Back.rotation = deg_to_rad(sun_rotation-90)
+	world.sun_rotation = clampf(180-(180*($UI_Node/Time_Bar/Day_Cycle_Timer.time_left/global.DAY_LENGTH)),0,180)
+	world.sun.rotation_degrees = Vector3(-world.sun_rotation,90,-180)
+	world.sun.light_energy = clampf(world.sun_str - ((world.sun_str * (abs(world.sun_rotation-90)/180))*2), world.sun_str*.15,world.sun_str)
+	world.moon_rotation = 180-(180*($UI_Node/Time_Bar/Day_Cycle_Timer.time_left/global.NIGHT_LENGTH))
+	world.moon.rotation_degrees = Vector3(-world.moon_rotation,90,-180)
+	world.moon.light_energy = world.moon_str - ((world.moon_str * (abs(world.moon_rotation-90)/180))*2) + world.moon_str*.02
+	if(world.day_cycle):
+		$UI_Node/Time_Bar/Clock_Back.rotation = deg_to_rad(world.sun_rotation-90)
 	else:
-		$UI_Node/Time_Bar/Clock_Back.rotation = deg_to_rad(moon_rotation+90)
+		$UI_Node/Time_Bar/Clock_Back.rotation = deg_to_rad(world.moon_rotation+90)
 
 
 ## on player input event
@@ -218,6 +150,8 @@ func deselect_unit(unit):
 
 ## Start Selection Square
 func start_select_square(pos):
+	for i in get_tree().get_nodes_in_group("pickable_object"):
+		i.set_ray_pickable(false)
 	selection_square_points = [Vector3.ZERO,Vector3.ZERO]
 	selection_square.size.x = 1
 	selection_square.size.y = 5
@@ -244,7 +178,11 @@ func update_select_square(pos):
 ## Do square selection and add them to selected_units
 ##
 ## returns true when box selects something, returns false otherwise
-func select_from_square():
+func select_from_square():	
+	## unhide pickable objects
+	for i in get_tree().get_nodes_in_group("pickable_object"):
+		i.set_ray_pickable(true)
+	## Update selection square
 	selection_square.visible = false
 	selection_square_points = [Vector3.ZERO,Vector3.ZERO]
 	if(selection_square.size.x + selection_square.size.z < 4):
@@ -252,14 +190,15 @@ func select_from_square():
 			return false
 		click_mode = "select"
 		return false
-	selection_square.get_child(0).get_child(0).shape.size = selection_square.size
-	selection_square.get_child(0).get_child(0).shape.size.y = 50
-	await get_tree().physics_frame
+	selection_square.get_child(0).shape.set_size(Vector3(selection_square.size.x,50,selection_square.size.z))
+	selection_square.get_child(0).force_shapecast_update()
 	selected_units.clear()
-	for unit in player_controller.units:
-		if selection_square.get_child(0).get_overlapping_bodies().has(unit):
-			selected_units.push_back(unit)
-			unit.select()
+	## Select new units
+	for i in selection_square.get_child(0).get_collision_count():
+		var un = (selection_square.get_child(0).get_collider(i))
+		if un.actor_owner.actor_ID == 0:
+			selected_units.push_back(un)
+			un.select()
 	if(selected_units.size()>0):
 		click_mode = "command_unit"
 		group_selected_units()
@@ -288,6 +227,64 @@ func group_selected_units():
 ''' Unit Selection End '''
 '''-------------------------------------------------------------------------------------'''
 ''' Building Placement Start '''
+func _prepare_game():
+	# Connect ground signals
+	for i in world.find_children("Region*"):
+		for j in i.find_children("Floor"):
+			j.get_child(0).input_event.connect(ground_click)	
+	
+	# UI Signals
+	UI_controller.minimap_clicked.connect(_minimap_Clicked)
+	
+	# Connect gamescene signals
+	click_mode_changed.connect(click_mod_update)
+	
+	# Generate enemy actors
+	var e_script = load("res://Actor_Classes/Enemy.gd")
+	for i in range(1,faction_data.size()):
+		var e = Node.new()
+		e.set_script(e_script)
+		e.name = "Enemy_"+str(i)
+		e.actor_ID = i
+		game_actors.push_back(e)
+		add_child(e)
+	
+	# Get building buttons UI element ref
+	var res_bldgs = get_node("UI_Node/Build_Menu/Build_Menu_Container/Resource_Buttons").get_popup()
+	res_bldgs.id_pressed.connect(prep_player_building.bind(res_bldgs))
+	var mil_bldgs = get_node("UI_Node/Build_Menu/Build_Menu_Container/Military_Buttons").get_popup()
+	mil_bldgs.id_pressed.connect(prep_player_building.bind(mil_bldgs))
+	var gen_bldgs = get_node("UI_Node/Build_Menu/Build_Menu_Container/General_Buttons").get_popup()
+	gen_bldgs.id_pressed.connect(prep_player_building.bind(gen_bldgs))
+	
+	# Load building scenes from JSON data
+	for fac in range(faction_data.size()):
+		loaded_buildings.push_back({})
+		game_actors[fac].faction_data = faction_data[fac].data
+		game_actors[fac].load_units()
+		for b in faction_data[fac].data.buildings:			
+			#check for file and load if exists
+			if(FileAccess.file_exists ("res://Buildings/"+b+".tscn")):
+				loaded_buildings[fac][b] = load("res://Buildings/"+b+".tscn")
+			else:
+				loaded_buildings[fac][b] = null
+				push_warning("Scene file ["+b+".tscn] not found")
+			if(fac == 0):
+				menu_buildings[faction_data[fac]["data"]["buildings"][b].base_display_name] = b
+				match faction_data[fac]["data"]["buildings"][b].category:
+					"resource":
+						res_bldgs.add_item(faction_data[fac]["data"]["buildings"][b].base_display_name)
+					"military":
+						mil_bldgs.add_item(faction_data[fac]["data"]["buildings"][b].base_display_name)
+					"base":
+						gen_bldgs.add_item(faction_data[fac]["data"]["buildings"][b].base_display_name)
+					_:
+						pass
+	
+	call_deferred("prepare_bases")
+	call_deferred("custom_nav_setup")
+
+
 ## Place starting bases
 func prepare_bases():
 	await get_tree().physics_frame ## fix for collision issue
@@ -384,8 +381,8 @@ func ground_click(_camera, event, pos, _normal, _shape_idx, _shape):
 				Input.set_mouse_mode(Input.MOUSE_MODE_CONFINED_HIDDEN)
 			if event is InputEventMouseMotion and Input.is_mouse_button_pressed(MOUSE_BUTTON_RIGHT):
 				preview_building.rotate_y(event.get_relative().x/100)
-				preview_building.rot += event.get_relative().x/100				
-				return			
+				preview_building.rot += event.get_relative().x/100
+				return
 			if(Input.is_action_just_released("rmb")):
 				get_viewport().warp_mouse(mouse_loc_stored)
 				Input.set_mouse_mode(Input.MOUSE_MODE_CONFINED)
@@ -401,10 +398,6 @@ func ground_click(_camera, event, pos, _normal, _shape_idx, _shape):
 			if Input.is_action_pressed("lmb"):
 				update_select_square(pos)
 				return
-			if Input.is_action_just_released("lmb"):
-				if(await select_from_square()):
-					##units selected
-					return
 			if Input.is_action_just_released("rmb"):
 				selected_units[0].set_mov_target(pos)
 				selected_units[0].target_enemy = null
@@ -457,18 +450,16 @@ func click_mod_update(old, new):
 			b.show_menu(false)
 	match t:
 		["command_unit", _]:
-			if(new != "command_unit"):
-				for u in selected_units:
+			selected_units.clear()
+			for u in player_controller.units:
+				if !selected_units.has(u):
 					u.select(false)
-				UI_controller.set_unit_list()
-		[_,"square_selecting"]:
-			# hide clicking of buildings
-			for b in world_buildings:
-				b.hide_from_mouse()
-		["square_selecting",_]:
-			# allow clicking of buildings again
-			for b in world_buildings:
-				b.hide_from_mouse(false)
+			UI_controller.set_unit_list()
+		[_, "command_unit"]:
+			for u in player_controller.units:
+				if !selected_units.has(u):
+					u.select(false)
+			UI_controller.set_unit_list()
 		["build", _]:
 			if(preview_building != null and new != "select"):
 				preview_building.queue_free()
@@ -502,23 +493,23 @@ func _on_day_cycle_timer_timeout():
 	for f in game_actors:
 		f.adj_resource("food", f.units.size()* -1)
 	
-	if(day_cycle):
-		$Sun.visible = false
-		$Moon.visible = true
-		$Moon.rotation_degrees = Vector3(0,90,-180)
-		moon_rotation = 0
+	if(world.day_cycle):
+		world.sun.visible = false
+		world.moon.visible = true
+		world.moon.rotation_degrees = Vector3(0,90,-180)
+		world.moon_rotation = 0
 	else:
-		year_day+=1
-		$Sun.visible = true
-		$Moon.visible = false
-		$Sun.rotation_degrees = Vector3(0,90,-180)
-		sun_rotation = 0
+		world.year_day+=1
+		world.sun.visible = true
+		world.moon.visible = false
+		world.sun.rotation_degrees = Vector3(0,90,-180)
+		world.sun_rotation = 0
 	
-	day_cycle = !day_cycle
+	world.day_cycle = !world.day_cycle
 		
-	if year_day >= global.YEAR_LENGTH:
-		year_day = 0
-		year += 1	
+	if world.year_day >= global.YEAR_LENGTH:
+		world.year_day = 0
+		world.year += 1	
 	
 	UI_controller.update_clock()
 

@@ -152,13 +152,14 @@ func _on_units_button_pressed():
 
 ## Update clock
 func update_clock():
-	if(game_scene.day_cycle):
+	await get_parent().ready
+	if(game_scene.world.day_cycle):
 		$Time_Bar/Day_Cycle_Timer.start(global.DAY_LENGTH)
 	else:
 		$Time_Bar/Day_Cycle_Timer.start(global.NIGHT_LENGTH)
 	$Time_Bar/BoxContainer/Date.clear()
 	$Time_Bar/BoxContainer/Date.push_color(Color.BLACK)
-	$Time_Bar/BoxContainer/Date.add_text(global.month_to_string(game_scene.year_day,game_scene.year))
+	$Time_Bar/BoxContainer/Date.add_text(global.month_to_string(game_scene.world.year_day,game_scene.world.year))
 
 
 ## Minimap input event

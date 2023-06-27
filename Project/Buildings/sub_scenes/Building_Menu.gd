@@ -29,7 +29,7 @@ func set_menu_data(bldg_name:String):
 	$Building_Menu/Building_Label.text = "[center][b]"+bldg_name+"[/b][/center]"	#set building name
 
 
-## Set main units list
+## Setup main units list
 func set_unit_list_main(units: Dictionary, _name: String):
 	var cnt = 0
 	$Building_Menu/Page_Buttons/units.text = _name

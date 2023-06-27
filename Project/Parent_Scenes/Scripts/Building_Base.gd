@@ -11,14 +11,13 @@ signal spawned_unit
 
 
 ''' Export Vars '''
-@export var height : int = 1 
 @export var type: String
 @export var menu_pages = {"units": "","sec_units": "","research": "","page_4": ""}
 @export var build_time : float = 10
 @export var fog_rev_radius : float = 50
-# Combat variables
-@export var armor: int = 10
-@export var health: float = 0
+@export_group("Defense")
+@export var base_health : float = 0
+@export_range(0,.99) var base_armor : float = .1
 
 
 ''' Identifying Vars '''
@@ -63,6 +62,13 @@ var train_queue := []		#units queued to train
 var is_training := false	#building is training
 
 ''' On-Ready Vars '''
+## Combat variables
+@onready var armor: float = base_armor
+@onready var max_health: float = base_health
+@onready var health: float = max_health:
+	set(value):
+		health = clampf(value,-1,max_health)
+
 @onready var world = get_parent()
 ## Children references
 @onready var mesh = get_node("MeshInstance3D")
@@ -104,7 +110,7 @@ func _ready():
 func _process(delta):
 	if(is_building):
 		build_timer-=delta
-		var prog = height*((build_time-build_timer)/build_time)
+		var prog = ((build_time-build_timer)/build_time)
 		build_particles.position.y = prog
 		for i in range(mesh.get_surface_override_material_count()):
 			mesh.mesh.surface_get_material(i).set_shader_parameter("progress", prog)
@@ -405,7 +411,7 @@ func set_all_shader(shad):
 '''-------------------------------------------------------------------------------------'''
 ''' Combat Start '''
 func damage(amt: float, _type: String):
-	health -= amt-armor
+	health -= (amt - amt*armor)
 	## DIE
 	if(health <= 0):
 		died.emit()
@@ -513,13 +519,14 @@ func spawn_unit(unit_override: String):
 		menu.update_train_prog(train_queue[0],1)
 		var u_name = pop_train_queue()
 		new_unit = units[u_name].instantiate()
-		new_unit.load_data(actor_owner.faction_data.buildings[type]["unit_list"][u_name])
 		world.spawn_unit(actor_owner, new_unit)
+		new_unit.load_data(actor_owner.faction_data.buildings[type]["unit_list"][u_name])
 		new_unit.position = spawn.global_position
 		new_unit.set_mov_target(rally.global_position)
 	else:
 		new_unit = actor_owner.loaded_units["Infantry"].instantiate()
 		world.spawn_unit(actor_owner, new_unit)
+		new_unit.load_data(actor_owner.faction_data.buildings["Barracks"]["unit_list"]["Infantry"])
 		new_unit.position = spawn.global_position
 		new_unit.position.y = new_unit.get_ground_depth()
 	spawned_unit.emit(self,new_unit)

@@ -26,7 +26,7 @@ var rpd_goal := {
 "riches": 0,
 "crystals": 0,
 "food": 0}
-var exp_pop := 1 #expected population after training current users
+var exp_pop := 0 #expected population after training current users
 var selected_units = []
 var searching_units = {}
 
@@ -516,7 +516,7 @@ func _searcher_died(unit):
 		goal_queue.clear()
 		current_goal = "ponder"
 		target_item = "za warudo"
-		for i in range(deferred_goals.size()):
+		for i in range(deferred_goals.size()-1):
 			if(typeof(deferred_goals[i][1]) == typeof(searching_units[unit]) and deferred_goals[i][1] == searching_units[unit]):
 				deferred_goals.pop_at(i)
 		searching_units.erase(unit)

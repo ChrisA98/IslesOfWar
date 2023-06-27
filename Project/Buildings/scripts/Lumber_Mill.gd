@@ -11,6 +11,6 @@ func _ready():
 func make_valid():
 	super()
 	for i in $Detection_Area.get_overlapping_areas():
-		if i.get_parent().name == "Forest":
+		if i.get_parent().name.contains("Forest"):
 			return
 	make_invalid()

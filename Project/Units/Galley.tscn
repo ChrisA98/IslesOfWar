@@ -36,10 +36,10 @@ resource_local_to_scene = true
 radius = 2.0
 
 [node name="Galley" instance=ExtResource("1_2rm4p")]
-fog_rev_radius = 45.0
-travel_type = [false, true, false]
 unit_name = "Galley"
+fog_rev_radius = 45.0
 max_speed = 20
+travel_type = [false, true, false]
 accel = 2
 deccel = 1
 

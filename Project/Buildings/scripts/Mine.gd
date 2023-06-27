@@ -32,6 +32,6 @@ func generate_resource():
 func make_valid():
 	super()
 	for i in $Detection_Area.get_overlapping_areas():
-		if i.get_parent().name == targ_zone:
+		if i.get_parent().name.contains(targ_zone):
 			return
 	make_invalid()

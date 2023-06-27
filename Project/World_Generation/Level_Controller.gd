@@ -1,28 +1,35 @@
 extends Node3D
+''' Time keeping vars '''
+@export_group("Time")
+@export var year_day = 270
+@export var year = 603
+@export var day_cycle = true
+@export_group("Terrain")
 @export var terrain_amplitude = 100
-
-@onready var gamescene = $".."
-
-@onready var noise_image: Image = Image.new()
-@onready var chunk_size = 500
-@onready var nav_manager = preload("res://World_Generation/NavMeshManager.gd")
+@export var water_table : float = 7
 @export var heightmap_dir: String = "res://Test_Items/Map_data/"
 
-## Level terrain info
-@export var water_table : float = 7
-@onready var ground = get_node("../Player/Visual_Ground")
-@onready var water = get_node("../Player/Visual_Ground/Water")
+''' Time keeping vars '''
+var sun_rotation = 0
+var moon_rotation = 0
+var sun_str = 1.3
+var moon_str = .427
+
 var heightmap
-
-
 var rng = RandomNumberGenerator.new()
 var height_data = {}
-
-
 var vertices = PackedVector3Array()
 var UVs = PackedVector2Array()
 var normals = PackedVector3Array()
 
+@onready var gamescene = $".."
+@onready var sun = $Sun
+@onready var moon = $Moon
+@onready var noise_image: Image = Image.new()
+@onready var chunk_size = 500
+@onready var nav_manager = preload("res://World_Generation/NavMeshManager.gd")
+@onready var ground = get_node("../Player/Visual_Ground")
+@onready var water = get_node("../Player/Visual_Ground/Water")
 @onready var meshres = 5
 
 
@@ -74,6 +81,10 @@ func _ready():
 	water.position.y = water_table
 	water.mesh.surface_get_material(0).set_shader_parameter("water_level", water_table)
 	water.mesh.surface_get_material(0).set_shader_parameter("t_height", terrain_amplitude)
+		
+	# Set Sun and moon in place
+	$Sun.rotation_degrees = Vector3(0,90,-180)
+	$Moon.rotation_degrees = Vector3(0,90,-180)
 	
 	## Fog of war walls
 	var fog_wall_size = ((chunk_size*chunks)/65)+1	#gets length of walls
@@ -99,6 +110,7 @@ func _ready():
 		te.position.x = -((chunk_size*chunks/2)+65)
 		$Great_Fog_Wall.add_child(te)
 	call_deferred("build_fog_war",chunks)
+	get_parent().call_deferred("_prepare_game")
 
 
 func build_fog_war(chunks):

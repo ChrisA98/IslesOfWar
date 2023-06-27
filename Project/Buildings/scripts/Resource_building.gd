@@ -2,9 +2,9 @@ extends Building
 
 class_name resource_building 
 
-@export var resource : String = "wood"
-var rpc : int = 0 #Resource Per Cycle
-var generate_time : int = 10
+@export_enum("wood","stone","food","crystal") var resource : String
+@export var rpc : int = 0 #Resource Per Cycle
+@export var generate_time : int = 10
 @onready var timer = get_node("Timer")
 
 
@@ -19,10 +19,6 @@ func _ready():
 
 func init(pos, snap: int, actor: Node):
 	super(pos, snap, actor)
-
-
-func place():
-	super()
 
 
 func finish_building():
