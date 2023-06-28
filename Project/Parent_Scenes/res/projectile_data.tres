@@ -1,0 +1,47 @@
+[gd_resource type="Resource" load_steps=9 format=3 uid="uid://bc23qo1nhbhla"]
+
+[ext_resource type="Script" path="res://Parent_Scenes/Scripts/projectile_data.gd" id="1_mjxcr"]
+
+[sub_resource type="StandardMaterial3D" id="StandardMaterial3D_vxd70"]
+albedo_color = Color(0.321569, 0.168627, 0.0235294, 1)
+
+[sub_resource type="SphereMesh" id="SphereMesh_uish5"]
+material = SubResource("StandardMaterial3D_vxd70")
+radius = 0.1
+height = 0.2
+radial_segments = 4
+rings = 1
+
+[sub_resource type="Curve" id="Curve_0xt2m"]
+_data = [Vector2(0, 1), 0.0, 0.0, 0, 0, Vector2(1, 0), 0.0, 0.0, 0, 0]
+point_count = 2
+
+[sub_resource type="CurveTexture" id="CurveTexture_6clb7"]
+curve = SubResource("Curve_0xt2m")
+
+[sub_resource type="ParticleProcessMaterial" id="ParticleProcessMaterial_rgikh"]
+direction = Vector3(0, 1, 0)
+spread = 18.75
+initial_velocity_min = 0.2
+initial_velocity_max = 33.17
+linear_accel_min = 15.28
+linear_accel_max = 15.28
+scale_curve = SubResource("CurveTexture_6clb7")
+
+[sub_resource type="StandardMaterial3D" id="StandardMaterial3D_jrqsp"]
+albedo_color = Color(0.360784, 0.360784, 0.360784, 1)
+
+[sub_resource type="SphereMesh" id="SphereMesh_0ggfi"]
+material = SubResource("StandardMaterial3D_jrqsp")
+radial_segments = 8
+rings = 4
+
+[resource]
+resource_local_to_scene = true
+script = ExtResource("1_mjxcr")
+travel_speed = 10.0
+lifespan = 1.0
+arc_height = 5.0
+impact_particle_material = SubResource("ParticleProcessMaterial_rgikh")
+impact_particle = SubResource("SphereMesh_uish5")
+projectile_mesh = SubResource("SphereMesh_0ggfi")

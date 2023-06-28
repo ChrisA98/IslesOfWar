@@ -43,7 +43,7 @@ colors = PackedColorArray(1, 0.721569, 0.733333, 1, 0.162066, 0.162066, 0.162066
 [sub_resource type="GradientTexture1D" id="GradientTexture1D_fnu04"]
 gradient = SubResource("Gradient_67fsc")
 
-[node name="Menu" type="Panel"]
+[node name="Menu" type="Panel" groups=["uses_scroll"]]
 self_modulate = Color(1, 1, 1, 0.490196)
 anchors_preset = -1
 anchor_bottom = 0.557
@@ -165,11 +165,13 @@ text = "-
 layout_mode = 2
 size_flags_horizontal = 3
 size_flags_stretch_ratio = 8.12
+mouse_filter = 1
 
 [node name="RichTextLabel" type="RichTextLabel" parent="Building_Menu/Pages/units_page/units_list/unit_box_0/Panel"]
 layout_mode = 0
 offset_right = 139.0
 offset_bottom = 25.0
+mouse_filter = 1
 text = "unit_Name"
 
 [node name="train_queue" type="TextureProgressBar" parent="Building_Menu/Pages/units_page/units_list/unit_box_0"]

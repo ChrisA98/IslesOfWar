@@ -170,8 +170,8 @@ func load_data(data):
 	#Load unit list if exists
 	if(data.buildings[type].has("unit_list")):
 		menu.set_unit_list_main(data.buildings[type].unit_list,menu_pages["units"])
-		actor_owner.loaded_units["Infantry"] = load("res://Units/Infantry.tscn")
-		units["Infantry"] = actor_owner.loaded_units["Infantry"]
+		#actor_owner.loaded_units["Infantry"] = load("res://Units/Infantry.tscn")
+		#units["Infantry"] = actor_owner.loaded_units["Infantry"]
 		#load unit scenes
 		for un in data.buildings[type]["unit_list"]:
 			if !actor_owner.loaded_units.has(un):

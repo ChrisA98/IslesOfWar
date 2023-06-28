@@ -1,0 +1,14 @@
+[gd_scene load_steps=2 format=3 uid="uid://ci7vmp05stc3a"]
+
+[ext_resource type="PackedScene" uid="uid://ccoruw5j562l7" path="res://Parent_Scenes/Building_Base.tscn" id="1_6qvoh"]
+
+[node name="Depot" instance=ExtResource("1_6qvoh")]
+type = "Depot"
+menu_pages = {
+"page_4": "",
+"research": "",
+"sec_units": "",
+"units": "Units"
+}
+build_time = 1.0
+fog_rev_radius = 45.0

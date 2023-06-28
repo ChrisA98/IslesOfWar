@@ -13,6 +13,7 @@ signal research_queue
 var unit_buttons := {}
 var active_train
 var active_res
+var has_mouse: bool
 
 func _ready():
 	# bind page buttons
@@ -22,6 +23,8 @@ func _ready():
 	## hide unused pages
 	for pag in visible_pages:
 		$Building_Menu/Page_Buttons.find_child(pag).visible = visible_pages[pag]
+	
+
 
 
 ## Set menu base visibilities and data
@@ -48,6 +51,10 @@ func set_unit_list_main(units: Dictionary, _name: String):
 		unit_buttons[u] = t	## Link button to unit name
 		
 		cnt+=1
+	
+	for i in get_children(true):
+		i.mouse_entered.connect(set.bind("has_mouse",true))
+		i.mouse_exited.connect(set.bind("has_mouse",false))
 
 
 ## Set menu page

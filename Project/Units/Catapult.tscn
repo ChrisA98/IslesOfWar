@@ -1,0 +1,92 @@
+[gd_scene load_steps=10 format=3 uid="uid://cl5xstwaf1mt3"]
+
+[ext_resource type="PackedScene" uid="uid://cs2p3v3o53aki" path="res://Parent_Scenes/Unit_Base.tscn" id="1_qmaut"]
+
+[sub_resource type="CylinderShape3D" id="CylinderShape3D_wsuwi"]
+resource_local_to_scene = true
+height = 3.5
+radius = 2.0
+
+[sub_resource type="BoxMesh" id="BoxMesh_2kgoo"]
+size = Vector3(2.119, 0.579, 4.341)
+
+[sub_resource type="BoxMesh" id="BoxMesh_7xfd1"]
+size = Vector3(2.033, 1.556, 0.546)
+
+[sub_resource type="SphereMesh" id="SphereMesh_a8ntu"]
+radius = 0.7
+height = 0.541
+is_hemisphere = true
+
+[sub_resource type="BoxMesh" id="BoxMesh_b5yh4"]
+size = Vector3(0.376, 0.399, 5)
+
+[sub_resource type="CylinderMesh" id="CylinderMesh_fmxd1"]
+top_radius = 0.846
+bottom_radius = 0.607
+height = 0.668
+radial_segments = 6
+
+[sub_resource type="SphereShape3D" id="SphereShape3D_o8l3i"]
+resource_local_to_scene = true
+radius = 25.0
+
+[sub_resource type="CylinderShape3D" id="CylinderShape3D_2pntl"]
+resource_local_to_scene = true
+radius = 2.0
+
+[node name="Catapult" instance=ExtResource("1_qmaut")]
+unit_name = "Catapult"
+fog_rev_radius = 40.0
+max_speed = 5
+travel_type = [true, false, false]
+accel = 1
+base_health = 10.0
+base_armor = 0.5
+is_ranged = true
+damage_type = "Physical"
+base_atk_spd = 5.0
+target_atk_rng = 30
+
+[node name="CollisionShape3D" parent="." index="0"]
+shape = SubResource("CylinderShape3D_wsuwi")
+
+[node name="MeshInstance3D" type="MeshInstance3D" parent="UnitModels" index="0"]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, 0.5795, -0.0218682)
+mesh = SubResource("BoxMesh_2kgoo")
+
+[node name="MeshInstance3D6" type="MeshInstance3D" parent="UnitModels" index="1"]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, 1.25761, -1.50336)
+mesh = SubResource("BoxMesh_7xfd1")
+
+[node name="MeshInstance3D8" type="MeshInstance3D" parent="UnitModels" index="2"]
+transform = Transform3D(-0.995643, 0.0342873, -0.0867185, -0.0122601, -0.970008, -0.242765, -0.0924414, -0.240644, 0.966201, -0.0148873, 1.25761, 3.51833)
+mesh = SubResource("SphereMesh_a8ntu")
+
+[node name="MeshInstance3D7" type="MeshInstance3D" parent="UnitModels" index="3"]
+transform = Transform3D(1, 0, 0, 0, 0.976065, -0.217479, 0, 0.217479, 0.976065, 0, 1.57393, 1.0081)
+mesh = SubResource("BoxMesh_b5yh4")
+
+[node name="MeshInstance3D2" type="MeshInstance3D" parent="UnitModels" index="4"]
+transform = Transform3D(-4.37114e-08, -1, 0, 1, -4.37114e-08, 0, 0, 0, 1, 1.44619, 0.5795, -1.38469)
+mesh = SubResource("CylinderMesh_fmxd1")
+
+[node name="MeshInstance3D3" type="MeshInstance3D" parent="UnitModels" index="5"]
+transform = Transform3D(-4.37114e-08, -1, 0, 1, -4.37114e-08, 0, 0, 0, 1, 1.44619, 0.5795, 1.35791)
+mesh = SubResource("CylinderMesh_fmxd1")
+
+[node name="MeshInstance3D4" type="MeshInstance3D" parent="UnitModels" index="6"]
+transform = Transform3D(4.37114e-08, 1, 8.9407e-08, 1, -4.37114e-08, 0, 2.66454e-15, 8.9407e-08, -1, -1.42705, 0.5795, 1.35791)
+mesh = SubResource("CylinderMesh_fmxd1")
+
+[node name="MeshInstance3D5" type="MeshInstance3D" parent="UnitModels" index="7"]
+transform = Transform3D(4.37114e-08, 1, 8.9407e-08, 1, -4.37114e-08, 0, 2.66454e-15, 8.9407e-08, -1, -1.42705, 0.5795, -1.30798)
+mesh = SubResource("CylinderMesh_fmxd1")
+
+[node name="CollisionShape3D" parent="Fog_Breaker/Area3D" index="0"]
+shape = SubResource("SphereShape3D_o8l3i")
+
+[node name="CollisionShape3D" parent="Detection_Area" index="0"]
+shape = SubResource("CylinderShape3D_2pntl")
+
+[editable path="Fog_Breaker"]

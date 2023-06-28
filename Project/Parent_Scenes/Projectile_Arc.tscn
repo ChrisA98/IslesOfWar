@@ -1,0 +1,18 @@
+[gd_scene load_steps=4 format=3 uid="uid://c3871d4d2sgjf"]
+
+[ext_resource type="Script" path="res://Parent_Scenes/Scripts/Projectile_Controller.gd" id="1_elwhl"]
+[ext_resource type="Resource" uid="uid://bc23qo1nhbhla" path="res://Parent_Scenes/res/projectile_data.tres" id="2_mqjkn"]
+
+[sub_resource type="Curve3D" id="Curve3D_ysj2p"]
+bake_interval = 256.0
+_data = {
+"points": PackedVector3Array(-2.7919, 0, 0, 5.58379, 2.51852, 0, 0, 0, 0, -2.7919, 0, 0, 8.37569, 2.72153, 0, 2.7919, 2.51852, 0, 0, 2.51852, 0, 13.9595, -6.77947, 0, 5.58379, 2.72153, 0, 2.7919, 2.72153, 0, 13.9595, -2.26511, 0, 8.37569, 0.422372, 0, 8.37569, 0.422372, 0, 12.2256, -7.68476, 0, 10.3006, -3.63119, 0, 10.3006, -3.63119, 0, 12.9959, -12.4485, 0, 11.6483, -8.03985, 0, 11.6483, -8.03985, 0, 13.485, -17.1902, 0, 12.5667, -12.615, 0, 12.5667, -12.615, 0, 13.8032, -21.9169, 0, 13.185, -17.266, 0),
+"tilts": PackedFloat32Array(0, 0, 0, 0, 0, 0, 0, 0)
+}
+point_count = 8
+
+[node name="projectile_arc" type="Path3D"]
+top_level = true
+curve = SubResource("Curve3D_ysj2p")
+script = ExtResource("1_elwhl")
+proj_data = ExtResource("2_mqjkn")

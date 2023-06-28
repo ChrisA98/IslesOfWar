@@ -42,6 +42,12 @@ max_speed = 20
 travel_type = [false, true, false]
 accel = 2
 deccel = 1
+base_health = 15.0
+base_armor = 0.2
+is_ranged = true
+damage_type = "Physical"
+base_atk_spd = 3.0
+target_atk_rng = 20
 
 [node name="CollisionShape3D" parent="." index="0"]
 shape = SubResource("CylinderShape3D_eg3oh")

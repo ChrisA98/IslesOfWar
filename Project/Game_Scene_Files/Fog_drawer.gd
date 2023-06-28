@@ -67,6 +67,8 @@ func create_drawer(parent):
 
 ## Move drawers
 func update_draw(parent, pos, visible):
+	if(!drawers.has(parent)):
+		return
 	drawers[parent].visible = visible
 	drawers[parent].position.x = pos.x
 	drawers[parent].position.z = pos.z

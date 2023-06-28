@@ -104,12 +104,13 @@ var res_cost := {"wood": 0,
 @onready var armor : float = base_armor ## base armor after modifers
 @onready var m_dmg_var : float = m_attack_damage_variance ## base armor after modifers
 @onready var r_atk_sprd : float = r_attack_attack_spread ## base armor after modifers
-var attack_method : Callable # method to attack with
-var current_atk_str : float #with modifiers
-var current_atk_spd : float: #with modifiers
+@onready var current_atk_str : float = base_atk_str  #with modifiers
+@onready var current_atk_spd : float = base_atk_spd:  #with modifiers
 	set(value):
 		current_atk_spd = value
 		atk_timer.start(current_atk_spd)
+var projectile_arc
+var attack_method : Callable # method to attack with
 var target_enemy:
 	set(value):
 		target_enemy = value
@@ -149,6 +150,9 @@ func _ready():
 	## Set attack type
 	if is_ranged:
 		attack_method = Callable(__ranged_attack)
+		var proj = load("res://Parent_Scenes/Projectile_Arc.tscn").instantiate()
+		add_child(proj)
+		projectile_arc = proj
 	else:
 		attack_method = Callable(__melee_attack)
 
@@ -405,7 +409,8 @@ func _attack():
 
 ## ranged attack callable
 func __ranged_attack():
-	pass
+	var dis = position.distance_to(target_enemy.position)
+	projectile_arc.fire(position+Vector3.UP*3, target_enemy.position, dis, current_atk_str, "physical")
 
 ## melee attack callable
 func __melee_attack():
@@ -423,18 +428,17 @@ func _targeted_attack(delta):
 		return
 	
 	## Handle tracking target
-	if nav_agent.is_navigation_finished():
-		if(position.distance_to(target_enemy.position) <= target_atk_rng):
-			if nav_agent.is_navigation_finished():
-				var trgt = position.direction_to(target_enemy.position)
-				var lookdir = atan2(-trgt.x, -trgt.z)
-				$UnitModels.rotation.y = lerp($UnitModels.rotation.y, lookdir, 0.1)
-				return
-			_set_target_position(position)
-		else:
-			_set_target_position(target_enemy.position)
-	
+	if(position.distance_to(target_enemy.position) <= target_atk_rng):
+		if nav_agent.is_navigation_finished():
+			var trgt = position.direction_to(target_enemy.position)
+			var lookdir = atan2(-trgt.x, -trgt.z)
+			$UnitModels.rotation.y = lerp($UnitModels.rotation.y, lookdir, 0.1)
+			return
+		_set_target_position(position)
+	else:
+		_set_target_position(target_enemy.position)
 	_travel(delta)
+	
 		
 
 

@@ -98,7 +98,7 @@ cull_mask = 1048573
 
 [node name="StaticBody3D" type="StaticBody3D" parent="." groups=["pickable_object"]]
 transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, 0.507441, 0)
-collision_layer = 2
+collision_layer = 10
 input_ray_pickable = false
 
 [node name="CollisionShape3D" type="CollisionShape3D" parent="StaticBody3D"]

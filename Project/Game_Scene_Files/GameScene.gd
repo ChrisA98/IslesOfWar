@@ -405,6 +405,8 @@ func ground_click(_camera, event, pos, _normal, _shape_idx, _shape):
 					for i in range(1,selected_units.size()):
 						selected_units[0].add_following(selected_units[i])
 						selected_units[1].target_enemy = null
+			if Input.is_mouse_button_pressed(MOUSE_BUTTON_MIDDLE):
+				selected_units[0].position = pos + Vector3.UP
 		"select":
 			if event is InputEventMouseButton:
 				if event.button_index == MOUSE_BUTTON_RIGHT and event.pressed:

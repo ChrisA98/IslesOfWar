@@ -49,8 +49,14 @@ func _input(event):
 	#only read mouse position on screen while in game window
 	#scroll wheel input
 	if Input.is_action_just_released("scroll_up") and zoom > 0:
+		for m in get_tree().get_nodes_in_group("uses_scroll"):
+			if m.has_mouse:
+				return
 		zoom -= 5
 	if event.is_action("scroll_down") and zoom < 50:
+		for m in get_tree().get_nodes_in_group("uses_scroll"):
+			if m.has_mouse:
+				return
 		zoom += 5
 	
 	if Input.is_action_just_released("reset_map_rot"):
@@ -79,6 +85,7 @@ func check_menus():
 
 
 func _physics_process(delta):
+	## Move ground render sqr
 	$"../Visual_Ground".position = position - Vector3(fmod(position.x,3),0,fmod(position.z,3))
 	
 	if Input.is_action_pressed(("cam_move_forward")):
