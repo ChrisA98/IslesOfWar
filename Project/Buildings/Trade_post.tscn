@@ -22,5 +22,8 @@ surface_material_override/0 = SubResource("StandardMaterial3D_xyfiq")
 [node name="CollisionShape3D" parent="StaticBody3D" index="0"]
 transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, 0, 0)
 
+[node name="Detection_Area" parent="." index="7"]
+collision_layer = 32769
+
 [node name="Fog_Breaker" parent="." index="9"]
 visible = false

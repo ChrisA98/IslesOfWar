@@ -27,7 +27,6 @@ var rpd_goal := {
 "crystals": 0,
 "food": 0}
 var exp_pop := 0 #expected population after training current users
-var selected_units = []
 var searching_units = {}
 
 '''Building vars'''
@@ -268,13 +267,13 @@ func __attack():
 	var trgt_loc = enemy_locations[focused_enemy][rng.randi_range(0,enemy_locations[focused_enemy].size()-1)]
 	for i in units:
 		## Select all units
-		##Maybe change this to keep defensive units
-		selected_units.push_back(i)
-	selected_units[0].declare_enemy(trgt_loc)
-	if(selected_units.size() > 1):
-		for j in range(1,selected_units.size()):
-			selected_units[0].add_following(selected_units[j])
-	selected_units = [] 
+		## Maybe change this to keep defensive units
+		if(i.ai_mode.contains("idle")):
+			selected_units.push_back(i)
+	if(selected_units.size() > 0):
+		command_unit_attack(trgt_loc)
+	clear_selection()
+	complete_goal()
 
 
 ''' _think functions end '''

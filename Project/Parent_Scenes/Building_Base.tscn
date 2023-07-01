@@ -147,7 +147,6 @@ transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, -0.0474244, 0)
 
 [node name="Detection_Area" type="Area3D" parent="."]
 transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, 0.687257, 0)
-collision_layer = 32769
 collision_mask = 32769
 input_ray_pickable = false
 metadata/building_area = true

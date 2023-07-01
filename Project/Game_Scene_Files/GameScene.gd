@@ -32,7 +32,6 @@ var preview_building: Node3D:
 
 ''' User input vars '''
 var activated_building = null
-var selected_units = []
 var selection_square_points = [Vector3.ZERO,Vector3.ZERO]
 var click_mode: String = "select":
 	get:
@@ -80,7 +79,8 @@ func _process(_delta):
 func _input(event):
 	if event.is_action_pressed("select_all_units"):
 		for u in player_controller.units:
-			selected_units.push_back(u)
+			player_controller.select_unit(u,false,false)
+		player_controller.group_selected_units()
 
 
 '''### PUBLIC METHODS ###'''
@@ -127,25 +127,15 @@ func unit_selected(unit, event):
 	
 	if(unit.actor_owner == player_controller):
 		click_mode = "command_unit"
-		unit.select()
-		if event.is_shift_pressed():
-			selected_units.push_back(unit)
-		else:
-			selected_units = [unit]
-		group_selected_units()
+		player_controller.select_unit(unit,! event.is_shift_pressed())
 	else:
 		if click_mode == "command_unit":
-			selected_units[0].declare_enemy(unit)
-			if(selected_units.size() > 1):
-				for j in range(1,selected_units.size()):
-					selected_units[0].add_following(selected_units[j])
+			player_controller.command_unit_attack(unit)
 
 
 ##remove selected unit from list
 func deselect_unit(unit):
-	if selected_units.has(unit):
-		selected_units.erase(unit)
-	group_selected_units()
+	player_controller.deselect_unit(unit)
 
 
 ## Start Selection Square
@@ -192,16 +182,16 @@ func select_from_square():
 		return false
 	selection_square.get_child(0).shape.set_size(Vector3(selection_square.size.x,50,selection_square.size.z))
 	selection_square.get_child(0).force_shapecast_update()
-	selected_units.clear()
+	player_controller.clear_selection()
 	## Select new units
 	for i in selection_square.get_child(0).get_collision_count():
 		var un = (selection_square.get_child(0).get_collider(i))
 		if un.actor_owner.actor_ID == 0:
-			selected_units.push_back(un)
+			player_controller.select_unit(un,false,false)
 			un.select()
-	if(selected_units.size()>0):
+	if(player_controller.selected_units.size()>0):
 		click_mode = "command_unit"
-		group_selected_units()
+		player_controller.group_selected_units()
 	else:
 		if click_mode != "square_selecting":
 			return true
@@ -211,18 +201,10 @@ func select_from_square():
 
 ## Select signal from unit list
 func select_from_list(units):
-	selected_units = units
+	player_controller.clear_selection()
+	player_controller.select_group(units)
 
 
-## Get unit denominations for unit list
-func group_selected_units():
-	var u = {}
-	for i in selected_units:
-		if(u.has(i.unit_name)):
-			u[i.unit_name].push_back(i)
-		else:
-			u[i.unit_name] = [i]
-	UI_controller.set_unit_list(u)
 
 ''' Unit Selection End '''
 '''-------------------------------------------------------------------------------------'''
@@ -353,10 +335,7 @@ func prep_other_building(actor, bldg_name):
 func building_pressed(building):
 	if !player_controller.owns_building(building):
 		if click_mode == "command_unit":
-			selected_units[0].declare_enemy(building)
-			if(selected_units.size() > 1):
-				for j in range(1,selected_units.size()):
-					selected_units[0].add_following(selected_units[j])
+			player_controller.command_unit_attack(building)
 		return
 	activated_building = building #pass activated building to gamescene
 	var type = building.type
@@ -399,14 +378,10 @@ func ground_click(_camera, event, pos, _normal, _shape_idx, _shape):
 				update_select_square(pos)
 				return
 			if Input.is_action_just_released("rmb"):
-				selected_units[0].set_mov_target(pos)
-				selected_units[0].target_enemy = null
-				if(selected_units.size() > 1):
-					for i in range(1,selected_units.size()):
-						selected_units[0].add_following(selected_units[i])
-						selected_units[1].target_enemy = null
+				player_controller.command_unit_move(pos)
 			if Input.is_mouse_button_pressed(MOUSE_BUTTON_MIDDLE):
-				selected_units[0].position = pos + Vector3.UP
+				##DEBUG tool to teleport units
+				player_controller.selected_units[0].position = pos + Vector3.UP
 		"select":
 			if event is InputEventMouseButton:
 				if event.button_index == MOUSE_BUTTON_RIGHT and event.pressed:
@@ -452,14 +427,11 @@ func click_mod_update(old, new):
 			b.show_menu(false)
 	match t:
 		["command_unit", _]:
-			selected_units.clear()
-			for u in player_controller.units:
-				if !selected_units.has(u):
-					u.select(false)
-			UI_controller.set_unit_list()
+			player_controller.clear_selection()
 		[_, "command_unit"]:
+			## Maybe can remove this line later
 			for u in player_controller.units:
-				if !selected_units.has(u):
+				if !player_controller.selected_units.has(u):
 					u.select(false)
 			UI_controller.set_unit_list()
 		["build", _]:
@@ -480,12 +452,7 @@ func _minimap_Clicked(command : String, pos : Vector2):
 		"ping":
 			match click_mode:
 				"command_unit":
-					selected_units[0].set_mov_target(world_pos)
-					selected_units[0].target_enemy = null
-					if(selected_units.size() > 1):
-						for i in range(1,selected_units.size()):
-							selected_units[0].add_following(selected_units[i])
-							selected_units[1].target_enemy = null
+					player_controller.command_unit_move(world_pos)
 				
 
 ''' Player Input End '''

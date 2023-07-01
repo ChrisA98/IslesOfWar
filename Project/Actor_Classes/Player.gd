@@ -40,3 +40,33 @@ func place_building(bld):
 	for i in bases:
 			i.hide_radius()
 	return out
+
+
+## Adds grouping function to unit selection
+func select_unit(unit, clr := true, group = true):
+	super(unit,clr)
+	if(group):
+		group_selected_units()
+
+
+## Select a group of iunits
+func select_group(units):
+	super(units)
+	group_selected_units()
+
+
+## group units afrter clearing selected list
+func clear_selection():
+	super()
+	group_selected_units()
+
+
+## Get unit denominations for unit list
+func group_selected_units():
+	var u = {}
+	for i in selected_units:
+		if(u.has(i.unit_name)):
+			u[i.unit_name].push_back(i)
+		else:
+			u[i.unit_name] = [i]
+	UI_controller.set_unit_list(u)

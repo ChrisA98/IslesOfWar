@@ -18,6 +18,7 @@ var bases := []
 var buildings := []
 var units := []
 var loaded_units := {}
+var selected_units = []
 
 # Actor Resources
 @onready var resources = {
@@ -136,9 +137,68 @@ func update_pop():
 func owns_building(bldg):
 	return buildings.has(bldg)
 
+
 ## Check if game actor can afford unit
 func can_afford_unit(unit:String, bldg: String):
 	for res in faction_data.buildings[bldg]["unit_list"][unit]["base_cost"]:
 		if resources[res] < faction_data.buildings[bldg]["unit_list"][unit]["base_cost"][res] :
 			return res
 	return true
+
+
+## Add unit to selected list
+func select_unit(unit, clr := true):
+	if clr:
+		clear_selection()
+	selected_units.push_back((unit))
+	unit.select()
+
+
+## Remove unit from list
+func deselect_unit(unit):
+	selected_units.erase(unit)
+	unit.select(false)
+
+
+## Select a group of iunits
+func select_group(units):
+	for u in units:
+		select_unit(u,false)
+
+
+## Clear unit selected list
+func clear_selection():
+	for u in selected_units:
+		u.select(false)
+	selected_units.clear()
+
+
+## Give a command to all selected units
+## iterate var must be at end of arg array
+func group_command(cmnd: Callable, args: Array):
+	cmnd.callv(args)
+	if(selected_units.size() > 1):
+		for j in range(1,selected_units.size()):
+			if(selected_units[0].position.distance_to(selected_units[j].position) <= 5):
+				selected_units[0].add_following(selected_units[j])
+			else:
+				args[-1] = j	## sett iteration
+				cmnd.callv(args)
+
+
+## Command selected_units to move to location
+func command_unit_move(position):
+	##Local command function
+	var cmnd = func(pos=position, unit:=0):
+		selected_units[unit].set_mov_target(pos)
+	
+	group_command(cmnd,[position,0])
+
+
+## Command selected units to attack trgt
+func command_unit_attack(trgt):
+	##Local command function
+	var cmnd = func(target = trgt, unit:=0):
+		selected_units[unit].declare_enemy(target)
+	
+	group_command(cmnd,[trgt,0])

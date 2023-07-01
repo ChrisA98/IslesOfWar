@@ -49,7 +49,7 @@ radius = 2.0
 
 [node name="Unit_Base" type="CharacterBody3D" groups=["pickable_object"]]
 collision_layer = 5
-collision_mask = 4
+collision_mask = 0
 floor_max_angle = 0.610865
 script = ExtResource("1_xwgnb")
 fog_rev_radius = 35.0

@@ -53,6 +53,7 @@ var ai_mode :StringName = "idle_basic":
 		if value.contains("attack"):
 			atk_timer.start(current_atk_spd)
 		else:
+			target_enemy = null
 			atk_timer.stop()
 var ai_methods : Dictionary = {
 	"idle_basic" : Callable(_idling_basic),
@@ -61,6 +62,7 @@ var ai_methods : Dictionary = {
 	"traveling_basic" : Callable(_traveling_basic),
 	"wandering_basic" : Callable(_wandering_basic),
 	"attack_commanded" : Callable(_targeted_attack),
+	"follow_basic" : Callable(_following),
 }
 var intial_path_dist := 0.1
 var followers: Array
@@ -184,9 +186,13 @@ func load_data(data):
 	if (actor_owner.actor_ID == 0):
 		is_visible = true
 	else:
+		## Non_player units need not clear fog
+		fog_reg.detect_area.set_collision_mask_value(20,false)
 		is_visible = false
 		det_area.area_entered.connect(_det_area_entered)
 		det_area.area_exited.connect(_det_area_exited)
+		fog_reg.detect_area.area_entered.connect(_vision_area_entered)
+		fog_reg.detect_area.area_exited.connect(_vision_area_exited)
 	
 	fog_reg.detect_area.body_entered.connect(_vision_body_entered)
 	fog_reg.detect_area.body_exited.connect(_vision_body_exited)
@@ -217,10 +223,11 @@ func add_following(unit):
 	if(followers.has(unit)):
 		return
 	followers.push_back(unit)
+	## Stop signal connection overloading
 	if(!unit.died.is_connected(remove_following)):
 		unit.died.connect(remove_following.bind(unit))
 	unit.target_follow = self
-	unit.ai_mode = ai_mode
+	unit.ai_mode = "follow_basic"
 	if(target_enemy != null):
 		unit.target_enemy = target_enemy
 
@@ -229,6 +236,8 @@ func add_following(unit):
 func remove_following(unit):
 	if(followers.has(unit)):
 		followers.erase(unit)
+		unit.target_follow = null
+		unit.ai_mode=ai_mode
 	else:
 		unit.died.disconnect(remove_following)
 
@@ -238,7 +247,6 @@ func clear_following():
 		for i in followers:
 			remove_following(i)
 			i._set_target_position(position)
-			i.target_follow = null
 	followers.clear()
 
 
@@ -263,7 +271,7 @@ func check_pos(pos):
 		if i == self:
 			pass
 		elif (i.position.distance_to(new_pos) <= unit_radius):
-			new_pos = check_pos(new_pos + Vector3(rng.randf_range(-1,1),0,rng.randf_range(-1,1)))
+			new_pos = check_pos(new_pos + Vector3(rng.randf_range(-1.25,1.25),0,rng.randf_range(-1.25,1.25)))
 	return new_pos
 
 
@@ -360,23 +368,23 @@ func _lerp_stop(nv, dx):
 ## detection area code
 func _det_area_entered(area):
 	uncovered_area.emit(self, area)
-	if(area.has_meta("fog_owner_id")):
-		if (area.get_meta("fog_owner_id") == 0):
-			is_visible = true
+	if(area.has_meta("fog_owner_id") and area.get_meta("fog_owner_id") == 0):
+		## Area is player fog breaker
+		is_visible = true
 
 
 func _det_area_exited(area):
-	if(area.has_meta("fog_owner_id")):
-		if (area.get_meta("fog_owner_id") == 0):
-			is_visible = false
+	if(area.has_meta("fog_owner_id") and area.get_meta("fog_owner_id") == 0):
+		## Area is player fog breaker
+		is_visible = false
 		await get_tree().physics_frame
 		for ar in det_area.get_overlapping_areas():
-			if(ar.has_meta("fog_owner_id")):
-				if (ar.get_meta("fog_owner_id") == 0):
-					is_visible = true
+			if(ar.has_meta("fog_owner_id") and ar.get_meta("fog_owner_id") == 0):
+				## Still in player fog breaker
+				is_visible = true
 
 
-## Vision detection Code
+## Add enemies to sight array
 func _vision_body_entered(body):
 	if body.has_meta("owner_id") and body.get_meta("owner_id") != actor_owner.actor_ID:
 		visible_enemies.push_back(body)
@@ -384,9 +392,19 @@ func _vision_body_entered(body):
 ## Remove enemies from sight array
 func _vision_body_exited(body):
 	if visible_enemies.has(body):
-		visible_enemies.pop_at(visible_enemies.find(body))
+		visible_enemies.erase(body)
+
+## Add buildings to sight array
+func _vision_area_entered(area):
+	if area.has_meta("building_area") and area.get_parent().actor_owner.actor_ID == actor_owner.actor_ID:
+		visible_enemies.push_back(area.get_parent())
 
 
+## Remove buildings from  sight array
+func _vision_area_exited(area):
+	if area.has_meta("building_area") and area.get_parent().actor_owner.actor_ID == actor_owner.actor_ID:
+		if(visible_enemies.has(area.get_parent())):
+			visible_enemies.erase(area.get_parent())
 ''' Movement Methods end '''
 '''-------------------------------------------------------------------------------------'''
 ''' Combat Methods Start '''
@@ -439,11 +457,20 @@ func _targeted_attack(delta):
 		_set_target_position(target_enemy.position)
 	_travel(delta)
 	
-		
 
-
+## Travel to target location
 func _traveling_basic(delta):
 	_travel(delta)
+
+
+## follow friendly unit
+func _following(delta):
+	_set_target_position(target_follow.position)
+	_travel(delta)
+	
+	if(target_enemy !=null and visible_enemies.has(target_enemy)):
+		ai_mode = "attack_commanded"
+		
 
 
 ## Idle Functions
@@ -502,12 +529,9 @@ func _on_navigation_agent_3d_navigation_finished():
 	var targ = check_pos(position)
 	if(targ.is_equal_approx(position) == false):
 		_set_target_position(targ)
-	elif(ai_mode.contains("travel") and target_follow==null):
+	elif(ai_mode.contains("travel")):
 		ai_mode = "idle_aggressive"
 	clear_following()
-	if target_follow != null:
-		_set_target_position(target_follow.position)
-		return
 
 
 func _on_NavigationAgent_velocity_computed(_safe_velocity):

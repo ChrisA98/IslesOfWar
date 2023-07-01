@@ -13,6 +13,7 @@ radius = 25.0
 script = ExtResource("1_xnjic")
 
 [node name="Area3D" type="Area3D" parent="."]
+collision_mask = 524289
 input_ray_pickable = false
 monitoring = false
 monitorable = false
