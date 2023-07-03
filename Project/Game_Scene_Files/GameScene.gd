@@ -288,6 +288,38 @@ func prepare_bases():
 	preview_building.set_pos(p_spawn.position)
 	player_controller.place_building(preview_building)
 	preview_building.spawn_unit("Scout")
+	preview_building.spawn_unit("Scout")
+	preview_building.spawn_unit("Scout")
+	preview_building.spawn_unit("Scout")
+	preview_building.spawn_unit("Scout")
+	preview_building.spawn_unit("Scout")
+	preview_building.spawn_unit("Scout")
+	preview_building.spawn_unit("Scout")
+	preview_building.spawn_unit("Scout")
+	preview_building.spawn_unit("Scout")
+	preview_building.spawn_unit("Scout")
+	preview_building.spawn_unit("Scout")
+	preview_building.spawn_unit("Scout")
+	preview_building.spawn_unit("Scout")
+	preview_building.spawn_unit("Scout")
+	preview_building.spawn_unit("Scout")
+	preview_building.spawn_unit("Scout")
+	preview_building.spawn_unit("Scout")
+	preview_building.spawn_unit("Scout")
+	preview_building.spawn_unit("Scout")
+	preview_building.spawn_unit("Scout")
+	preview_building.spawn_unit("Scout")
+	preview_building.spawn_unit("Scout")
+	preview_building.spawn_unit("Scout")
+	preview_building.spawn_unit("Scout")
+	preview_building.spawn_unit("Scout")
+	preview_building.spawn_unit("Scout")
+	preview_building.spawn_unit("Scout")
+	preview_building.spawn_unit("Scout")
+	preview_building.spawn_unit("Scout")
+	preview_building.spawn_unit("Scout")
+	preview_building.spawn_unit("Scout")
+	preview_building.spawn_unit("Scout")
 	preview_building = null
 	click_mode = "select"
 	
@@ -381,7 +413,8 @@ func ground_click(_camera, event, pos, _normal, _shape_idx, _shape):
 				player_controller.command_unit_move(pos)
 			if Input.is_mouse_button_pressed(MOUSE_BUTTON_MIDDLE):
 				##DEBUG tool to teleport units
-				player_controller.selected_units[0].position = pos + Vector3.UP
+				for i in player_controller.selected_units:
+					i.position = pos + Vector3.UP
 		"select":
 			if event is InputEventMouseButton:
 				if event.button_index == MOUSE_BUTTON_RIGHT and event.pressed:

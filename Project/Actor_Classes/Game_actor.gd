@@ -175,24 +175,30 @@ func clear_selection():
 
 ## Give a command to all selected units
 ## iterate var must be at end of arg array
-func group_command(cmnd: Callable, args: Array):
+func _group_command(cmnd: Callable, args: Array):
 	cmnd.callv(args)
 	if(selected_units.size() > 1):
 		for j in range(1,selected_units.size()):
-			if(selected_units[0].position.distance_to(selected_units[j].position) <= 5):
-				selected_units[0].add_following(selected_units[j])
+			if(selected_units[0].position.distance_to(selected_units[j].position) <= selected_units[j].unit_radius*3):
+				var variation = _formation_pos(selected_units[j],j)
+				selected_units[0].add_following(selected_units[j],variation)
 			else:
-				args[-1] = j	## sett iteration
+				args[-1] = j	## set iteration
 				cmnd.callv(args)
 
+
+## get position from formation
+func _formation_pos(unit, place:int):
+	return Vector3(fmod(place,5)*unit.unit_radius*2.5,0,int(round(place/5)*unit.unit_radius*2.5))
 
 ## Command selected_units to move to location
 func command_unit_move(position):
 	##Local command function
 	var cmnd = func(pos=position, unit:=0):
-		selected_units[unit].set_mov_target(pos)
+		var variation = _formation_pos(selected_units[unit],unit)
+		selected_units[unit].set_mov_target(pos+variation)
 	
-	group_command(cmnd,[position,0])
+	_group_command(cmnd,[position,0])
 
 
 ## Command selected units to attack trgt
@@ -201,4 +207,6 @@ func command_unit_attack(trgt):
 	var cmnd = func(target = trgt, unit:=0):
 		selected_units[unit].declare_enemy(target)
 	
-	group_command(cmnd,[trgt,0])
+	_group_command(cmnd,[trgt,0])
+
+

@@ -166,5 +166,7 @@ draw_pass_1 = SubResource("SphereMesh_7vuld")
 [node name="Fog_Breaker" parent="." instance=ExtResource("3_02et3")]
 transform = Transform3D(0.2, 0, 0, 0, 0.2, 0, 0, 0, 0.2, 0, 0, 0)
 
+[node name="NavigationObstacle3D" type="NavigationObstacle3D" parent="."]
+
 [connection signal="timeout" from="Train_Timer" to="." method="spawn_unit" binds= ["nan"]]
 [connection signal="input_event" from="StaticBody3D" to="." method="_on_static_body_3d_input_event"]

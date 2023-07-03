@@ -1,4 +1,4 @@
-[gd_resource type="Resource" load_steps=9 format=3 uid="uid://bc23qo1nhbhla"]
+[gd_resource type="Resource" script_class="Projectile_Data" load_steps=9 format=3 uid="uid://bc23qo1nhbhla"]
 
 [ext_resource type="Script" path="res://Parent_Scenes/Scripts/projectile_data.gd" id="1_mjxcr"]
 
