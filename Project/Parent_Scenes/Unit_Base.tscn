@@ -86,6 +86,7 @@ path_desired_distance = 7.0
 target_desired_distance = 10.0
 path_max_distance = 7.01
 avoidance_enabled = true
+neighbor_distance = 4.0
 max_neighbors = 100
 time_horizon = 3.0
 debug_enabled = true

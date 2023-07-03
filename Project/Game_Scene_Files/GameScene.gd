@@ -109,15 +109,6 @@ func spawn_unit(o_player, unit):
 	return true
 
 
-## Setup navigation
-func custom_nav_setup():
-	#create navigation map
-	var map: RID = NavigationServer3D.map_create()
-	NavigationServer3D.map_set_up(map, Vector3.UP)
-	NavigationServer3D.map_set_active(map, true)
-	nav_ready.emit()
-	NavigationServer3D.map_set_edge_connection_margin(get_world_3d().get_navigation_map(),8)
-	update_navigation()
 
 '''-------------------------------------------------------------------------------------'''
 ''' Unit Selection Start '''
@@ -208,7 +199,7 @@ func select_from_list(units):
 
 ''' Unit Selection End '''
 '''-------------------------------------------------------------------------------------'''
-''' Building Placement Start '''
+''' Prep Game and world management Start '''
 func _prepare_game():
 	# Connect ground signals
 	for i in world.find_children("Region*"):
@@ -327,6 +318,27 @@ func prepare_bases():
 	prep_ready.emit()
 
 
+## Setup navigation
+func custom_nav_setup():
+	#create navigation map
+	var map: RID = NavigationServer3D.map_create()
+	NavigationServer3D.map_set_up(map, Vector3.UP)
+	NavigationServer3D.map_set_active(map, true)
+	nav_ready.emit()
+	NavigationServer3D.map_set_edge_connection_margin(get_world_3d().get_navigation_map(),8)
+	update_navigation()
+
+
+## Recieve signal for navigation updates
+func _navmesh_updated():
+	for unit in world_units:
+		if unit.ai_mode.contains("travel"):
+			unit.queue_move(unit.nav_agent.get_final_position())
+
+
+''' Prep Game  and world managementEnd '''
+'''-------------------------------------------------------------------------------------'''
+''' Building Placement Start '''
 ##  Prepare new building for player
 func prep_player_building(id, menu):
 	# Clear existing preview buildings

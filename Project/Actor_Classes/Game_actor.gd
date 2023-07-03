@@ -20,6 +20,8 @@ var units := []
 var loaded_units := {}
 var selected_units = []
 
+var unit_tracking_queue := []
+
 # Actor Resources
 @onready var resources = {
 "wood": 200,
@@ -62,7 +64,8 @@ func load_units():
 	
 # Called every frame. 'delta' is the elapsed time since the previous frame.
 func _process(_delta):
-	pass
+	if unit_tracking_queue.size()>0:
+		pop_front_unit_tracking_queue()
 
 
 ###GAME FUNCTIONS###
@@ -176,15 +179,9 @@ func clear_selection():
 ## Give a command to all selected units
 ## iterate var must be at end of arg array
 func _group_command(cmnd: Callable, args: Array):
-	cmnd.callv(args)
-	if(selected_units.size() > 1):
-		for j in range(1,selected_units.size()):
-			if(selected_units[0].position.distance_to(selected_units[j].position) <= selected_units[j].unit_radius*3):
-				var variation = _formation_pos(selected_units[j],j)
-				selected_units[0].add_following(selected_units[j],variation)
-			else:
-				args[-1] = j	## set iteration
-				cmnd.callv(args)
+	for j in range(selected_units.size()):
+			args[-1] = j	## set iteration
+			cmnd.callv(args)
 
 
 ## get position from formation
@@ -196,7 +193,7 @@ func command_unit_move(position):
 	##Local command function
 	var cmnd = func(pos=position, unit:=0):
 		var variation = _formation_pos(selected_units[unit],unit)
-		selected_units[unit].set_mov_target(pos+variation)
+		selected_units[unit].queue_move(pos+variation)
 	
 	_group_command(cmnd,[position,0])
 
@@ -210,3 +207,24 @@ func command_unit_attack(trgt):
 	_group_command(cmnd,[trgt,0])
 
 
+## Add unit to queue to set move target when tracking
+func add_unit_tracking(unit:Unit_Base, track_function: Callable):
+	for u in unit_tracking_queue:
+		if u[0] == unit:
+			u[1] = track_function
+			return
+	unit_tracking_queue.push_back([unit,track_function])
+
+
+## Call set target function from tracking queue
+func pop_front_unit_tracking_queue():
+	var _call = unit_tracking_queue.pop_front()
+	if is_instance_valid(_call[0]):
+		_call[1].call()
+
+
+## Remove target unit from unit tracking queue
+func erase_from_tracking_queue(unit:Unit_Base):
+	for u in unit_tracking_queue:
+		if u[0] == unit:
+			unit_tracking_queue.erase(u)

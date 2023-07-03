@@ -1,6 +1,7 @@
 extends NavigationRegion3D
 
 signal finished_baking
+signal queue_cleared
 
 @onready var baking_mesh = false
 @onready var global = get_node("/root/Global_Vars")
@@ -50,6 +51,9 @@ func queue_bake():
 	
 
 func open_queue():
+	finished_baking.emit()
 	global.clear_nav_queue(self)
 	if(global.queued_nav_bakes.size()>0):
 		global.queued_nav_bakes[-1].update_navigation_mesh()
+	else:
+		queue_cleared.emit()

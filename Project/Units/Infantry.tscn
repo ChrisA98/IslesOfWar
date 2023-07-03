@@ -1,4 +1,4 @@
-[gd_scene load_steps=6 format=3 uid="uid://cf6pa153818x2"]
+[gd_scene load_steps=13 format=3 uid="uid://cf6pa153818x2"]
 
 [ext_resource type="PackedScene" uid="uid://cs2p3v3o53aki" path="res://Parent_Scenes/Unit_Base.tscn" id="1_3ybrw"]
 
@@ -7,7 +7,25 @@ resource_local_to_scene = true
 height = 3.5
 radius = 2.0
 
-[sub_resource type="CylinderMesh" id="CylinderMesh_wu772"]
+[sub_resource type="StandardMaterial3D" id="StandardMaterial3D_8bnbe"]
+
+[sub_resource type="CylinderMesh" id="CylinderMesh_x3dbf"]
+material = SubResource("StandardMaterial3D_8bnbe")
+
+[sub_resource type="StandardMaterial3D" id="StandardMaterial3D_mxah8"]
+
+[sub_resource type="CylinderMesh" id="CylinderMesh_xy87p"]
+material = SubResource("StandardMaterial3D_mxah8")
+
+[sub_resource type="StandardMaterial3D" id="StandardMaterial3D_fd3no"]
+
+[sub_resource type="CylinderMesh" id="CylinderMesh_d4gf5"]
+material = SubResource("StandardMaterial3D_fd3no")
+
+[sub_resource type="StandardMaterial3D" id="StandardMaterial3D_8u225"]
+
+[sub_resource type="CylinderMesh" id="CylinderMesh_154op"]
+material = SubResource("StandardMaterial3D_8u225")
 
 [sub_resource type="SphereShape3D" id="SphereShape3D_umiqv"]
 resource_local_to_scene = true
@@ -29,22 +47,22 @@ shape = SubResource("CylinderShape3D_fxkcp")
 
 [node name="MeshInstance3D" type="MeshInstance3D" parent="UnitModels" index="0"]
 transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, -0.961931, 0.981501, -0.791413)
-mesh = SubResource("CylinderMesh_wu772")
+mesh = SubResource("CylinderMesh_x3dbf")
 skeleton = NodePath("../..")
 
 [node name="MeshInstance3D2" type="MeshInstance3D" parent="UnitModels" index="1"]
 transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0.23631, 0.988431, -1.32474)
-mesh = SubResource("CylinderMesh_wu772")
+mesh = SubResource("CylinderMesh_xy87p")
 skeleton = NodePath("../..")
 
 [node name="MeshInstance3D3" type="MeshInstance3D" parent="UnitModels" index="2"]
 transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, -0.407311, 0.981501, 0.940965)
-mesh = SubResource("CylinderMesh_wu772")
+mesh = SubResource("CylinderMesh_d4gf5")
 skeleton = NodePath("../..")
 
 [node name="MeshInstance3D4" type="MeshInstance3D" parent="UnitModels" index="3"]
 transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 1.11459, 0.981501, 0.0255227)
-mesh = SubResource("CylinderMesh_wu772")
+mesh = SubResource("CylinderMesh_154op")
 skeleton = NodePath("../..")
 
 [node name="NavigationAgent3D" parent="." index="2"]

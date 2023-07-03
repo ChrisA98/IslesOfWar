@@ -52,7 +52,6 @@ var ai_mode :StringName = "idle_basic":
 		ai_mode = value
 		if value != "follow_basic":
 			target_follow = null
-			return
 		if value.contains("attack"):
 			atk_timer.start(current_atk_spd)
 		else:
@@ -72,14 +71,15 @@ var intial_path_dist := 0.1
 var followers: Array
 var target_follow: Unit_Base:
 	set(value):
+		if(target_follow != null and target_follow.update_fog.is_connected(__find_target)):
+				target_follow.update_fog.disconnect(__find_target)
 		if value == null:
 			target_speed = max_speed
+			actor_owner.erase_from_tracking_queue(self)
 		else:
 			target_speed = value.max_speed
 			if(!value.update_fog.is_connected(__find_target)):
 				value.update_fog.connect(__find_target)
-			if(value.update_fog.is_connected(__find_target)):
-				value.update_fog.disconnect(__find_target)
 		target_follow = value
 var follow_end_target: Vector3
 var formation_end_position: int	##position in formation when arriving at final location
@@ -128,17 +128,17 @@ var attack_method : Callable # method to attack with
 var target_enemy:
 	set(value):
 		if(value != null):
-			atk_timer.start(current_atk_spd)
 			if(!value.died.is_connected(target_killed)):
 				value.died.connect(target_killed)
 			if(!value.update_fog.is_connected(__find_target)):
 				value.update_fog.connect(__find_target)
-		elif(target_enemy != null):
+		else:
+			actor_owner.erase_from_tracking_queue(self)
+		if(target_enemy != null):
 			if(target_enemy.died.is_connected(target_killed)):
 				target_enemy.died.disconnect(target_killed)
 			if(target_enemy.update_fog.is_connected(__find_target)):
 				target_enemy.update_fog.disconnect(__find_target)
-			atk_timer.stop()
 		target_enemy = value
 var visible_enemies := []
 var visible_allies := []
@@ -181,7 +181,7 @@ func _physics_process(delta):
 		return
 	ai_methods[ai_mode].call(delta)
 
-func _process(delta):
+func _process(_delta):
 	update_fog.emit(self,position, is_visible)
 
 '''### Public Methods ###'''
@@ -206,6 +206,10 @@ func load_data(data):
 	
 	if (actor_owner.actor_ID == 0):
 		is_visible = true
+		for m in $UnitModels.get_children():
+			if(m.name.contains("Mesh")):
+				if m.mesh.material != null:
+					m.mesh.material.albedo_color = Color.BLUE
 	else:
 		## Non_player units need not clear fog
 		fog_reg.detect_area.set_collision_mask_value(20,false)
@@ -227,10 +231,13 @@ func load_data(data):
 ##
 ## Called by outside functions
 func set_mov_target(mov_tar: Vector3):
-	_set_target_position(mov_tar)
-	formation_core_position = mov_tar
-	formation_end_position = 0
 	ai_mode = "traveling_basic"
+	_set_target_position(mov_tar,true)
+
+
+## Queue a movement to be caclulated
+func queue_move(pos:Vector3):
+	actor_owner.add_unit_tracking(self,Callable(set_mov_target.bind(pos)))
 
 
 ## Set folowing units
@@ -239,7 +246,8 @@ func set_following(units, end_pos):
 	for i in units:
 		if(i != self):
 			i.target_follow = self
-			i.follow_end_target = end_pos
+			i.ai_mode = "follow_basic"
+			i.follow_end_target = nav_agent.get_final_position()+end_pos
 
 
 ## Add folowing units
@@ -263,7 +271,6 @@ func add_following(unit, end_pos):
 func remove_following(unit):
 	if(followers.has(unit)):
 		followers.erase(unit)
-		unit.target_follow = null
 		unit.ai_mode=ai_mode
 	else:
 		unit.died.disconnect(remove_following)
@@ -291,17 +298,6 @@ func get_ground_depth(pos = null):
 
 
 ''' Movement Methods End '''
-## Check target position for other units
-func check_pos(pos, mod = 1):
-	for i in unit_list:
-		if i == self:
-			pass
-		elif (i.position.distance_to(pos) <= unit_radius and i.ai_mode.contains("idle")):
-			formation_end_position = i.formation_end_position+mod
-			return check_pos(i.formation_core_position+actor_owner._formation_pos(self,formation_end_position),mod+1)
-	
-	return pos
-
 
 ## Call to see if purchasable
 func can_afford(builder_res):
@@ -374,8 +370,22 @@ func delayed_delete():
 '''-------------------------------------------------------------------------------------'''
 '''### Private Methods ###'''
 ''' Movement Methods Start '''
+## Check target position for other units
+func _check_pos(pos, mod = 1):
+	for i in unit_list:
+		if i == self:
+			pass
+		elif (i.position.distance_to(pos) <= unit_radius and i.ai_mode.contains("idle")):
+			formation_end_position = i.formation_end_position+mod
+			return _check_pos(i.formation_core_position+actor_owner._formation_pos(self,formation_end_position),mod+1)
+	return pos
+
+
 ## set target move location 
-func _set_target_position(mov_tar: Vector3):
+func _set_target_position(mov_tar: Vector3, reset_formation := false):
+	if(reset_formation):
+		formation_core_position = mov_tar
+		formation_end_position = 0
 	nav_agent.set_target_position(mov_tar)
 	intial_path_dist = nav_agent.distance_to_target()
 
@@ -490,8 +500,8 @@ func _targeted_attack(delta):
 ## Update navigation target to target enemy
 func __find_target(trgt:Unit_Base, pos:Vector3, _is_visible:bool):
 	if(target_enemy == trgt or target_follow == trgt):
-		if(nav_agent.get_target_position().distance_to(pos) < target_atk_rng):
-			_set_target_position(pos)
+		if(nav_agent.get_target_position().distance_to(pos) < target_atk_rng*2):
+			actor_owner.add_unit_tracking(self,Callable(_set_target_position.bind(pos,true)))
 
 
 ## Travel to target location
@@ -505,13 +515,11 @@ func _following(delta):
 	
 	if(target_enemy != null and visible_enemies.has(target_enemy)):
 		ai_mode = "attack_commanded"
+		follow_end_target = Vector3.ZERO
 	
 	if follow_end_target != Vector3.ZERO and position.distance_to(follow_end_target):
 		if is_instance_valid(target_follow):
-			if(target_follow.update_fog.is_connected(__find_target)):
-				target_follow.update_fog.disconnect(__find_target)
 			target_follow.remove_following(self)
-		ai_mode = "traveling_basic"
 		_set_target_position(follow_end_target)
 		follow_end_target = Vector3.ZERO
 	
@@ -562,28 +570,32 @@ func _travel(_delta):
 	var lookdir = atan2(-new_velocity.x, -new_velocity.z)
 	$UnitModels.rotation.y = lerp($UnitModels.rotation.y, lookdir, 0.25)
 	
-	#nav_agent.set_velocity(new_velocity)
+	nav_agent.set_velocity(new_velocity)
 	set_velocity(new_velocity)
-	move_and_slide()
+	#move_and_slide()
 
 
 func _on_navigation_agent_3d_navigation_finished():
-	## Don't stop on other units
-	var targ = check_pos(position)
-	if(targ != position):
-		_set_target_position(targ)
-		return
+	## Don't stop on other units if not attacking
+	if(!ai_mode.contains("attack")):
+		var targ = _check_pos(position)
+		if(targ != position):
+			_set_target_position(targ)
+			return
 	
-	if(ai_mode.contains("travel") and actor_owner.actor_ID != 0):
-		ai_mode = "idle_aggressive"
-	else:
-		ai_mode = "idle_basic"
+	if ai_mode.contains("travel"):
+		if actor_owner.actor_ID != 0:
+			ai_mode = "idle_aggressive"
+		else:
+			ai_mode = "idle_basic"
 	clear_following()
 
 
 func _on_NavigationAgent_velocity_computed(safe_velocity):
 	if ai_mode.contains("attack"):
 		velocity = safe_velocity
+	else:
+		velocity = lerp(velocity,safe_velocity,0.1)
 	move_and_slide()
 
 

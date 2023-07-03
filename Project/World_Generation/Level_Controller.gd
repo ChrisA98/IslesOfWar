@@ -170,6 +170,7 @@ func build_map(img, pos, adj):
 	#build nav region for chunk
 	var chunk_nav_region = NavigationRegion3D.new()
 	chunk_nav_region.set_script(nav_manager)
+	chunk_nav_region.finished_baking.connect(gamescene._navmesh_updated)
 	chunk_nav_region.add_to_group(grp)
 	#build mesh for chunk
 	var mesh = MeshInstance3D.new()
