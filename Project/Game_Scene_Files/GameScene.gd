@@ -145,11 +145,11 @@ func start_select_square(pos):
 func update_select_square(pos):
 	if (selection_square_points[0] == Vector3.ZERO):
 		start_select_square(pos)
+		click_mode = "square_selecting"
 	if(selection_square.size.x + selection_square.size.z < 4):
 		selection_square.visible = false
 	else:
 		selection_square.visible = true
-		click_mode = "square_selecting"
 	selection_square_points[1] = pos
 	selection_square.position = selection_square_points[0].lerp(selection_square_points[1], 0.5)
 	selection_square.size.x = abs(selection_square_points[1].x - selection_square_points[0].x)
@@ -381,18 +381,17 @@ func building_pressed(building):
 		if click_mode == "command_unit":
 			player_controller.command_unit_attack(building)
 		return
-	activated_building = building #pass activated building to gamescene
-	var type = building.type
-	click_mode = "menu"
-	match type:
-		"Base":
-			player_controller.adj_resource("wood",10)
-			player_controller.adj_resource("stone",10)
-		"Barracks":
-			player_controller.adj_resource("riches",10)
-			player_controller.adj_resource("crystals",10)
+	
+	match click_mode:
+		"command_unit":
+			for u in player_controller.selected_units:
+				building.garrison_unit(u)
+			player_controller.clear_selection()
 		_:
-			pass
+			activated_building = building #pass activated building to gamescene
+			var type = building.type
+			click_mode = "menu"
+	
 
 
 ## Clicks on world
@@ -419,6 +418,7 @@ func ground_click(_camera, event, pos, _normal, _shape_idx, _shape):
 					preview_building = null
 		"command_unit":
 			if Input.is_action_pressed("lmb"):
+				selection_square_points = [Vector3.ZERO,Vector3.ZERO]
 				update_select_square(pos)
 				return
 			if Input.is_action_just_released("rmb"):
@@ -433,6 +433,7 @@ func ground_click(_camera, event, pos, _normal, _shape_idx, _shape):
 					click_mode = "select"
 					return
 			if Input.is_action_pressed("lmb"):
+				selection_square_points = [Vector3.ZERO,Vector3.ZERO]
 				update_select_square(pos)
 				return
 		"square_selecting":

@@ -2,9 +2,6 @@ extends Panel
 
 @export var visible_pages = {"units": true,"sec_units": true,"research": false,"page_4": false}
 
-signal destroy_building
-signal upgrade_building
-signal free_units
 signal push_train_queue
 signal pop_train_queue
 signal research_queue
@@ -24,6 +21,7 @@ func _ready():
 	for pag in visible_pages:
 		$Building_Menu/Page_Buttons.find_child(pag).visible = visible_pages[pag]
 	
+	$"Always_Buttons/Garrison Button".pressed.connect(get_parent().empty_garrison,CONNECT_DEFERRED)
 
 
 

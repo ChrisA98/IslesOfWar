@@ -131,14 +131,23 @@ var target_enemy:
 			if(!value.died.is_connected(target_killed)):
 				value.died.connect(target_killed)
 			if(!value.update_fog.is_connected(__find_target)):
-				value.update_fog.connect(__find_target)
+				value.update_fog.connect(__find_target)			
+			## Target is building
+			if value.has_meta("show_base_radius"):
+				target_atk_rng += value.bldg_radius
 		else:
 			actor_owner.erase_from_tracking_queue(self)
+		
+		## Previous enemy existed
 		if(target_enemy != null):
 			if(target_enemy.died.is_connected(target_killed)):
 				target_enemy.died.disconnect(target_killed)
 			if(target_enemy.update_fog.is_connected(__find_target)):
-				target_enemy.update_fog.disconnect(__find_target)
+				target_enemy.update_fog.disconnect(__find_target)		
+			## Target had building
+			if target_enemy.has_meta("show_base_radius"):
+				target_atk_rng -= target_enemy.bldg_radius
+		
 		target_enemy = value
 var visible_enemies := []
 var visible_allies := []

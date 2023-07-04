@@ -54,6 +54,7 @@ var cost = {"wood": 0,
 "crystals": 0,
 "food": 0}
 var pop_mod: int = 0
+var garrisoned_units := []
 
 
 ''' Unit Spawning Vars '''
@@ -73,6 +74,7 @@ var is_training := false	#building is training
 ## Children references
 @onready var mesh = get_node("MeshInstance3D")
 @onready var collision_box = get_node("StaticBody3D/CollisionShape3D")
+@onready var bldg_radius = collision_box.shape.size.x
 @onready var static_body = get_node("StaticBody3D")
 @onready var det_area = get_node("Detection_Area")
 @onready var fog_reg = get_node("Fog_Breaker")
@@ -439,9 +441,33 @@ func show_menu(state: = true):
 		menu.visible = state
 
 
-## Dactivate picking
+## Deactivate picking
 func hide_from_mouse(state: = true):
 	static_body.input_ray_pickable = !state
+
+
+## Garrison unit in base
+func garrison_unit(unit):
+	garrisoned_units.push_back(unit)
+	unit.position = position
+	unit.ai_mode = "idle_basic"
+	unit.visible = false
+
+
+## Remove certain garrisoned units
+func ungarrison_unit(unit):
+	garrisoned_units.erase(unit)
+	unit.visible = true
+	unit.position = spawn.global_position
+	unit.set_mov_target(rally.global_position) 
+
+
+## Empty all Garrisoned units
+func empty_garrison():
+	for i in range(garrisoned_units.size()):
+		await get_tree().create_timer(1).timeout
+		ungarrison_unit(garrisoned_units[0])
+
 
 ''' User Input End '''
 '''-------------------------------------------------------------------------------------'''
