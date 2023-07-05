@@ -10,6 +10,7 @@ signal prep_ready
 var world
 var loaded_buildings = []
 var world_units = []
+var travel_queue_units := []
 var menu_buildings = {}
 var world_buildings = []
 
@@ -330,10 +331,22 @@ func custom_nav_setup():
 
 
 ## Recieve signal for navigation updates
-func _navmesh_updated():
+func _navmesh_update_start():
 	for unit in world_units:
 		if unit.ai_mode.contains("travel"):
-			unit.queue_move(unit.nav_agent.get_final_position())
+			var ind = clamp(unit.nav_agent.get_current_navigation_path_index()+15,0,unit.nav_agent.get_current_navigation_path().size()-1)
+			var pos = unit.nav_agent.get_current_navigation_path()[ind]
+			unit.stored_trgt_pos = unit.nav_agent.get_final_position()
+			unit.queue_move(pos)
+			travel_queue_units.push_back(unit)
+
+
+## Recieve signal for navigation updates
+func _navmesh_updated():
+	for unit in travel_queue_units:
+		unit.queue_move(unit.stored_trgt_pos)
+		unit.stored_trgt_pos = null
+	travel_queue_units.clear()
 
 
 ''' Prep Game  and world managementEnd '''
@@ -385,7 +398,7 @@ func building_pressed(building):
 	match click_mode:
 		"command_unit":
 			for u in player_controller.selected_units:
-				building.garrison_unit(u)
+				u.set_garrison_target(building)
 			player_controller.clear_selection()
 		_:
 			activated_building = building #pass activated building to gamescene

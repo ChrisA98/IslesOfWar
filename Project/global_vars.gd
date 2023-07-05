@@ -46,10 +46,10 @@ func month_to_string(yr_day: int, yr: int) -> String:
 	return out
 
 
-func set_nav_queue(nr : NavigationRegion3D):
+func push_nav_queue(nr : NavigationRegion3D):
 	navmesh_baking = nr
 
 
-func clear_nav_queue(nr : NavigationRegion3D):
+func pop_nav_queue(nr : NavigationRegion3D):
 	navmesh_baking = null
 	queued_nav_bakes.erase(nr)

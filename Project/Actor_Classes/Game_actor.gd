@@ -63,7 +63,7 @@ func load_units():
 					loaded_units[un] = load("res://Units/"+"Infantry"+".tscn")
 	
 # Called every frame. 'delta' is the elapsed time since the previous frame.
-func _process(_delta):
+func _physics_process(_delta):
 	if unit_tracking_queue.size()>0:
 		pop_front_unit_tracking_queue()
 
@@ -185,14 +185,14 @@ func _group_command(cmnd: Callable, args: Array):
 
 
 ## get position from formation
-func _formation_pos(unit, place:int):
+func formation_pos(unit, place:int):
 	return Vector3(fmod(place,5)*unit.unit_radius*2.5,0,int(round(place/5)*unit.unit_radius*2.5))
 
 ## Command selected_units to move to location
 func command_unit_move(position):
 	##Local command function
 	var cmnd = func(pos=position, unit:=0):
-		var variation = _formation_pos(selected_units[unit],unit)
+		var variation = formation_pos(selected_units[unit],unit)
 		selected_units[unit].queue_move(pos+variation)
 	
 	_group_command(cmnd,[position,0])

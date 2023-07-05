@@ -61,6 +61,8 @@ func _ready():
 	
 	var wtr_nav_region = NavigationRegion3D.new()
 	wtr_nav_region.set_script(nav_manager)
+	wtr_nav_region.finished_baking.connect(gamescene._navmesh_updated)
+	wtr_nav_region.starting_baking.connect(gamescene._navmesh_update_start)
 	wtr_nav_region.agent_max_slope = 10
 	wtr_nav_region.agent_radius = 10
 	wtr_nav_region.add_to_group("water")
@@ -116,7 +118,7 @@ func _ready():
 func build_fog_war(chunks):
 	await get_tree().physics_frame
 	
-	## Fog of explorable
+	## Fog of war explorable
 	var fog_explor_range = (chunk_size*chunks)/25	#gets length of walls
 	var base_fog = $Explorable_Fog.find_children("Fog*","Node",false)[-1]
 	base_fog.position.x = ((chunk_size*chunks)/2) - 25
@@ -135,9 +137,17 @@ func build_fog_war(chunks):
 	
 	
 	await get_tree().physics_frame
+	
 	## Assign fog network
 	for fog in range(1,$Explorable_Fog.get_children().size()-1):
 		$Explorable_Fog.get_children()[fog].get_neighbors()
+	await get_tree().physics_frame
+	## isolate fog unitssa
+	#for fog in range(1,$Explorable_Fog.get_children().size()-1):
+		#pass
+		#$Explorable_Fog.get_children()[fog].disable_isolated()
+	
+	picker.queue_free()
 
 
 #check if .exr files exist in target path
@@ -171,6 +181,7 @@ func build_map(img, pos, adj):
 	var chunk_nav_region = NavigationRegion3D.new()
 	chunk_nav_region.set_script(nav_manager)
 	chunk_nav_region.finished_baking.connect(gamescene._navmesh_updated)
+	chunk_nav_region.starting_baking.connect(gamescene._navmesh_update_start)
 	chunk_nav_region.add_to_group(grp)
 	#build mesh for chunk
 	var mesh = MeshInstance3D.new()

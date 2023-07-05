@@ -15,6 +15,7 @@ signal spawned_unit
 @export var menu_pages = {"units": "","sec_units": "","research": "","page_4": ""}
 @export var build_time : float = 10
 @export var fog_rev_radius : float = 50
+@export_enum("Land:0","Naval:1","Aerial:2") var garrison_unit_type = 0
 @export_group("Defense")
 @export var base_health : float = 0
 @export_range(0,.99) var base_armor : float = .1
@@ -169,6 +170,11 @@ func load_data(data):
 	# Set base menu data
 	menu.set_menu_data(type)
 	
+	call_deferred("_load_units",data)
+	
+
+
+func _load_units(data):
 	#Load unit list if exists
 	if(data.buildings[type].has("unit_list")):
 		menu.set_unit_list_main(data.buildings[type].unit_list,menu_pages["units"])
@@ -182,7 +188,7 @@ func load_data(data):
 		
 		menu.push_train_queue.connect(push_train_queue)
 		menu.pop_train_queue.connect(pop_train_queue)
-
+	
 ''' Initialization End '''
 '''-------------------------------------------------------------------------------------'''
 ''' Placing logic Start '''
@@ -244,7 +250,11 @@ func place():
 	static_body.set_collision_layer_value(1,true)
 	# Hide reference pieces
 	$RallyPoint.visible = false
-	$StaticBody3D/CollisionShape3D2.disabled = true
+	
+	for col in static_body.get_children():
+		if col != static_body.get_child(0):
+			col.queue_free()
+	
 	set_all_shader(build_shader)
 	set_all_over_mats(null)
 	for i in range(mesh.get_surface_override_material_count()):
@@ -445,9 +455,13 @@ func show_menu(state: = true):
 func hide_from_mouse(state: = true):
 	static_body.input_ray_pickable = !state
 
-
+''' User Input End '''
+'''-------------------------------------------------------------------------------------'''
+''' Garrison Start '''
 ## Garrison unit in base
 func garrison_unit(unit):
+	if(unit.travel_type[garrison_unit_type] == false):
+		return
 	garrisoned_units.push_back(unit)
 	unit.position = position
 	unit.ai_mode = "idle_basic"
@@ -455,21 +469,22 @@ func garrison_unit(unit):
 
 
 ## Remove certain garrisoned units
-func ungarrison_unit(unit):
+func ungarrison_unit(unit, pos):
 	garrisoned_units.erase(unit)
 	unit.visible = true
 	unit.position = spawn.global_position
-	unit.set_mov_target(rally.global_position) 
+	unit.set_mov_target(rally.global_position+pos) 
 
 
 ## Empty all Garrisoned units
 func empty_garrison():
 	for i in range(garrisoned_units.size()):
-		await get_tree().create_timer(1).timeout
-		ungarrison_unit(garrisoned_units[0])
+		await get_tree().create_timer(.5).timeout
+		var form_pos = actor_owner.formation_pos(garrisoned_units[0],i)
+		ungarrison_unit(garrisoned_units[0],form_pos)
 
 
-''' User Input End '''
+''' Garrison End '''
 '''-------------------------------------------------------------------------------------'''
 ''' Destruction Start '''
 ## Delay delete and remove from lists

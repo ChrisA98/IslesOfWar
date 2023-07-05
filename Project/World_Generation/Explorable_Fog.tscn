@@ -123,4 +123,5 @@ collide_with_areas = true
 collide_with_bodies = false
 
 [connection signal="area_entered" from="Area3D" to="." method="_area_entered"]
+[connection signal="body_entered" from="Area3D" to="." method="_body_entered"]
 [connection signal="body_exited" from="Area3D" to="." method="_body_exited"]

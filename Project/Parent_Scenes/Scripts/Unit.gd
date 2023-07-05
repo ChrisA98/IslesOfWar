@@ -9,7 +9,7 @@ signal uncovered_area #area enters det area
 signal attacked #did an attack
 
 '''Enums'''
-enum {GROUND, NAVAL, AERIAL}
+enum {LAND, NAVAL, AERIAL}
 
 '''Consts'''
 
@@ -22,7 +22,7 @@ enum {GROUND, NAVAL, AERIAL}
 @export_group("Travel")
 @export var max_speed = 10
 ## Navigaion layers to enable
-## 0 = GROUND
+## 0 = LAND
 ## 1 = NAVAL
 ## 2 = AERIAL
 @export var travel_type := [false, false, false]
@@ -65,6 +65,7 @@ var ai_methods : Dictionary = {
 	"wandering_basic" : Callable(_wandering_basic),
 	"attack_commanded" : Callable(_targeted_attack),
 	"follow_basic" : Callable(_following),
+	"garrison" : Callable(_garrisoning),
 }
 var travel_vector : Vector3
 var intial_path_dist := 0.1
@@ -81,9 +82,13 @@ var target_follow: Unit_Base:
 			if(!value.update_fog.is_connected(__find_target)):
 				value.update_fog.connect(__find_target)
 		target_follow = value
+var target_garrison : Building
 var follow_end_target: Vector3
 var formation_end_position: int	##position in formation when arriving at final location
 var formation_core_position: Vector3
+
+var stored_trgt_pos
+
 
 
 ''' Identifying Vars '''
@@ -305,6 +310,12 @@ func get_ground_depth(pos = null):
 	grnd_ping.enabled = false
 	return out
 
+## Set Garrison target
+func set_garrison_target(bldg:Building):
+	target_garrison = bldg
+	_set_target_position(bldg.position,true)
+	ai_mode = "garrison"
+
 
 ''' Movement Methods End '''
 
@@ -386,7 +397,7 @@ func _check_pos(pos, mod = 1):
 			pass
 		elif (i.position.distance_to(pos) <= unit_radius and i.ai_mode.contains("idle")):
 			formation_end_position = i.formation_end_position+mod
-			return _check_pos(i.formation_core_position+actor_owner._formation_pos(self,formation_end_position),mod+1)
+			return _check_pos(i.formation_core_position+actor_owner.formation_pos(self,formation_end_position),mod+1)
 	return pos
 
 
@@ -503,6 +514,7 @@ func _targeted_attack(delta):
 			$UnitModels.rotation.y = lerp($UnitModels.rotation.y, lookdir, 0.1)
 			return
 		_set_target_position(position)
+	
 	_travel(delta)
 
 
@@ -531,7 +543,14 @@ func _following(delta):
 			target_follow.remove_following(self)
 		_set_target_position(follow_end_target)
 		follow_end_target = Vector3.ZERO
+
+
+## follow friendly unit
+func _garrisoning(delta):
+	_travel(delta)
 	
+	if position.distance_to(target_garrison.position) <= 10:
+		target_garrison.garrison_unit(self)
 
 
 ## Idle Functions

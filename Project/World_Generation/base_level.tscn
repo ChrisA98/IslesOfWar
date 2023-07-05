@@ -1,4 +1,4 @@
-[gd_scene load_steps=53 format=3 uid="uid://1gj112g47vqj"]
+[gd_scene load_steps=52 format=3 uid="uid://1gj112g47vqj"]
 
 [ext_resource type="Script" path="res://World_Generation/Level_Controller.gd" id="1_ql81r"]
 [ext_resource type="Shader" path="res://World_Generation/New_Terrain.gdshader" id="2_ueirr"]
@@ -233,9 +233,6 @@ size = Vector2(1000, 1000)
 subdivide_width = 20
 subdivide_depth = 20
 
-[sub_resource type="BoxShape3D" id="BoxShape3D_cixmr"]
-size = Vector3(1000, 100, 1000)
-
 [sub_resource type="BoxShape3D" id="BoxShape3D_gubrw"]
 size = Vector3(1000, 1, 1000)
 
@@ -359,17 +356,6 @@ transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, 7, 0)
 layers = 262144
 mesh = SubResource("PlaneMesh_1nhq6")
 skeleton = NodePath("")
-
-[node name="Area3D" type="Area3D" parent="Water"]
-input_ray_pickable = false
-gravity_space_override = 3
-linear_damp_space_override = 3
-linear_damp = 0.206
-metadata/is_water = true
-
-[node name="CollisionShape3D" type="CollisionShape3D" parent="Water/Area3D"]
-transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, -50, 0)
-shape = SubResource("BoxShape3D_cixmr")
 
 [node name="StaticBody3D" type="StaticBody3D" parent="Water" groups=["water"]]
 transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, -0.75, 0)

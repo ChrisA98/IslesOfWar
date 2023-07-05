@@ -1,5 +1,6 @@
 extends NavigationRegion3D
 
+signal starting_baking
 signal finished_baking
 signal queue_cleared
 
@@ -37,7 +38,8 @@ func set_nav_region():
 func update_navigation_mesh():
 	# use bake and update function of region
 	if global.navmesh_baking == null:
-		global.set_nav_queue(self)
+		starting_baking.emit()
+		global.push_nav_queue(self)
 		var on_thread: bool = true	
 		bake_navigation_mesh(on_thread)
 	else:
@@ -45,14 +47,14 @@ func update_navigation_mesh():
 
 
 func queue_bake():
-	global.set_nav_queue(self)
+	global.push_nav_queue(self)
 	var on_thread: bool = true	
 	bake_navigation_mesh(on_thread)
 	
 
 func open_queue():
 	finished_baking.emit()
-	global.clear_nav_queue(self)
+	global.pop_nav_queue(self)
 	if(global.queued_nav_bakes.size()>0):
 		global.queued_nav_bakes[-1].update_navigation_mesh()
 	else:
