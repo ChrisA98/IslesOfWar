@@ -39,13 +39,13 @@ radius = 2.0
 unit_name = "Catapult"
 fog_rev_radius = 40.0
 max_speed = 5
-travel_type = [true, false, false]
+travel_terrain = 1
 accel = 1
-base_health = 10.0
+base_atk_spd = 5.0
 base_armor = 0.5
+base_health = 10.0
 is_ranged = true
 damage_type = "Physical"
-base_atk_spd = 5.0
 target_atk_rng = 30
 
 [node name="CollisionShape3D" parent="." index="0"]

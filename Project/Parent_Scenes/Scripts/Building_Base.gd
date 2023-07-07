@@ -182,8 +182,6 @@ func _load_units(data):
 		#units["Infantry"] = actor_owner.loaded_units["Infantry"]
 		#load unit scenes
 		for un in data.buildings[type]["unit_list"]:
-			if !actor_owner.loaded_units.has(un):
-				actor_owner.loaded_units[un] = load("res://Units/"+un+".tscn")
 			units[un] = actor_owner.loaded_units[un]
 		
 		menu.push_train_queue.connect(push_train_queue)

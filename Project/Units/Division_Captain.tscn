@@ -1,0 +1,36 @@
+[gd_scene load_steps=5 format=3 uid="uid://bcxk78fwe46s4"]
+
+[ext_resource type="PackedScene" uid="uid://cs2p3v3o53aki" path="res://Parent_Scenes/Unit_Base.tscn" id="1_ehqfy"]
+
+[sub_resource type="CylinderShape3D" id="CylinderShape3D_h0x5g"]
+resource_local_to_scene = true
+height = 3.5
+radius = 2.0
+
+[sub_resource type="SphereShape3D" id="SphereShape3D_2ahck"]
+resource_local_to_scene = true
+radius = 25.0
+
+[sub_resource type="CylinderShape3D" id="CylinderShape3D_7dtjs"]
+resource_local_to_scene = true
+radius = 2.0
+
+[node name="Division_Captain" instance=ExtResource("1_ehqfy")]
+unit_name = "Division Captain"
+travel_terrain = 1
+base_atk_spd = 2.0
+base_armor = 0.2
+base_health = 52.5
+base_atk_str = 6.25
+damage_type = "Physical"
+
+[node name="CollisionShape3D" parent="." index="0"]
+shape = SubResource("CylinderShape3D_h0x5g")
+
+[node name="CollisionShape3D" parent="Fog_Breaker/Area3D" index="0"]
+shape = SubResource("SphereShape3D_2ahck")
+
+[node name="CollisionShape3D" parent="Detection_Area" index="0"]
+shape = SubResource("CylinderShape3D_7dtjs")
+
+[editable path="Fog_Breaker"]

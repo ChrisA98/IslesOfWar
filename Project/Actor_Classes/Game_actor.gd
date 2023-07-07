@@ -57,13 +57,14 @@ func load_units():
 	for b in faction_data.buildings:
 		if faction_data.buildings[b].has("unit_list"):
 			for un in faction_data.buildings[b]["unit_list"]:
-				if(FileAccess.file_exists("res://Units/"+un+".tscn")):
-					loaded_units[un] = load("res://Units/"+un+".tscn")
+				var _unit = un.replace(" ","_")
+				if(FileAccess.file_exists("res://Units/"+_unit+".tscn")):
+					loaded_units[un] = load("res://Units/"+_unit+".tscn")
 				else:
 					loaded_units[un] = load("res://Units/"+"Infantry"+".tscn")
 	
 # Called every frame. 'delta' is the elapsed time since the previous frame.
-func _physics_process(_delta):
+func _process(_delta):
 	if unit_tracking_queue.size()>0:
 		pop_front_unit_tracking_queue()
 
@@ -164,8 +165,8 @@ func deselect_unit(unit):
 
 
 ## Select a group of iunits
-func select_group(units):
-	for u in units:
+func select_group(_units):
+	for u in _units:
 		select_unit(u,false)
 
 
@@ -187,6 +188,7 @@ func _group_command(cmnd: Callable, args: Array):
 ## get position from formation
 func formation_pos(unit, place:int):
 	return Vector3(fmod(place,5)*unit.unit_radius*2.5,0,int(round(place/5)*unit.unit_radius*2.5))
+
 
 ## Command selected_units to move to location
 func command_unit_move(position):

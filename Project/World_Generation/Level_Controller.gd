@@ -142,7 +142,7 @@ func build_fog_war(chunks):
 	for fog in range(1,$Explorable_Fog.get_children().size()-1):
 		$Explorable_Fog.get_children()[fog].get_neighbors()
 	await get_tree().physics_frame
-	## isolate fog unitssa
+	## isolate fog units
 	#for fog in range(1,$Explorable_Fog.get_children().size()-1):
 		#pass
 		#$Explorable_Fog.get_children()[fog].disable_isolated()

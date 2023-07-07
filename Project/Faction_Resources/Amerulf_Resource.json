@@ -93,7 +93,7 @@
 					},
 					"pop_cost": 1
 				},
-				"Archer": {
+				"Bowman": {
 					"base_cost": {
 						"wood": 0,
 						"stone": 0,

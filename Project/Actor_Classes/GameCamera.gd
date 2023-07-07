@@ -85,8 +85,6 @@ func check_menus():
 
 
 func _physics_process(delta):
-	## Move ground render sqr
-	$"../Visual_Ground".position = position - Vector3(fmod(position.x,3),0,fmod(position.z,3))
 	
 	if Input.is_action_pressed(("cam_move_forward")):
 		key_direct -= transform.basis.z
@@ -109,6 +107,11 @@ func _physics_process(delta):
 	var height = ground_check.get_collision_point().y
 	var trgt = height+zoom
 	var distance_to_trgt = abs(position.y - trgt)
+	
+	## Move ground render sqruare
+	var zoom_offset = position.direction_to($Player_view.global_position)*height*-5
+	$"../Visual_Ground".position = position+zoom_offset - Vector3(fmod(position.x+zoom_offset.x,4),0,fmod(position.z+zoom_offset.z,4))
+	
 	if(ground_check.is_colliding()):
 		velocity.y = clamp((position.y - trgt)*-1,-1,1)
 	elif(distance_to_trgt or !ground_check.is_colliding()):

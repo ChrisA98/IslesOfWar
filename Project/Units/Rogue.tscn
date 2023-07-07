@@ -1,0 +1,39 @@
+[gd_scene load_steps=5 format=3 uid="uid://vsct0w0yt3ny"]
+
+[ext_resource type="PackedScene" uid="uid://cs2p3v3o53aki" path="res://Parent_Scenes/Unit_Base.tscn" id="1_5spqf"]
+
+[sub_resource type="CylinderShape3D" id="CylinderShape3D_1vt7r"]
+resource_local_to_scene = true
+height = 3.5
+radius = 2.0
+
+[sub_resource type="SphereShape3D" id="SphereShape3D_aol1l"]
+resource_local_to_scene = true
+radius = 25.0
+
+[sub_resource type="CylinderShape3D" id="CylinderShape3D_8etlu"]
+resource_local_to_scene = true
+radius = 2.0
+
+[node name="Rogue" instance=ExtResource("1_5spqf")]
+unit_name = "Rogue"
+fog_rev_radius = 45.0
+max_speed = 13
+travel_terrain = 1
+base_atk_spd = 0.4
+base_armor = 0.05
+base_health = 17.5
+base_atk_str = 2.0
+damage_type = "Physical"
+target_atk_rng = 8
+
+[node name="CollisionShape3D" parent="." index="0"]
+shape = SubResource("CylinderShape3D_1vt7r")
+
+[node name="CollisionShape3D" parent="Fog_Breaker/Area3D" index="0"]
+shape = SubResource("SphereShape3D_aol1l")
+
+[node name="CollisionShape3D" parent="Detection_Area" index="0"]
+shape = SubResource("CylinderShape3D_8etlu")
+
+[editable path="Fog_Breaker"]

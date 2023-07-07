@@ -1,0 +1,34 @@
+[gd_scene load_steps=5 format=3 uid="uid://bg3l0vk6ygttp"]
+
+[ext_resource type="PackedScene" uid="uid://cs2p3v3o53aki" path="res://Parent_Scenes/Unit_Base.tscn" id="1_r6vvm"]
+
+[sub_resource type="CylinderShape3D" id="CylinderShape3D_rha5d"]
+resource_local_to_scene = true
+height = 3.5
+radius = 2.0
+
+[sub_resource type="SphereShape3D" id="SphereShape3D_j23hp"]
+resource_local_to_scene = true
+radius = 25.0
+
+[sub_resource type="CylinderShape3D" id="CylinderShape3D_iwgvm"]
+resource_local_to_scene = true
+radius = 2.0
+
+[node name="Man_At_Arms" instance=ExtResource("1_r6vvm")]
+unit_name = "Man at Arms"
+base_atk_spd = 0.667
+base_health = 35.0
+base_atk_str = 1.75
+damage_type = "Physical"
+
+[node name="CollisionShape3D" parent="." index="0"]
+shape = SubResource("CylinderShape3D_rha5d")
+
+[node name="CollisionShape3D" parent="Fog_Breaker/Area3D" index="0"]
+shape = SubResource("SphereShape3D_j23hp")
+
+[node name="CollisionShape3D" parent="Detection_Area" index="0"]
+shape = SubResource("CylinderShape3D_iwgvm")
+
+[editable path="Fog_Breaker"]

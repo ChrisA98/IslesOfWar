@@ -416,6 +416,7 @@ transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, -48.7732, 17.3313, -364.716)
 transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 341.53, 17.3313, 6.41168)
 
 [node name="Explorable_Fog" type="Node3D" parent="."]
+visible = false
 
 [node name="RayCast3D" type="RayCast3D" parent="Explorable_Fog"]
 transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, 200, 0)
@@ -426,6 +427,7 @@ collision_mask = 32768
 [node name="Fog_Of_War" parent="Explorable_Fog" instance=ExtResource("9_ac8rt")]
 
 [node name="Great_Fog_Wall" type="Node3D" parent="."]
+visible = false
 
 [node name="Fog_Of_War_Edge" type="GPUParticles3D" parent="Great_Fog_Wall"]
 transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 555, 10, -555)

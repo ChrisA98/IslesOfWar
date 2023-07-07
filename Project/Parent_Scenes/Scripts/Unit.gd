@@ -21,22 +21,18 @@ enum {LAND, NAVAL, AERIAL}
 ''' Movement '''
 @export_group("Travel")
 @export var max_speed = 10
-## Navigaion layers to enable
-## 0 = LAND
-## 1 = NAVAL
-## 2 = AERIAL
-@export var travel_type := [false, false, false]
+@export_flags("Land","Naval","Aerial") var travel_terrain
 @export var accel = 3
 @export var deccel = 3
 
 ''' Export Combat vars '''
 @export_group("Combat")
-@export var base_health : float = 1
+@export var base_atk_spd : float = 1
 @export_range(0,.99) var base_armor : float = 0.1
+@export var base_health : float = 1
+@export var base_atk_str : float = 10
 @export var is_ranged : bool = false	## Is a ranged attacker
 @export var damage_type : String
-@export var base_atk_str : float = 10
-@export var base_atk_spd : float = 1
 @export var target_atk_rng : int = 5
 ## added variation to unit attacking
 ## can be improved by research
@@ -45,6 +41,11 @@ enum {LAND, NAVAL, AERIAL}
 @export_range(0,.25) var r_attack_attack_spread : float = .125
 
 var rng = RandomNumberGenerator.new()
+## Navigaion layers to enable
+## 0 = LAND
+## 1 = NAVAL
+## 2 = AERIAL
+var travel_type := [false, false, false]
 
 ''' Ai Controls '''
 var ai_mode :StringName = "idle_basic":
@@ -87,7 +88,8 @@ var follow_end_target: Vector3
 var formation_end_position: int	##position in formation when arriving at final location
 var formation_core_position: Vector3
 
-var stored_trgt_pos
+var stored_trgt_pos	## Target move stored for navmesh generation optimizing
+var queued_move_target := Vector3.ZERO ## Target stored for long distance calculations
 
 
 
@@ -170,10 +172,19 @@ var visible_allies := []
 
 '''### Built-In Methods ###'''
 func _ready():
-	## Set Navigation Layer base don movement type
+	## Set Navigation Layer based on movement type
+	match travel_terrain:
+		1,3,5:
+			travel_type[0] = true
+		2,3,6:
+			travel_type[1] = true
+		4,5,6:
+			travel_type[2] = true
+	
 	for t in range(travel_type.size()):
 		if travel_type[t]:
 			nav_agent.set_navigation_layers(t+1)
+			
 	## Set navigation information
 	nav_agent.path_desired_distance = 0.5
 	nav_agent.target_desired_distance = 0.5
@@ -251,6 +262,10 @@ func set_mov_target(mov_tar: Vector3):
 
 ## Queue a movement to be caclulated
 func queue_move(pos:Vector3):
+	queued_move_target = Vector3.ZERO
+	if position.distance_to(pos) > 575:
+		queued_move_target = pos
+		pos = position + (575*position.direction_to(pos))
 	actor_owner.add_unit_tracking(self,Callable(set_mov_target.bind(pos)))
 
 
@@ -612,6 +627,8 @@ func _on_navigation_agent_3d_navigation_finished():
 			return
 	
 	if ai_mode.contains("travel"):
+		if(queued_move_target != Vector3.ZERO and position.distance_to(queued_move_target) > 5):
+			queue_move(queued_move_target)
 		if actor_owner.actor_ID != 0:
 			ai_mode = "idle_aggressive"
 		else:

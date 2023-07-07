@@ -89,7 +89,6 @@ avoidance_enabled = true
 neighbor_distance = 4.0
 max_neighbors = 100
 time_horizon = 3.0
-debug_enabled = true
 debug_path_custom_point_size = 10.82
 
 [node name="Selection" type="Node3D" parent="."]

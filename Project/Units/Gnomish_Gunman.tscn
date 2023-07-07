@@ -1,0 +1,39 @@
+[gd_scene load_steps=5 format=3 uid="uid://ckt0pqx2b1fbt"]
+
+[ext_resource type="PackedScene" uid="uid://cs2p3v3o53aki" path="res://Parent_Scenes/Unit_Base.tscn" id="1_0ulbs"]
+
+[sub_resource type="CylinderShape3D" id="CylinderShape3D_3nb03"]
+resource_local_to_scene = true
+height = 3.5
+radius = 2.0
+
+[sub_resource type="SphereShape3D" id="SphereShape3D_05y8m"]
+resource_local_to_scene = true
+radius = 25.0
+
+[sub_resource type="CylinderShape3D" id="CylinderShape3D_dnw5y"]
+resource_local_to_scene = true
+radius = 2.0
+
+[node name="Gnomish_Gunman" instance=ExtResource("1_0ulbs")]
+unit_name = "Gnomish Gunman"
+max_speed = 7
+travel_terrain = 1
+base_atk_spd = 1.11
+base_armor = 0.18
+base_health = 17.5
+base_atk_str = 4.5
+is_ranged = true
+damage_type = "Explosive"
+target_atk_rng = 25
+
+[node name="CollisionShape3D" parent="." index="0"]
+shape = SubResource("CylinderShape3D_3nb03")
+
+[node name="CollisionShape3D" parent="Fog_Breaker/Area3D" index="0"]
+shape = SubResource("SphereShape3D_05y8m")
+
+[node name="CollisionShape3D" parent="Detection_Area" index="0"]
+shape = SubResource("CylinderShape3D_dnw5y")
+
+[editable path="Fog_Breaker"]

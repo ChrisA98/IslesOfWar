@@ -280,38 +280,6 @@ func prepare_bases():
 	preview_building.set_pos(p_spawn.position)
 	player_controller.place_building(preview_building)
 	preview_building.spawn_unit("Scout")
-	preview_building.spawn_unit("Scout")
-	preview_building.spawn_unit("Scout")
-	preview_building.spawn_unit("Scout")
-	preview_building.spawn_unit("Scout")
-	preview_building.spawn_unit("Scout")
-	preview_building.spawn_unit("Scout")
-	preview_building.spawn_unit("Scout")
-	preview_building.spawn_unit("Scout")
-	preview_building.spawn_unit("Scout")
-	preview_building.spawn_unit("Scout")
-	preview_building.spawn_unit("Scout")
-	preview_building.spawn_unit("Scout")
-	preview_building.spawn_unit("Scout")
-	preview_building.spawn_unit("Scout")
-	preview_building.spawn_unit("Scout")
-	preview_building.spawn_unit("Scout")
-	preview_building.spawn_unit("Scout")
-	preview_building.spawn_unit("Scout")
-	preview_building.spawn_unit("Scout")
-	preview_building.spawn_unit("Scout")
-	preview_building.spawn_unit("Scout")
-	preview_building.spawn_unit("Scout")
-	preview_building.spawn_unit("Scout")
-	preview_building.spawn_unit("Scout")
-	preview_building.spawn_unit("Scout")
-	preview_building.spawn_unit("Scout")
-	preview_building.spawn_unit("Scout")
-	preview_building.spawn_unit("Scout")
-	preview_building.spawn_unit("Scout")
-	preview_building.spawn_unit("Scout")
-	preview_building.spawn_unit("Scout")
-	preview_building.spawn_unit("Scout")
 	preview_building = null
 	click_mode = "select"
 	
@@ -402,7 +370,6 @@ func building_pressed(building):
 			player_controller.clear_selection()
 		_:
 			activated_building = building #pass activated building to gamescene
-			var type = building.type
 			click_mode = "menu"
 	
 
