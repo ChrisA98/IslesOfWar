@@ -7,8 +7,9 @@ type = "Depot"
 menu_pages = {
 "page_4": "",
 "research": "",
-"sec_units": "",
-"units": "Units"
+"sec_units": "Air Units",
+"units": "Vehicles"
 }
 build_time = 1.0
 fog_rev_radius = 45.0
+garrison_unit_type = 3

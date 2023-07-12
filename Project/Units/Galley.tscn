@@ -42,9 +42,9 @@ max_speed = 20
 travel_terrain = 2
 accel = 2
 deccel = 1
-base_health = 175.0
 base_armor = 0.3
-is_ranged = true
+base_health = 175.0
+main_attack_type = 1
 damage_type = "Physical"
 target_atk_rng = 20
 
@@ -55,40 +55,40 @@ shape = SubResource("CylinderShape3D_eg3oh")
 transform = Transform3D(2, 0, 0, 0, 2, 0, 0, 0, 2, 0, 0, 0)
 
 [node name="MeshInstance3D2" type="MeshInstance3D" parent="UnitModels" index="0"]
-transform = Transform3D(-1.31134e-07, 1.14641e-14, -1, -8.74228e-08, -1, 0, -1, 8.74228e-08, 1.31134e-07, 0.177232, 0.345916, -0.252817)
+transform = Transform3D(-1.31134e-07, 1.14641e-14, -1, -8.74228e-08, -1, 0, -1, 8.74228e-08, 1.31134e-07, 0.177232, 0.618829, -0.252817)
 mesh = SubResource("SphereMesh_o3v51")
 
 [node name="MeshInstance3D3" type="MeshInstance3D" parent="UnitModels" index="1"]
-transform = Transform3D(-1.31134e-07, 1.14641e-14, -1, -8.74228e-08, -1, 0, -1, 8.74228e-08, 1.31134e-07, 0.177232, 0.335968, 0.45191)
+transform = Transform3D(-1.31134e-07, 1.14641e-14, -1, -8.74228e-08, -1, 0, -1, 8.74228e-08, 1.31134e-07, 0.177232, 0.608881, 0.45191)
 mesh = SubResource("SphereMesh_o3v51")
 
 [node name="MeshInstance3D4" type="MeshInstance3D" parent="UnitModels" index="2"]
-transform = Transform3D(9.71522e-08, -1.88238e-09, -0.741, 0.0143546, 0.740861, 1.91976e-17, 0.740861, -0.0143546, 9.71704e-08, 0.177233, 0.319377, 0.664889)
+transform = Transform3D(9.71522e-08, -1.88238e-09, -0.741, 0.0143546, 0.740861, 1.91976e-17, 0.740861, -0.0143546, 9.71704e-08, 0.177233, 0.59229, 0.664889)
 mesh = SubResource("SphereMesh_o3v51")
 
 [node name="MeshInstance3D5" type="MeshInstance3D" parent="UnitModels" index="3"]
-transform = Transform3D(9.71522e-08, -1.88238e-09, -0.741, 0.0143546, 0.740861, 1.91976e-17, 0.740861, -0.0143546, 9.71704e-08, 0.177232, 1.201, -0.485936)
+transform = Transform3D(9.71522e-08, -1.88238e-09, -0.741, 0.0143546, 0.740861, 1.91976e-17, 0.740861, -0.0143546, 9.71704e-08, 0.177232, 1.47391, -0.485936)
 mesh = SubResource("CylinderMesh_jjcuw")
 
 [node name="MeshInstance3D7" type="MeshInstance3D" parent="UnitModels" index="4"]
-transform = Transform3D(9.71522e-08, -1.88238e-09, -0.741, 0.0143546, 0.740861, 1.91976e-17, 0.740861, -0.0143546, 9.71704e-08, 0.177232, 1.46157, -0.485936)
+transform = Transform3D(9.71522e-08, -1.88238e-09, -0.741, 0.0143546, 0.740861, 1.91976e-17, 0.740861, -0.0143546, 9.71704e-08, 0.177232, 1.73448, -0.485936)
 mesh = SubResource("BoxMesh_j7d8u")
 
 [node name="MeshInstance3D8" type="MeshInstance3D" parent="UnitModels" index="5"]
-transform = Transform3D(9.71522e-08, -1.88238e-09, -0.741, 0.0143546, 0.740861, 1.91976e-17, 0.740861, -0.0143546, 9.71704e-08, 0.177233, 1.91421, 0.699625)
+transform = Transform3D(9.71522e-08, -1.88238e-09, -0.741, 0.0143546, 0.740861, 1.91976e-17, 0.740861, -0.0143546, 9.71704e-08, 0.177233, 2.18712, 0.699625)
 mesh = SubResource("BoxMesh_j7d8u")
 
 [node name="MeshInstance3D6" type="MeshInstance3D" parent="UnitModels" index="6"]
-transform = Transform3D(9.71522e-08, -1.88238e-09, -0.741, 0.0143546, 0.740861, 1.91976e-17, 0.740861, -0.0143546, 9.71704e-08, 0.177233, 1.70313, 0.673116)
+transform = Transform3D(9.71522e-08, -1.88238e-09, -0.741, 0.0143546, 0.740861, 1.91976e-17, 0.740861, -0.0143546, 9.71704e-08, 0.177233, 1.97604, 0.673116)
 mesh = SubResource("CylinderMesh_jjcuw")
 
 [node name="MeshInstance3D" type="MeshInstance3D" parent="UnitModels" index="7"]
-transform = Transform3D(-1.31134e-07, 1.14641e-14, -1, -8.74228e-08, -1, 0, -1, 8.74228e-08, 1.31134e-07, 0.177232, 0.353071, -1.26485)
+transform = Transform3D(-1.31134e-07, 1.14641e-14, -1, -8.74228e-08, -1, 0, -1, 8.74228e-08, 1.31134e-07, 0.177232, 0.625984, -1.26485)
 mesh = SubResource("SphereMesh_uldu6")
 
 [node name="NavigationAgent3D" parent="." index="2"]
-path_desired_distance = 25.0
-target_desired_distance = 8.0
+path_desired_distance = 4.0
+target_desired_distance = 4.0
 path_max_distance = 25.01
 navigation_layers = 2
 

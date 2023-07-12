@@ -44,7 +44,7 @@ accel = 1
 base_atk_spd = 5.0
 base_armor = 0.5
 base_health = 10.0
-is_ranged = true
+main_attack_type = 1
 damage_type = "Physical"
 target_atk_rng = 30
 

@@ -1,0 +1,57 @@
+[gd_scene load_steps=6 format=3 uid="uid://3rimgt4005lh"]
+
+[ext_resource type="Script" path="res://Parent_Scenes/Scripts/Attack_Beam.gd" id="1_cnnos"]
+[ext_resource type="Script" path="res://Parent_Scenes/Scripts/beam_data.gd" id="2_ea7a5"]
+
+[sub_resource type="BoxShape3D" id="BoxShape3D_1q0ig"]
+size = Vector3(1, 1, 4.395)
+
+[sub_resource type="Resource" id="Resource_5t4n0"]
+script = ExtResource("2_ea7a5")
+penetration = 2
+penetrate_bldgs = false
+radius = 0.25
+lifespan = 10.0
+
+[sub_resource type="BoxShape3D" id="BoxShape3D_8dtds"]
+size = Vector3(4.75395, 4.89654, 0.325329)
+
+[node name="Attack_Beam" type="ShapeCast3D"]
+transform = Transform3D(-1, 0, -8.74228e-08, 0, 1, 0, 8.74228e-08, 0, -1, 0, 0, 0)
+shape = SubResource("BoxShape3D_1q0ig")
+target_position = Vector3(0, 0, -2.1975)
+collision_mask = 32775
+collision_result = [{
+"collider": Object(StaticBody3D,"_import_path":NodePath(""),"unique_name_in_owner":false,"process_mode":0,"process_priority":0,"process_physics_priority":0,"process_thread_group":0,"editor_description":"","transform":Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, 0, 0),"rotation_edit_mode":0,"rotation_order":2,"top_level":false,"visible":true,"visibility_parent":NodePath(""),"disable_mode":0,"collision_layer":1,"collision_mask":1,"collision_priority":1.0,"input_ray_pickable":true,"input_capture_on_drag":false,"axis_lock_linear_x":false,"axis_lock_linear_y":false,"axis_lock_linear_z":false,"axis_lock_angular_x":false,"axis_lock_angular_y":false,"axis_lock_angular_z":false,"physics_material_override":null,"constant_linear_velocity":Vector3(0, 0, 0),"constant_angular_velocity":Vector3(0, 0, 0),"script":null)
+,
+"collider_id": 57111908255576,
+"linear_velocity": Vector3(0, 0, 0),
+"normal": Vector3(-1.00303e-07, 0, -1),
+"point": Vector3(-0.5, 0.5, 3.00976),
+"rid": RID(14997076609859587),
+"shape": 0
+}]
+debug_shape_custom_color = Color(1, 0, 0, 1)
+script = ExtResource("1_cnnos")
+beam_data = SubResource("Resource_5t4n0")
+test_trgt = Vector3(0, 0, 4.395)
+
+[node name="StaticBody3D" type="StaticBody3D" parent="."]
+
+[node name="CollisionShape3D" type="CollisionShape3D" parent="StaticBody3D"]
+transform = Transform3D(1, 0, 0, 0, 1, 2.23517e-08, 0, 0, 1, 0, 0.109738, -3.17242)
+shape = SubResource("BoxShape3D_8dtds")
+
+[node name="StaticBody3D2" type="StaticBody3D" parent="."]
+transform = Transform3D(1, 0, 0, 0, 1, 7.45058e-09, 0, 0, 1, 0, 0.0815075, -2.35631)
+
+[node name="CollisionShape3D" type="CollisionShape3D" parent="StaticBody3D2"]
+transform = Transform3D(1, 0, 0, 0, 1, 2.23517e-08, 0, 0, 1, 0, 0.109738, -3.17242)
+shape = SubResource("BoxShape3D_8dtds")
+
+[node name="StaticBody3D3" type="StaticBody3D" parent="."]
+transform = Transform3D(1, 0, 0, 0, 1, 1.49012e-08, 0, 0, 1, 0, 0.179732, -5.19588)
+
+[node name="CollisionShape3D" type="CollisionShape3D" parent="StaticBody3D3"]
+transform = Transform3D(1, 0, 0, 0, 1, 2.23517e-08, 0, 0, 1, 0, 0.109738, -3.17242)
+shape = SubResource("BoxShape3D_8dtds")

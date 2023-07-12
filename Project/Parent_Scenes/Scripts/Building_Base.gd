@@ -15,7 +15,7 @@ signal spawned_unit
 @export var menu_pages = {"units": "","sec_units": "","research": "","page_4": ""}
 @export var build_time : float = 10
 @export var fog_rev_radius : float = 50
-@export_enum("Land:0","Naval:1","Aerial:2") var garrison_unit_type = 0
+@export_flags("Land","Naval","Aerial") var garrison_unit_type
 @export_group("Defense")
 @export var base_health : float = 0
 @export_range(0,.99) var base_armor : float = .1
@@ -28,6 +28,7 @@ var faction : String
 var faction_short_name : String
 var magic_color : Color
 var tier: int = 0
+
 
 var base_mats = [] ## Stores base materials
 var discovered : bool:
@@ -171,18 +172,24 @@ func load_data(data):
 	menu.set_menu_data(type)
 	
 	call_deferred("_load_units",data)
-	
 
 
 func _load_units(data):
+	#Load unit list 2 if exists
+	if(data.buildings[type].has("unit_list_2")):
+		menu.build_sec_unit_list(data.buildings[type]["unit_list_2"],menu_pages["sec_units"])
+		#load unit scenes
+		for un in data.buildings[type]["unit_list_2"]:
+			units[un] = actor_owner.loaded_units[un]
 	#Load unit list if exists
 	if(data.buildings[type].has("unit_list")):
-		menu.set_unit_list_main(data.buildings[type].unit_list,menu_pages["units"])
-		#actor_owner.loaded_units["Infantry"] = load("res://Units/Infantry.tscn")
-		#units["Infantry"] = actor_owner.loaded_units["Infantry"]
+		menu.build_unit_list(data.buildings[type].unit_list,menu_pages["units"])
 		#load unit scenes
 		for un in data.buildings[type]["unit_list"]:
-			units[un] = actor_owner.loaded_units[un]
+			if actor_owner.loaded_units.has(un):
+				units[un] = actor_owner.loaded_units[un]
+			else:
+				units[un] = actor_owner.loaded_units["Infantry"]
 		
 		menu.push_train_queue.connect(push_train_queue)
 		menu.pop_train_queue.connect(pop_train_queue)
@@ -248,11 +255,7 @@ func place():
 	static_body.set_collision_layer_value(1,true)
 	# Hide reference pieces
 	$RallyPoint.visible = false
-	
-	for col in static_body.get_children():
-		if col != static_body.get_child(0):
-			col.queue_free()
-	
+		
 	set_all_shader(build_shader)
 	set_all_over_mats(null)
 	for i in range(mesh.get_surface_override_material_count()):
@@ -271,7 +274,13 @@ func place():
 	await get_tree().physics_frame
 	update_fog.emit(self,position, is_visible)
 	fog_radius_changed.emit(self)
+	
 	get_ground_groups()
+	
+	## Delete collision objects after ground groups found
+	for col in static_body.get_children():
+		if col != static_body.get_child(0):
+			col.queue_free()
 
 
 ## Set snap for building placement
@@ -434,7 +443,7 @@ func damage(amt: float, _type: String):
 ''' User Input Start '''
 ## Pass press to signal activate signal
 func _on_static_body_3d_input_event(_camera, event, _position, _normal, _shape_idx):
-	if event is InputEventMouseButton and Input.is_action_just_released("lmb"):
+	if event is InputEventMouseButton:
 		pressed.emit(self)
 		if(actor_owner.actor_ID == 0):
 			show_menu()
@@ -458,8 +467,16 @@ func hide_from_mouse(state: = true):
 ''' Garrison Start '''
 ## Garrison unit in base
 func garrison_unit(unit):
-	if(unit.travel_type[garrison_unit_type] == false):
-		return
+	match garrison_unit_type:
+		1,3,5:
+			if unit.nav_agent.get_navigation_layer_value(1) == false:
+				return
+		2,3,6:
+			if unit.nav_agent.get_navigation_layer_value(2) == false:
+				return
+		4,5,6:
+			if unit.nav_agent.get_navigation_layer_value(3) == false:
+				return
 	garrisoned_units.push_back(unit)
 	unit.position = position
 	unit.ai_mode = "idle_basic"
@@ -469,8 +486,9 @@ func garrison_unit(unit):
 ## Remove certain garrisoned units
 func ungarrison_unit(unit, pos):
 	garrisoned_units.erase(unit)
+	unit.position = spawn.global_position	
+	await get_tree().create_timer(.05).timeout
 	unit.visible = true
-	unit.position = spawn.global_position
 	unit.set_mov_target(rally.global_position+pos) 
 
 
@@ -500,17 +518,17 @@ func delayed_delete():
 ## Place new unit to end of queue
 func push_train_queue(unit: String):
 	# Check population
-	if actor_owner.faction_data.buildings[type]["unit_list"][unit]["pop_cost"] + actor_owner.pop >= actor_owner.max_pop:
+	if actor_owner.faction_data["unit_list"][unit]["pop_cost"] + actor_owner.pop >= actor_owner.max_pop:
 		menu.unit_queue_edit(-1,unit)
 		return "pop"
 	# Check then spend resources
-	var tres = actor_owner.can_afford_unit(unit,type)
+	var tres = actor_owner.can_afford_unit(unit)
 	if(typeof(tres) == TYPE_STRING):
 		menu.unit_queue_edit(-1,unit)
 		return tres
 	# Spend Resources
-	for res in actor_owner.faction_data.buildings[type]["unit_list"][unit]["base_cost"]:
-		actor_owner.adj_resource(res,actor_owner.faction_data.buildings[type]["unit_list"][unit]["base_cost"][res]*-1)
+	for res in actor_owner.faction_data["unit_list"][unit]["base_cost"]:
+		actor_owner.adj_resource(res,actor_owner.faction_data["unit_list"][unit]["base_cost"][res]*-1)
 	
 	## Add to taining queue
 	train_queue.push_back(unit)
@@ -528,8 +546,8 @@ func pop_train_queue(unit: String = ""):
 	if(train_queue.has(unit)):
 		train_queue.remove_at(train_queue.rfind(unit))
 		# Un-Spend Resources
-		for res in actor_owner.faction_data.buildings[type]["unit_list"][unit]["base_cost"]:
-			actor_owner.adj_resource(res,actor_owner.faction_data.buildings[type]["unit_list"][unit]["base_cost"][res])
+		for res in actor_owner.faction_data["unit_list"][unit]["base_cost"]:
+			actor_owner.adj_resource(res,actor_owner.faction_data["unit_list"][unit]["base_cost"][res])
 		if(train_queue.size()==0):
 			trn_timer.stop()
 			is_training = false	
@@ -559,13 +577,16 @@ func spawn_unit(unit_override: String):
 		var u_name = pop_train_queue()
 		new_unit = units[u_name].instantiate()
 		world.spawn_unit(actor_owner, new_unit)
-		new_unit.load_data(actor_owner.faction_data.buildings[type]["unit_list"][u_name])
+		new_unit.load_data(actor_owner.faction_data["unit_list"][u_name])
+		new_unit.visible = false
 		new_unit.position = spawn.global_position
+		await get_tree().create_timer(.05).timeout
+		new_unit.visible = true
 		new_unit.set_mov_target(rally.global_position)
 	else:
-		new_unit = actor_owner.loaded_units["Infantry"].instantiate()
+		new_unit = actor_owner.loaded_units[unit_override].instantiate()
 		world.spawn_unit(actor_owner, new_unit)
-		new_unit.load_data(actor_owner.faction_data.buildings["Barracks"]["unit_list"]["Infantry"])
+		new_unit.load_data(actor_owner.faction_data["unit_list"][unit_override])
 		new_unit.position = spawn.global_position
 		new_unit.position.y = new_unit.get_ground_depth()
 	spawned_unit.emit(self,new_unit)

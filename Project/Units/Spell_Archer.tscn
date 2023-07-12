@@ -22,7 +22,7 @@ base_atk_spd = 1.25
 base_armor = 0.08
 base_health = 26.25
 base_atk_str = 3.75
-is_ranged = true
+main_attack_type = 1
 damage_type = "Magical"
 target_atk_rng = 25
 

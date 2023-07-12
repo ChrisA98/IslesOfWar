@@ -49,6 +49,9 @@ func _destroy_projectile(projectile):
 	await get_tree().create_timer(1).timeout
 	if(is_instance_valid(projectile)):
 		projectile.queue_free()
+	if projectiles.size() == 0:
+		## Arc is now empty
+		queue_free()
 
 
 ## Projectile collided with objects
@@ -69,7 +72,7 @@ func _proj_collided(hit_trgt: Node3D,proj):
 
 
 ## Create a projectile with loaded data
-func _generate_projectile() ->PathFollow3D:
+func _generate_projectile() -> PathFollow3D:
 	var proj_out = PathFollow3D.new()
 	proj_out.rotation_mode = PathFollow3D.ROTATION_NONE
 	proj_out.loop = false

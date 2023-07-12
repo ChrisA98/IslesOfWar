@@ -1,19 +1,14 @@
 extends Node
-
-
 class_name game_actor
 
 
-#REF Vars
-@onready var gamescene = $".."
 
-
-#signals
+''' Signals '''
 signal res_changed(res: int, new_amt: int)
 signal pop_changed(curr_pop: int, max_pop: int)
 
 
-# Actor structure and units
+'''Actor structure and units'''
 var bases := []
 var buildings := []
 var units := []
@@ -22,6 +17,12 @@ var selected_units = []
 
 var unit_tracking_queue := []
 
+'''Identifying Data'''
+var actor_ID : int
+var faction_data
+
+''' onready vars '''
+@onready var gamescene = $".."
 # Actor Resources
 @onready var resources = {
 "wood": 200,
@@ -29,39 +30,14 @@ var unit_tracking_queue := []
 "riches": 200,
 "crystals": 200,
 "food": 200}
-var pop: int = 0
-var max_pop: int = 0
+@onready var pop: int = 0
+@onready var max_pop: int = 0
 
-# Set by gamescene
-var actor_ID : int
-var faction_data
-
+'''### BUILT-IN METHODS ###'''
 # Called when the node enters the scene tree for the first time.
 func _ready():
 	call_deferred("prepare_resources")
 
-
-#set resources to 0, !!change amt late!!
-func prepare_resources():
-	await get_tree().physics_frame
-	
-	#Set resourcest to 0 at start
-	for r in resources:
-		set_resource(r,200)
-	
-	update_pop()
-
-
-func load_units():	
-	loaded_units["Infantry"] = load("res://Units/Infantry.tscn")
-	for b in faction_data.buildings:
-		if faction_data.buildings[b].has("unit_list"):
-			for un in faction_data.buildings[b]["unit_list"]:
-				var _unit = un.replace(" ","_")
-				if(FileAccess.file_exists("res://Units/"+_unit+".tscn")):
-					loaded_units[un] = load("res://Units/"+_unit+".tscn")
-				else:
-					loaded_units[un] = load("res://Units/"+"Infantry"+".tscn")
 	
 # Called every frame. 'delta' is the elapsed time since the previous frame.
 func _process(_delta):
@@ -69,8 +45,72 @@ func _process(_delta):
 		pop_front_unit_tracking_queue()
 
 
-###GAME FUNCTIONS###
-## group to add to a
+'''### PUBLIC METHODS ###'''
+'''-------------------------------------------------------------------------------------'''
+'''-------------------------------------------------------------------------------------'''
+'''Prepare Start'''
+
+func load_units():
+	for un in faction_data["unit_list"]:
+		var _unit = un.replace(" ","_")
+		if(FileAccess.file_exists("res://Units/"+_unit+".tscn")):
+			loaded_units[un] = load("res://Units/"+_unit+".tscn")
+		else:
+			loaded_units[un] = load("res://Units/"+"Infantry"+".tscn")
+
+
+'''Prepare End'''
+'''-------------------------------------------------------------------------------------'''
+''' Resource Management Start '''
+## Set initial resource values to UI
+func prepare_resources():
+	await get_tree().physics_frame	
+	update_pop()
+
+
+## Set resources and population values
+func set_resource(resource: String, amt: int):
+	resources[resource] = amt
+	if(resources[resource] < 0):
+		resources[resource] = 0
+	res_changed.emit(resource, resources[resource])
+
+
+## Adjust resources and population values
+func adj_resource(resource: String, amt: int):
+	resources[resource] += amt
+	if(resources[resource] < 0):
+		resources[resource] = 0
+	if(resources[resource] > 999):
+		resources[resource] = 999
+	res_changed.emit(resource, resources[resource])
+
+
+## Set max population value
+func set_max_pop(amt: int):
+	max_pop = amt
+	pop_changed.emit(pop, max_pop)
+
+
+## Adjust max population value
+func adj_max_pop(amt: int):
+	max_pop += amt
+	pop_changed.emit(pop, max_pop)
+
+
+## Calculate current pop
+func update_pop():
+	var pop_cnt = 0
+	for i in units:
+		pop_cnt += i.pop_cost
+	pop = pop_cnt
+	pop_changed.emit(pop, max_pop)
+
+'''Resource Management End'''
+'''-------------------------------------------------------------------------------------'''
+''' Building Management Start '''
+
+## Place the building in the world
 func place_building(bld):
 	if bld.is_valid == false:
 		return null
@@ -102,52 +142,26 @@ func place_building(bld):
 	return true
 
 
-##Set resources and population values
-func set_resource(resource: String, amt: int):
-	resources[resource] = amt
-	if(resources[resource] < 0):
-		resources[resource] = 0
-	res_changed.emit(resource, resources[resource])
-
-
-func adj_resource(resource: String, amt: int):
-	resources[resource] += amt
-	if(resources[resource] < 0):
-		resources[resource] = 0
-	if(resources[resource] > 999):
-		resources[resource] = 999
-	res_changed.emit(resource, resources[resource])
-
-
-func set_max_pop(amt: int):
-	max_pop = amt
-	pop_changed.emit(pop, max_pop)
-
-
-func adj_max_pop(amt: int):
-	max_pop += amt
-	pop_changed.emit(pop, max_pop)
-
-
-func update_pop():
-	var pop_cnt = 0
-	for i in units:
-		pop_cnt += i.pop_cost
-	pop = pop_cnt
-	pop_changed.emit(pop, max_pop)
-
-
 ## Checks for building ownership
 func owns_building(bldg):
 	return buildings.has(bldg)
 
 
+'''Building Management End'''
+'''-------------------------------------------------------------------------------------'''
+''' Unit Training Start '''
+
 ## Check if game actor can afford unit
-func can_afford_unit(unit:String, bldg: String):
-	for res in faction_data.buildings[bldg]["unit_list"][unit]["base_cost"]:
-		if resources[res] < faction_data.buildings[bldg]["unit_list"][unit]["base_cost"][res] :
+func can_afford_unit(unit:String):
+	for res in faction_data["unit_list"][unit]["base_cost"]:
+		if resources[res] < faction_data["unit_list"][unit]["base_cost"][res] :
 			return res
 	return true
+
+
+'''Unit Training End'''
+'''-------------------------------------------------------------------------------------'''
+''' Unit Selection Start '''
 
 
 ## Add unit to selected list
@@ -177,13 +191,9 @@ func clear_selection():
 	selected_units.clear()
 
 
-## Give a command to all selected units
-## iterate var must be at end of arg array
-func _group_command(cmnd: Callable, args: Array):
-	for j in range(selected_units.size()):
-			args[-1] = j	## set iteration
-			cmnd.callv(args)
-
+'''Unit Selection End'''
+'''-------------------------------------------------------------------------------------'''
+''' Unit Commanding Start '''
 
 ## get position from formation
 func formation_pos(unit, place:int):
@@ -208,6 +218,9 @@ func command_unit_attack(trgt):
 	
 	_group_command(cmnd,[trgt,0])
 
+'''Unit Commanding End'''
+'''-------------------------------------------------------------------------------------'''
+''' Unit Tracking Queue Start '''
 
 ## Add unit to queue to set move target when tracking
 func add_unit_tracking(unit:Unit_Base, track_function: Callable):
@@ -230,3 +243,20 @@ func erase_from_tracking_queue(unit:Unit_Base):
 	for u in unit_tracking_queue:
 		if u[0] == unit:
 			unit_tracking_queue.erase(u)
+
+''' Unit Tracking Queue End '''
+
+'''### PRIVATE METHODS ###'''
+'''-------------------------------------------------------------------------------------'''
+'''-------------------------------------------------------------------------------------'''
+''' Unit Commanding Start '''
+
+## Give a command to all selected units
+## iterate var must be at end of arg array
+func _group_command(cmnd: Callable, args: Array):
+	for j in range(selected_units.size()):
+			args[-1] = j	## set iteration
+			cmnd.callv(args)
+
+
+''' Unit Commanding End '''

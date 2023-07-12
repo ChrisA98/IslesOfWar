@@ -27,6 +27,9 @@ damage_type = "Physical"
 [node name="CollisionShape3D" parent="." index="0"]
 shape = SubResource("CylinderShape3D_mq4pc")
 
+[node name="NavigationAgent3D" parent="." index="2"]
+time_horizon_agents = 3.0
+
 [node name="CollisionShape3D" parent="Fog_Breaker/Area3D" index="0"]
 shape = SubResource("SphereShape3D_bi1b8")
 

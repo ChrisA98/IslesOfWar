@@ -407,7 +407,7 @@ process_material = SubResource("ShaderMaterial_twvxw")
 transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 118.343, 17.8461, -203.279)
 
 [node name="Stone_deposit2" parent="." instance=ExtResource("7_7rj6j")]
-transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 58.6758, 17.8461, 41.6406)
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, -172.08, 17.8461, 33.6186)
 
 [node name="Crystal_deposit" parent="." instance=ExtResource("8_wyj8d")]
 transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, -48.7732, 17.3313, -364.716)
@@ -425,9 +425,9 @@ target_position = Vector3(0, -500, 0)
 collision_mask = 32768
 
 [node name="Fog_Of_War" parent="Explorable_Fog" instance=ExtResource("9_ac8rt")]
+amount = 10
 
 [node name="Great_Fog_Wall" type="Node3D" parent="."]
-visible = false
 
 [node name="Fog_Of_War_Edge" type="GPUParticles3D" parent="Great_Fog_Wall"]
 transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 555, 10, -555)
@@ -435,9 +435,8 @@ layers = 16
 sorting_offset = 100.0
 amount = 200
 lifetime = 8.0
-preprocess = 7.0
 randomness = 0.6
-visibility_aabb = AABB(-100, -50, -100, 200, 200, 200)
+visibility_aabb = AABB(-150, -50, -150, 300, 300, 300)
 process_material = SubResource("ParticleProcessMaterial_p133b")
 draw_pass_1 = SubResource("SphereMesh_cyqkr")
 

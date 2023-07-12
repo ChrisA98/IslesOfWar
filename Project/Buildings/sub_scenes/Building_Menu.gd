@@ -1,12 +1,11 @@
 extends Panel
 
-@export var visible_pages = {"units": true,"sec_units": true,"research": false,"page_4": false}
-
 signal push_train_queue
 signal pop_train_queue
 signal research_queue
 
 #Ref vars
+var visible_pages = {"units": false,"sec_units": false,"research": false,"page_4": false}
 var unit_buttons := {}
 var active_train
 var active_res
@@ -16,13 +15,18 @@ func _ready():
 	# bind page buttons
 	for but in $Building_Menu/Page_Buttons.get_children():
 		but.pressed.connect(switch_page.bind(but))
-	
+		
 	## hide unused pages
 	for pag in visible_pages:
+		if (get_parent().menu_pages[pag] != ""):
+			visible_pages[pag] = true
 		$Building_Menu/Page_Buttons.find_child(pag).visible = visible_pages[pag]
 	
 	$"Always_Buttons/Garrison Button".pressed.connect(get_parent().empty_garrison,CONNECT_DEFERRED)
-
+	
+	for i in get_children(true):
+		i.mouse_entered.connect(set.bind("has_mouse",true))
+		i.mouse_exited.connect(set.bind("has_mouse",false))
 
 
 ## Set menu base visibilities and data
@@ -31,11 +35,14 @@ func set_menu_data(bldg_name:String):
 
 
 ## Setup main units list
-func set_unit_list_main(units: Dictionary, _name: String):
+func build_unit_list(units: Array, _name: String, pg: int = 0):
 	var cnt = 0
-	$Building_Menu/Page_Buttons/units.text = _name
+	if(pg == 0):
+		$Building_Menu/Page_Buttons/units.text = _name
+		visible_pages["units"] = true
 	for u in units:
-		var t = get_node("Building_Menu/Pages/units_page/units_list/unit_box_"+str(cnt))		
+		var __t = get_node("Building_Menu/Pages/units_page_0/units_list/unit_box_"+str(cnt))
+		var t = get_node("Building_Menu/Pages/units_page_"+str(pg)+"/units_list/unit_box_"+str(cnt))
 		var nxt = t.duplicate(true)
 		nxt.set_name("unit_box_"+str(cnt+1))
 		nxt.visible=false
@@ -49,11 +56,15 @@ func set_unit_list_main(units: Dictionary, _name: String):
 		unit_buttons[u] = t	## Link button to unit name
 		
 		cnt+=1
-	
-	for i in get_children(true):
-		i.mouse_entered.connect(set.bind("has_mouse",true))
-		i.mouse_exited.connect(set.bind("has_mouse",false))
 
+func build_sec_unit_list(units: Array, _name: String):
+	$Building_Menu/Page_Buttons/sec_units.text = _name
+	var t = get_node("Building_Menu/Pages/units_page_0").duplicate(true)
+	t.set_name("units_page_1")
+	get_node("Building_Menu/Pages").add_child(t)
+	visible_pages["sec_units"] = true
+	await get_tree().physics_frame
+	build_unit_list(units, _name, 1)
 
 ## Set menu page
 func switch_page(page):	

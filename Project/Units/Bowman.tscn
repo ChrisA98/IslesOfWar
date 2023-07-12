@@ -21,7 +21,7 @@ travel_terrain = 1
 base_armor = 0.05
 base_health = 26.25
 base_atk_str = 3.5
-is_ranged = true
+main_attack_type = 1
 damage_type = "Physical"
 target_atk_rng = 25
 

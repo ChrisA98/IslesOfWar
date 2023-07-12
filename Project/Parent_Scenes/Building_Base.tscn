@@ -68,6 +68,7 @@ rings = 4
 [node name="Building_Base" type="Node3D"]
 transform = Transform3D(5, 0, 0, 0, 5, 0, 0, 0, 5, 0, -0.0421534, 0)
 script = ExtResource("1_y54u3")
+garrison_unit_type = 1
 metadata/show_base_radius = true
 metadata/has_build_radius = true
 metadata/reveals_fog = 0
@@ -76,12 +77,6 @@ metadata/reveals_fog = 0
 
 [node name="Menu" parent="." instance=ExtResource("3_gjrqr")]
 visible = false
-visible_pages = {
-"page_4": false,
-"research": false,
-"sec_units": false,
-"units": true
-}
 
 [node name="MeshInstance3D" type="MeshInstance3D" parent="."]
 transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, 0.5, 0)
@@ -166,7 +161,5 @@ draw_pass_1 = SubResource("SphereMesh_7vuld")
 [node name="Fog_Breaker" parent="." instance=ExtResource("3_02et3")]
 transform = Transform3D(0.2, 0, 0, 0, 0.2, 0, 0, 0, 0.2, 0, 0, 0)
 
-[node name="NavigationObstacle3D" type="NavigationObstacle3D" parent="."]
-
-[connection signal="timeout" from="Train_Timer" to="." method="spawn_unit" binds= ["nan"]]
+[connection signal="timeout" from="Train_Timer" to="." method="spawn_unit" flags=3 binds= ["nan"]]
 [connection signal="input_event" from="StaticBody3D" to="." method="_on_static_body_3d_input_event"]

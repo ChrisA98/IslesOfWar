@@ -10,6 +10,7 @@ signal attacked #did an attack
 
 '''Enums'''
 enum {LAND, NAVAL, AERIAL}
+enum attack_type{MELEE,RANGE_PROJ,RANGE_BEAM,RANGE_AREA}
 
 '''Consts'''
 
@@ -31,28 +32,21 @@ enum {LAND, NAVAL, AERIAL}
 @export_range(0,.99) var base_armor : float = 0.1
 @export var base_health : float = 1
 @export var base_atk_str : float = 10
-@export var is_ranged : bool = false	## Is a ranged attacker
+@export var main_attack_type : attack_type	## Is a ranged attacker
 @export var damage_type : String
 @export var target_atk_rng : int = 5
 ## added variation to unit attacking
 ## can be improved by research
 ## melee numbers should be lower
-@export_range(0,.5) var m_attack_damage_variance : float = .25
-@export_range(0,.25) var r_attack_attack_spread : float = .125
+@export_range(0,.5) var _m_attack_damage_variance : float = .25
+@export_range(0,.25) var _r_attack_attack_spread : float = .125
 
 var rng = RandomNumberGenerator.new()
-## Navigaion layers to enable
-## 0 = LAND
-## 1 = NAVAL
-## 2 = AERIAL
-var travel_type := [false, false, false]
 
 ''' Ai Controls '''
 var ai_mode :StringName = "idle_basic":
 	set(value):
 		ai_mode = value
-		if value != "follow_basic":
-			target_follow = null
 		if value.contains("attack"):
 			atk_timer.start(current_atk_spd)
 		else:
@@ -65,24 +59,10 @@ var ai_methods : Dictionary = {
 	"traveling_basic" : Callable(_traveling_basic),
 	"wandering_basic" : Callable(_wandering_basic),
 	"attack_commanded" : Callable(_targeted_attack),
-	"follow_basic" : Callable(_following),
 	"garrison" : Callable(_garrisoning),
 }
 var travel_vector : Vector3
 var intial_path_dist := 0.1
-var followers: Array
-var target_follow: Unit_Base:
-	set(value):
-		if(target_follow != null and target_follow.update_fog.is_connected(__find_target)):
-				target_follow.update_fog.disconnect(__find_target)
-		if value == null:
-			target_speed = max_speed
-			actor_owner.erase_from_tracking_queue(self)
-		else:
-			target_speed = value.max_speed
-			if(!value.update_fog.is_connected(__find_target)):
-				value.update_fog.connect(__find_target)
-		target_follow = value
 var target_garrison : Building
 var follow_end_target: Vector3
 var formation_end_position: int	##position in formation when arriving at final location
@@ -91,17 +71,15 @@ var formation_core_position: Vector3
 var stored_trgt_pos	## Target move stored for navmesh generation optimizing
 var queued_move_target := Vector3.ZERO ## Target stored for long distance calculations
 
-
-
 ''' Identifying Vars '''
 var actor_owner
 var unit_list
+var unit_models := []
 
 var is_selected: bool:
 	set(value):
 		is_selected = value
 		$Selection.visible = value
-		
 var is_visible: bool:
 	set(value):
 		is_visible = value
@@ -123,8 +101,8 @@ var res_cost := {"wood": 0,
 	set(value):
 		health = clampf(value,-1,max_health)
 @onready var armor : float = base_armor ## base armor after modifers
-@onready var m_dmg_var : float = m_attack_damage_variance ## base armor after modifers
-@onready var r_atk_sprd : float = r_attack_attack_spread ## base armor after modifers
+@onready var m_dmg_var : float = _m_attack_damage_variance ## modified variance
+@onready var r_atk_sprd : float = _r_attack_attack_spread ## modified variance
 @onready var current_atk_str : float = base_atk_str  #with modifiers
 @onready var current_atk_spd : float = base_atk_spd:  #with modifiers
 	set(value):
@@ -168,48 +146,49 @@ var visible_allies := []
 ## Navigation vars
 @onready var nav_agent: NavigationAgent3D = get_node("NavigationAgent3D")
 @onready var unit_radius = $CollisionShape3D.shape.get_radius()
-@onready var target_speed: int = max_speed
+@onready var target_speed: int = max_speed:
+	set(value):
+		nav_agent.max_speed = value
 
 '''### Built-In Methods ###'''
 func _ready():
-	## Set Navigation Layer based on movement type
-	match travel_terrain:
-		1,3,5:
-			travel_type[0] = true
-		2,3,6:
-			travel_type[1] = true
-		4,5,6:
-			travel_type[2] = true
-	
-	for t in range(travel_type.size()):
-		if travel_type[t]:
-			nav_agent.set_navigation_layers(t+1)
-			
-	## Set navigation information
-	nav_agent.path_desired_distance = 0.5
-	nav_agent.target_desired_distance = 0.5
+	call_deferred("_prepare_nav_agent")
 	## Connect signals
 	nav_agent.waypoint_reached.connect(waypoint)
 	atk_timer.timeout.connect(_attack)
 	
 	## Set attack type
-	if is_ranged:
-		attack_method = Callable(__ranged_attack)
-		var proj = load("res://Parent_Scenes/Projectile_Arc.tscn").instantiate()
-		add_child(proj)
-		projectile_arc = proj
-	else:
-		attack_method = Callable(__melee_attack)
+	match main_attack_type:
+		attack_type.MELEE:
+			attack_method = Callable(__melee_attack)
+		attack_type.RANGE_PROJ:
+			attack_method = Callable(__ranged_proj_attack)
+			projectile_arc = load("res://Parent_Scenes/Projectile_Arc.tscn")
+		attack_type.RANGE_AREA:
+			attack_method = Callable(__ranged_proj_attack)
+			projectile_arc = load("res://Parent_Scenes/Projectile_Arc.tscn")
+	
+	## Create model raycasts
+	for i in range($UnitModels.get_children().size()-1):
+		unit_models.push_back($UnitModels.get_child(i))
+		var r = RayCast3D.new()
+		r.target_position = Vector3.DOWN*10
+		r.set_collision_mask_value(1,false)
+		r.set_collision_mask_value(16,true)		
+		unit_models[i].add_child(r)
+
 
 func _physics_process(delta):
 	if(is_queued_for_deletion()):
 		return
 	ai_methods[ai_mode].call(delta)
 
+
 func _process(_delta):
 	update_fog.emit(self,position, is_visible)
 
 '''### Public Methods ###'''
+'''-------------------------------------------------------------------------------------'''
 ''' Startup Methods Start '''
 ## Load data from owning building
 func load_data(data):	
@@ -248,6 +227,23 @@ func load_data(data):
 	fog_reg.detect_area.body_exited.connect(_vision_body_exited)
 	
 
+## Prepare Navigation agent
+func _prepare_nav_agent():
+	await get_tree().physics_frame
+	var travel_type = [false,false,false]
+	## Set Navigation Layer based on movement type
+	match travel_terrain:
+		1,3,5:
+			travel_type[0] = true
+		2,3,6:
+			travel_type[1] = true
+		4,5,6:
+			travel_type[2] = true
+	
+	for t in range(travel_type.size()):
+		if travel_type[t]:
+			nav_agent.set_navigation_layers(t+1)
+
 
 ''' Startup Methods End '''
 '''-------------------------------------------------------------------------------------'''
@@ -265,52 +261,8 @@ func queue_move(pos:Vector3):
 	queued_move_target = Vector3.ZERO
 	if position.distance_to(pos) > 575:
 		queued_move_target = pos
-		pos = position + (575*position.direction_to(pos))
+		pos = position - (575*position.direction_to(pos))
 	actor_owner.add_unit_tracking(self,Callable(set_mov_target.bind(pos)))
-
-
-## Set folowing units
-func set_following(units, end_pos):
-	followers = units
-	for i in units:
-		if(i != self):
-			i.target_follow = self
-			i.ai_mode = "follow_basic"
-			i.follow_end_target = nav_agent.get_final_position()+end_pos
-
-
-## Add folowing units
-func add_following(unit, end_pos):
-	if(followers.has(unit)):
-		return
-	followers.push_back(unit)
-	## Stop signal connection overloading
-	if(!unit.died.is_connected(remove_following)):
-		unit.died.connect(remove_following.bind(unit))
-	
-	unit.target_follow = self
-	unit.ai_mode = "follow_basic"
-	if(target_enemy != null):
-		unit.target_enemy = target_enemy
-	else:
-		unit.follow_end_target = nav_agent.get_final_position()+end_pos
-
-
-## Remove following unit
-func remove_following(unit):
-	if(followers.has(unit)):
-		followers.erase(unit)
-		unit.ai_mode=ai_mode
-	else:
-		unit.died.disconnect(remove_following)
-
-
-func clear_following():	
-	if followers.size() > 0:
-		for i in followers:
-			remove_following(i)
-			i._set_target_position(position)
-	followers.clear()
 
 
 # Get gound depth at certain point
@@ -324,6 +276,7 @@ func get_ground_depth(pos = null):
 	update_fog.emit(self,position, is_visible)
 	grnd_ping.enabled = false
 	return out
+
 
 ## Set Garrison target
 func set_garrison_target(bldg:Building):
@@ -365,7 +318,6 @@ func damage(amt: float, _type: String):
 	health -= (amt - amt*armor)
 	## DIE
 	if(health <= 0):
-		clear_following()
 		died.emit()
 		delayed_delete()
 		return true
@@ -376,8 +328,6 @@ func damage(amt: float, _type: String):
 func declare_enemy(unit):
 	ai_mode = "attack_commanded"
 	target_enemy = unit
-	if(target_follow == null):
-		_set_target_position(unit.position)
 
 
 ''' Combat Methods End '''
@@ -416,6 +366,11 @@ func _check_pos(pos, mod = 1):
 	return pos
 
 
+func _snap_model_to_ground():
+	for mod in unit_models:
+		mod.position.y = mod.get_child(0).get_collision_point().y - position.y
+		
+
 ## set target move location 
 func _set_target_position(mov_tar: Vector3, reset_formation := false):
 	if(reset_formation):
@@ -448,14 +403,15 @@ func _det_area_entered(area):
 
 
 func _det_area_exited(area):
-	if(area.has_meta("fog_owner_id") and area.get_meta("fog_owner_id") == 0):
-		## Area is player fog breaker
-		is_visible = false
-		await get_tree().physics_frame
-		for ar in det_area.get_overlapping_areas():
-			if(ar.has_meta("fog_owner_id") and ar.get_meta("fog_owner_id") == 0):
-				## Still in player fog breaker
-				is_visible = true
+	if(area.has_meta("fog_owner_id") and area.get_meta("fog_owner_id") != 0):
+		return
+	## Area is player fog breaker
+	is_visible = false
+	await get_tree().physics_frame
+	for ar in det_area.get_overlapping_areas():
+		if(ar.has_meta("fog_owner_id") and ar.get_meta("fog_owner_id") == 0):
+			## Still in player fog breaker
+			is_visible = true
 
 
 ## Add enemies to sight array
@@ -501,15 +457,29 @@ func _attack():
 	await get_tree().create_timer(.25).timeout
 	$UnitModels/attack_indicator_temp.visible = false
 
-## ranged attack callable
-func __ranged_attack():
+## ranged projectile attack callable
+func __ranged_proj_attack():
 	var dis = position.distance_to(target_enemy.position)
-	projectile_arc.fire(position+Vector3.UP*3, target_enemy.position, dis, current_atk_str, "physical")
+	var shot = projectile_arc.instantiate()
+	add_child(shot)
+	shot.fire(position+Vector3.UP*3, target_enemy.position, dis, current_atk_str, damage_type)
+
+
+## ranged area attack callable
+func __ranged_area_attack():
+	if rng.randf_range(0,.25) < r_atk_sprd:
+		## Target missed with shot
+		return
+	## Do animation later
+	target_enemy.damage(current_atk_str,damage_type)
+	
+
 
 ## melee attack callable
 func __melee_attack():
 	var variance = rng.randf_range(-current_atk_str*m_dmg_var,current_atk_str*m_dmg_var)
-	target_enemy.damage(current_atk_str+variance,"physical")
+	## Do animation later
+	target_enemy.damage(current_atk_str+variance,damage_type)
 
 
 ''' Combat Methods End '''
@@ -535,7 +505,7 @@ func _targeted_attack(delta):
 
 ## Update navigation target to target enemy
 func __find_target(trgt:Unit_Base, pos:Vector3, _is_visible:bool):
-	if(target_enemy == trgt or target_follow == trgt):
+	if(target_enemy == trgt):
 		if(nav_agent.get_target_position().distance_to(pos) < target_atk_rng*2):
 			actor_owner.add_unit_tracking(self,Callable(_set_target_position.bind(pos,true)))
 
@@ -544,23 +514,7 @@ func __find_target(trgt:Unit_Base, pos:Vector3, _is_visible:bool):
 func _traveling_basic(delta):
 	_travel(delta)
 
-
-## follow friendly unit
-func _following(delta):
-	_travel(delta)
-	
-	if(target_enemy != null and visible_enemies.has(target_enemy)):
-		ai_mode = "attack_commanded"
-		follow_end_target = Vector3.ZERO
-	
-	if follow_end_target != Vector3.ZERO and position.distance_to(follow_end_target):
-		if is_instance_valid(target_follow):
-			target_follow.remove_following(self)
-		_set_target_position(follow_end_target)
-		follow_end_target = Vector3.ZERO
-
-
-## follow friendly unit
+## Moving to Garrisoin target
 func _garrisoning(delta):
 	_travel(delta)
 	
@@ -600,6 +554,7 @@ func _wandering_basic(delta):
 func _travel(_delta):
 	if nav_agent.is_navigation_finished():
 		return
+	_snap_model_to_ground()
 	var current_agent_position: Vector3 = global_transform.origin
 	var next_path_position: Vector3 = nav_agent.get_next_path_position()
 	var new_velocity: Vector3 = next_path_position - current_agent_position
@@ -629,14 +584,18 @@ func _on_navigation_agent_3d_navigation_finished():
 	if ai_mode.contains("travel"):
 		if(queued_move_target != Vector3.ZERO and position.distance_to(queued_move_target) > 5):
 			queue_move(queued_move_target)
+			return
+		#nav_agent.set_velocity(Vector3.ZERO)
+		#set_velocity(Vector3.ZERO)
 		if actor_owner.actor_ID != 0:
 			ai_mode = "idle_aggressive"
 		else:
 			ai_mode = "idle_basic"
-	clear_following()
 
 
 func _on_NavigationAgent_velocity_computed(safe_velocity):
+	if nav_agent.is_navigation_finished():
+		return
 	if ai_mode.contains("attack"):
 		velocity = safe_velocity
 	else:
@@ -646,12 +605,7 @@ func _on_NavigationAgent_velocity_computed(safe_velocity):
 
 ## Reaches waypoint
 func waypoint(_details):
-	if followers.size() > 0:
-		for i in followers:
-			if(!is_instance_valid(i)):
-				followers.erase(i)
-				continue
-			i._set_target_position(nav_agent.get_next_path_position())
+	pass
 
 
 ''' AI Processes Methods End '''

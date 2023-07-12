@@ -270,7 +270,7 @@ func prepare_bases():
 		bldg.set_pos(spawn.position)
 		bldg.set_pos(Vector3(spawn.position.x,game_actors[enemy].ping_ground_depth(bldg.position),spawn.position.z))
 		game_actors[enemy].place_building(bldg)
-		bldg.spawn_unit("Scout")
+		bldg.spawn_unit(game_actors[enemy].faction_data["starting_unit"])
 		
 	# Add player first Base
 	var p_spawn = get_node("Level/Player_Base_Spawn")
@@ -279,7 +279,7 @@ func prepare_bases():
 	prep_player_building(0, null)
 	preview_building.set_pos(p_spawn.position)
 	player_controller.place_building(preview_building)
-	preview_building.spawn_unit("Scout")
+	preview_building.spawn_unit(player_controller.faction_data["starting_unit"])
 	preview_building = null
 	click_mode = "select"
 	
@@ -292,6 +292,7 @@ func custom_nav_setup():
 	#create navigation map
 	var map: RID = NavigationServer3D.map_create()
 	NavigationServer3D.map_set_up(map, Vector3.UP)
+	NavigationServer3D.map_set_cell_size(map,.35)
 	NavigationServer3D.map_set_active(map, true)
 	nav_ready.emit()
 	NavigationServer3D.map_set_edge_connection_margin(get_world_3d().get_navigation_map(),8)
@@ -303,6 +304,8 @@ func _navmesh_update_start():
 	for unit in world_units:
 		if unit.ai_mode.contains("travel"):
 			var ind = clamp(unit.nav_agent.get_current_navigation_path_index()+15,0,unit.nav_agent.get_current_navigation_path().size()-1)
+			if(ind < 0):
+				continue
 			var pos = unit.nav_agent.get_current_navigation_path()[ind]
 			unit.stored_trgt_pos = unit.nav_agent.get_final_position()
 			unit.queue_move(pos)
@@ -358,19 +361,25 @@ func prep_other_building(actor, bldg_name):
 
 ## Activate buildings menu
 func building_pressed(building):
-	if !player_controller.owns_building(building):
-		if click_mode == "command_unit":
-			player_controller.command_unit_attack(building)
-		return
-	
-	match click_mode:
-		"command_unit":
-			for u in player_controller.selected_units:
-				u.set_garrison_target(building)
-			player_controller.clear_selection()
-		_:
-			activated_building = building #pass activated building to gamescene
-			click_mode = "menu"
+	if Input.is_action_just_released("lmb"):
+		if !player_controller.owns_building(building):
+			if click_mode == "command_unit":
+				player_controller.command_unit_attack(building)
+			return
+		
+		match click_mode:
+			_:
+				activated_building = building #pass activated building to gamescene
+				click_mode = "menu"
+	if Input.is_action_just_released("rmb"):
+		match click_mode:
+			"command_unit":
+				for u in player_controller.selected_units:
+					u.set_garrison_target(building)
+				player_controller.clear_selection()
+			_:
+				activated_building = building #pass activated building to gamescene
+				click_mode = "menu"
 	
 
 

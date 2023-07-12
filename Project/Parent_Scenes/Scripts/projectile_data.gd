@@ -1,4 +1,5 @@
 extends Resource
+
 class_name Projectile_Data
 
 @export var travel_speed: float

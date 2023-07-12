@@ -51,12 +51,6 @@ offset_top = 148.262
 offset_right = 233.0
 theme = ExtResource("1_66gr2")
 script = ExtResource("2_sg2al")
-visible_pages = {
-"page_4": false,
-"research": true,
-"sec_units": true,
-"units": true
-}
 
 [node name="Building_Menu" type="VBoxContainer" parent="."]
 layout_mode = 1
@@ -128,53 +122,53 @@ size_flags_vertical = 3
 tab_alignment = 1
 tabs_visible = false
 
-[node name="units_page" type="ScrollContainer" parent="Building_Menu/Pages"]
+[node name="units_page_0" type="ScrollContainer" parent="Building_Menu/Pages"]
 layout_mode = 2
 size_flags_vertical = 3
 
-[node name="units_list" type="VBoxContainer" parent="Building_Menu/Pages/units_page"]
+[node name="units_list" type="VBoxContainer" parent="Building_Menu/Pages/units_page_0"]
 layout_mode = 2
 size_flags_horizontal = 3
 
-[node name="unit_box_0" type="HBoxContainer" parent="Building_Menu/Pages/units_page/units_list"]
+[node name="unit_box_0" type="HBoxContainer" parent="Building_Menu/Pages/units_page_0/units_list"]
 layout_mode = 2
 alignment = 1
 
-[node name="train_count" type="VBoxContainer" parent="Building_Menu/Pages/units_page/units_list/unit_box_0"]
+[node name="train_count" type="VBoxContainer" parent="Building_Menu/Pages/units_page_0/units_list/unit_box_0"]
 custom_minimum_size = Vector2(50, 0)
 layout_mode = 2
 size_flags_stretch_ratio = 0.13
 
-[node name="increase" type="Button" parent="Building_Menu/Pages/units_page/units_list/unit_box_0/train_count"]
+[node name="increase" type="Button" parent="Building_Menu/Pages/units_page_0/units_list/unit_box_0/train_count"]
 layout_mode = 2
 text = "+"
 
-[node name="RichTextLabel" type="RichTextLabel" parent="Building_Menu/Pages/units_page/units_list/unit_box_0/train_count"]
+[node name="RichTextLabel" type="RichTextLabel" parent="Building_Menu/Pages/units_page_0/units_list/unit_box_0/train_count"]
 custom_minimum_size = Vector2(0, 25)
 layout_mode = 2
 size_flags_vertical = 3
 bbcode_enabled = true
 text = "[center]0[/center]"
 
-[node name="decrease" type="Button" parent="Building_Menu/Pages/units_page/units_list/unit_box_0/train_count"]
+[node name="decrease" type="Button" parent="Building_Menu/Pages/units_page_0/units_list/unit_box_0/train_count"]
 layout_mode = 2
 text = "-
 "
 
-[node name="Panel" type="Panel" parent="Building_Menu/Pages/units_page/units_list/unit_box_0"]
+[node name="Panel" type="Panel" parent="Building_Menu/Pages/units_page_0/units_list/unit_box_0"]
 layout_mode = 2
 size_flags_horizontal = 3
 size_flags_stretch_ratio = 8.12
 mouse_filter = 1
 
-[node name="RichTextLabel" type="RichTextLabel" parent="Building_Menu/Pages/units_page/units_list/unit_box_0/Panel"]
+[node name="RichTextLabel" type="RichTextLabel" parent="Building_Menu/Pages/units_page_0/units_list/unit_box_0/Panel"]
 layout_mode = 0
 offset_right = 139.0
 offset_bottom = 25.0
 mouse_filter = 1
 text = "unit_Name"
 
-[node name="train_queue" type="TextureProgressBar" parent="Building_Menu/Pages/units_page/units_list/unit_box_0"]
+[node name="train_queue" type="TextureProgressBar" parent="Building_Menu/Pages/units_page_0/units_list/unit_box_0"]
 custom_minimum_size = Vector2(35, 0)
 layout_mode = 2
 size_flags_horizontal = 10
@@ -183,10 +177,6 @@ nine_patch_stretch = true
 texture_under = SubResource("GradientTexture1D_5qqxn")
 texture_over = SubResource("GradientTexture1D_ul2pt")
 texture_progress = SubResource("GradientTexture1D_fnu04")
-
-[node name="Panel" type="Panel" parent="Building_Menu/Pages"]
-visible = false
-layout_mode = 2
 
 [node name="Always_Buttons" type="HBoxContainer" parent="."]
 layout_mode = 1

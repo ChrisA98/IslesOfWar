@@ -23,7 +23,7 @@ base_atk_spd = 1.11
 base_armor = 0.18
 base_health = 17.5
 base_atk_str = 4.5
-is_ranged = true
+main_attack_type = 3
 damage_type = "Explosive"
 target_atk_rng = 25
 

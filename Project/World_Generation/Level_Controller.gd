@@ -72,6 +72,7 @@ func _ready():
 	wtr_nav_region.set_nav_region()
 	wtr_nav_region.navigation_mesh.set_filter_baking_aabb(AABB(Vector3(-chunk_size,-2.5,-chunk_size),Vector3(chunks*chunk_size,10,chunks*chunk_size)))
 	wtr_nav_region.update_navigation_mesh()
+	wtr_nav_region.use_edge_connections = false
 	wtr_nav_region.set_navigation_layer_value(1, false)
 	wtr_nav_region.set_navigation_layer_value(2, true)
 	

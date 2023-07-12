@@ -72,38 +72,7 @@
 				"crystals": 0,
 				"food": 0,
 			},
-			"unit_list":{
-				"Infantry": {
-					"base_cost": {
-						"wood": 1,
-						"stone": 0,
-						"riches": 1,
-						"crystals": 1,
-						"food": 0,
-					},
-					"pop_cost": 1
-				},
-				"Division Captain": {
-					"base_cost": {
-						"wood": 0,
-						"stone": 0,
-						"riches": 10,
-						"crystals": 10,
-						"food": 0,
-					},
-					"pop_cost": 1
-				},
-				"Bowman": {
-					"base_cost": {
-						"wood": 0,
-						"stone": 0,
-						"riches": 10,
-						"crystals": 10,
-						"food": 0,
-					},
-					"pop_cost": 1
-				}
-			},
+			"unit_list":["Knight","Division Captain","Bowman"],
 			"base_display_name": "Barracks",
 			"category": "military"
 		},
@@ -122,48 +91,8 @@
 				"crystals": 0,
 				"food": 0,
 			},
-			"unit_list":{
-				"Cavalry": {
-					"base_cost": {
-					"wood": 0,
-					"stone": 0,
-					"riches": 10,
-					"crystals": 10,
-					"food": 0,
-					},
-					"pop_cost": 1
-				},
-				"Catapult": {
-					"base_cost": {
-						"wood": 0,
-						"stone": 0,
-						"riches": 10,
-						"crystals": 10,
-						"food": 0,
-					},
-					"pop_cost": 1
-				},
-				"Cavalry Scout": {
-					"base_cost": {
-						"wood": 0,
-						"stone": 0,
-						"riches": 10,
-						"crystals": 10,
-						"food": 0,
-					},
-					"pop_cost": 1
-				},
-				"Wyvern Riders": {
-					"base_cost": {
-						"wood": 0,
-						"stone": 0,
-						"riches": 10,
-						"crystals": 10,
-						"food": 0,
-					},
-					"pop_cost": 1
-				}
-			},
+			"unit_list":["Cavalry","Ballista","Bowman"],
+			"unit_list_2":["Wyvern Riders"],
 			"base_display_name": "Depot",
 			"category": "military"
 		},
@@ -182,38 +111,7 @@
 				"crystals": 0,
 				"food": 0,
 			},
-			"unit_list":{
-				"Galley": {
-					"base_cost": {
-					"wood": 0,
-					"stone": 0,
-					"riches": 10,
-					"crystals": 10,
-					"food": 0,
-					},
-					"pop_cost": 1
-				},
-				"Knights Barge": {
-					"base_cost": {
-						"wood": 0,
-						"stone": 0,
-						"riches": 10,
-						"crystals": 10,
-						"food": 0,
-					},
-					"pop_cost": 1
-				},
-				"Transport Ship": {
-					"base_cost": {
-						"wood": 0,
-						"stone": 0,
-						"riches": 10,
-						"crystals": 10,
-						"food": 0,
-					},
-					"pop_cost": 1
-				}
-			},
+			"unit_list":["Galley","Knights Barge","Transport Ship"],
 			"base_display_name": "Dock",
 			"category": "military"
 		},
@@ -311,5 +209,118 @@
 			"base_display_name": "Watch Tower",
 			"category": "base"
 		},
-	}
+	},
+	"unit_list":{
+		"Infantry": {
+			"base_cost": {
+				"wood": 1,
+				"stone": 0,
+				"riches": 1,
+				"crystals": 1,
+				"food": 0,
+			},
+			"pop_cost": 1
+		},
+		"Galley": {
+			"base_cost": {
+			"wood": 0,
+			"stone": 0,
+			"riches": 10,
+			"crystals": 10,
+			"food": 0,
+			},
+			"pop_cost": 1
+		},
+		"Knights Barge": {
+			"base_cost": {
+				"wood": 0,
+				"stone": 0,
+				"riches": 10,
+				"crystals": 10,
+				"food": 0,
+			},
+			"pop_cost": 1
+		},
+		"Transport Ship": {
+			"base_cost": {
+				"wood": 0,
+				"stone": 0,
+				"riches": 10,
+				"crystals": 10,
+				"food": 0,
+			},
+			"pop_cost": 1
+		},
+		"Knight": {
+			"base_cost": {
+				"wood": 1,
+				"stone": 0,
+				"riches": 1,
+				"crystals": 1,
+				"food": 0,
+			},
+			"pop_cost": 1
+		},
+		"Division Captain": {
+			"base_cost": {
+				"wood": 0,
+				"stone": 0,
+				"riches": 10,
+				"crystals": 10,
+				"food": 0,
+			},
+			"pop_cost": 1
+		},
+		"Bowman": {
+			"base_cost": {
+				"wood": 0,
+				"stone": 0,
+				"riches": 10,
+				"crystals": 10,
+				"food": 0,
+			},
+			"pop_cost": 1
+		},
+		"Cavalry": {
+			"base_cost": {
+			"wood": 0,
+			"stone": 0,
+			"riches": 10,
+			"crystals": 10,
+			"food": 0,
+			},
+			"pop_cost": 1
+		},
+		"Ballista": {
+			"base_cost": {
+				"wood": 0,
+				"stone": 0,
+				"riches": 10,
+				"crystals": 10,
+				"food": 0,
+			},
+			"pop_cost": 1
+		},
+		"Cavalry Scout": {
+			"base_cost": {
+				"wood": 0,
+				"stone": 0,
+				"riches": 10,
+				"crystals": 10,
+				"food": 0,
+			},
+			"pop_cost": 1
+		},
+		"Wyvern Riders": {
+			"base_cost": {
+				"wood": 0,
+				"stone": 0,
+				"riches": 10,
+				"crystals": 10,
+				"food": 0,
+			},
+			"pop_cost": 1
+		}
+	},
+	"starting_unit": "Cavalry Scout",
 }

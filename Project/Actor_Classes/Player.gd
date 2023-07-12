@@ -50,8 +50,8 @@ func select_unit(unit, clr := true, group = true):
 
 
 ## Select a group of iunits
-func select_group(units):
-	super(units)
+func select_group(_units):
+	super(_units)
 	group_selected_units()
 
 

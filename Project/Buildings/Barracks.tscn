@@ -14,14 +14,6 @@ menu_pages = {
 }
 build_time = 1.0
 
-[node name="Menu" parent="." index="1"]
-visible_pages = {
-"page_4": false,
-"research": false,
-"sec_units": true,
-"units": true
-}
-
 [node name="MeshInstance3D" parent="." index="2"]
 transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, -0.0027564, 0)
 

@@ -37,33 +37,39 @@ radius = 2.0
 
 [node name="Infantry" instance=ExtResource("1_3ybrw")]
 unit_name = "Infantry"
-travel_type = [true, false, false]
+travel_terrain = 1
+base_atk_spd = 3.0
 base_health = 50.0
 base_atk_str = 5.0
-base_atk_spd = 3.0
 
 [node name="CollisionShape3D" parent="." index="0"]
 shape = SubResource("CylinderShape3D_fxkcp")
 
+[node name="UnitModels" parent="." index="1"]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, 1, 0)
+
 [node name="MeshInstance3D" type="MeshInstance3D" parent="UnitModels" index="0"]
-transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, -0.961931, 0.981501, -0.791413)
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, -0.962, 0, -0.791)
 mesh = SubResource("CylinderMesh_x3dbf")
 skeleton = NodePath("../..")
 
 [node name="MeshInstance3D2" type="MeshInstance3D" parent="UnitModels" index="1"]
-transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0.23631, 0.988431, -1.32474)
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0.236, 0, -1.325)
 mesh = SubResource("CylinderMesh_xy87p")
 skeleton = NodePath("../..")
 
 [node name="MeshInstance3D3" type="MeshInstance3D" parent="UnitModels" index="2"]
-transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, -0.407311, 0.981501, 0.940965)
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, -0.407, 0, 0.941)
 mesh = SubResource("CylinderMesh_d4gf5")
 skeleton = NodePath("../..")
 
 [node name="MeshInstance3D4" type="MeshInstance3D" parent="UnitModels" index="3"]
-transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 1.11459, 0.981501, 0.0255227)
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 1.115, 0, 0.026)
 mesh = SubResource("CylinderMesh_154op")
 skeleton = NodePath("../..")
+
+[node name="Editor forward Arrow" parent="UnitModels" index="5"]
+transform = Transform3D(-1.889, -5.8923e-08, 3.82137e-17, 0, -2.94615e-08, -0.01, 1.65142e-07, -0.674, 4.37114e-10, 0, -1, -2.375)
 
 [node name="NavigationAgent3D" parent="." index="2"]
 navigation_layers = 0
