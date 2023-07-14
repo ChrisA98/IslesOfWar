@@ -10,9 +10,7 @@ signal attacked #did an attack
 
 '''Enums'''
 enum {LAND, NAVAL, AERIAL}
-enum attack_type{MELEE,RANGE_PROJ,RANGE_BEAM,RANGE_AREA}
-
-'''Consts'''
+enum attack_type{MELEE, RANGE_PROJ, RANGE_AREA, RANGE_BEAM, LOCKED_RANGE_PROJ, LOCKED_RANGE_AREA }
 
 ''' Export Vars '''
 ## Area this unit reveals fog in
@@ -40,6 +38,7 @@ enum attack_type{MELEE,RANGE_PROJ,RANGE_BEAM,RANGE_AREA}
 ## melee numbers should be lower
 @export_range(0,.5) var _m_attack_damage_variance : float = .25
 @export_range(0,.25) var _r_attack_attack_spread : float = .125
+@export_range(0,10) var unit_lockdown_time :int = 0 ## Unit doesn't have lockdown attack
 
 var rng = RandomNumberGenerator.new()
 
@@ -61,15 +60,14 @@ var ai_methods : Dictionary = {
 	"attack_commanded" : Callable(_targeted_attack),
 	"garrison" : Callable(_garrisoning),
 }
-var travel_vector : Vector3
 var intial_path_dist := 0.1
 var target_garrison : Building
-var follow_end_target: Vector3
 var formation_end_position: int	##position in formation when arriving at final location
 var formation_core_position: Vector3
 
 var stored_trgt_pos	## Target move stored for navmesh generation optimizing
 var queued_move_target := Vector3.ZERO ## Target stored for long distance calculations
+var is_locked_down: bool
 
 ''' Identifying Vars '''
 var actor_owner
@@ -96,19 +94,7 @@ var res_cost := {"wood": 0,
 "food": 0}
 
 ''' Derived and assigned Combat vars '''
-@onready var max_health : float = base_health ##max health after any modifiers
-@onready var health : float = max_health :## active health after any modifiers
-	set(value):
-		health = clampf(value,-1,max_health)
-@onready var armor : float = base_armor ## base armor after modifers
-@onready var m_dmg_var : float = _m_attack_damage_variance ## modified variance
-@onready var r_atk_sprd : float = _r_attack_attack_spread ## modified variance
-@onready var current_atk_str : float = base_atk_str  #with modifiers
-@onready var current_atk_spd : float = base_atk_spd:  #with modifiers
-	set(value):
-		current_atk_spd = value
-		atk_timer.start(current_atk_spd)
-var projectile_arc
+var projectile_manager
 var attack_method : Callable # method to attack with
 var target_enemy:
 	set(value):
@@ -138,6 +124,20 @@ var visible_enemies := []
 var visible_allies := []
 
 ''' On-Ready Vars '''
+''' Derived and assigned Combat vars '''
+@onready var max_health : float = base_health ##max health after any modifiers
+@onready var health : float = max_health :## active health after any modifiers
+	set(value):
+		health = clampf(value,-1,max_health)
+@onready var armor : float = base_armor ## base armor after modifers
+@onready var melee_dmg_var : float = _m_attack_damage_variance ## modified variance
+@onready var ranged_atk_sprd : float = _r_attack_attack_spread ## modified variance
+@onready var current_atk_str : float = base_atk_str  #with modifiers
+@onready var current_atk_spd : float = base_atk_spd:  #with modifiers
+	set(value):
+		current_atk_spd = value
+		atk_timer.start(current_atk_spd)
+''' parts of scenetree '''
 @onready var fog_reg = get_node("Fog_Breaker")
 @onready var grnd_ping = get_node("Ground_Checker")
 @onready var det_area = get_node("Detection_Area")
@@ -146,9 +146,12 @@ var visible_allies := []
 ## Navigation vars
 @onready var nav_agent: NavigationAgent3D = get_node("NavigationAgent3D")
 @onready var unit_radius = $CollisionShape3D.shape.get_radius()
+''' travel vars '''
 @onready var target_speed: int = max_speed:
 	set(value):
 		nav_agent.max_speed = value
+## Function called to travel and can be changed to accomodate locked position
+@onready var travel_function := Callable(_travel)
 
 '''### Built-In Methods ###'''
 func _ready():
@@ -160,13 +163,24 @@ func _ready():
 	## Set attack type
 	match main_attack_type:
 		attack_type.MELEE:
+			## CLose range striking
 			attack_method = Callable(__melee_attack)
 		attack_type.RANGE_PROJ:
+			## Preprocessed arc projectile is used
 			attack_method = Callable(__ranged_proj_attack)
-			projectile_arc = load("res://Parent_Scenes/Projectile_Arc.tscn")
+			projectile_manager = load("res://Parent_Scenes/Projectile_Arc.tscn")
 		attack_type.RANGE_AREA:
+			## Attack targets area and deals damage directly to target enemy from range
+			attack_method = Callable(__ranged_area_attack)
+		attack_type.LOCKED_RANGE_AREA:
+			## Attack targets area and deals damage directly to target enemy from range
+			attack_method = Callable(__ranged_area_attack)
+			ai_methods["attack_commanded"] = Callable(_locked_targeted_attack)
+		attack_type.LOCKED_RANGE_PROJ:
+			## Preprocessed arc projectile is used
 			attack_method = Callable(__ranged_proj_attack)
-			projectile_arc = load("res://Parent_Scenes/Projectile_Arc.tscn")
+			projectile_manager = load("res://Parent_Scenes/Projectile_Arc.tscn")
+			ai_methods["attack_commanded"] = Callable(_locked_targeted_attack)
 	
 	## Create model raycasts
 	for i in range($UnitModels.get_children().size()-1):
@@ -180,10 +194,13 @@ func _ready():
 
 func _physics_process(delta):
 	if(is_queued_for_deletion()):
+		## Needed to fix bug with calling a callable on a queued for deletion object
+		## It'd be cool if their was a workaround that didn't involve an if statement
 		return
 	ai_methods[ai_mode].call(delta)
 
 
+## Only using for fog updates currently
 func _process(_delta):
 	update_fog.emit(self,position, is_visible)
 
@@ -368,7 +385,7 @@ func _check_pos(pos, mod = 1):
 
 func _snap_model_to_ground():
 	for mod in unit_models:
-		mod.position.y = mod.get_child(0).get_collision_point().y - position.y
+		mod.position.y = clampf(mod.get_child(0).get_collision_point().y - position.y,-2,2)
 		
 
 ## set target move location 
@@ -434,9 +451,12 @@ func _vision_area_entered(area):
 
 ## Remove buildings from  sight array
 func _vision_area_exited(area):
-	if area.has_meta("building_area") and area.get_parent().actor_owner.actor_ID != actor_owner.actor_ID:
-		if(visible_enemies.has(area.get_parent())):
-			visible_enemies.erase(area.get_parent())
+	if area.has_meta("building_area") and area.get_parent().actor_owner.actor_ID == actor_owner.actor_ID:
+		return
+	if(visible_enemies.has(area.get_parent())):
+		visible_enemies.erase(area.get_parent())
+
+
 ''' Movement Methods end '''
 '''-------------------------------------------------------------------------------------'''
 ''' Combat Methods Start '''
@@ -457,34 +477,34 @@ func _attack():
 	await get_tree().create_timer(.25).timeout
 	$UnitModels/attack_indicator_temp.visible = false
 
-## ranged projectile attack callable
+
+## Ranged projectile attack callable
 func __ranged_proj_attack():
 	var dis = position.distance_to(target_enemy.position)
-	var shot = projectile_arc.instantiate()
+	var shot = projectile_manager.instantiate()
 	add_child(shot)
 	shot.fire(position+Vector3.UP*3, target_enemy.position, dis, current_atk_str, damage_type)
 
 
-## ranged area attack callable
+## Ranged area attack callable
 func __ranged_area_attack():
-	if rng.randf_range(0,.25) < r_atk_sprd:
+	if rng.randf_range(0,.25) < ranged_atk_sprd:
 		## Target missed with shot
 		return
 	## Do animation later
 	target_enemy.damage(current_atk_str,damage_type)
-	
 
 
-## melee attack callable
+## Melee attack callable
 func __melee_attack():
-	var variance = rng.randf_range(-current_atk_str*m_dmg_var,current_atk_str*m_dmg_var)
+	var variance = rng.randf_range(-current_atk_str*melee_dmg_var,current_atk_str*melee_dmg_var)
 	## Do animation later
 	target_enemy.damage(current_atk_str+variance,damage_type)
 
 
 ''' Combat Methods End '''
 '''-------------------------------------------------------------------------------------'''
-''' AI Processes  Methods Start '''
+''' AI Processes Methods Start '''
 ## Has a target set by player
 func _targeted_attack(delta):
 	# Attack targeting
@@ -500,23 +520,39 @@ func _targeted_attack(delta):
 			return
 		_set_target_position(position)
 	
-	_travel(delta)
+	travel_function.call(delta)
 
 
-## Update navigation target to target enemy
-func __find_target(trgt:Unit_Base, pos:Vector3, _is_visible:bool):
-	if(target_enemy == trgt):
-		if(nav_agent.get_target_position().distance_to(pos) < target_atk_rng*2):
-			actor_owner.add_unit_tracking(self,Callable(_set_target_position.bind(pos,true)))
+## Has a target set by player
+func _locked_targeted_attack(delta):
+	# Attack targeting
+	if !is_instance_valid(target_enemy):
+		return
+	
+	## Handle tracking target
+	if(position.distance_to(target_enemy.position) <= target_atk_rng):
+		if nav_agent.is_navigation_finished():
+			var trgt = position.direction_to(target_enemy.position)
+			var lookdir = atan2(-trgt.x, -trgt.z)
+			$UnitModels.rotation.y = lerp($UnitModels.rotation.y, lookdir, 0.1)
+			return
+		_set_target_position(position)
+		_lock_position()
+	else:
+		#unlock unit
+		call_deferred("delayed_unlock")
+	
+	travel_function.call(delta)
 
 
 ## Travel to target location
 func _traveling_basic(delta):
-	_travel(delta)
+	travel_function.call(delta)
+
 
 ## Moving to Garrisoin target
 func _garrisoning(delta):
-	_travel(delta)
+	travel_function.call(delta)
 	
 	if position.distance_to(target_garrison.position) <= 10:
 		target_garrison.garrison_unit(self)
@@ -547,7 +583,7 @@ func _wandering_basic(delta):
 		pos.y = get_ground_depth(pos)
 		_set_target_position(pos)
 		return
-	_travel(delta)
+	travel_function.call(delta)
 
 
 ## Move on process
@@ -571,6 +607,18 @@ func _travel(_delta):
 	nav_agent.set_velocity(new_velocity)
 	set_velocity(new_velocity)
 	#move_and_slide()
+
+
+''' AI Processes Methods End '''
+'''-------------------------------------------------------------------------------------'''
+''' AI Processes Helper Methods Start '''
+
+## Locked targeted attack
+## Update navigation target to target enemy
+func __find_target(trgt:Unit_Base, pos:Vector3, _is_visible:bool):
+	if(target_enemy == trgt):
+		if(nav_agent.get_target_position().distance_to(pos) < target_atk_rng*2):
+			actor_owner.add_unit_tracking(self,Callable(_set_target_position.bind(pos,true)))
 
 
 func _on_navigation_agent_3d_navigation_finished():
@@ -608,4 +656,18 @@ func waypoint(_details):
 	pass
 
 
-''' AI Processes Methods End '''
+## Set locked travel state
+func _lock_position(state:= true):
+	is_locked_down = state
+	if state:
+		travel_function = Callable(_idling_basic)
+		return
+	travel_function = Callable(_travel)
+
+
+## Set timer then unlock movement
+func delayed_unlock():
+	is_locked_down = false
+	await get_tree().create_timer(unit_lockdown_time).timeout
+	if !is_locked_down:
+		_lock_position(false)

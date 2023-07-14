@@ -74,7 +74,7 @@ func _ready():
 	think_timer = Timer.new()
 	add_child(think_timer)
 	think_timer.timeout.connect(think_caller)
-	#think_timer.start(4)
+	think_timer.start(4)
 	
 	## -- set resource location categories -- ##
 	resource_locations["Lumber_mill"] = []
@@ -143,10 +143,8 @@ func ponder():
 		match goal:
 			"attack":
 				## Check if they have enough units
-				if(pop < min_troop_attack):
-					if(pop+exp_pop < min_troop_attack):
-						if _attempt_add("get units","something"): #add unit build decision code here
-							return true
+				if(pop < min_troop_attack) and (pop+exp_pop < min_troop_attack) and _attempt_add("get units","something"): #add unit build decision code here
+					return true
 				else:
 					_attempt_add("attack",focused_enemy)
 					return true
@@ -187,42 +185,42 @@ func __build():
 		return
 	## Attempt to place building
 	var m_res = can_afford(faction_data["buildings"][target_item]["base_cost"])
-	if m_res == null:
-		prepared_building = gamescene.prep_other_building(self,target_item)
-		prepared_building.rot = rng.randf_range(-180,180)
-		prepared_building.visible = false
-		match target_item:
-			"Barracks","Trade_post", "Farm":	#Fort Buildings
-				var frt = bases[rng.randi_range(0,bases.size()-1)]
-				match(await find_build_spot(frt,prepared_building)):
-					"clear":
-						complete_goal()
-					_:
-						prepared_building.queue_free()
-			"Lumber_mill","Mine_crystal","Mine_stone":	#Resource Node Buildings
-				if(resource_locations[target_item].size() <= 0):
-					## Don't know where resources are
-					prepared_building.queue_free()
-					_attempt_add("find",target_item)
-					return
-				var res_node = resource_locations[target_item][rng.randi_range(0,bases.size()-1)]
-				match (await find_build_spot(res_node,prepared_building)):
-					"clear":
-						complete_goal()	
-					"uncover_loc":
-						## needs to move unit to target location
-						prepared_building.queue_free()
-						_attempt_add("uncover_loc", res_node)
-					_:
-						prepared_building.queue_free()
-						_attempt_add("find",target_item)
-	else:
+	if m_res != null:
 		var ttb = build_patience_decide(m_res, faction_data["buildings"][target_item]["base_cost"][m_res])
 		if(ttb == -1):
 			decide_resource_goal(m_res)
+			return
 		else:
 			think_timer.start(ttb)
 			return
+	prepared_building = gamescene.prep_other_building(self,target_item)
+	prepared_building.rot = rng.randf_range(-180,180)
+	prepared_building.visible = false
+	match target_item:
+		"Barracks","Trade_post", "Farm":	#Fort Buildings
+			var frt = bases[rng.randi_range(0,bases.size()-1)]
+			match(await find_build_spot(frt,prepared_building)):
+				"clear":
+					complete_goal()
+				_:
+					prepared_building.queue_free()
+		"Lumber_mill","Mine_crystal","Mine_stone":	#Resource Node Buildings
+			if(resource_locations[target_item].size() <= 0):
+				## Don't know where resources are
+				prepared_building.queue_free()
+				_attempt_add("find",target_item)
+				return
+			var res_node = resource_locations[target_item][rng.randi_range(0,bases.size()-1)]
+			match (await find_build_spot(res_node,prepared_building)):
+				"clear":
+					complete_goal()	
+				"uncover_loc":
+					## needs to move unit to target location
+					prepared_building.queue_free()
+					_attempt_add("uncover_loc", res_node)
+				_:
+					prepared_building.queue_free()
+					_attempt_add("find",target_item)
 
 
 func __uncover_loc():
@@ -434,7 +432,7 @@ func __add_goal(goal: String, trgt, think_after : bool = true):
 
 ## Adds goal to queue or returns false when already waiting on goal
 func _attempt_add(goal: String, trgt, think_after: bool = true):
-	if(!deferred_goals.has([goal,trgt])):
+	if(deferred_goals.has([goal,trgt])):
 		if(goal_queue.has([goal,trgt])):
 			if([current_goal,target_item] != [goal,trgt]):
 				goal_queue.pop_at(goal_queue.find([goal,trgt]))
@@ -481,33 +479,36 @@ func complete_goal():
 
 ## Unit found target
 func unit_uncovered(unit, area):
-	if(searching_units.has(unit)): #Found target location
-		if(typeof(searching_units[unit]) == TYPE_STRING):
-			var cur_trgt  = resource_appropriate_nodes[searching_units[unit]]
-			if(area.get_parent().name.contains(cur_trgt)):
-				match cur_trgt:
-					"Forest","Crystal_deposit","Stone_deposit":
-						resource_locations[searching_units[unit]].push_back(area.get_parent())
-					_:
-						enemy_locations[searching_units[unit]] = area.get_parent()
-				_complete_deffered_goal(searching_units[unit])
+	if(!searching_units.has(unit)): # Didnt find target location
+		return
+		
+	if(typeof(searching_units[unit]) == TYPE_STRING):
+		var cur_trgt  = resource_appropriate_nodes[searching_units[unit]]
+		if(area.get_parent().name.contains(cur_trgt)):
+			match cur_trgt:
+				"Forest","Crystal_deposit","Stone_deposit":
+					resource_locations[searching_units[unit]].push_back(area.get_parent())
+				_:
+					enemy_locations[searching_units[unit]] = area.get_parent()
+			_complete_deffered_goal(searching_units[unit])
+			searching_units.erase(unit)
+			return
+	elif(searching_units[unit].has_meta("res_building")):
+		## Was looking for building
+		if(area.get_parent().has_meta("res_building")):
+			if(searching_units[unit].has_meta("res_building") and area.get_parent().get_meta("res_building") == searching_units[unit].get_meta("res_building")):
+				#Found target node
+				_complete_deffered_goal(searching_units[unit].get_meta("res_building"))
 				searching_units.erase(unit)
-		elif(searching_units[unit].has_meta("res_building")):
-			## Was looking for building
-			if(area.get_parent().has_meta("res_building")):
-				if(searching_units[unit].has_meta("res_building") and area.get_parent().get_meta("res_building") == searching_units[unit].get_meta("res_building")):
-					#Found target node
-					_complete_deffered_goal(searching_units[unit].get_meta("res_building"))
-					searching_units.erase(unit)
-		else:
-			# Was looking for player
-			if(area.get_parent().get_parent().has_meta("show_base_radius")):
-				if(area.get_parent().get_parent().actor_owner == searching_units[unit]):
-					#Found target node
-					enemy_locations[searching_units[unit]].push_back(area.get_parent().get_parent())
-					area.get_parent().get_parent().died.connect(clear_destroyed_building.bind(searching_units[unit],area.get_parent().get_parent()))
-					_complete_deffered_goal(searching_units[unit])
-					searching_units.erase(unit)
+		return
+	# Was looking for player
+	if(area.get_parent().get_parent().has_meta("show_base_radius")):
+		if(area.get_parent().get_parent().actor_owner == searching_units[unit]):
+			#Found target node
+			enemy_locations[searching_units[unit]].push_back(area.get_parent().get_parent())
+			area.get_parent().get_parent().died.connect(clear_destroyed_building.bind(searching_units[unit],area.get_parent().get_parent()))
+			_complete_deffered_goal(searching_units[unit])
+			searching_units.erase(unit)
 
 
 func _searcher_died(unit):
@@ -535,12 +536,12 @@ func searched_too_long(timer, unit, target):
 	timer.queue_free()
 	if(typeof(target) == TYPE_STRING):
 		for nod in gamescene.get_child(1).get_children():
-			if nod.name.contains(target):
+			if !nod.name.contains(target):
 				unit.set_mov_target(nod.position)
-	else:
-		for bldg in gamescene.world_buildings:
-			if bldg.actor_owner == target:
-				unit.set_mov_target(bldg.position + Vector3(rng.randi_range(-10,10),0,rng.randi_range(-10,10)))
+		return
+	for bldg in gamescene.world_buildings:
+		if bldg.actor_owner == target:
+			unit.set_mov_target(bldg.position + Vector3(rng.randi_range(-10,10),0,rng.randi_range(-10,10)))
 
 
 ''' Enemy targeting end '''
