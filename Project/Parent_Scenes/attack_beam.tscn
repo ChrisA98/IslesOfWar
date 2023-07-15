@@ -1,7 +1,10 @@
-[gd_scene load_steps=5 format=3 uid="uid://3rimgt4005lh"]
+[gd_scene load_steps=7 format=3 uid="uid://3rimgt4005lh"]
 
 [ext_resource type="Script" path="res://Parent_Scenes/Scripts/Attack_Beam.gd" id="1_cnnos"]
 [ext_resource type="Script" path="res://Parent_Scenes/Scripts/beam_data.gd" id="2_ea7a5"]
+
+[sub_resource type="CylinderMesh" id="CylinderMesh_qhyg4"]
+height = 9.6671
 
 [sub_resource type="Resource" id="Resource_64gjv"]
 resource_local_to_scene = true
@@ -9,19 +12,49 @@ script = ExtResource("2_ea7a5")
 penetration = -1
 penetrate_bldgs = false
 radius = 0.25
-lifespan = 0.0
+lifespan = 10.0
+beam_mesh = SubResource("CylinderMesh_qhyg4")
 
 [sub_resource type="SphereShape3D" id="SphereShape3D_jk1j7"]
+radius = 0.25
+
+[sub_resource type="BoxShape3D" id="BoxShape3D_qd1el"]
+size = Vector3(2.92928, 2.98337, 1)
 
 [node name="Beam_Source" type="Node3D"]
-transform = Transform3D(-4.37114e-08, 0, -1, 0, 1, 0, 1, 0, -4.37114e-08, 0, 0, 0)
 script = ExtResource("1_cnnos")
 beam_data = SubResource("Resource_64gjv")
-test_trgt = Vector3(1, 0, 0)
+test_trgt = Vector3(0, 2.14, 10)
 
 [node name="Attack_Beam" type="ShapeCast3D" parent="."]
-transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, 0, -0.5)
 shape = SubResource("SphereShape3D_jk1j7")
-target_position = Vector3(1, 0, 0)
+target_position = Vector3(0, 0, 10)
 collision_mask = 32775
+collision_result = [{
+"collider": Object(StaticBody3D,"_import_path":NodePath(""),"unique_name_in_owner":false,"process_mode":0,"process_priority":0,"process_physics_priority":0,"process_thread_group":0,"editor_description":"","transform":Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, 0, 9.6671),"rotation_edit_mode":0,"rotation_order":2,"top_level":true,"visible":true,"visibility_parent":NodePath(""),"disable_mode":0,"collision_layer":1,"collision_mask":1,"collision_priority":1.0,"input_ray_pickable":true,"input_capture_on_drag":false,"axis_lock_linear_x":false,"axis_lock_linear_y":false,"axis_lock_linear_z":false,"axis_lock_angular_x":false,"axis_lock_angular_y":false,"axis_lock_angular_z":false,"physics_material_override":null,"constant_linear_velocity":Vector3(0, 0, 0),"constant_angular_velocity":Vector3(0, 0, 0),"script":null)
+,
+"collider_id": 45449444809351,
+"linear_velocity": Vector3(0, 0, 0),
+"normal": Vector3(0, 0, -1),
+"point": Vector3(0, 0, 9.1671),
+"rid": RID(11471896302321671),
+"shape": 0
+}]
 debug_shape_custom_color = Color(1, 0, 0, 1)
+
+[node name="Beam_Visual" type="MeshInstance3D" parent="."]
+transform = Transform3D(-1, 0, -8.74228e-08, 7.81557e-08, -0.448074, -0.893997, -3.91718e-08, -0.893997, 0.448074, 0, 0, 4.83355)
+mesh = SubResource("CylinderMesh_qhyg4")
+
+[node name="Pulse_Timer" type="Timer" parent="."]
+process_callback = 0
+wait_time = 0.1
+
+[node name="Beam_Duration" type="Timer" parent="."]
+
+[node name="StaticBody3D" type="StaticBody3D" parent="."]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, 0, 9.6671)
+top_level = true
+
+[node name="CollisionShape3D" type="CollisionShape3D" parent="StaticBody3D"]
+shape = SubResource("BoxShape3D_qd1el")

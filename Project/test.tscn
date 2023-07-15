@@ -1,0 +1,52 @@
+[gd_scene load_steps=5 format=3 uid="uid://bg82qxtb37084"]
+
+[ext_resource type="PackedScene" uid="uid://3rimgt4005lh" path="res://Parent_Scenes/attack_beam.tscn" id="1_qakj6"]
+[ext_resource type="Script" path="res://Parent_Scenes/Scripts/beam_data.gd" id="2_s2xx3"]
+
+[sub_resource type="Resource" id="Resource_lq34o"]
+resource_local_to_scene = true
+script = ExtResource("2_s2xx3")
+penetration = 2
+penetrate_bldgs = false
+radius = 0.25
+lifespan = 0.0
+
+[sub_resource type="BoxShape3D" id="BoxShape3D_ny4hf"]
+size = Vector3(1, 8.35911, 6.60674)
+
+[node name="Node3D" type="Node3D"]
+
+[node name="Beam_Source" parent="." instance=ExtResource("1_qakj6")]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, 0, 0)
+beam_data = SubResource("Resource_lq34o")
+test_trgt = Vector3(0, 0, -16)
+shoot = true
+
+[node name="Attack_Beam" parent="Beam_Source" index="1"]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, -0.026, 0, 0)
+target_position = Vector3(0, 0, -16)
+
+[node name="StaticBody3D" type="StaticBody3D" parent="."]
+transform = Transform3D(0.028794, 0, -0.999585, 0, 1, 0, 0.999585, 0, 0.028794, -0.237231, 0, -20.3014)
+
+[node name="CollisionShape3D" type="CollisionShape3D" parent="StaticBody3D"]
+shape = SubResource("BoxShape3D_ny4hf")
+
+[node name="StaticBody3D2" type="StaticBody3D" parent="."]
+transform = Transform3D(0.028794, 0, -0.999585, 0, 1, 0, 0.999585, 0, 0.028794, -0.237231, 0, -14.012)
+
+[node name="CollisionShape3D" type="CollisionShape3D" parent="StaticBody3D2"]
+shape = SubResource("BoxShape3D_ny4hf")
+
+[node name="StaticBody3D3" type="StaticBody3D" parent="."]
+transform = Transform3D(0.028794, 0, -0.999585, 0, 1, 0, 0.999585, 0, 0.028794, -0.237231, 0, -26.0309)
+
+[node name="CollisionShape3D" type="CollisionShape3D" parent="StaticBody3D3"]
+shape = SubResource("BoxShape3D_ny4hf")
+
+[node name="Camera3D" type="Camera3D" parent="."]
+transform = Transform3D(-4.37114e-08, 0, -1, 0, 1, 0, 1, 0, -4.37114e-08, -24.8738, 0, -20.6162)
+projection = 1
+size = 59.6785
+
+[editable path="Beam_Source"]
