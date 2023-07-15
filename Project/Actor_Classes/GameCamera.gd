@@ -33,8 +33,23 @@ func _ready():
 	Input.set_mouse_mode(Input.MOUSE_MODE_CONFINED) 
 
 
-func _input(event):	
+func _input(event):
 	if event is InputEventMouseMotion:
+		## Selector management
+		var on_map = true
+		for m in get_tree().get_nodes_in_group("uses_scroll"):
+			if m.has_mouse:
+				on_map = false
+		if on_map:
+			var to = cam.project_ray_normal(event.position) * 1000
+			$Player_view/selector_collidor.target_position = to - position
+			if $Player_view/selector_collidor.is_colliding():
+				print($Player_view/selector_collidor.get_collision_point())
+				$selector.position = $Player_view/selector_collidor.get_collision_point()
+			else:
+				on_map = false
+			
+		$selector.visible = on_map	
 		#Hide mouse off screen
 		if get_viewport().get_mouse_position().x > (get_viewport().size.x-8) or get_viewport().get_mouse_position().y > (get_viewport().size.y-8):
 			Input.set_mouse_mode(Input.MOUSE_MODE_CONFINED_HIDDEN)
