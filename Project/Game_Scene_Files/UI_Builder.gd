@@ -4,6 +4,11 @@ extends Control
 signal menu_opened
 signal minimap_clicked
 
+## Count number of menus that am on
+var menu_counter := 0
+var buttons := []
+var act_unit_rect := []
+
 ## minimap vars
 @onready var world_width = $Minimap/Minimap_Container/SubViewport/Visual_Ground.mesh.size.x
 @onready var mtw_ratio = world_width/$Minimap/Minimap_Container.size.x
@@ -22,8 +27,6 @@ signal minimap_clicked
 "food": $Minimap/Res_Bar/Food/Amount,
 "pop": $Minimap/Pop}
 @onready var global = get_node("/root/Global_Vars")
-var buttons := []
-var act_unit_rect := []
 
 ## Ref Vars
 @onready var game_scene = $".."
@@ -46,7 +49,14 @@ func _ready():
 		if i.name.contains("Button"):
 			buttons.push_back(i)
 	
+	##Check new nodes for being control items
+	get_tree().node_added.connect(check_if_menu)
+	
 	setup_particles()
+	
+	## check menu of all children
+	for i in get_children(true):
+		check_if_menu(i)
 
 
 ## Called every frame. 'delta' is the elapsed time since the previous frame.
@@ -54,6 +64,13 @@ func _process(_delta):
 	viewport_ref.position.x = ((player_cam.position.x + (world_width/2))/mtw_ratio) - (viewport_ref.size.x/2)
 	viewport_ref.position.y = ((player_cam.position.z + (world_width/2))/mtw_ratio) - (viewport_ref.size.y/2.6)
 
+
+##Check new nodes for being control items
+func check_if_menu(node: Node):
+	if node.has_signal("focus_entered") and !node.mouse_entered.is_connected(_mouse_on_menu):
+		node.mouse_entered.connect(_mouse_on_menu.bind(node,1))
+		node.mouse_exited.connect(_mouse_on_menu.bind(node,-1))
+	
 
 ## Toggle button (may not be useful)
 func unpress_button(id):
@@ -174,3 +191,11 @@ func minimap_Input(event):
 			minimap_clicked.emit("move_cam",world_pos)
 	if Input.is_action_just_released("rmb"):
 		minimap_clicked.emit("ping",world_pos)	
+
+
+func _mouse_on_menu(menu, mod := 1):
+	if mod == 1:
+		print(str(menu) + " moved onto")
+	elif !Rect2(Vector2(), menu.size).has_point(get_local_mouse_position()):
+		print(str(menu) + " moved off of")
+	menu_counter += mod
