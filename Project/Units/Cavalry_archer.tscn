@@ -1,0 +1,40 @@
+[gd_scene load_steps=5 format=3 uid="uid://cmwdtu1ddbw78"]
+
+[ext_resource type="PackedScene" uid="uid://cs2p3v3o53aki" path="res://Parent_Scenes/Unit_Base.tscn" id="1_vty8u"]
+
+[sub_resource type="CylinderShape3D" id="CylinderShape3D_18wrm"]
+resource_local_to_scene = true
+height = 3.5
+radius = 2.0
+
+[sub_resource type="SphereShape3D" id="SphereShape3D_rvm8l"]
+resource_local_to_scene = true
+radius = 25.0
+
+[sub_resource type="CylinderShape3D" id="CylinderShape3D_13b6f"]
+resource_local_to_scene = true
+radius = 2.0
+
+[node name="Cavalry Archer" instance=ExtResource("1_vty8u")]
+unit_name = "Cavalry Archer"
+max_speed = 20
+accel = 5
+deccel = 5
+base_atk_spd = 0.56
+base_armor = 0.07
+base_health = 29.75
+base_atk_str = 5.0
+main_attack_type = 1
+damage_type = "Physical"
+target_atk_rng = 25
+
+[node name="CollisionShape3D" parent="." index="0"]
+shape = SubResource("CylinderShape3D_18wrm")
+
+[node name="CollisionShape3D" parent="Fog_Breaker/Area3D" index="0"]
+shape = SubResource("SphereShape3D_rvm8l")
+
+[node name="CollisionShape3D" parent="Detection_Area" index="0"]
+shape = SubResource("CylinderShape3D_13b6f")
+
+[editable path="Fog_Breaker"]

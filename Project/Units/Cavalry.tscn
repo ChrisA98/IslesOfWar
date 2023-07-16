@@ -1,0 +1,38 @@
+[gd_scene load_steps=5 format=3 uid="uid://28dfq7k1i4ak"]
+
+[ext_resource type="PackedScene" uid="uid://cs2p3v3o53aki" path="res://Parent_Scenes/Unit_Base.tscn" id="1_hr52n"]
+
+[sub_resource type="CylinderShape3D" id="CylinderShape3D_k400y"]
+resource_local_to_scene = true
+height = 3.5
+radius = 2.0
+
+[sub_resource type="SphereShape3D" id="SphereShape3D_65mvi"]
+resource_local_to_scene = true
+radius = 25.0
+
+[sub_resource type="CylinderShape3D" id="CylinderShape3D_pn4om"]
+resource_local_to_scene = true
+radius = 2.0
+
+[node name="Cavalry" instance=ExtResource("1_hr52n")]
+unit_name = "Cavalry"
+max_speed = 20
+travel_terrain = 1
+accel = 5
+deccel = 5
+base_armor = 0.12
+base_health = 49.0
+base_atk_str = 5.5
+damage_type = "Physical"
+
+[node name="CollisionShape3D" parent="." index="0"]
+shape = SubResource("CylinderShape3D_k400y")
+
+[node name="CollisionShape3D" parent="Fog_Breaker/Area3D" index="0"]
+shape = SubResource("SphereShape3D_65mvi")
+
+[node name="CollisionShape3D" parent="Detection_Area" index="0"]
+shape = SubResource("CylinderShape3D_pn4om")
+
+[editable path="Fog_Breaker"]

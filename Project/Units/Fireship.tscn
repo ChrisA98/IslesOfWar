@@ -1,0 +1,38 @@
+[gd_scene load_steps=5 format=3 uid="uid://cvbifbkfrotc7"]
+
+[ext_resource type="PackedScene" uid="uid://cs2p3v3o53aki" path="res://Parent_Scenes/Unit_Base.tscn" id="1_o6e3a"]
+
+[sub_resource type="CylinderShape3D" id="CylinderShape3D_jq3qu"]
+resource_local_to_scene = true
+height = 3.5
+radius = 2.0
+
+[sub_resource type="SphereShape3D" id="SphereShape3D_vhjy5"]
+resource_local_to_scene = true
+radius = 25.0
+
+[sub_resource type="CylinderShape3D" id="CylinderShape3D_etqhy"]
+resource_local_to_scene = true
+radius = 2.0
+
+[node name="Fireship" instance=ExtResource("1_o6e3a")]
+unit_name = "Fireship"
+fog_rev_radius = 40.0
+travel_terrain = 2
+base_atk_spd = 0.44
+base_armor = 0.25
+base_health = 70.0
+main_attack_type = 3
+damage_type = "fire"
+target_atk_rng = 18
+
+[node name="CollisionShape3D" parent="." index="0"]
+shape = SubResource("CylinderShape3D_jq3qu")
+
+[node name="CollisionShape3D" parent="Fog_Breaker/Area3D" index="0"]
+shape = SubResource("SphereShape3D_vhjy5")
+
+[node name="CollisionShape3D" parent="Detection_Area" index="0"]
+shape = SubResource("CylinderShape3D_etqhy")
+
+[editable path="Fog_Breaker"]

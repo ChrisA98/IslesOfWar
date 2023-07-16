@@ -7,6 +7,7 @@ signal died
 signal update_fog
 signal uncovered_area #area enters det area
 signal attacked #did an attack
+signal move_unlocked ## Can travel again
 
 '''Enums'''
 enum {LAND, NAVAL, AERIAL}
@@ -172,6 +173,11 @@ func _ready():
 		attack_type.RANGE_AREA:
 			## Attack targets area and deals damage directly to target enemy from range
 			attack_method = Callable(__ranged_area_attack)
+		attack_type.RANGE_BEAM:
+			## beam is creayed is used
+			attack_method = Callable(__ranged_beam_attack)
+			projectile_manager = load("res://Parent_Scenes/attack_beam.tscn")
+			ai_methods["attack_commanded"] = Callable(_locked_targeted_attack)
 		attack_type.LOCKED_RANGE_AREA:
 			## Attack targets area and deals damage directly to target enemy from range
 			attack_method = Callable(__ranged_area_attack)
@@ -269,6 +275,12 @@ func _prepare_nav_agent():
 ##
 ## Called by outside functions
 func set_mov_target(mov_tar: Vector3):
+	if is_locked_down:
+		call_deferred("delayed_unlock")
+		await move_unlocked
+		ai_mode = "traveling_basic"
+		_set_target_position(mov_tar,true)
+		return
 	ai_mode = "traveling_basic"
 	_set_target_position(mov_tar,true)
 
@@ -482,8 +494,16 @@ func _attack():
 func __ranged_proj_attack():
 	var dis = position.distance_to(target_enemy.position)
 	var shot = projectile_manager.instantiate()
+	var variance = Vector2(rng.randf_range(-ranged_atk_sprd,ranged_atk_sprd),rng.randf_range(-ranged_atk_sprd,ranged_atk_sprd))
 	add_child(shot)
-	shot.fire(position+Vector3.UP*3, target_enemy.position, dis, current_atk_str, damage_type)
+	shot.fire(position+Vector3.UP*3, target_enemy.position+variance, dis, current_atk_str, damage_type)
+
+
+func __ranged_beam_attack():
+	var beam = projectile_manager.instantiate()
+	move_unlocked.connect(beam.end_beam)
+	add_child(beam)
+	beam.begin_firing(Vector3.UP - Vector3.MODEL_FRONT*2, current_atk_str, damage_type, target_enemy.position - position)
 
 
 ## Ranged area attack callable
@@ -538,8 +558,8 @@ func _locked_targeted_attack(delta):
 			return
 		_set_target_position(position)
 		_lock_position()
-	else:
-		#unlock unit
+	elif (is_locked_down):
+		#unlock unit		
 		call_deferred("delayed_unlock")
 	
 	travel_function.call(delta)
@@ -642,7 +662,7 @@ func _on_navigation_agent_3d_navigation_finished():
 
 
 func _on_NavigationAgent_velocity_computed(safe_velocity):
-	if nav_agent.is_navigation_finished():
+	if nav_agent.is_navigation_finished() or is_locked_down:
 		return
 	if ai_mode.contains("attack"):
 		velocity = safe_velocity
@@ -660,9 +680,12 @@ func waypoint(_details):
 func _lock_position(state:= true):
 	is_locked_down = state
 	if state:
+		nav_agent.set_velocity(Vector3.ZERO)
+		set_velocity(Vector3.ZERO)
 		travel_function = Callable(_idling_basic)
 		return
 	travel_function = Callable(_travel)
+	move_unlocked.emit()
 
 
 ## Set timer then unlock movement

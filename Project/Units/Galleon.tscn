@@ -1,0 +1,41 @@
+[gd_scene load_steps=5 format=3 uid="uid://c58k0anaqvqxd"]
+
+[ext_resource type="PackedScene" uid="uid://cs2p3v3o53aki" path="res://Parent_Scenes/Unit_Base.tscn" id="1_ln56q"]
+
+[sub_resource type="CylinderShape3D" id="CylinderShape3D_k0750"]
+resource_local_to_scene = true
+height = 3.5
+radius = 2.0
+
+[sub_resource type="SphereShape3D" id="SphereShape3D_tsamw"]
+resource_local_to_scene = true
+radius = 25.0
+
+[sub_resource type="CylinderShape3D" id="CylinderShape3D_v2lih"]
+resource_local_to_scene = true
+radius = 2.0
+
+[node name="Galleon" instance=ExtResource("1_ln56q")]
+unit_name = "Galleon"
+fog_rev_radius = 50.0
+max_speed = 9
+travel_terrain = 2
+accel = 2
+deccel = 1
+base_atk_spd = 1.25
+base_health = 280.0
+base_atk_str = 20.0
+main_attack_type = 1
+damage_type = "magical"
+target_atk_rng = 35
+
+[node name="CollisionShape3D" parent="." index="0"]
+shape = SubResource("CylinderShape3D_k0750")
+
+[node name="CollisionShape3D" parent="Fog_Breaker/Area3D" index="0"]
+shape = SubResource("SphereShape3D_tsamw")
+
+[node name="CollisionShape3D" parent="Detection_Area" index="0"]
+shape = SubResource("CylinderShape3D_v2lih")
+
+[editable path="Fog_Breaker"]

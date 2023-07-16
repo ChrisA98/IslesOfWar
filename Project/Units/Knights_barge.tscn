@@ -1,0 +1,39 @@
+[gd_scene load_steps=5 format=3 uid="uid://don4tsmqcvv6n"]
+
+[ext_resource type="PackedScene" uid="uid://cs2p3v3o53aki" path="res://Parent_Scenes/Unit_Base.tscn" id="1_2fhi7"]
+
+[sub_resource type="CylinderShape3D" id="CylinderShape3D_t0yc2"]
+resource_local_to_scene = true
+height = 3.5
+radius = 2.0
+
+[sub_resource type="SphereShape3D" id="SphereShape3D_22xqc"]
+resource_local_to_scene = true
+radius = 25.0
+
+[sub_resource type="CylinderShape3D" id="CylinderShape3D_1aatd"]
+resource_local_to_scene = true
+radius = 2.0
+
+[node name="Knights Barge" instance=ExtResource("1_2fhi7")]
+unit_name = "Knights Barge"
+fog_rev_radius = 50.0
+travel_terrain = 2
+deccel = 2
+base_atk_spd = 0.67
+base_armor = 0.3
+base_health = 280.0
+main_attack_type = 1
+damage_type = "Physical"
+target_atk_rng = 30
+
+[node name="CollisionShape3D" parent="." index="0"]
+shape = SubResource("CylinderShape3D_t0yc2")
+
+[node name="CollisionShape3D" parent="Fog_Breaker/Area3D" index="0"]
+shape = SubResource("SphereShape3D_22xqc")
+
+[node name="CollisionShape3D" parent="Detection_Area" index="0"]
+shape = SubResource("CylinderShape3D_1aatd")
+
+[editable path="Fog_Breaker"]

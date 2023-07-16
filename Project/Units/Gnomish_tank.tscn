@@ -1,0 +1,41 @@
+[gd_scene load_steps=5 format=3 uid="uid://dvrdo2g836ohe"]
+
+[ext_resource type="PackedScene" uid="uid://cs2p3v3o53aki" path="res://Parent_Scenes/Unit_Base.tscn" id="1_g16j5"]
+
+[sub_resource type="CylinderShape3D" id="CylinderShape3D_w2uba"]
+resource_local_to_scene = true
+height = 3.5
+radius = 2.0
+
+[sub_resource type="SphereShape3D" id="SphereShape3D_35wbw"]
+resource_local_to_scene = true
+radius = 25.0
+
+[sub_resource type="CylinderShape3D" id="CylinderShape3D_owjhs"]
+resource_local_to_scene = true
+radius = 2.0
+
+[node name="Gnomish Tank" instance=ExtResource("1_g16j5")]
+unit_name = "Gnomish Tank"
+max_speed = 8
+travel_terrain = 1
+accel = 2
+deccel = 2
+base_atk_spd = 0.71
+base_armor = 0.23
+base_health = 35.0
+base_atk_str = 6.5
+main_attack_type = 2
+damage_type = "physical"
+target_atk_rng = 25
+
+[node name="CollisionShape3D" parent="." index="0"]
+shape = SubResource("CylinderShape3D_w2uba")
+
+[node name="CollisionShape3D" parent="Fog_Breaker/Area3D" index="0"]
+shape = SubResource("SphereShape3D_35wbw")
+
+[node name="CollisionShape3D" parent="Detection_Area" index="0"]
+shape = SubResource("CylinderShape3D_owjhs")
+
+[editable path="Fog_Breaker"]

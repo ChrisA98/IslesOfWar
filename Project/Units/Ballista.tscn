@@ -1,0 +1,42 @@
+[gd_scene load_steps=5 format=3 uid="uid://doswaop6ilu3k"]
+
+[ext_resource type="PackedScene" uid="uid://cs2p3v3o53aki" path="res://Parent_Scenes/Unit_Base.tscn" id="1_yrsoq"]
+
+[sub_resource type="CylinderShape3D" id="CylinderShape3D_yuojr"]
+resource_local_to_scene = true
+height = 3.5
+radius = 2.0
+
+[sub_resource type="SphereShape3D" id="SphereShape3D_kkelb"]
+resource_local_to_scene = true
+radius = 25.0
+
+[sub_resource type="CylinderShape3D" id="CylinderShape3D_b7u1r"]
+resource_local_to_scene = true
+radius = 2.0
+
+[node name="Ballista" instance=ExtResource("1_yrsoq")]
+unit_name = "Ballista"
+fog_rev_radius = 45.0
+max_speed = 7
+travel_terrain = 1
+accel = 2
+deccel = 2
+base_atk_spd = 4.0
+base_armor = 0.28
+base_health = 70.0
+base_atk_str = 25.0
+main_attack_type = 1
+damage_type = "Physical"
+target_atk_rng = 35
+
+[node name="CollisionShape3D" parent="." index="0"]
+shape = SubResource("CylinderShape3D_yuojr")
+
+[node name="CollisionShape3D" parent="Fog_Breaker/Area3D" index="0"]
+shape = SubResource("SphereShape3D_kkelb")
+
+[node name="CollisionShape3D" parent="Detection_Area" index="0"]
+shape = SubResource("CylinderShape3D_b7u1r")
+
+[editable path="Fog_Breaker"]

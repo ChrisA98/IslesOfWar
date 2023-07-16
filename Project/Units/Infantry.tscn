@@ -38,9 +38,13 @@ radius = 2.0
 [node name="Infantry" instance=ExtResource("1_3ybrw")]
 unit_name = "Infantry"
 travel_terrain = 1
-base_atk_spd = 3.0
+base_atk_spd = 10.0
 base_health = 50.0
-base_atk_str = 5.0
+base_atk_str = 1.0
+main_attack_type = 3
+damage_type = "Physical"
+target_atk_rng = 20
+unit_lockdown_time = 10
 
 [node name="CollisionShape3D" parent="." index="0"]
 shape = SubResource("CylinderShape3D_fxkcp")

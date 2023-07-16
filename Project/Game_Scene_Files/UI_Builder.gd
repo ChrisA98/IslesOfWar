@@ -54,9 +54,13 @@ func _ready():
 	
 	setup_particles()
 	
-	## check menu of all children
-	for i in get_children(true):
-		check_if_menu(i)
+	## Setu mouse hiding
+	check_existing_nodes(self)
+	for i in get_child(0).get_children():
+		i.mouse_entered.disconnect(_mouse_on_menu)
+		i.mouse_exited.disconnect(_mouse_on_menu)
+	
+	$Viewport_Sectons/Center.mouse_entered.connect(reset_mouse_menu_counter)
 
 
 ## Called every frame. 'delta' is the elapsed time since the previous frame.
@@ -65,12 +69,26 @@ func _process(_delta):
 	viewport_ref.position.y = ((player_cam.position.z + (world_width/2))/mtw_ratio) - (viewport_ref.size.y/2.6)
 
 
+## Check current nodes for being a menu
+func check_existing_nodes(node):
+	## check menu of all children
+	for i in node.get_children(true):
+		check_if_menu(i)
+		if i.get_children().size() > 0:
+			check_existing_nodes(i)
+
+
 ##Check new nodes for being control items
 func check_if_menu(node: Node):
 	if node.has_signal("focus_entered") and !node.mouse_entered.is_connected(_mouse_on_menu):
 		node.mouse_entered.connect(_mouse_on_menu.bind(node,1))
 		node.mouse_exited.connect(_mouse_on_menu.bind(node,-1))
 	
+
+## Reset menu Counter
+func reset_mouse_menu_counter():
+	menu_counter = 0
+
 
 ## Toggle button (may not be useful)
 func unpress_button(id):
@@ -193,9 +211,5 @@ func minimap_Input(event):
 		minimap_clicked.emit("ping",world_pos)	
 
 
-func _mouse_on_menu(menu, mod := 1):
-	if mod == 1:
-		print(str(menu) + " moved onto")
-	elif !Rect2(Vector2(), menu.size).has_point(get_local_mouse_position()):
-		print(str(menu) + " moved off of")
-	menu_counter += mod
+func _mouse_on_menu(_menu, mod := 1):
+	menu_counter = clamp(menu_counter+mod,0,16)

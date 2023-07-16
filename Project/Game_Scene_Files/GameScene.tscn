@@ -491,6 +491,19 @@ anchor_right = 1.0
 anchor_bottom = 1.0
 grow_vertical = 2
 
+[node name="Center" type="Panel" parent="UI_Node/Viewport_Sectons"]
+layout_mode = 1
+anchors_preset = 15
+anchor_right = 1.0
+anchor_bottom = 1.0
+offset_left = 261.0
+offset_top = 147.0
+offset_right = -261.0
+offset_bottom = -147.0
+grow_horizontal = 2
+grow_vertical = 2
+mouse_filter = 1
+
 [node name="Time_Bar" type="Panel" parent="UI_Node"]
 self_modulate = Color(1, 1, 1, 0)
 clip_contents = true
@@ -637,12 +650,13 @@ anchor_bottom = 1.01044
 offset_bottom = 3.05176e-05
 grow_horizontal = 0
 grow_vertical = 0
+mouse_filter = 0
 texture = ExtResource("4_f8kiy")
 expand_mode = 1
 stretch_mode = 4
 metadata/_edit_use_anchors_ = true
 
-[node name="focus_panel" type="Panel" parent="UI_Node/Minimap/Minimap_Frame" groups=["uses_scroll"]]
+[node name="focus_panel" type="Panel" parent="UI_Node/Minimap/Minimap_Frame"]
 self_modulate = Color(1, 1, 1, 0)
 layout_mode = 1
 anchors_preset = -1
@@ -655,7 +669,7 @@ grow_vertical = 0
 focus_mode = 2
 metadata/_edit_use_anchors_ = true
 
-[node name="focus_panel2" type="Panel" parent="UI_Node/Minimap/Minimap_Frame" groups=["uses_scroll"]]
+[node name="focus_panel2" type="Panel" parent="UI_Node/Minimap/Minimap_Frame"]
 self_modulate = Color(1, 1, 1, 0)
 layout_mode = 1
 anchors_preset = -1
@@ -756,7 +770,6 @@ anchor_bottom = 0.785901
 offset_right = 15.0
 offset_bottom = 26.0
 pivot_offset = Vector2(87.5, 87)
-mouse_filter = 0
 stretch = true
 metadata/_edit_use_anchors_ = true
 
@@ -804,7 +817,6 @@ mesh = SubResource("PlaneMesh_ct43f")
 skeleton = NodePath("")
 
 [node name="Minimap_Frame_Cover" type="TextureRect" parent="UI_Node/Minimap"]
-visible = false
 layout_mode = 1
 anchors_preset = -1
 anchor_left = -0.178571
@@ -994,6 +1006,7 @@ fit_content = true
 text_direction = 2
 
 [node name="Unit_List" type="Panel" parent="UI_Node"]
+visible = false
 self_modulate = Color(1, 1, 1, 0.490196)
 layout_mode = 1
 anchors_preset = -1
@@ -1026,6 +1039,11 @@ target_position = Vector3(0, -500, 0)
 collision_mask = 32768
 hit_from_inside = true
 
+[node name="selector_collidor" type="RayCast3D" parent="Player"]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 172.335, 50, 157.068)
+collision_mask = 32768
+debug_shape_custom_color = Color(0, 0, 0, 0)
+
 [node name="Visual_Ground" type="MeshInstance3D" parent="Player"]
 transform = Transform3D(1, 0, -2.98023e-08, 0, 1, 0, 2.98023e-08, 0, 1, 283, 0, 7)
 layers = 2
@@ -1048,10 +1066,6 @@ doppler_tracking = 1
 current = true
 fov = 37.8493
 
-[node name="selector_collidor" type="RayCast3D" parent="Player/Player_camera/Player_view"]
-transform = Transform3D(1, 0, 0, 0, 0.573577, -0.819152, 0, 0.819152, 0.573577, 0, 0, 0)
-collision_mask = 32768
-
 [node name="Grass Scatter" type="GPUParticles3D" parent="Player/Player_camera"]
 transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, 0, 16.457)
 visible = false
@@ -1068,8 +1082,9 @@ draw_pass_3 = SubResource("PlaneMesh_wopk1")
 [node name="selector" type="Decal" parent="Player/Player_camera"]
 transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, -172.335, 1.52588e-05, -142.068)
 top_level = true
+visible = false
 layers = 2
-size = Vector3(5, 50, 5)
+size = Vector3(5, 500, 5)
 texture_albedo = SubResource("GradientTexture2D_6de6p")
 cull_mask = 1048574
 

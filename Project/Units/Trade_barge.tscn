@@ -1,0 +1,42 @@
+[gd_scene load_steps=5 format=3 uid="uid://c4oy47hu1p870"]
+
+[ext_resource type="PackedScene" uid="uid://cs2p3v3o53aki" path="res://Parent_Scenes/Unit_Base.tscn" id="1_05p81"]
+
+[sub_resource type="CylinderShape3D" id="CylinderShape3D_qvdyw"]
+resource_local_to_scene = true
+height = 3.5
+radius = 2.0
+
+[sub_resource type="SphereShape3D" id="SphereShape3D_6ub73"]
+resource_local_to_scene = true
+radius = 25.0
+
+[sub_resource type="CylinderShape3D" id="CylinderShape3D_cjvbr"]
+resource_local_to_scene = true
+radius = 2.0
+
+[node name="Trade Barge" instance=ExtResource("1_05p81")]
+unit_name = "Trade Barge"
+fog_rev_radius = 65.0
+max_speed = 6
+travel_terrain = 2
+accel = 1
+deccel = 1
+base_atk_spd = 0.97
+base_armor = 0.55
+base_health = 280.0
+base_atk_str = 25.0
+main_attack_type = 2
+damage_type = "physical"
+target_atk_rng = 50
+
+[node name="CollisionShape3D" parent="." index="0"]
+shape = SubResource("CylinderShape3D_qvdyw")
+
+[node name="CollisionShape3D" parent="Fog_Breaker/Area3D" index="0"]
+shape = SubResource("SphereShape3D_6ub73")
+
+[node name="CollisionShape3D" parent="Detection_Area" index="0"]
+shape = SubResource("CylinderShape3D_cjvbr")
+
+[editable path="Fog_Breaker"]

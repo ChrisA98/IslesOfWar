@@ -1,0 +1,41 @@
+[gd_scene load_steps=5 format=3 uid="uid://bcgmigvem0m5q"]
+
+[ext_resource type="PackedScene" uid="uid://cs2p3v3o53aki" path="res://Parent_Scenes/Unit_Base.tscn" id="1_noour"]
+
+[sub_resource type="CylinderShape3D" id="CylinderShape3D_fe15j"]
+resource_local_to_scene = true
+height = 3.5
+radius = 2.0
+
+[sub_resource type="SphereShape3D" id="SphereShape3D_qpm6r"]
+resource_local_to_scene = true
+radius = 25.0
+
+[sub_resource type="CylinderShape3D" id="CylinderShape3D_kdy3t"]
+resource_local_to_scene = true
+radius = 2.0
+
+[node name="Mana Cannon" instance=ExtResource("1_noour")]
+unit_name = "Mana Cannon"
+fog_rev_radius = 45.0
+max_speed = 7
+travel_terrain = 1
+base_atk_spd = 2.86
+base_armor = 0.3
+base_health = 70.0
+base_atk_str = 25.0
+main_attack_type = 3
+damage_type = "Magical"
+target_atk_rng = 35
+unit_lockdown_time = 3
+
+[node name="CollisionShape3D" parent="." index="0"]
+shape = SubResource("CylinderShape3D_fe15j")
+
+[node name="CollisionShape3D" parent="Fog_Breaker/Area3D" index="0"]
+shape = SubResource("SphereShape3D_qpm6r")
+
+[node name="CollisionShape3D" parent="Detection_Area" index="0"]
+shape = SubResource("CylinderShape3D_kdy3t")
+
+[editable path="Fog_Breaker"]

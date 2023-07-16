@@ -41,19 +41,18 @@ func __mouse_motion_handling(event) -> bool:
 	## Rotate Camera
 	if Input.is_mouse_button_pressed(MOUSE_BUTTON_MIDDLE):
 		rotate_y(event.get_relative().x/100)
-		#$Visual_Ground.rotate_y((event.get_relative().x*-1)/100)
 		$"../../UI_Node/Minimap/Minimap_Container".set_rotation_degrees(rotation_degrees.y)
 		
 	## Selector management
-	# Optimize this
-	if ui_controller.menu_counter >= 0:
+	if ui_controller.menu_counter > 0:
 		return true
 	var to = cam.project_ray_normal(event.position) * 1000
-	$Player_view/selector_collidor.target_position = to
-	if !$Player_view/selector_collidor.is_colliding():
+	$"../selector_collidor".position = cam.global_position
+	$"../selector_collidor".target_position = to - cam.position
+	if !$"../selector_collidor".is_colliding():
 		return false
 	$selector.visible = (gamescene.click_mode != "build" and gamescene.click_mode != "square_selecting")
-	$selector.position = $Player_view/selector_collidor.get_collision_point()
+	$selector.position = $"../selector_collidor".get_collision_point()
 		
 	#Hide mouse off screen
 	if get_viewport().get_mouse_position().x > (get_viewport().size.x-8) or get_viewport().get_mouse_position().y > (get_viewport().size.y-8):
@@ -65,6 +64,7 @@ func __mouse_motion_handling(event) -> bool:
 func _input(event):
 	if event is InputEventMouseMotion:
 		if __mouse_motion_handling(event):
+			$selector.visible = false
 			Input.set_mouse_mode(Input.MOUSE_MODE_CONFINED)
 		else:
 			Input.set_mouse_mode(Input.MOUSE_MODE_CONFINED_HIDDEN)
@@ -160,32 +160,32 @@ func _physics_process(delta):
 
 #####Control Mouse based camera movement
 func _on_left_bar_mouse_entered():
-	mouse_direct.x = -1
+	mouse_direct += -transform.basis.x
 
 
 func _on_right_bar_mouse_entered():
-	mouse_direct.x = 1
+	mouse_direct += transform.basis.x
 
 
 func _on_top_bar_mouse_entered():
-	mouse_direct.z = -1
+	mouse_direct -= transform.basis.z
 
 
 func _on_bottom_bar_mouse_entered():
-	mouse_direct.z = 1
+	mouse_direct += transform.basis.z
 
 
 func _on_left_bar_mouse_exited():
-	mouse_direct.x = 0
+	mouse_direct += transform.basis.x
 
 
 func _on_right_bar_mouse_exited():
-	mouse_direct.x = 0
+	mouse_direct -= transform.basis.x
 
 
 func _on_top_bar_mouse_exited():
-	mouse_direct.z = 0
+	mouse_direct += transform.basis.z
 
 
 func _on_bottom_bar_mouse_exited():
-	mouse_direct.z = 0
+	mouse_direct -= transform.basis.z

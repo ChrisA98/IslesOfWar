@@ -370,6 +370,8 @@ func building_pressed(building):
 		activated_building = building #pass activated building to gamescene
 		click_mode = "menu"
 	if Input.is_action_just_released("rmb"):
+		if !player_controller.owns_building(building):
+			return
 		match click_mode:
 			"command_unit":
 				for u in player_controller.selected_units:
