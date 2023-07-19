@@ -13,6 +13,8 @@ var chunk_size = 0
 
 var meshres = 1
 
+var heightmap
+
 @onready var noise_image: Image = Image.new()
 @export_dir var map_sections_path: String = "res://Test_Items/Map_data/" 
 @onready var world_width
@@ -21,29 +23,22 @@ var meshres = 1
 
 
 func _ready():
-	var dir = DirAccess.open("res://Test_Items/Map_data/")
 	noise_image.load("res://Test_Items/HeightMap.exr")
 	world_width = noise_image.get_width()
 	world_height = noise_image.get_height()
 	create_chunks(noise_image)
-	## Prepare chucnks
+	## Prepare chunks
 	for y in range(0,(world_height / heightmap_chunk_size)):
 		for x in range(0,(world_height / heightmap_chunk_size)):
-			var img = Image.new()
-			var _img = load(map_sections_path+"chunk_"+str(y)+"_"+str(x)+".exr")
-			img = _img.get_image()
-			chunk_size = img.get_width()
-			build_map(img, map_sections_path+"chunk_"+str(y)+"_"+str(x)+".tscn")
+			var _img = Image.new()
+			var __img = load(map_sections_path+"chunk_"+str(y)+"_"+str(x)+".exr")
+			_img = __img.get_image()
+			chunk_size = _img.get_width()
+			_create_heightmap(_img, map_sections_path+"chunk_"+str(y)+"_"+str(x)+".tres")
 	get_tree().quit()
 
 
-func build_map(img, path):
-	var out = create_mesh(img)
-	if ResourceSaver.save(out,path,ResourceSaver.FLAG_COMPRESS) != OK:
-		print("ERROR")
-	
-
-
+## Create chunk for heightmap images
 func create_chunks(img: Image):
 	for y in range(0,(world_height / heightmap_chunk_size)):
 		for x in range(0,(world_width / heightmap_chunk_size)):
@@ -58,81 +53,30 @@ func create_chunks(img: Image):
 			sub_img.save_exr(out)
 
 
-func create_mesh(img):
-	var st = ImmediateMesh.new()
-	st.clear_surfaces()
+func _create_heightmap(img,path):
+	var hm = HeightMapShape3D.new()
 	var width = img.get_width()
 	var height = img.get_height()	
 	img.flip_y()
+	var data = []
 	
-	vertices.resize(0)
-	UVs.resize(0)
-	normals.resize(0)
-	
-	var heightmap = img
+	hm.map_width = width
+	hm.map_depth = height
 	
 	for x in range(width):
 		if x % meshres == 0:
 			for y in range(height):
 				if y % meshres == 0:
-					height_data[Vector2(x,y)] = heightmap.get_pixel(x,y).r * terrain_amplitude
-					if(height_data[Vector2(x,y)] < water_table-1):
-						height_data[Vector2(x,y)] -= (100 + rng.randf_range(10,50))
-		
+					if(img.get_pixel(x,y).r * terrain_amplitude < water_table):
+						data.push_back(-10000)
+					else:
+						data.push_back(img.get_pixel(x,y).r * terrain_amplitude)
 	
-	for x in height_data:
-		if (x.x<width-meshres and x.y<height-meshres):
-			createQuad(x.x,x.y)
-	st.surface_begin(Mesh.PRIMITIVE_TRIANGLES)
+	hm.map_data = PackedFloat32Array(data)
+	$StaticBody3D/CollisionShape3D.shape = hm
 	
-	for v in vertices.size():
-		st.surface_set_uv(UVs[v])
-		st.surface_set_normal(normals[v])
-		st.surface_add_vertex(vertices[v])
-	st.surface_end()
-	return st
+	print(path)
+	if ResourceSaver.save(hm,path) != OK:
+		print("ERROR")
 
 
-func createQuad(x,y):	
-	var vert1
-	var vert2
-	var vert3
-	var side1
-	var side2
-	var normal
-	
-	vert1 = Vector3(x,height_data[Vector2(x,y)],-y)
-	vert2 = Vector3(x,height_data[Vector2(x,y+meshres)], -y-meshres)
-	vert3 = Vector3(x+meshres, height_data[Vector2(x+meshres,y+meshres)],-y-meshres)
-	vertices.push_back(vert1)
-	vertices.push_back(vert2)
-	vertices.push_back(vert3)
-	
-	UVs.push_back(Vector2(vert1.x, -vert1.z))
-	UVs.push_back(Vector2(vert2.x, -vert2.z))
-	UVs.push_back(Vector2(vert3.x, -vert3.z))
-	
-	side1 = vert2-vert1
-	side2 = vert2-vert3
-	normal = side1.cross(side2)
-	
-	for i in range(0,3):
-		normals.push_back(normal)
-	
-	vert1 = Vector3(x,height_data[Vector2(x,y)],-y)
-	vert2 = Vector3(x+meshres, height_data[Vector2(x+meshres,y+meshres)], -y-meshres)
-	vert3 = Vector3(x+meshres, height_data[Vector2(x+meshres,y)],-y)
-	vertices.push_back(vert1)
-	vertices.push_back(vert2)
-	vertices.push_back(vert3)
-	
-	UVs.push_back(Vector2(vert1.x, -vert1.z))
-	UVs.push_back(Vector2(vert2.x, -vert2.z))
-	UVs.push_back(Vector2(vert3.x, -vert3.z))
-	
-	side1 = vert2-vert1
-	side2 = vert2-vert3
-	normal = side1.cross(side2)
-	
-	for i in range(0,3):
-		normals.push_back(normal)

@@ -37,23 +37,24 @@ func _ready():
 	var chunks = sqrt(find_files())
 	heightmap = load(heightmap_dir+"master"+".exr").get_image()
 	
-	## Prepare chunks
+	
 	for y in range(0,chunks):
 		for x in range(0,chunks):
 			var _img = Image.new()
 			var __img = load(heightmap_dir+"chunk_"+str(y)+"_"+str(x)+".exr")
 			_img = __img.get_image()
 			chunk_size = _img.get_width()
-			build_map(_img, Vector3(x-1,0,y),Vector2i(x,y))
+			build_map_from_image(_img, Vector3(x-1,0,y),Vector2i(x,y))
+	
 	
 	## Assign Regions to terrain mesh chunks
 	for i in get_children():
 		if i.name.contains("Region"):
 			i.get_child(0).get_child(0).input_event.connect(gamescene.ground_click.bind(i)) 
-			i.get_child(0).transparency = 1 #hide terrain mesh
 			i.get_child(0).get_child(0).set_collision_layer_value(16,true)
 			i.get_child(0).get_child(0).set_collision_mask_value(16,true)
 			i.get_child(0).get_child(0).set_meta("is_ground", true)
+			i.get_child(0).transparency = 0
 			i.set_nav_region()
 	
 	
@@ -112,7 +113,7 @@ func _ready():
 		te.position.z += 65*j
 		te.position.x = -((chunk_size*chunks/2)+65)
 		$Great_Fog_Wall.add_child(te)
-	call_deferred("build_fog_war",chunks)
+	#call_deferred("build_fog_war",chunks)
 	get_parent().call_deferred("_prepare_game")
 
 
@@ -173,10 +174,12 @@ func update_navigation_meshes(grp):
 		targ += grp.get_slice("g",1)
 	for i in get_children():
 		if i.name.contains(targ):
+			print(i.get_child(0).get_child(0))
+			print(i.get_child(0).get_child(0).get_groups())
 			i.update_navigation_mesh()	
 
 
-func build_map(img, pos, adj):	
+func build_map_from_image(img, pos, adj):	
 	var grp = StringName("reg_"+str(adj.x) +"_"+ str(adj.y))
 	#build nav region for chunk
 	var chunk_nav_region = NavigationRegion3D.new()
@@ -200,6 +203,34 @@ func build_map(img, pos, adj):
 	
 	var scale_ratio = chunk_size / float(img.get_width())
 	mesh.scale *= scale_ratio
+
+
+func build_map(chunk, adj, map_size_chunks):	
+	var grp = StringName("reg_"+str(adj.x) +"_"+ str(adj.y))
+	#build nav region for chunk
+	var chunk_nav_region = NavigationRegion3D.new()
+	chunk_nav_region.set_script(nav_manager)
+	chunk_nav_region.finished_baking.connect(gamescene._navmesh_updated)
+	chunk_nav_region.starting_baking.connect(gamescene._navmesh_update_start)
+	chunk_nav_region.add_to_group(grp)
+	#build mesh for chunk
+	var mesh = MeshInstance3D.new()
+	mesh.set_mesh(chunk)
+	mesh.set_name("Floor")
+	mesh.add_child(StaticBody3D.new())
+	mesh.get_child(0).rotation_degrees = Vector3(0,90,0)
+	mesh.get_child(0).add_child(CollisionShape3D.new())
+	mesh.get_child(0).get_child(0).shape = chunk
+	chunk_nav_region.add_child(mesh)
+	#add to world
+	add_child(chunk_nav_region)
+	get_child(-1).set_name("Region_"+str(adj.x) +"_"+ str(adj.y))
+	mesh.add_to_group(grp)
+	mesh.add_to_group("water")
+	
+	var base = Vector3((-chunk_size/2)*round(map_size_chunks-1),0,(-chunk_size/2)*round(map_size_chunks-1))
+	mesh.position = base + Vector3((adj.x*chunk_size),0,(adj.y*+chunk_size))
+	
 
 
 func create_mesh(img):

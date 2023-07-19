@@ -23,7 +23,7 @@ func set_nav_region():
 		print_debug("No Group on Nav_Region")
 		return
 	navigation_mesh = NavigationMesh.new()
-	navigation_mesh.set_parsed_geometry_type(NavigationMesh.PARSED_GEOMETRY_STATIC_COLLIDERS)
+	navigation_mesh.set_parsed_geometry_type(NavigationMesh.PARSED_GEOMETRY_BOTH)
 	navigation_mesh.set_source_geometry_mode(NavigationMesh.SOURCE_GEOMETRY_GROUPS_WITH_CHILDREN)
 	navigation_mesh.region_min_size = min_size
 	navigation_mesh.cell_size = cell_size
@@ -32,6 +32,7 @@ func set_nav_region():
 	navigation_mesh.agent_max_slope = agent_max_slope
 	navigation_mesh.region_merge_size = cell_size*100
 	navigation_mesh.set_agent_radius(agent_radius)
+	print(get_groups()[0])
 	navigation_mesh.set_source_group_name(get_groups()[0])
 	
 

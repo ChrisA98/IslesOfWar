@@ -76,7 +76,7 @@ func _input(event):
 			if m.has_mouse:
 				return
 		zoom -= 5
-	if event.is_action("scroll_down") and zoom < 50:
+	if event.is_action("scroll_down") and zoom < 200:
 		for m in get_tree().get_nodes_in_group("uses_scroll"):
 			if m.has_mouse:
 				return

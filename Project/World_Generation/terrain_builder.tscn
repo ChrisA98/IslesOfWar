@@ -1,6 +1,34 @@
-[gd_scene load_steps=2 format=3 uid="uid://bhbe6w7xd1feq"]
+[gd_scene load_steps=6 format=3 uid="uid://bhbe6w7xd1feq"]
 
 [ext_resource type="Script" path="res://World_Generation/World_Builder.gd" id="1_kyymb"]
+[ext_resource type="Shape3D" uid="uid://co8wos2y4amtg" path="res://Test_Items/Map_data/chunk_1_1.tres" id="2_bed7j"]
+[ext_resource type="Shape3D" uid="uid://d2vhers3rig36" path="res://Test_Items/Map_data/chunk_1_0.tres" id="2_jeak4"]
+[ext_resource type="Shape3D" uid="uid://yyq8u4gggrip" path="res://Test_Items/Map_data/chunk_0_0.tres" id="2_ojwvf"]
+[ext_resource type="Shape3D" uid="uid://bygo6ghn274x4" path="res://Test_Items/Map_data/chunk_0_1.tres" id="3_lko6a"]
 
 [node name="TerrainBuilder" type="Node3D"]
 script = ExtResource("1_kyymb")
+
+[node name="StaticBody3D" type="StaticBody3D" parent="."]
+transform = Transform3D(1.31134e-07, 0, -1, 0, 1, 0, 1, 0, 1.31134e-07, 263.261, 6.10352e-05, -247.779)
+
+[node name="CollisionShape3D" type="CollisionShape3D" parent="StaticBody3D"]
+shape = ExtResource("2_ojwvf")
+
+[node name="StaticBody3D3" type="StaticBody3D" parent="."]
+transform = Transform3D(1.31134e-07, 0, -1, 0, 1, 0, 1, 0, 1.31134e-07, -236.739, 6.10352e-05, -247.779)
+
+[node name="CollisionShape3D" type="CollisionShape3D" parent="StaticBody3D3"]
+shape = ExtResource("3_lko6a")
+
+[node name="StaticBody3D2" type="StaticBody3D" parent="."]
+transform = Transform3D(1.31134e-07, 0, -1, 0, 1, 0, 1, 0, 1.31134e-07, -236.739, 6.10352e-05, 252.222)
+
+[node name="CollisionShape3D" type="CollisionShape3D" parent="StaticBody3D2"]
+shape = ExtResource("2_bed7j")
+
+[node name="StaticBody3D4" type="StaticBody3D" parent="."]
+transform = Transform3D(1.31134e-07, 0, -1, 0, 1, 0, 1, 0, 1.31134e-07, 263.261, 6.10352e-05, 252.221)
+
+[node name="CollisionShape3D" type="CollisionShape3D" parent="StaticBody3D4"]
+shape = ExtResource("2_jeak4")
