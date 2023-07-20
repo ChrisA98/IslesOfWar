@@ -1,4 +1,4 @@
-[gd_scene load_steps=13 format=3 uid="uid://cf6pa153818x2"]
+[gd_scene load_steps=13 format=3 uid="uid://cu6vdd5mb4t0"]
 
 [ext_resource type="PackedScene" uid="uid://cs2p3v3o53aki" path="res://Parent_Scenes/Unit_Base.tscn" id="1_3ybrw"]
 
@@ -71,9 +71,6 @@ skeleton = NodePath("../..")
 transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 1.115, 0, 0.026)
 mesh = SubResource("CylinderMesh_154op")
 skeleton = NodePath("../..")
-
-[node name="Editor forward Arrow" parent="UnitModels" index="5"]
-transform = Transform3D(-1.889, -5.8923e-08, 3.82137e-17, 0, -2.94615e-08, -0.01, 1.65142e-07, -0.674, 4.37114e-10, 0, -1, -2.375)
 
 [node name="NavigationAgent3D" parent="." index="2"]
 navigation_layers = 0

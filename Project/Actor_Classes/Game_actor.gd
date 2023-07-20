@@ -52,7 +52,7 @@ func _process(_delta):
 
 func load_units():
 	for un in faction_data["unit_list"]:
-		var _unit = un.replace(" ","_")
+		var _unit = un.replace(" ","_").to_lower()		
 		if(FileAccess.file_exists("res://Units/"+_unit+".tscn")):
 			loaded_units[un] = load("res://Units/"+_unit+".tscn")
 		else:

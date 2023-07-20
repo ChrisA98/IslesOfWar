@@ -73,7 +73,6 @@ var is_locked_down: bool
 ''' Identifying Vars '''
 var actor_owner
 var unit_list
-var unit_models := []
 
 var is_selected: bool:
 	set(value):
@@ -142,6 +141,7 @@ var visible_allies := []
 @onready var fog_reg = get_node("Fog_Breaker")
 @onready var grnd_ping = get_node("Ground_Checker")
 @onready var det_area = get_node("Detection_Area")
+@onready var unit_models := $UnitModels
 ## Combat vars
 @onready var atk_timer := get_node("Attack_Timer")
 ## Navigation vars
@@ -188,14 +188,7 @@ func _ready():
 			projectile_manager = load("res://Parent_Scenes/Projectile_Arc.tscn")
 			ai_methods["attack_commanded"] = Callable(_locked_targeted_attack)
 	
-	## Create model raycasts
-	for i in range($UnitModels.get_children().size()-1):
-		unit_models.push_back($UnitModels.get_child(i))
-		var r = RayCast3D.new()
-		r.target_position = Vector3.DOWN*10
-		r.set_collision_mask_value(1,false)
-		r.set_collision_mask_value(16,true)		
-		unit_models[i].add_child(r)
+
 
 
 func _physics_process(delta):
@@ -395,10 +388,6 @@ func _check_pos(pos, mod = 1):
 	return pos
 
 
-func _snap_model_to_ground():
-	for mod in unit_models:
-		mod.position.y = clampf(mod.get_child(0).get_collision_point().y - position.y,-2,2)
-		
 
 ## set target move location 
 func _set_target_position(mov_tar: Vector3, reset_formation := false):
@@ -477,7 +466,11 @@ func _attack():
 	# Attack targeting
 	if !is_instance_valid(target_enemy):
 		return
-	if (position.distance_to(target_enemy.position) > target_atk_rng):
+	
+	if (position.distance_to(target_enemy.position) > target_atk_rng) and !target_enemy.has_meta("show_base_radius"):
+		return
+	
+	if target_enemy.has_meta("show_base_radius") and (position.distance_to(target_enemy.position)-target_enemy.bldg_radius > target_atk_rng):
 		return
 	
 	## Temporasry Code for attack visualization
@@ -535,10 +528,11 @@ func _targeted_attack(delta):
 	if(position.distance_to(target_enemy.position) <= target_atk_rng):
 		if nav_agent.is_navigation_finished():
 			var trgt = position.direction_to(target_enemy.position)
-			var lookdir = atan2(-trgt.x, -trgt.z)
-			$UnitModels.rotation.y = lerp($UnitModels.rotation.y, lookdir, 0.1)
+			unit_models.face_target(trgt)
 			return
 		_set_target_position(position)
+	else:
+		__find_target(target_enemy,target_enemy.position,true)
 	
 	travel_function.call(delta)
 
@@ -553,8 +547,7 @@ func _locked_targeted_attack(delta):
 	if(position.distance_to(target_enemy.position) <= target_atk_rng):
 		if nav_agent.is_navigation_finished():
 			var trgt = position.direction_to(target_enemy.position)
-			var lookdir = atan2(-trgt.x, -trgt.z)
-			$UnitModels.rotation.y = lerp($UnitModels.rotation.y, lookdir, 0.1)
+			unit_models.face_target(trgt)
 			return
 		_set_target_position(position)
 		_lock_position()
@@ -610,7 +603,7 @@ func _wandering_basic(delta):
 func _travel(_delta):
 	if nav_agent.is_navigation_finished():
 		return
-	_snap_model_to_ground()
+	unit_models.snap_to_ground()
 	var current_agent_position: Vector3 = global_transform.origin
 	var next_path_position: Vector3 = nav_agent.get_next_path_position()
 	var new_velocity: Vector3 = next_path_position - current_agent_position
@@ -621,8 +614,7 @@ func _travel(_delta):
 	#	new_velocity = _lerp_stop(new_velocity, delta)
 	new_velocity = new_velocity.normalized()* target_speed
 	# Look in walk direction
-	var lookdir = atan2(-new_velocity.x, -new_velocity.z)
-	$UnitModels.rotation.y = lerp($UnitModels.rotation.y, lookdir, 0.25)
+	unit_models.face_target(new_velocity)
 	
 	nav_agent.set_velocity(new_velocity)
 	set_velocity(new_velocity)
@@ -633,12 +625,15 @@ func _travel(_delta):
 '''-------------------------------------------------------------------------------------'''
 ''' AI Processes Helper Methods Start '''
 
+
 ## Locked targeted attack
 ## Update navigation target to target enemy
-func __find_target(trgt:Unit_Base, pos:Vector3, _is_visible:bool):
-	if(target_enemy == trgt):
-		if(nav_agent.get_target_position().distance_to(pos) < target_atk_rng*2):
-			actor_owner.add_unit_tracking(self,Callable(_set_target_position.bind(pos,true)))
+func __find_target(trgt, pos:Vector3, _is_visible:bool):
+	if(target_enemy != trgt):
+		return
+	print(nav_agent.get_target_position().distance_to(pos))
+	if(nav_agent.get_target_position().distance_to(pos) > target_atk_rng):
+		actor_owner.add_unit_tracking(self,Callable(_set_target_position.bind(pos,true)))
 
 
 func _on_navigation_agent_3d_navigation_finished():
