@@ -62,8 +62,8 @@ lower_fade = 1566.18
 path_max_distance = 5.01
 avoidance_enabled = true
 neighbor_distance = 4.0
-max_neighbors = 100
 time_horizon_agents = 3.0
+avoidance_mask = 2
 debug_path_custom_point_size = 10.82
 
 [node name="Selection" type="Node3D" parent="."]
@@ -91,6 +91,7 @@ collision_mask = 32769
 
 [node name="Detection_Area" type="Area3D" parent="."]
 transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, 1, 0)
+collision_mask = 0
 input_ray_pickable = false
 monitorable = false
 

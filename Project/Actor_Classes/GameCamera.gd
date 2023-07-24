@@ -28,6 +28,7 @@ var accel = 2
 @onready var ground_check = get_node("../RayCast3D")
 @onready var ui_controller = $"../../UI_Node"
 @onready var game_window = $"../../UI_Node/Viewport_Sectons"
+@onready var unit_watcher = $Player_view/unit_watcher
 var menu_buildings
 
 

@@ -533,7 +533,7 @@ func push_train_queue(unit: String):
 	## Add to taining queue
 	train_queue.push_back(unit)
 	if(trn_timer.is_stopped()):
-		trn_timer.start(3)
+		trn_timer.start(.5)
 		is_training = true
 	return "true"
 
@@ -575,20 +575,21 @@ func spawn_unit(unit_override: String):
 		menu.unit_queue_edit(-1,train_queue[0])
 		menu.update_train_prog(train_queue[0],1)
 		var u_name = pop_train_queue()
-		new_unit = units[u_name].instantiate()
-		world.spawn_unit(actor_owner, new_unit)
-		new_unit.load_data(actor_owner.faction_data["unit_list"][u_name])
+		
+		new_unit = actor_owner.spawn_unit(u_name)
+		
 		new_unit.visible = false
 		new_unit.position = spawn.global_position
 		await get_tree().create_timer(.05).timeout
 		new_unit.visible = true
 		new_unit.set_mov_target(rally.global_position)
 	else:
-		new_unit = actor_owner.loaded_units[unit_override].instantiate()
-		world.spawn_unit(actor_owner, new_unit)
-		new_unit.load_data(actor_owner.faction_data["unit_list"][unit_override])
+		new_unit = actor_owner.spawn_unit(unit_override)
+		
 		new_unit.position = spawn.global_position
 		new_unit.position.y = new_unit.get_ground_depth()
+	
 	spawned_unit.emit(self,new_unit)
+
 
 ''' Training End '''

@@ -52,6 +52,8 @@ var ai_mode :StringName = "idle_basic":
 		else:
 			target_enemy = null
 			atk_timer.stop()
+		unit_models.moving = !value.contains("idle")
+		
 var ai_methods : Dictionary = {
 	"idle_basic" : Callable(_idling_basic),
 	"idle_aggressive" : Callable(_idling_aggressive),
@@ -189,31 +191,30 @@ func _ready():
 			ai_methods["attack_commanded"] = Callable(_locked_targeted_attack)
 	
 
-
-
-func _physics_process(delta):
+func _process(delta):
 	if(is_queued_for_deletion()):
 		## Needed to fix bug with calling a callable on a queued for deletion object
 		## It'd be cool if their was a workaround that didn't involve an if statement
 		return
 	ai_methods[ai_mode].call(delta)
-
-
-## Only using for fog updates currently
-func _process(_delta):
-	update_fog.emit(self,position, is_visible)
+	#update_fog.emit(self,position, is_visible)
 
 '''### Public Methods ###'''
 '''-------------------------------------------------------------------------------------'''
 ''' Startup Methods Start '''
 ## Load data from owning building
-func load_data(data):	
+func load_data(data, world):
+	await get_tree().physics_frame
+	## Set data
 	pop_cost = data["pop_cost"]
 	for r in data["base_cost"]:
 		res_cost[r] = data["base_cost"][r]
 	
-	## set meta data
+	## Set meta data
 	set_meta("owner_id",actor_owner.actor_ID)
+	
+	## Set Hieghtmap to models
+	unit_models.get_height = Callable(world,"get_loc_height")	
 	
 	## Fog Setup
 	fog_reg.set_actor_owner(actor_owner.actor_ID)
@@ -230,6 +231,7 @@ func load_data(data):
 			if(m.name.contains("Mesh")):
 				if m.mesh.material != null:
 					m.mesh.material.albedo_color = Color.BLUE
+		det_area.set_collision_mask_value(1,false)
 	else:
 		## Non_player units need not clear fog
 		fog_reg.detect_area.set_collision_mask_value(20,false)
@@ -603,7 +605,6 @@ func _wandering_basic(delta):
 func _travel(_delta):
 	if nav_agent.is_navigation_finished():
 		return
-	unit_models.snap_to_ground()
 	var current_agent_position: Vector3 = global_transform.origin
 	var next_path_position: Vector3 = nav_agent.get_next_path_position()
 	var new_velocity: Vector3 = next_path_position - current_agent_position
@@ -689,3 +690,7 @@ func delayed_unlock():
 	await get_tree().create_timer(unit_lockdown_time).timeout
 	if !is_locked_down:
 		_lock_position(false)
+
+
+func _toggle_animating(_body,state:bool):
+	unit_models.animating = state

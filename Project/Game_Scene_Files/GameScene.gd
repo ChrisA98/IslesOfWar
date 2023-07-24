@@ -98,15 +98,15 @@ func update_navigation(region = null):
 	world.update_navigation_meshes(region)
 
 
-## Spawn unit with ownership assigned to o_player
-func spawn_unit(o_player, unit):
-	unit.actor_owner = o_player
+## Connect newly spawned unit to world
+func spawn_unit(unit):
 	add_child(unit)
-	o_player.units.push_back(unit)
 	world_units.push_back(unit)
 	unit.unit_list = world_units
 	unit.selected.connect(unit_selected)
-	o_player.update_pop()
+	## Disable enable animating when close by
+	player_controller.cam.unit_watcher.body_entered.connect(unit._toggle_animating.bind(true))
+	player_controller.cam.unit_watcher.body_exited.connect(unit._toggle_animating.bind(false))
 	return true
 
 
@@ -279,7 +279,8 @@ func prepare_bases():
 	prep_player_building(0, null)
 	preview_building.set_pos(p_spawn.position)
 	player_controller.place_building(preview_building)
-	preview_building.spawn_unit(player_controller.faction_data["starting_unit"])
+	for i in range(100):
+		preview_building.spawn_unit(player_controller.faction_data["starting_unit"])
 	preview_building = null
 	click_mode = "select"
 	

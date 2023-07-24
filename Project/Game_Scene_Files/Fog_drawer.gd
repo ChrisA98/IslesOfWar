@@ -25,10 +25,11 @@ func _ready():
 
 
 # Called every frame. 'delta' is the elapsed time since the previous frame.
-func _process(_delta):	
-	var tex = get_texture()
-	for c in updates:
-		c.call(tex)
+func _process(_delta):
+	pass
+	#var tex = get_texture()
+	#for c in updates:
+	#	c.call(tex)
 
 ##Update player minimap fog
 func _update_fog(tex):

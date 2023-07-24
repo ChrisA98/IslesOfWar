@@ -41,7 +41,7 @@ func month_to_string(yr_day: int, yr: int) -> String:
 			out += str(month_day)+"rd, "
 		_:
 			out += str(month_day)+"th, "
-	out += (months[round(yr_day/28)])
+	@warning_ignore("integer_division")out += (months[round(yr_day/28)])
 	out += (", "+str(yr)+" E2")
 	return out
 

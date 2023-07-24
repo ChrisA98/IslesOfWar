@@ -151,6 +151,18 @@ func owns_building(bldg):
 '''-------------------------------------------------------------------------------------'''
 ''' Unit Training Start '''
 
+## Perfrom standard spawning functions
+func spawn_unit(unit_name:String) -> Unit_Base:
+	var unit = loaded_units[unit_name].instantiate()
+	unit.actor_owner = self
+	gamescene.spawn_unit(unit)
+	units.push_back(unit)
+	update_pop()
+	unit.load_data(faction_data["unit_list"][unit_name],gamescene.world)
+	
+	return unit
+
+
 ## Check if game actor can afford unit
 func can_afford_unit(unit:String):
 	for res in faction_data["unit_list"][unit]["base_cost"]:
@@ -197,6 +209,7 @@ func clear_selection():
 
 ## get position from formation
 func formation_pos(unit, place:int):
+	@warning_ignore("integer_division")
 	return Vector3(fmod(place,5)*unit.unit_radius*2.5,0,int(round(place/5)*unit.unit_radius*2.5))
 
 

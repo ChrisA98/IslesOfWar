@@ -33,12 +33,14 @@ func enable_fog(state:bool = true):
 
 
 func _body_exited(body):
-	if body.has_method("set_following"):
-		if(body.actor_owner.actor_ID == 0 ):
-			enable_fog(false)
-			for n in neighbors:
-				if is_instance_valid(n) and isolated:
-					n.enable_fog()
+	if !body.has_method("set_following"):
+		return
+	if(body.actor_owner.actor_ID != 0 ):
+		return
+	enable_fog(false)
+	for n in neighbors:
+		if is_instance_valid(n) and isolated:
+			n.enable_fog()
 
 
 func _body_entered(body):

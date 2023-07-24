@@ -453,8 +453,7 @@ shadow_enabled = true
 shadow_bias = 0.04
 shadow_reverse_cull_face = true
 shadow_blur = 2.275
-directional_shadow_max_distance = 800.0
-directional_shadow_pancake_size = 76.6
+directional_shadow_mode = 1
 
 [node name="Moon" type="DirectionalLight3D" parent="."]
 transform = Transform3D(-4.37114e-08, 0, 1, 0, 1, 0, -1, 0, -4.37114e-08, 0, 0, 0)

@@ -30,7 +30,7 @@ var normals = PackedVector3Array()
 @onready var nav_manager = preload("res://World_Generation/NavMeshManager.gd")
 @onready var ground = get_node("../Player/Visual_Ground")
 @onready var water = get_node("../Player/Visual_Ground/Water")
-@onready var meshres = 5
+@onready var meshres = 1
 
 
 func _ready():
@@ -143,6 +143,8 @@ func build_fog_war(chunks):
 	for fog in range(1,$Explorable_Fog.get_children().size()-1):
 		$Explorable_Fog.get_children()[fog].get_neighbors()
 	await get_tree().physics_frame
+	for fog in range(1,$Explorable_Fog.get_children().size()-1):
+		$Explorable_Fog.get_children()[fog].get_child(0).set_deferred("monitorable",false)
 	## isolate fog units
 	#for fog in range(1,$Explorable_Fog.get_children().size()-1):
 		#pass
@@ -284,3 +286,10 @@ func createQuad(x,y):
 
 func get_region(pos : Vector3):
 	return StringName("reg_"+str(int(pos.x/chunk_size)) +"_"+ str(int(pos.z/chunk_size)))
+
+
+func get_loc_height(pos:Vector3):
+	var x = pos.x+500
+	var y = pos.z+500
+	var t = heightmap.get_pixel(x,y).r * terrain_amplitude
+	return t
