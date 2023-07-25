@@ -78,6 +78,9 @@ navigation_layers = 0
 [node name="CollisionShape3D" parent="Fog_Breaker/Area3D" index="0"]
 shape = SubResource("SphereShape3D_umiqv")
 
+[node name="Detection_Area" parent="." index="7"]
+collision_mask = 16
+
 [node name="CollisionShape3D" parent="Detection_Area" index="0"]
 shape = SubResource("CylinderShape3D_xwf7k")
 

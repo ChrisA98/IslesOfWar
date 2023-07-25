@@ -1,0 +1,21 @@
+[remap]
+
+importer="wavefront_obj"
+importer_version=1
+type="Mesh"
+uid="uid://268d75wgtw4o"
+path="res://.godot/imported/Galley.obj-42616feb1c957f3bb635b21d39d1a367.mesh"
+
+[deps]
+
+files=["res://.godot/imported/Galley.obj-42616feb1c957f3bb635b21d39d1a367.mesh"]
+
+source_file="res://Models/Units/Galley.obj"
+dest_files=["res://.godot/imported/Galley.obj-42616feb1c957f3bb635b21d39d1a367.mesh", "res://.godot/imported/Galley.obj-42616feb1c957f3bb635b21d39d1a367.mesh"]
+
+[params]
+
+generate_tangents=true
+scale_mesh=Vector3(1, 1, 1)
+offset_mesh=Vector3(0, 1, 0)
+optimize_mesh=true

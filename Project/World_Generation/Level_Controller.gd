@@ -31,9 +31,13 @@ var normals = PackedVector3Array()
 @onready var ground = get_node("../Player/Visual_Ground")
 @onready var water = get_node("../Player/Visual_Ground/Water")
 @onready var meshres = 1
+@onready var fog_material = ShaderMaterial.new()
 
 
 func _ready():
+	fog_material.set_shader(load("res://Materials/fog_of_war_overlay.gdshader"))
+	fog_material.set_shader_parameter("fog_darkness",0.7)
+	
 	var chunks = sqrt(find_files())
 	heightmap = load(heightmap_dir+"master"+".exr").get_image()
 	
@@ -112,6 +116,12 @@ func _ready():
 		te.position.z += 65*j
 		te.position.x = -((chunk_size*chunks/2)+65)
 		$Great_Fog_Wall.add_child(te)
+		
+	## Add fog darkness to everything that can take it
+	for child in get_children():
+		if child.has_method("set_fog_overlay"):
+			child.set_fog_overlay(fog_material)
+	
 	call_deferred("build_fog_war",chunks)
 	get_parent().call_deferred("_prepare_game")
 
@@ -292,4 +302,4 @@ func get_loc_height(pos:Vector3):
 	var x = pos.x+500
 	var y = pos.z+500
 	var t = heightmap.get_pixel(x,y).r * terrain_amplitude
-	return t
+	return clamp(t,water_table,1000)

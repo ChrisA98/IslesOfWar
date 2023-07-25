@@ -104,9 +104,6 @@ func spawn_unit(unit):
 	world_units.push_back(unit)
 	unit.unit_list = world_units
 	unit.selected.connect(unit_selected)
-	## Disable enable animating when close by
-	player_controller.cam.unit_watcher.body_entered.connect(unit._toggle_animating.bind(true))
-	player_controller.cam.unit_watcher.body_exited.connect(unit._toggle_animating.bind(false))
 	return true
 
 
@@ -279,10 +276,10 @@ func prepare_bases():
 	prep_player_building(0, null)
 	preview_building.set_pos(p_spawn.position)
 	player_controller.place_building(preview_building)
-	for i in range(100):
-		preview_building.spawn_unit(player_controller.faction_data["starting_unit"])
+	preview_building.spawn_unit(player_controller.faction_data["starting_unit"])
 	preview_building = null
 	click_mode = "select"
+	player_controller.set_fog_overlay()
 	
 	await get_tree().physics_frame
 	prep_ready.emit()

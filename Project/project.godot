@@ -107,6 +107,7 @@ reset_map_rot={
 3d_physics/layer_3="Unit_reference"
 3d_navigation/layer_3="Basic_Aerial"
 3d_physics/layer_4="Building_reference"
+3d_physics/layer_5="fog_breakers"
 3d_physics/layer_9="Layer_9"
 3d_physics/layer_16="Terrain"
 3d_physics/layer_20="fog_zones"

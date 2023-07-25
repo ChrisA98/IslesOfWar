@@ -53,6 +53,7 @@ var ai_mode :StringName = "idle_basic":
 			target_enemy = null
 			atk_timer.stop()
 		unit_models.moving = !value.contains("idle")
+		update_fog.emit(self, (!value.contains("idle") and is_visible))
 		
 var ai_methods : Dictionary = {
 	"idle_basic" : Callable(_idling_basic),
@@ -85,7 +86,7 @@ var is_visible: bool:
 		is_visible = value
 		$UnitModels.visible = is_visible
 		$Selection.visible = is_selected
-		update_fog.emit(self,position, is_visible)
+		update_fog.emit(self, is_visible)
 
 ''' Cost Vars '''
 var pop_cost := 0
@@ -103,8 +104,6 @@ var target_enemy:
 		if(value != null):
 			if(!value.died.is_connected(target_killed)):
 				value.died.connect(target_killed)
-			if(!value.update_fog.is_connected(__find_target)):
-				value.update_fog.connect(__find_target)			
 			## Target is building
 			if value.has_meta("show_base_radius"):
 				target_atk_rng += value.bldg_radius
@@ -115,8 +114,6 @@ var target_enemy:
 		if(target_enemy != null):
 			if(target_enemy.died.is_connected(target_killed)):
 				target_enemy.died.disconnect(target_killed)
-			if(target_enemy.update_fog.is_connected(__find_target)):
-				target_enemy.update_fog.disconnect(__find_target)		
 			## Target had building
 			if target_enemy.has_meta("show_base_radius"):
 				target_atk_rng -= target_enemy.bldg_radius
@@ -144,6 +141,7 @@ var visible_allies := []
 @onready var grnd_ping = get_node("Ground_Checker")
 @onready var det_area = get_node("Detection_Area")
 @onready var unit_models := $UnitModels
+@onready var screen_notify = $VisibleOnScreenNotifier3D
 ## Combat vars
 @onready var atk_timer := get_node("Attack_Timer")
 ## Navigation vars
@@ -162,6 +160,8 @@ func _ready():
 	## Connect signals
 	nav_agent.waypoint_reached.connect(waypoint)
 	atk_timer.timeout.connect(_attack)
+	screen_notify.screen_entered.connect(_toggle_animating.bind(true))
+	screen_notify.screen_exited.connect(_toggle_animating.bind(false))
 	
 	## Set attack type
 	match main_attack_type:
@@ -197,7 +197,6 @@ func _process(delta):
 		## It'd be cool if their was a workaround that didn't involve an if statement
 		return
 	ai_methods[ai_mode].call(delta)
-	#update_fog.emit(self,position, is_visible)
 
 '''### Public Methods ###'''
 '''-------------------------------------------------------------------------------------'''
@@ -231,7 +230,7 @@ func load_data(data, world):
 			if(m.name.contains("Mesh")):
 				if m.mesh.material != null:
 					m.mesh.material.albedo_color = Color.BLUE
-		det_area.set_collision_mask_value(1,false)
+		det_area.set_collision_mask_value(5,false)
 	else:
 		## Non_player units need not clear fog
 		fog_reg.detect_area.set_collision_mask_value(20,false)
@@ -297,7 +296,7 @@ func get_ground_depth(pos = null):
 	grnd_ping.force_raycast_update()
 	var out =  grnd_ping.get_collision_point().y
 	grnd_ping.position = Vector3(0,250,0)	## Reset to on unit
-	update_fog.emit(self,position, is_visible)
+	update_fog.emit(self, is_visible)
 	grnd_ping.enabled = false
 	return out
 
@@ -383,7 +382,7 @@ func delayed_delete():
 func _check_pos(pos, mod = 1):
 	for i in unit_list:
 		if i == self:
-			pass
+			continue
 		elif (i.position.distance_to(pos) <= unit_radius and i.ai_mode.contains("idle")):
 			formation_end_position = i.formation_end_position+mod
 			return _check_pos(i.formation_core_position+actor_owner.formation_pos(self,formation_end_position),mod+1)
@@ -497,6 +496,7 @@ func __ranged_proj_attack():
 func __ranged_beam_attack():
 	var beam = projectile_manager.instantiate()
 	move_unlocked.connect(beam.end_beam)
+	target_enemy.died.connect(beam.end_beam)
 	add_child(beam)
 	beam.begin_firing(Vector3.UP - Vector3.MODEL_FRONT*2, current_atk_str, damage_type, target_enemy.position - position)
 
@@ -632,7 +632,6 @@ func _travel(_delta):
 func __find_target(trgt, pos:Vector3, _is_visible:bool):
 	if(target_enemy != trgt):
 		return
-	print(nav_agent.get_target_position().distance_to(pos))
 	if(nav_agent.get_target_position().distance_to(pos) > target_atk_rng):
 		actor_owner.add_unit_tracking(self,Callable(_set_target_position.bind(pos,true)))
 
@@ -642,7 +641,7 @@ func _on_navigation_agent_3d_navigation_finished():
 	if(!ai_mode.contains("attack")):
 		var targ = _check_pos(position)
 		if(targ != position):
-			_set_target_position(targ)
+			queue_move(targ)
 			return
 	
 	if ai_mode.contains("travel"):
@@ -692,5 +691,5 @@ func delayed_unlock():
 		_lock_position(false)
 
 
-func _toggle_animating(_body,state:bool):
+func _toggle_animating(state:bool):
 	unit_models.animating = state

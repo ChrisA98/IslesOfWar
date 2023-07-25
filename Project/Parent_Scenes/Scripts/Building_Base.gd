@@ -272,7 +272,7 @@ func place():
 	if(actor_owner.actor_ID == 0):
 		fog_reg.active = true
 	await get_tree().physics_frame
-	update_fog.emit(self,position, is_visible)
+	update_fog.emit(self, is_visible)
 	fog_radius_changed.emit(self)
 	
 	get_ground_groups()
@@ -385,7 +385,7 @@ func finish_building():
 	build_particles.visible = false
 	mesh.transparency = 0
 	fog_reg.fog_break_radius = fog_rev_radius
-	update_fog.emit(self, position, true)
+	update_fog.emit(self, true)
 	fog_radius_changed.emit(self)	
 		
 	# Reset to base materials

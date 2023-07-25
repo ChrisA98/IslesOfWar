@@ -5,9 +5,12 @@ extends SubViewport
 @export var markers_path : String = "../../UI_Node/Minimap/Minimap_Container/SubViewport/player_markers"
 
 var updates := []
+var unit_list := []
 var marker_colors : Color
 
 var visual_ground
+
+var timer
 
 #draw fog and mirror parents
 var drawers = {}
@@ -21,19 +24,30 @@ func _ready():
 	else:		
 		marker_colors = Color.RED
 	updates.push_back(_update_markers)
-	
 
 
 # Called every frame. 'delta' is the elapsed time since the previous frame.
 func _process(_delta):
-	pass
-	#var tex = get_texture()
-	#for c in updates:
-	#	c.call(tex)
+	var tex = get_texture()
+	for c in updates:
+		c.call(tex)
+		
+		
+func _physics_process(_delta):
+	for i in range(clamp(unit_list.size(),0,25)):
+		_update_drawers_pos()
+
+
+func _update_drawers_pos():
+	var t = unit_list.pop_front()
+	_update_draw(t)
+	unit_list.push_back(t)
+
 
 ##Update player minimap fog
 func _update_fog(tex):
 	visual_ground.mesh.surface_get_material(0).set_shader_parameter("fog", tex)
+	visual_ground.get_material_overlay().set_shader_parameter("fog", tex)
 
 ## Update markers
 ## should be added always
@@ -55,24 +69,33 @@ func create_drawer(parent):
 	m.mesh.surface_get_material(0).set_albedo(marker_colors)
 	
 	m.position = parent.position
+	drawers[parent] = m
 	add_child(m)
-	parent.update_fog.connect(update_draw, CONNECT_DEFERRED)
 	parent.died.connect(remove_drawer.bind(parent))
+	parent.update_fog.connect(edit_active_drawers)
 	
 	if(parent.has_signal("fog_radius_changed")):
 		parent.fog_radius_changed.connect(update_drawer_radius)
 		m.mesh.surface_get_material(0).set_albedo(Color.BLACK)
 		m.position.y = -30
-	drawers[parent] = m
+		return
+	
+	unit_list.push_front(parent)
+
+
+func edit_active_drawers(unit,add:bool):
+	if !add:
+		unit_list.erase(unit)
+		return
+	if drawers.has(unit) and !unit_list.has(unit):
+		unit_list.push_front(unit)
 
 
 ## Move drawers
-func update_draw(parent, pos, visible):
-	if(!drawers.has(parent)):
-		return
-	drawers[parent].visible = visible
-	drawers[parent].position.x = pos.x
-	drawers[parent].position.z = pos.z
+func _update_draw(parent):
+	drawers[parent].visible = parent.visible
+	drawers[parent].position.x = parent.position.x
+	drawers[parent].position.z = parent.position.z
 
 
 ## Update drawe mesh
@@ -84,4 +107,3 @@ func update_drawer_radius(parent):
 func remove_drawer(drawer):
 	drawers[drawer].queue_free()
 	drawers.erase(drawer)
-	drawer.update_fog.disconnect(update_draw)

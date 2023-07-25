@@ -35,7 +35,7 @@ resource_local_to_scene = true
 radius = 2.0
 
 [node name="Unit_Base" type="CharacterBody3D" groups=["pickable_object"]]
-collision_layer = 5
+collision_layer = 4
 collision_mask = 0
 floor_max_angle = 0.610865
 script = ExtResource("1_xwgnb")
@@ -79,6 +79,7 @@ process_priority = -1
 process_callback = 0
 
 [node name="Fog_Breaker" parent="." instance=ExtResource("2_510m0")]
+cull_mask = 4293918721
 
 [node name="CollisionShape3D" parent="Fog_Breaker/Area3D" index="0"]
 shape = SubResource("SphereShape3D_cp7kh")
@@ -91,12 +92,16 @@ collision_mask = 32769
 
 [node name="Detection_Area" type="Area3D" parent="."]
 transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, 1, 0)
-collision_mask = 0
+collision_layer = 0
+collision_mask = 16
 input_ray_pickable = false
 monitorable = false
 
 [node name="CollisionShape3D" type="CollisionShape3D" parent="Detection_Area"]
 shape = SubResource("CylinderShape3D_jn7np")
+
+[node name="VisibleOnScreenNotifier3D" type="VisibleOnScreenNotifier3D" parent="."]
+aabb = AABB(-2, -1, -2, 4, 5, 4)
 
 [connection signal="input_event" from="." to="." method="_on_input_event"]
 [connection signal="navigation_finished" from="NavigationAgent3D" to="." method="_on_navigation_agent_3d_navigation_finished"]

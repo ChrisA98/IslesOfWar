@@ -1,4 +1,4 @@
-[gd_scene load_steps=5 format=3 uid="uid://bcgmigvem0m5q"]
+[gd_scene load_steps=6 format=3 uid="uid://d1cmqd50cohwi"]
 
 [ext_resource type="PackedScene" uid="uid://cs2p3v3o53aki" path="res://Parent_Scenes/Unit_Base.tscn" id="1_noour"]
 
@@ -6,6 +6,12 @@
 resource_local_to_scene = true
 height = 3.5
 radius = 2.0
+
+[sub_resource type="SphereMesh" id="SphereMesh_l0bek"]
+radius = 1.418
+height = 7.25
+radial_segments = 4
+rings = 1
 
 [sub_resource type="SphereShape3D" id="SphereShape3D_qpm6r"]
 resource_local_to_scene = true
@@ -31,6 +37,10 @@ unit_lockdown_time = 3
 
 [node name="CollisionShape3D" parent="." index="0"]
 shape = SubResource("CylinderShape3D_fe15j")
+
+[node name="MeshInstance3D" type="MeshInstance3D" parent="UnitModels" index="1"]
+transform = Transform3D(0.9998, -0.0200001, 0, 0.0200001, 0.9998, 0, 0, 0, 1, 0, 0, 0)
+mesh = SubResource("SphereMesh_l0bek")
 
 [node name="CollisionShape3D" parent="Fog_Breaker/Area3D" index="0"]
 shape = SubResource("SphereShape3D_qpm6r")

@@ -4,20 +4,22 @@ var unit_models := []
 var animating := false:
 	set(value):
 		animating = value
-		if value and moving:
-			_add_anim_function(Callable(snap_to_ground))
+		if value:
+			animation_func = Callable(_animate)
 			return
-		animate_calls.clear()
+		## Pass an idle lambda function to stop animating
+		animation_func = func(_d):
+			pass
 var moving	:= false:
 	set(value):
 		moving = value
-		if(value and animating):
+		if(value):
 			_add_anim_function(Callable(snap_to_ground))
 			return
 		animate_calls.erase(Callable(snap_to_ground))
-		
 ## Process calls
 var animate_calls : Array[Callable]
+var animation_func := Callable(_animate)
 ## Gets level hieghtmap to snap to floor
 var get_height: Callable
 
@@ -29,13 +31,13 @@ func _ready():
 
 ## Do on process
 func _process(_delta):
-	_animate(animate_calls, _delta)
+	animation_func.call(_delta)
 
 
 ## Snap unit models to ground
 func snap_to_ground(delta):
 	for mod in unit_models:
-		mod.position.y =  get_height.call(mod.global_position)
+		mod.position.y =  mod.position.y + ((get_height.call(mod.global_position) - get_parent().position.y)-mod.position.y)*delta
 		
 
 
@@ -47,8 +49,8 @@ func face_target(trgt):
 
 
 ## Probably change this when I look more at animating
-func _animate(calls: Array, delta):
-	for c in calls:
+func _animate(delta):
+	for c in animate_calls:
 		c.call(delta)
 
 

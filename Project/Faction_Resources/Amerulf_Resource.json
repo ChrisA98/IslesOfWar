@@ -91,7 +91,7 @@
 				"crystals": 0,
 				"food": 0,
 			},
-			"unit_list":["Cavalry","Ballista","Bowman"],
+			"unit_list":["Cavalry","Ballista","Mana Cannon"],
 			"unit_list_2":["Wyvern Riders"],
 			"base_display_name": "Depot",
 			"category": "military"
@@ -241,7 +241,7 @@
 			},
 			"pop_cost": 1
 		},
-		"Transport Ship": {
+		"Mana Cannon": {
 			"base_cost": {
 				"wood": 0,
 				"stone": 0,

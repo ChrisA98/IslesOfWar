@@ -70,3 +70,8 @@ func group_selected_units():
 		else:
 			u[i.unit_name] = [i]
 	UI_controller.set_unit_list(u)
+
+
+## add fog overlay from world
+func set_fog_overlay():	
+	$Visual_Ground.set_material_overlay(gamescene.world.fog_material)

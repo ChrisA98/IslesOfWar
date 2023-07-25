@@ -1,6 +1,7 @@
-[gd_scene load_steps=52 format=3 uid="uid://1gj112g47vqj"]
+[gd_scene load_steps=54 format=3 uid="uid://1gj112g47vqj"]
 
 [ext_resource type="Script" path="res://World_Generation/Level_Controller.gd" id="1_ql81r"]
+[ext_resource type="Shader" path="res://Materials/fog_of_war_overlay.gdshader" id="2_ec6ww"]
 [ext_resource type="Shader" path="res://World_Generation/New_Terrain.gdshader" id="2_ueirr"]
 [ext_resource type="Texture2D" uid="uid://drbfk3h3s6x1b" path="res://Test_Items/HeightMap.exr" id="3_6mwi0"]
 [ext_resource type="Script" path="res://Actor_Classes/Fort_Spawn.gd" id="4_axe35"]
@@ -60,6 +61,12 @@ exposure_multiplier = 0.717
 auto_exposure_scale = 0.25
 auto_exposure_speed = 0.01
 dof_blur_far_distance = 1000.0
+
+[sub_resource type="ShaderMaterial" id="ShaderMaterial_nweq7"]
+render_priority = 0
+shader = ExtResource("2_ec6ww")
+shader_parameter/tex_size = Vector2(1000, 1000)
+shader_parameter/fog_darkness = 0.7
 
 [sub_resource type="Gradient" id="Gradient_1g27v"]
 interpolation_mode = 2
@@ -354,6 +361,7 @@ camera_attributes = SubResource("CameraAttributesPractical_d3i0u")
 [node name="Visual_Ground" type="MeshInstance3D" parent="."]
 transform = Transform3D(1, 0, -2.98023e-08, 0, 1, 0, 2.98023e-08, 0, 1, 0, 0, 0)
 layers = 262144
+material_overlay = SubResource("ShaderMaterial_nweq7")
 mesh = SubResource("PlaneMesh_17eok")
 skeleton = NodePath("")
 
@@ -392,9 +400,11 @@ mesh = SubResource("CapsuleMesh_x5v2n")
 surface_material_override/0 = SubResource("StandardMaterial3D_0q7om")
 
 [node name="Forest" parent="." instance=ExtResource("5_8idnn")]
-transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 249.093, 44.4939, -330.54)
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 249.093, 0, -330.54)
+random_seed = 491
+tree_cnt = 150
 
-[node name="GPUParticles3D" parent="Forest" index="1"]
+[node name="GPUParticles3D" parent="Forest" index="3"]
 transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, 0, 4.89764)
 amount = 250
 visibility_aabb = AABB(-38.4773, -66.4526, -36.144, 76.9545, 132.905, 72.288)
@@ -402,8 +412,9 @@ process_material = SubResource("ShaderMaterial_twvxw")
 
 [node name="Forest2" parent="." instance=ExtResource("5_8idnn")]
 transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 118.71, 24.9789, 86.8703)
+tree_cnt = 150
 
-[node name="GPUParticles3D" parent="Forest2" index="1"]
+[node name="GPUParticles3D" parent="Forest2" index="3"]
 transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, 0, 4.89764)
 amount = 250
 visibility_aabb = AABB(-38.4773, -66.4526, -36.144, 76.9545, 132.905, 72.288)
@@ -416,10 +427,10 @@ transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 118.343, 17.8461, -203.279)
 transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, -172.08, 17.8461, 33.6186)
 
 [node name="Crystal_deposit" parent="." instance=ExtResource("8_wyj8d")]
-transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, -48.7732, 17.3313, -364.716)
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, -48.7732, 26.549, -364.716)
 
 [node name="Crystal_deposit2" parent="." instance=ExtResource("8_wyj8d")]
-transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 341.53, 17.3313, 6.41168)
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 344.551, 11.4199, 6.41168)
 
 [node name="Explorable_Fog" type="Node3D" parent="."]
 visible = false
@@ -453,7 +464,6 @@ shadow_enabled = true
 shadow_bias = 0.04
 shadow_reverse_cull_face = true
 shadow_blur = 2.275
-directional_shadow_mode = 1
 
 [node name="Moon" type="DirectionalLight3D" parent="."]
 transform = Transform3D(-4.37114e-08, 0, 1, 0, 1, 0, -1, 0, -4.37114e-08, 0, 0, 0)
