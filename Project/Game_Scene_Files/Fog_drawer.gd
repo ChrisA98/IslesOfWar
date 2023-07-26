@@ -40,8 +40,8 @@ func _physics_process(_delta):
 
 func _update_drawers_pos():
 	var t = unit_list.pop_front()
-	_update_draw(t)
-	unit_list.push_back(t)
+	if _update_draw(t):
+		unit_list.push_back(t)
 
 
 ##Update player minimap fog
@@ -92,9 +92,12 @@ func edit_active_drawers(unit,add:bool):
 
 ## Move drawers
 func _update_draw(parent):
+	if (!drawers.has(parent)):
+		return false
 	drawers[parent].visible = parent.visible
 	drawers[parent].position.x = parent.position.x
 	drawers[parent].position.z = parent.position.z
+	return true
 
 
 ## Update drawe mesh

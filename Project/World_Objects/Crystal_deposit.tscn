@@ -86,32 +86,27 @@ process_material = SubResource("ShaderMaterial_rhl1w")
 draw_pass_1 = ExtResource("4_cxayg")
 
 [node name="OmniLight3D" type="OmniLight3D" parent="." index="3"]
-transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, -1.05931, 12.1989, -7.91644)
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, -1.15008, 5.23335, -2.29092)
 light_color = Color(0.886275, 0, 0.886275, 1)
 light_energy = 1.725
 light_specular = 7.035
-omni_range = 205.416
+omni_range = 40.1367
 
 [node name="OmniLight3D2" type="OmniLight3D" parent="." index="4"]
-transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 13.5066, 1.26999, -0.360891)
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 7.12483, 0.036128, -0.360891)
 light_color = Color(0.886275, 0, 0.886275, 1)
 light_energy = 1.725
 light_specular = 7.035
-omni_range = 205.416
+omni_range = 39.8515
 
 [node name="OmniLight3D3" type="OmniLight3D" parent="." index="5"]
-transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 8.20368, 9.23954, 7.97864)
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 1.9778, 3.51866, 3.69367)
 light_color = Color(0.886275, 0, 0.886275, 1)
 light_energy = 1.725
 light_specular = 7.035
-omni_range = 205.416
+omni_range = 42.5958
 
 [node name="MeshInstance3D" type="MeshInstance3D" parent="." index="6"]
-transform = Transform3D(2.665, 0, 0, 0, 2.665, 0, 0, 0, 2.665, 0, 0, 0)
+transform = Transform3D(1.32, 0, 0, 0, 1.32, 0, 0, 0, 1.32, 0, 0, 0)
 material_overlay = SubResource("ShaderMaterial_p4twl")
 mesh = SubResource("ArrayMesh_jqs7x")
-
-[node name="Decal" type="Decal" parent="MeshInstance3D" index="0"]
-layers = 2
-size = Vector3(20.136, 2, 24.021)
-cull_mask = 1048574
