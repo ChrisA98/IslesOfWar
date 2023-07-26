@@ -8,6 +8,8 @@ extends Node3D
 @export var terrain_amplitude = 100
 @export var water_table : float = 7
 @export var heightmap_dir: String = "res://Test_Items/Map_data/"
+@export_group("Fog Data")
+@export_range(0,1) var fog_darkness := 0.7
 
 ''' Time keeping vars '''
 var sun_rotation = 0
@@ -36,7 +38,6 @@ var normals = PackedVector3Array()
 
 func _ready():
 	fog_material.set_shader(load("res://Materials/fog_of_war_overlay.gdshader"))
-	fog_material.set_shader_parameter("fog_darkness",0.7)
 	
 	var chunks = sqrt(find_files())
 	heightmap = load(heightmap_dir+"master"+".exr").get_image()
@@ -116,11 +117,10 @@ func _ready():
 		te.position.z += 65*j
 		te.position.x = -((chunk_size*chunks/2)+65)
 		$Great_Fog_Wall.add_child(te)
-		
-	## Add fog darkness to everything that can take it
-	for child in get_children():
-		if child.has_method("set_fog_overlay"):
-			child.set_fog_overlay(fog_material)
+	
+	## Set fog globla data
+	RenderingServer.global_shader_parameter_set("fog_darkness",fog_darkness)
+	RenderingServer.global_shader_parameter_set("heightmap_tex_size",Vector2(heightmap.get_width(),heightmap.get_width()))
 	
 	call_deferred("build_fog_war",chunks)
 	get_parent().call_deferred("_prepare_game")

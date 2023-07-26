@@ -1,9 +1,10 @@
-[gd_scene load_steps=9 format=3 uid="uid://dire4xft8ffrx"]
+[gd_scene load_steps=11 format=3 uid="uid://dire4xft8ffrx"]
 
 [ext_resource type="PackedScene" uid="uid://c4e7broeu0wn3" path="res://Parent_Scenes/World_Object.tscn" id="1_rj2sw"]
 [ext_resource type="Shader" uid="uid://cmyeclhrvhn2o" path="res://World_Generation/Foliage_Shader.tres" id="2_olr8n"]
 [ext_resource type="Texture2D" uid="uid://drbfk3h3s6x1b" path="res://Test_Items/HeightMap.exr" id="3_wbirq"]
 [ext_resource type="ArrayMesh" uid="uid://gyduhgs54eda" path="res://Models/Environment/Crystal_Periph.obj" id="4_cxayg"]
+[ext_resource type="Shader" path="res://Materials/fog_of_war_overlay.gdshader" id="5_p8owr"]
 
 [sub_resource type="ShaderMaterial" id="ShaderMaterial_rhl1w"]
 shader = ExtResource("2_olr8n")
@@ -28,10 +29,14 @@ shader_parameter/__terrain_amplitude = 100.0
 shader_parameter/map_heightmap_size = Vector2(1000, 1000)
 shader_parameter/map_heightmap = ExtResource("3_wbirq")
 
+[sub_resource type="ShaderMaterial" id="ShaderMaterial_p4twl"]
+render_priority = 0
+shader = ExtResource("5_p8owr")
+
 [sub_resource type="StandardMaterial3D" id="StandardMaterial3D_w21rt"]
 resource_name = "Stone"
 cull_mode = 2
-albedo_color = Color(0.077331, 0.077331, 0.077331, 1)
+albedo_color = Color(0.0784314, 0.0784314, 0.0784314, 1)
 
 [sub_resource type="StandardMaterial3D" id="StandardMaterial3D_hodq2"]
 resource_name = "Crystals"
@@ -103,4 +108,10 @@ omni_range = 205.416
 
 [node name="MeshInstance3D" type="MeshInstance3D" parent="." index="6"]
 transform = Transform3D(2.665, 0, 0, 0, 2.665, 0, 0, 0, 2.665, 0, 0, 0)
+material_overlay = SubResource("ShaderMaterial_p4twl")
 mesh = SubResource("ArrayMesh_jqs7x")
+
+[node name="Decal" type="Decal" parent="MeshInstance3D" index="0"]
+layers = 2
+size = Vector3(20.136, 2, 24.021)
+cull_mask = 1048574

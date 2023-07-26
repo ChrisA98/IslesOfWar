@@ -1,4 +1,4 @@
-[gd_scene load_steps=54 format=3 uid="uid://1gj112g47vqj"]
+[gd_scene load_steps=51 format=3 uid="uid://1gj112g47vqj"]
 
 [ext_resource type="Script" path="res://World_Generation/Level_Controller.gd" id="1_ql81r"]
 [ext_resource type="Shader" path="res://Materials/fog_of_war_overlay.gdshader" id="2_ec6ww"]
@@ -7,7 +7,6 @@
 [ext_resource type="Script" path="res://Actor_Classes/Fort_Spawn.gd" id="4_axe35"]
 [ext_resource type="Shader" path="res://World_Generation/Water.gdshader" id="4_h7krx"]
 [ext_resource type="PackedScene" uid="uid://crswchumae5b0" path="res://World_Objects/Forest.tscn" id="5_8idnn"]
-[ext_resource type="Shader" uid="uid://cmyeclhrvhn2o" path="res://World_Generation/Foliage_Shader.tres" id="6_328lh"]
 [ext_resource type="PackedScene" uid="uid://76wslx0hq568" path="res://World_Objects/Stone_deposit.tscn" id="7_7rj6j"]
 [ext_resource type="PackedScene" uid="uid://dire4xft8ffrx" path="res://World_Objects/Crystal_deposit.tscn" id="8_wyj8d"]
 [ext_resource type="PackedScene" uid="uid://dbdak3gjtpx88" path="res://World_Generation/Explorable_Fog.tscn" id="9_ac8rt"]
@@ -65,8 +64,6 @@ dof_blur_far_distance = 1000.0
 [sub_resource type="ShaderMaterial" id="ShaderMaterial_nweq7"]
 render_priority = 0
 shader = ExtResource("2_ec6ww")
-shader_parameter/tex_size = Vector2(1000, 1000)
-shader_parameter/fog_darkness = 0.7
 
 [sub_resource type="Gradient" id="Gradient_1g27v"]
 interpolation_mode = 2
@@ -101,9 +98,6 @@ seamless = true
 as_normal_map = true
 bump_strength = 10.8
 noise = SubResource("FastNoiseLite_dlv7m")
-
-[sub_resource type="ViewportTexture" id="ViewportTexture_gwand"]
-viewport_path = NodePath("Player/Fog_drawer")
 
 [sub_resource type="Gradient" id="Gradient_im8lq"]
 colors = PackedColorArray(0, 0.260467, 0, 1, 0.305169, 0.557647, 0.256383, 1)
@@ -163,13 +157,11 @@ resource_local_to_scene = true
 render_priority = 0
 shader = ExtResource("2_ueirr")
 shader_parameter/t_height = 100.0
-shader_parameter/fog_darkness = 0.75
 shader_parameter/water_table = 7.0
 shader_parameter/max_sand_height = 9.0
 shader_parameter/universal_tex_scaling = 10.972
 shader_parameter/min_rock_slope = 0.156
 shader_parameter/max_grass_slope = 0.362
-shader_parameter/tex_size = Vector2(1000, 1000)
 shader_parameter/heightmap = ExtResource("3_6mwi0")
 shader_parameter/grass_alb_tex = SubResource("NoiseTexture2D_p0d1b")
 shader_parameter/grass_norm_tex = SubResource("NoiseTexture2D_e22tc")
@@ -177,7 +169,6 @@ shader_parameter/cliff_alb_tex = SubResource("NoiseTexture2D_hn25n")
 shader_parameter/cliff_norm_tex = SubResource("NoiseTexture2D_fcitg")
 shader_parameter/sand_alb_tex = SubResource("NoiseTexture2D_x1bul")
 shader_parameter/sand_norm_tex = SubResource("NoiseTexture2D_23uga")
-shader_parameter/fog = SubResource("ViewportTexture_gwand")
 
 [sub_resource type="PlaneMesh" id="PlaneMesh_17eok"]
 material = SubResource("ShaderMaterial_rie7d")
@@ -261,29 +252,6 @@ albedo_color = Color(0, 0.290196, 1, 1)
 
 [sub_resource type="StandardMaterial3D" id="StandardMaterial3D_0q7om"]
 albedo_color = Color(1, 0, 0.0313726, 1)
-
-[sub_resource type="ShaderMaterial" id="ShaderMaterial_twvxw"]
-shader = ExtResource("6_328lh")
-shader_parameter/instance_rows = 15.0
-shader_parameter/instance_rot_randomize = 2.5
-shader_parameter/instance_spacing = 4.829
-shader_parameter/instance_scale_x = 1.0
-shader_parameter/instance_scale_y = 1.0
-shader_parameter/instance_scale_z = 1.0
-shader_parameter/instance_scale_randomize = 1.0
-shader_parameter/instance_pos_randomize = 4.713
-shader_parameter/instance_scale_min = 0.8
-shader_parameter/instance_scale_max = 1.2
-shader_parameter/_coverage_altitude = 10.0
-shader_parameter/_coverage_range = 100.0
-shader_parameter/_slope_coverage = 0.1
-shader_parameter/clumping_strength = 20.0
-shader_parameter/terrain_normal_basis = null
-shader_parameter/instance_orient_to_normal = true
-shader_parameter/instance_orientation_influence = 1.0
-shader_parameter/__terrain_amplitude = 100.0
-shader_parameter/map_heightmap_size = Vector2(1000, 1000)
-shader_parameter/map_heightmap = ExtResource("3_6mwi0")
 
 [sub_resource type="Gradient" id="Gradient_bbpcy"]
 interpolation_mode = 2
@@ -404,21 +372,9 @@ transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 249.093, 0, -330.54)
 random_seed = 491
 tree_cnt = 150
 
-[node name="GPUParticles3D" parent="Forest" index="3"]
-transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, 0, 4.89764)
-amount = 250
-visibility_aabb = AABB(-38.4773, -66.4526, -36.144, 76.9545, 132.905, 72.288)
-process_material = SubResource("ShaderMaterial_twvxw")
-
 [node name="Forest2" parent="." instance=ExtResource("5_8idnn")]
 transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 118.71, 24.9789, 86.8703)
 tree_cnt = 150
-
-[node name="GPUParticles3D" parent="Forest2" index="3"]
-transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, 0, 4.89764)
-amount = 250
-visibility_aabb = AABB(-38.4773, -66.4526, -36.144, 76.9545, 132.905, 72.288)
-process_material = SubResource("ShaderMaterial_twvxw")
 
 [node name="Stone_deposit" parent="." instance=ExtResource("7_7rj6j")]
 transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 118.343, 17.8461, -203.279)

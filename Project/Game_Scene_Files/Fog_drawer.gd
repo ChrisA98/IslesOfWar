@@ -46,8 +46,7 @@ func _update_drawers_pos():
 
 ##Update player minimap fog
 func _update_fog(tex):
-	visual_ground.mesh.surface_get_material(0).set_shader_parameter("fog", tex)
-	visual_ground.get_material_overlay().set_shader_parameter("fog", tex)
+	RenderingServer.global_shader_parameter_set("fog_tex",tex)
 
 ## Update markers
 ## should be added always

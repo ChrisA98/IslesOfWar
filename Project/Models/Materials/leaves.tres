@@ -6,6 +6,11 @@ code = "// NOTE: Shader automatically converted from Godot Engine 4.1.stable's S
 shader_type spatial;
 render_mode blend_mix,depth_draw_opaque,cull_back,diffuse_burley,specular_schlick_ggx;
 
+global uniform sampler2D fog_tex;
+global uniform vec2 heightmap_tex_size = vec2(1000.0,1000.0);
+global uniform float fog_darkness;
+varying vec2 pos_uv;
+
 uniform float sway_intensity: hint_range(0,0.2);
 uniform vec4 albedo : source_color;
 uniform sampler2D texture_albedo : source_color,filter_linear_mipmap,repeat_enable;
@@ -22,6 +27,8 @@ uniform vec3 uv2_scale;
 uniform vec3 uv2_offset;
 
 void vertex() {
+	pos_uv = vec2((NODE_POSITION_WORLD.x)/heightmap_tex_size.x,(NODE_POSITION_WORLD.z)/heightmap_tex_size.y)+((vec2(VERTEX.x,VERTEX.z)/heightmap_tex_size)) + vec2(.5);
+	
 	float wave = sin(2.0 * PI * TIME + (VERTEX.z+VERTEX.x)*0.8);
 	float wave2 = sin(2.0 * PI * (TIME + VERTEX.z+VERTEX.x)*2.0);
 	VERTEX.x += (wave+wave2 *0.4) *sway_intensity;
@@ -40,5 +47,11 @@ void fragment() {
 	float roughness_tex = dot(texture(texture_roughness,base_uv),roughness_texture_channel);
 	ROUGHNESS = roughness_tex * roughness;
 	SPECULAR = specular;
+	
+	
+	vec4 fog_color = texture(fog_tex, pos_uv);
+	if(fog_color.a < 0.1){
+		ALBEDO = mix(ALBEDO, vec3 (0,0,0), fog_darkness);
+	}
 }
 "

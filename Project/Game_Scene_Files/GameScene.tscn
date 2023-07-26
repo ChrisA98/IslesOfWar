@@ -1,4 +1,4 @@
-[gd_scene load_steps=83 format=3 uid="uid://d32tym6bcdu7c"]
+[gd_scene load_steps=82 format=3 uid="uid://d32tym6bcdu7c"]
 
 [ext_resource type="Script" path="res://Game_Scene_Files/GameScene.gd" id="1_7pjje"]
 [ext_resource type="Script" path="res://Game_Scene_Files/UI_Builder.gd" id="2_wj4ul"]
@@ -208,9 +208,6 @@ as_normal_map = true
 bump_strength = 10.8
 noise = SubResource("FastNoiseLite_dlv7m")
 
-[sub_resource type="ViewportTexture" id="ViewportTexture_gwand"]
-viewport_path = NodePath("Player/Fog_drawer")
-
 [sub_resource type="Gradient" id="Gradient_im8lq"]
 colors = PackedColorArray(0, 0.260467, 0, 1, 0.305169, 0.557647, 0.256383, 1)
 
@@ -269,13 +266,11 @@ resource_local_to_scene = true
 render_priority = 0
 shader = ExtResource("4_4qqhp")
 shader_parameter/t_height = 100.0
-shader_parameter/fog_darkness = 0.75
 shader_parameter/water_table = 7.0
 shader_parameter/max_sand_height = 9.0
 shader_parameter/universal_tex_scaling = 10.972
 shader_parameter/min_rock_slope = 0.156
 shader_parameter/max_grass_slope = 0.362
-shader_parameter/tex_size = Vector2(1000, 1000)
 shader_parameter/heightmap = ExtResource("7_ubyyn")
 shader_parameter/grass_alb_tex = SubResource("NoiseTexture2D_p0d1b")
 shader_parameter/grass_norm_tex = SubResource("NoiseTexture2D_e22tc")
@@ -283,7 +278,6 @@ shader_parameter/cliff_alb_tex = SubResource("NoiseTexture2D_hn25n")
 shader_parameter/cliff_norm_tex = SubResource("NoiseTexture2D_fcitg")
 shader_parameter/sand_alb_tex = SubResource("NoiseTexture2D_x1bul")
 shader_parameter/sand_norm_tex = SubResource("NoiseTexture2D_23uga")
-shader_parameter/fog = SubResource("ViewportTexture_gwand")
 
 [sub_resource type="PlaneMesh" id="PlaneMesh_ct43f"]
 material = SubResource("ShaderMaterial_rie7d")

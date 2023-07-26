@@ -3,7 +3,6 @@ render_mode diffuse_lambert_wrap;
 
 uniform sampler2D heightmap : repeat_disable;
 uniform float t_height;
-uniform float fog_darkness:hint_range(0,1) = 1;
 uniform float water_table:hint_range(-50.0,50.0) = 1;
 uniform float max_sand_height:hint_range(-50.0,50.0) = 1;
 uniform float universal_tex_scaling = 6;
@@ -18,10 +17,10 @@ uniform float min_rock_slope:hint_range(0.0,1.0) = 0.5;
 uniform float max_grass_slope:hint_range(0.0,1.0) = 0.9;
 
 //current fog
-uniform sampler2D fog;
-
+global uniform sampler2D fog_tex;
 //mesh displacement
-uniform vec2 tex_size = vec2(1000.0,1000.0);
+global uniform vec2 heightmap_tex_size = vec2(1000.0,1000.0);
+global uniform float fog_darkness;
 
 varying vec3 normal;
 varying float height;
@@ -34,7 +33,7 @@ float get_height(vec2 x){
 
 
 void vertex() {
-	pos_uv = vec2((NODE_POSITION_WORLD.x)/tex_size.x,(NODE_POSITION_WORLD.z)/tex_size.y)+((vec2(VERTEX.x,VERTEX.z)/tex_size)) + vec2(.5);
+	pos_uv = vec2((NODE_POSITION_WORLD.x)/heightmap_tex_size.x,(NODE_POSITION_WORLD.z)/heightmap_tex_size.y)+((vec2(VERTEX.x,VERTEX.z)/heightmap_tex_size)) + vec2(.5);
 	height = get_height(pos_uv);
 	VERTEX.y = height - NODE_POSITION_WORLD.y;
 		
@@ -87,7 +86,7 @@ void fragment(){
 	NORMAL_MAP_DEPTH = normal.y*.1;
 	NORMAL_MAP = mix(rock_normal, grass_normal, rock_grass_weight);
 	
-	vec4 fog_color = texture(fog, pos_uv);
+	vec4 fog_color = texture(fog_tex, pos_uv);
 	if(fog_color.a < 0.1){
 		ALBEDO = mix(ALBEDO, vec3 (0,0,0), fog_darkness);
 	}

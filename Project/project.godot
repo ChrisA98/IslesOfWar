@@ -111,3 +111,18 @@ reset_map_rot={
 3d_physics/layer_9="Layer_9"
 3d_physics/layer_16="Terrain"
 3d_physics/layer_20="fog_zones"
+
+[shader_globals]
+
+heightmap_tex_size={
+"type": "vec2",
+"value": Vector2(1000, 1000)
+}
+fog_darkness={
+"type": "float",
+"value": 0.7
+}
+fog_tex={
+"type": "sampler2D",
+"value": "res://test.tres"
+}

@@ -40,7 +40,3 @@ func _area_entered(_area_rid, area, _area_shape_index, _local_shape_index):
 	if(!area.has_meta(target_meta)):
 		return
 
-
-## Virtual function for inheriting objects to add fog overlay from world
-func set_fog_overlay(mat):
-	pass
