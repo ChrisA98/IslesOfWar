@@ -31,8 +31,8 @@ func _process(_delta):
 	var tex = get_texture()
 	for c in updates:
 		c.call(tex)
-		
-		
+
+
 func _physics_process(_delta):
 	for i in range(clamp(unit_list.size(),0,25)):
 		_update_drawers_pos()

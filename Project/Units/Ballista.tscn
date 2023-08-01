@@ -1,4 +1,4 @@
-[gd_scene load_steps=5 format=3 uid="uid://doswaop6ilu3k"]
+[gd_scene load_steps=6 format=3 uid="uid://doswaop6ilu3k"]
 
 [ext_resource type="PackedScene" uid="uid://cs2p3v3o53aki" path="res://Parent_Scenes/Unit_Base.tscn" id="1_yrsoq"]
 
@@ -6,6 +6,10 @@
 resource_local_to_scene = true
 height = 3.5
 radius = 2.0
+
+[sub_resource type="CylinderMesh" id="CylinderMesh_j87kr"]
+bottom_radius = 1.4
+height = 1.32
 
 [sub_resource type="SphereShape3D" id="SphereShape3D_kkelb"]
 resource_local_to_scene = true
@@ -32,6 +36,9 @@ target_atk_rng = 35
 
 [node name="CollisionShape3D" parent="." index="0"]
 shape = SubResource("CylinderShape3D_yuojr")
+
+[node name="MeshInstance3D" type="MeshInstance3D" parent="UnitModels" index="0"]
+mesh = SubResource("CylinderMesh_j87kr")
 
 [node name="CollisionShape3D" parent="Fog_Breaker/Area3D" index="0"]
 shape = SubResource("SphereShape3D_kkelb")

@@ -1,5 +1,6 @@
 extends Node3D
 ''' Time keeping vars '''
+@export var use_random_base_spawns := false
 @export_group("Time")
 @export var year_day = 270
 @export var year = 603
@@ -32,7 +33,7 @@ var normals = PackedVector3Array()
 @onready var nav_manager = preload("res://World_Generation/NavMeshManager.gd")
 @onready var ground = get_node("../Player/Visual_Ground")
 @onready var water = get_node("../Player/Visual_Ground/Water")
-@onready var meshres = 1
+@onready var meshres = 10
 @onready var fog_material = ShaderMaterial.new()
 
 
@@ -62,6 +63,22 @@ func _ready():
 			i.set_nav_region()
 	
 	
+	_prepare_water(chunks)
+	
+	# Set Sun and moon in place
+	$Sun.rotation_degrees = Vector3(0,90,-180)
+	$Moon.rotation_degrees = Vector3(0,90,-180)
+	
+	## Set fog global data
+	RenderingServer.global_shader_parameter_set("fog_darkness",fog_darkness)
+	RenderingServer.global_shader_parameter_set("heightmap_tex_size",Vector2(heightmap.get_width(),heightmap.get_width()))
+	
+	call_deferred("_build_fog_war",chunks)
+	get_parent().call_deferred("_prepare_game")
+
+
+## Prepare water navigation
+func _prepare_water(chunks):
 	$Water/StaticBody3D.input_event.connect(gamescene.ground_click.bind($Water/StaticBody3D)) 
 	
 	var wtr_nav_region = NavigationRegion3D.new()
@@ -89,10 +106,9 @@ func _ready():
 	water.position.y = water_table
 	water.mesh.surface_get_material(0).set_shader_parameter("water_level", water_table)
 	water.mesh.surface_get_material(0).set_shader_parameter("t_height", terrain_amplitude)
-		
-	# Set Sun and moon in place
-	$Sun.rotation_degrees = Vector3(0,90,-180)
-	$Moon.rotation_degrees = Vector3(0,90,-180)
+
+
+func _build_fog_war(chunks):
 	
 	## Fog of war walls
 	var fog_wall_size = ((chunk_size*chunks)/65)+1	#gets length of walls
@@ -118,15 +134,6 @@ func _ready():
 		te.position.x = -((chunk_size*chunks/2)+65)
 		$Great_Fog_Wall.add_child(te)
 	
-	## Set fog globla data
-	RenderingServer.global_shader_parameter_set("fog_darkness",fog_darkness)
-	RenderingServer.global_shader_parameter_set("heightmap_tex_size",Vector2(heightmap.get_width(),heightmap.get_width()))
-	
-	call_deferred("build_fog_war",chunks)
-	get_parent().call_deferred("_prepare_game")
-
-
-func build_fog_war(chunks):
 	await get_tree().physics_frame
 	
 	## Fog of war explorable
@@ -303,3 +310,13 @@ func get_loc_height(pos:Vector3):
 	var y = pos.z+500
 	var t = heightmap.get_pixel(x,y).r * terrain_amplitude
 	return clamp(t,water_table,1000)
+
+
+## get base spawn
+func get_base_spawn(trgt_player : int):
+	var bases = find_child("Base_Spawns").get_children()
+	if use_random_base_spawns:
+		return bases[rng.randi_range(0,bases.size()-1)]
+	for i in bases:
+		if i.actor_id == trgt_player:
+			return i

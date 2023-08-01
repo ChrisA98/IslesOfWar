@@ -210,7 +210,7 @@ func clear_selection():
 ## get position from formation
 func formation_pos(unit, place:int):
 	@warning_ignore("integer_division")
-	return Vector3(fmod(place,5)*unit.unit_radius*2.5,0,int(round(place/5)*unit.unit_radius*2.5))
+	return Vector3(fmod(place,7)*unit.unit_radius*2.5,0,int(round(place/7)*unit.unit_radius*2.5))
 
 
 ## Command selected_units to move to location

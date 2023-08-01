@@ -5,7 +5,7 @@ var rng = RandomNumberGenerator.new()
 @export_range(1,10000000) var random_seed : int = 1
 @export var prev : bool :
 	set(_value):
-		if Engine.is_editor_hint():
+		if Engine.is_editor_hint() and trees != null:
 			position.y = 0
 			rng.seed = random_seed
 			trees.set_instance_count(0)
@@ -24,10 +24,14 @@ func _ready():
 	super()
 	position.y = 0
 	rng.seed = random_seed
-	trees.set_instance_count(0)
-	trees.set_use_custom_data(true)
-	trees.set_instance_count(tree_cnt)
-	call_deferred("_generate_forest")
+	if !Engine.is_editor_hint():
+		trees.set_instance_count(0)
+		trees.set_use_custom_data(true)
+		trees.set_instance_count(tree_cnt)
+		call_deferred("_generate_forest")
+		return
+	prev = true
+	
 	
 ## Generate forest evenly around radius
 func _generate_forest():

@@ -1,0 +1,24 @@
+[gd_scene load_steps=5 format=3 uid="uid://dcah4free3fs2"]
+
+[ext_resource type="Script" path="res://Actor_Classes/Fort_Spawn.gd" id="1_db6mv"]
+
+[sub_resource type="StandardMaterial3D" id="StandardMaterial3D_01r5d"]
+render_priority = -1
+
+[sub_resource type="CylinderMesh" id="CylinderMesh_4xo2l"]
+top_radius = 2.5
+bottom_radius = 2.5
+height = 10.0
+
+[sub_resource type="StandardMaterial3D" id="StandardMaterial3D_fjj8m"]
+albedo_color = Color(0, 0.290196, 1, 1)
+
+[node name="Base_Spawn" type="Node3D"]
+script = ExtResource("1_db6mv")
+
+[node name="debug_mesh" type="MeshInstance3D" parent="."]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, 5.02246, 0)
+layers = 524288
+material_override = SubResource("StandardMaterial3D_01r5d")
+mesh = SubResource("CylinderMesh_4xo2l")
+surface_material_override/0 = SubResource("StandardMaterial3D_fjj8m")

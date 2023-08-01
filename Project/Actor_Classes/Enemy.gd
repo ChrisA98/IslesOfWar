@@ -65,7 +65,7 @@ func _ready():
 	think_timer = Timer.new()
 	add_child(think_timer)
 	think_timer.timeout.connect(think_caller)
-	think_timer.start(4)
+	#think_timer.start(4)
 
 	## -- set resource location categories -- ##
 	resource_locations["Lumber_mill"] = []

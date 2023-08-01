@@ -75,6 +75,9 @@ _surfaces = [{
 [node name="Crystal_deposit" instance=ExtResource("1_rj2sw")]
 metadata/res_building = "Mine_crystal"
 
+[node name="Editor_Mesh" parent="." index="0"]
+visible = false
+
 [node name="GPUParticles3D" type="GPUParticles3D" parent="." index="2"]
 transform = Transform3D(1, 0, 0, 0, 0.999992, -0.00389207, 0, 0.00389207, 0.999992, 0, 0, 79.4036)
 visible = false

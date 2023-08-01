@@ -52,6 +52,7 @@ preload("res://Faction_Resources/Amerulf_Resource.json")]
 @onready var player_fog_manager = get_node("Player/Fog_drawer")
 @onready var enemy_marker_manager = get_node("UI_Node/Minimap/Enemy_minimap_markers")
 @onready var selection_square = get_node("Player/Selection_square")
+@onready var animation_master = get_node("Unit_Animation_Master")
 
 
 '''### BUILT-IN METHODS ###'''
@@ -104,6 +105,8 @@ func spawn_unit(unit):
 	world_units.push_back(unit)
 	unit.unit_list = world_units
 	unit.selected.connect(unit_selected)
+	unit.animating_on.connect(animation_master.append_trees)
+	unit.animating_off.connect(animation_master.remove_array_of_trees)
 	return true
 
 
@@ -262,24 +265,26 @@ func prepare_bases():
 	# Place enemy starting Bases
 	for enemy in range(1,game_actors.size()):
 		game_actors[enemy].build_enemy_list()
-		var spawn = get_node("Level/Enemy"+str(enemy)+"_Base_Spawn")
+		var spawn = world.get_base_spawn(enemy)
 		var bldg = prep_other_building(game_actors[enemy],"Base")
 		bldg.set_pos(spawn.position)
 		bldg.set_pos(Vector3(spawn.position.x,game_actors[enemy].ping_ground_depth(bldg.position),spawn.position.z))
 		game_actors[enemy].place_building(bldg)
 		bldg.spawn_unit(game_actors[enemy].faction_data["starting_unit"])
+		spawn.used = true
 		
 	# Add player first Base
-	var p_spawn = get_node("Level/Player_Base_Spawn")
+	var p_spawn = world.get_base_spawn(0)
 	player_controller.set_cam_pos(p_spawn.position + Vector3(0,20,0))
 	player_controller.get_child(0).force_raycast_update()
 	prep_player_building(0, null)
 	preview_building.set_pos(p_spawn.position)
 	player_controller.place_building(preview_building)
-	preview_building.spawn_unit(player_controller.faction_data["starting_unit"])
+	for i in range(75):
+		preview_building.spawn_unit(player_controller.faction_data["starting_unit"])
+	p_spawn.used = true
 	preview_building = null
 	click_mode = "select"
-	player_controller.set_fog_overlay()
 	
 	await get_tree().physics_frame
 	prep_ready.emit()

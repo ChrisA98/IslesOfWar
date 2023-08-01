@@ -8,6 +8,8 @@ signal update_fog
 signal uncovered_area #area enters det area
 signal attacked #did an attack
 signal move_unlocked ## Can travel again
+signal animating_on ## Needs to be animated
+signal animating_off ## Needs to be animated
 
 '''Enums'''
 enum {LAND, NAVAL, AERIAL}
@@ -166,7 +168,7 @@ func _ready():
 	## Set attack type
 	match main_attack_type:
 		attack_type.MELEE:
-			## CLose range striking
+			## Close range striking
 			attack_method = Callable(__melee_attack)
 		attack_type.RANGE_PROJ:
 			## Preprocessed arc projectile is used
@@ -475,12 +477,13 @@ func _attack():
 		return
 	
 	## Temporasry Code for attack visualization
+	unit_models.unit_attack(base_atk_spd)
 	$UnitModels/attack_indicator_temp.visible = true
 	
-	atk_timer.start(base_atk_spd + rng.randf_range(-.15,.15))
+	atk_timer.start(base_atk_spd)
 	attack_method.call()
 	attacked.emit()
-	await get_tree().create_timer(.25).timeout
+	await get_tree().create_timer(0.25).timeout
 	$UnitModels/attack_indicator_temp.visible = false
 
 
@@ -488,7 +491,7 @@ func _attack():
 func __ranged_proj_attack():
 	var dis = position.distance_to(target_enemy.position)
 	var shot = projectile_manager.instantiate()
-	var variance = Vector2(rng.randf_range(-ranged_atk_sprd,ranged_atk_sprd),rng.randf_range(-ranged_atk_sprd,ranged_atk_sprd))
+	var variance = Vector3(rng.randf_range(-ranged_atk_sprd,ranged_atk_sprd),0,rng.randf_range(-ranged_atk_sprd,ranged_atk_sprd))
 	add_child(shot)
 	shot.fire(position+Vector3.UP*3, target_enemy.position+variance, dis, current_atk_str, damage_type)
 
@@ -637,6 +640,7 @@ func __find_target(trgt, pos:Vector3, _is_visible:bool):
 
 
 func _on_navigation_agent_3d_navigation_finished():
+	unit_models.moving = false
 	## Don't stop on other units if not attacking
 	if(!ai_mode.contains("attack")):
 		var targ = _check_pos(position)
@@ -693,3 +697,8 @@ func delayed_unlock():
 
 func _toggle_animating(state:bool):
 	unit_models.animating = state
+	if state:
+		animating_on.emit(unit_models.animation_trees)
+		return
+	animating_off.emit(unit_models.animation_trees)
+	

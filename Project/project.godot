@@ -27,6 +27,10 @@ window/size/viewport_width=1920
 window/size/viewport_height=1080
 window/size/initial_position_type=3
 
+[filesystem]
+
+import/fbx/enabled=false
+
 [input]
 
 cam_move_forward={
