@@ -1,12 +1,13 @@
 [gd_scene load_steps=6 format=3 uid="uid://bflndammxm41d"]
 
 [ext_resource type="PackedScene" uid="uid://cs2p3v3o53aki" path="res://Parent_Scenes/Unit_Base.tscn" id="1_1wc84"]
-[ext_resource type="PackedScene" uid="uid://rfxehk8wtrgg" path="res://Models/Units/modified_scenes/knight_base.tscn" id="2_vge23"]
 
 [sub_resource type="CylinderShape3D" id="CylinderShape3D_mq4pc"]
 resource_local_to_scene = true
 height = 3.5
 radius = 2.0
+
+[sub_resource type="CapsuleMesh" id="CapsuleMesh_7f6hy"]
 
 [sub_resource type="SphereShape3D" id="SphereShape3D_bi1b8"]
 resource_local_to_scene = true
@@ -28,8 +29,44 @@ damage_type = "Physical"
 [node name="CollisionShape3D" parent="." index="0"]
 shape = SubResource("CylinderShape3D_mq4pc")
 
-[node name="Knight_Base" parent="UnitModels" index="0" instance=ExtResource("2_vge23")]
-transform = Transform3D(1.8, 0, 0, 0, 1.8, 0, 0, 0, 1.8, 0, 0, 0)
+[node name="KnightMarker_01" type="Node3D" parent="UnitModels" index="0"]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 1, 0, -1)
+
+[node name="MeshInstance3D" type="MeshInstance3D" parent="UnitModels/KnightMarker_01" index="0"]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, 1, 0)
+layers = 524288
+mesh = SubResource("CapsuleMesh_7f6hy")
+
+[node name="KnightMarker_02" type="Node3D" parent="UnitModels" index="1"]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, -1, 0, -1)
+
+[node name="MeshInstance3D" type="MeshInstance3D" parent="UnitModels/KnightMarker_02" index="0"]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, 1, 0)
+layers = 524288
+mesh = SubResource("CapsuleMesh_7f6hy")
+
+[node name="KnightMarker_03" type="Node3D" parent="UnitModels" index="2"]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 1, 0, 1)
+
+[node name="MeshInstance3D" type="MeshInstance3D" parent="UnitModels/KnightMarker_03" index="0"]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, 1, 0)
+layers = 524288
+mesh = SubResource("CapsuleMesh_7f6hy")
+
+[node name="KnightMarker_04" type="Node3D" parent="UnitModels" index="3"]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, -1, 0, 1)
+
+[node name="MeshInstance3D" type="MeshInstance3D" parent="UnitModels/KnightMarker_04" index="0"]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, 1, 0)
+layers = 524288
+mesh = SubResource("CapsuleMesh_7f6hy")
+
+[node name="KnightMarker_05" type="Node3D" parent="UnitModels" index="4"]
+
+[node name="MeshInstance3D" type="MeshInstance3D" parent="UnitModels/KnightMarker_05" index="0"]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, 1, 0)
+layers = 524288
+mesh = SubResource("CapsuleMesh_7f6hy")
 
 [node name="CollisionShape3D" parent="Fog_Breaker/Area3D" index="0"]
 shape = SubResource("SphereShape3D_bi1b8")

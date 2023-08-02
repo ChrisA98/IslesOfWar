@@ -63,7 +63,9 @@ func face_target(trgt):
 
 
 func unit_attack(atk_spd: float):
-	call_deferred("_activate_rand_animation_parameter_timed","attacking",atk_spd)
+	var attack_id = randi_range(0,attack_animations-1)
+	_set_attack_anim(attack_id)	
+	call_deferred("_pulse_rand_animation_parameter","conditions/primary_attack")
 
 
 ## Probably change this when I look more at animating
@@ -91,14 +93,19 @@ func _update_rand_animation_parameter(condition: String, state: bool):
 
 
 ## Func update animation with timer
-func _activate_rand_animation_parameter_timed(condition: String, time: float):
+func _pulse_rand_animation_parameter(condition: String):
 	var trgt = randi_range(0,animation_trees.size()-1)
-	animation_trees[trgt]["parameters/conditions/"+condition] = true
-	await get_tree().create_timer(time,true,true).timeout
-	animation_trees[trgt]["parameters/conditions/"+condition] = false
+	animation_trees[trgt]["parameters/"+condition] = true
+	await get_tree().create_timer(0.1).timeout
+	animation_trees[trgt]["parameters/"+condition] = false
 
 
 ## Pause animations
 func _pause_all_trees(play_state := false):
 	for tree in animation_trees:
 		tree.active = play_state
+
+
+func _set_attack_anim(atk_id: int, atk_category := "Primary"):
+	for i in range(attack_animations):
+		animation_trees[i]["parameters/"+atk_category+"_attack/conditions/0"+str(atk_id)] = (i==atk_id)

@@ -69,6 +69,10 @@ var ai_methods : Dictionary = {
 var intial_path_dist := 0.1
 var target_garrison : Building
 var formation_end_position: int	##position in formation when arriving at final location
+var unit_id : int: ##unit id for prganizational purposes
+	set(value):
+		name = unit_name+"_"+str(actor_owner.actor_ID)+str(value)
+		unit_id = value
 var formation_core_position: Vector3
 
 var stored_trgt_pos	## Target move stored for navmesh generation optimizing
@@ -204,7 +208,7 @@ func _process(delta):
 '''-------------------------------------------------------------------------------------'''
 ''' Startup Methods Start '''
 ## Load data from owning building
-func load_data(data, world):
+func load_data(data, world, unit_id):
 	await get_tree().physics_frame
 	## Set data
 	pop_cost = data["pop_cost"]

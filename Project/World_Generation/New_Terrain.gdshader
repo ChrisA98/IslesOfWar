@@ -1,7 +1,8 @@
 shader_type spatial;
 render_mode diffuse_lambert_wrap;
 
-uniform sampler2D heightmap : repeat_disable;
+global uniform sampler2D heightmap_tex : repeat_disable;
+
 uniform float t_height;
 uniform float water_table:hint_range(-50.0,50.0) = 1;
 uniform float max_sand_height:hint_range(-50.0,50.0) = 1;
@@ -27,7 +28,7 @@ varying float height;
 varying vec2 pos_uv;
 
 float get_height(vec2 x){
-  float hgt = (texture(heightmap,x).y) * t_height;
+  float hgt = (texture(heightmap_tex,x).y) * t_height;
   return hgt;
 }
 
