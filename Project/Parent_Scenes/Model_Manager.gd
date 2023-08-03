@@ -6,7 +6,6 @@ var unit_models := []
 var animating := false:
 	set(value):
 		animating = value
-		_pause_all_trees(value)
 		if value:
 			animation_func = Callable(_animate)
 			return
@@ -16,8 +15,6 @@ var animating := false:
 var moving	:= false:
 	set(value):
 		moving = value
-		_update_all_animation_parameters("idle",!value)
-		_update_all_animation_parameters("walking",value)
 		if(value):
 			_add_anim_function(Callable(snap_to_ground))
 			return
@@ -39,9 +36,6 @@ func _ready():
 			continue
 		tree.active = true
 		animation_trees.push_back(tree)
-	
-	## Set animation trees to idle
-	_update_all_animation_parameters("idle",true)
 
 
 ## Do on process
@@ -64,7 +58,6 @@ func face_target(trgt):
 
 func unit_attack(atk_spd: float):
 	var attack_id = randi_range(0,attack_animations-1)
-	_set_attack_anim(attack_id)	
 	call_deferred("_pulse_rand_animation_parameter","conditions/primary_attack")
 
 
@@ -81,31 +74,3 @@ func _add_anim_function(anim:Callable):
 	animate_calls.push_back(anim)
 
 
-## Upate all animations
-func _update_all_animation_parameters(condition: String, state: bool):
-	for tree in animation_trees:
-		tree["parameters/conditions/"+condition] = state
-
-
-## Update random animation
-func _update_rand_animation_parameter(condition: String, state: bool):	
-	animation_trees[randi_range(0,animation_trees.size()-1)]["parameters/conditions/"+condition] = state
-
-
-## Func update animation with timer
-func _pulse_rand_animation_parameter(condition: String):
-	var trgt = randi_range(0,animation_trees.size()-1)
-	animation_trees[trgt]["parameters/"+condition] = true
-	await get_tree().create_timer(0.1).timeout
-	animation_trees[trgt]["parameters/"+condition] = false
-
-
-## Pause animations
-func _pause_all_trees(play_state := false):
-	for tree in animation_trees:
-		tree.active = play_state
-
-
-func _set_attack_anim(atk_id: int, atk_category := "Primary"):
-	for i in range(attack_animations):
-		animation_trees[i]["parameters/"+atk_category+"_attack/conditions/0"+str(atk_id)] = (i==atk_id)

@@ -1,4 +1,3 @@
-@tool
 extends MultiMeshInstance3D
 class_name unit_animator
 
@@ -19,6 +18,7 @@ const ATTACK_01 = ["attack_01",130, 159]
 const ATTACK_02 = ["attack_02",160, 189]
 
 var active_units = 0
+
 @onready var units = multimesh
 
 func _ready():	
@@ -42,7 +42,6 @@ func spawn_unit_instance(pos: Vector3, accent_color : Color):
 
 ## Change instance animation by moving animation window
 func set_animation_window(unit: int,animation: String):
-	var visibility = units.get_instance_custom_data(unit)[2]
 	match(animation):
 		IDLE[0]:
 			units.set_instance_custom_data(unit,Color(IDLE[1], IDLE[2], 1, 0))
@@ -59,7 +58,7 @@ func move_unit_instance(unit: int, trgt_pos: Vector3):
 	units.set_instance_transform(unit,trans)
 
 
-## Rotate instacbne to target location
+## Rotate instance to target location
 func face_unit_instance(unit: int, trgt_pos: Vector3):
 	var pos = units.get_instance_transform(unit).origin
 	var trgt_vector = pos.direction_to(trgt_pos)
@@ -69,7 +68,7 @@ func face_unit_instance(unit: int, trgt_pos: Vector3):
 	var trans = Transform3D()
 	trans.origin = pos
 	var final = Quaternion(trans.rotated(Vector3.UP,lookdir).basis)
-	var out_q = initial.slerp(final,0.1)	
+	var out_q = initial.slerp(final,0.1)
 	
 	trans.basis = Basis(out_q)
 	units.set_instance_transform(unit,trans)

@@ -1,4 +1,4 @@
-[gd_scene load_steps=48 format=3 uid="uid://1gj112g47vqj"]
+[gd_scene load_steps=47 format=3 uid="uid://1gj112g47vqj"]
 
 [ext_resource type="Script" path="res://World_Generation/Level_Controller.gd" id="1_ql81r"]
 [ext_resource type="Shader" path="res://Materials/fog_of_war_overlay.gdshader" id="2_ec6ww"]
@@ -8,7 +8,6 @@
 [ext_resource type="PackedScene" uid="uid://crswchumae5b0" path="res://World_Objects/Forest.tscn" id="5_8idnn"]
 [ext_resource type="PackedScene" uid="uid://dcah4free3fs2" path="res://Actor_Classes/base_spawn.tscn" id="6_aid2n"]
 [ext_resource type="PackedScene" uid="uid://76wslx0hq568" path="res://World_Objects/Stone_deposit.tscn" id="7_7rj6j"]
-[ext_resource type="Texture2D" uid="uid://c4paktovtlui4" path="res://Test_Items/Map_data/master.exr" id="8_eigxg"]
 [ext_resource type="PackedScene" uid="uid://dire4xft8ffrx" path="res://World_Objects/Crystal_deposit.tscn" id="8_wyj8d"]
 [ext_resource type="PackedScene" uid="uid://dbdak3gjtpx88" path="res://World_Generation/Explorable_Fog.tscn" id="9_ac8rt"]
 
@@ -163,7 +162,6 @@ shader_parameter/max_sand_height = 9.0
 shader_parameter/universal_tex_scaling = 10.972
 shader_parameter/min_rock_slope = 0.156
 shader_parameter/max_grass_slope = 0.362
-shader_parameter/heightmap = ExtResource("3_6mwi0")
 shader_parameter/grass_alb_tex = SubResource("NoiseTexture2D_p0d1b")
 shader_parameter/grass_norm_tex = SubResource("NoiseTexture2D_e22tc")
 shader_parameter/cliff_alb_tex = SubResource("NoiseTexture2D_hn25n")
@@ -347,13 +345,11 @@ transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 250.68, 14.2399, -267)
 [node name="Forest" parent="." instance=ExtResource("5_8idnn")]
 transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 249.093, 0, -328.466)
 random_seed = 491
-heightmap = ExtResource("8_eigxg")
 tree_cnt = 150
 
 [node name="Forest2" parent="." instance=ExtResource("5_8idnn")]
 transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 114.56, 0, 102.392)
 random_seed = 821
-heightmap = ExtResource("8_eigxg")
 tree_cnt = 150
 max_slope = 0.255
 

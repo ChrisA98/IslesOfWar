@@ -272,7 +272,6 @@ shader_parameter/max_sand_height = 9.0
 shader_parameter/universal_tex_scaling = 10.972
 shader_parameter/min_rock_slope = 0.156
 shader_parameter/max_grass_slope = 0.362
-shader_parameter/heightmap = ExtResource("7_ubyyn")
 shader_parameter/grass_alb_tex = SubResource("NoiseTexture2D_p0d1b")
 shader_parameter/grass_norm_tex = SubResource("NoiseTexture2D_e22tc")
 shader_parameter/cliff_alb_tex = SubResource("NoiseTexture2D_hn25n")
