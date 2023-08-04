@@ -105,8 +105,6 @@ func spawn_unit(unit):
 	world_units.push_back(unit)
 	unit.unit_list = world_units
 	unit.selected.connect(unit_selected)
-	unit.animating_on.connect(animation_master.append_trees)
-	unit.animating_off.connect(animation_master.remove_array_of_trees)
 	return true
 
 
@@ -280,7 +278,7 @@ func prepare_bases():
 	prep_player_building(0, null)
 	preview_building.set_pos(p_spawn.position)
 	player_controller.place_building(preview_building)
-	for i in range(1):
+	for i in range(100):
 		preview_building.spawn_unit(player_controller.faction_data["starting_unit"])
 	p_spawn.used = true
 	preview_building = null

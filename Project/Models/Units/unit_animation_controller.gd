@@ -12,12 +12,17 @@ const IDLE= ["idle",0, 59]
 const WALK= ["walk",60, 119]
 
 ## BASE ATTACK CONSTANTS
-const ATTACK_01 = ["attack_01",130, 159]
+## maximum 2 sec attack animation
+const ATTACK_01 = ["attack_01",130, 189]
 
 ## SECONDARY ATTACK CONSTANTS
-const ATTACK_02 = ["attack_02",160, 189]
+## maximum 2 sec attack animation
+const ATTACK_02 = ["attack_02",190, 249]
+
+@export var max_instances = 1024
 
 var active_units = 0
+var active_animation : String
 
 @onready var units = multimesh
 
@@ -26,7 +31,7 @@ func _ready():
 	active_units = 0
 	units.set_use_custom_data(true)
 	units.set_use_colors(true)
-	units.set_instance_count(1028)
+	units.set_instance_count(max_instances)
 	units.set_visible_instance_count(0)
 
 
@@ -36,25 +41,36 @@ func spawn_unit_instance(pos: Vector3, accent_color : Color):
 	active_units += 1
 	units.set_visible_instance_count(active_units)
 	units.set_instance_color(active_units-1,accent_color)
-	move_unit_instance(active_units-1,pos)
-	set_animation_window(active_units-1,IDLE[0])
+	var trans = Transform3D().translated(pos)
+	units.set_instance_transform(active_units-1,trans)
+	set_animation_state(active_units-1,"idle")
+	return active_units-1
 
 
-## Change instance animation by moving animation window
-func set_animation_window(unit: int,animation: String):
-	match(animation):
-		IDLE[0]:
-			units.set_instance_custom_data(unit,Color(IDLE[1], IDLE[2], 1, 0))
-		WALK[0]:
-			units.set_instance_custom_data(unit,Color(WALK[1], WALK[2], 1, 0))
-		ATTACK_01[0]:
-			units.set_instance_custom_data(unit,Color(ATTACK_01[1], ATTACK_01[2], 1, 0))
+##Set base animation state
+func set_animation_state(unit: int, anim:String):
+	active_animation = anim
+	_set_animation_window(unit,anim)
+
+
+## Play single animation and return to active animation
+func burst_animation(unit: int, anim:String, duration_sec: float):
+	_set_animation_window(unit,anim)
+	call_deferred("_burst_animation_helper",unit,duration_sec)
+
+
+## deferred call so await can be used with an easier call to burt animation
+func _burst_animation_helper(unit:int, duration: float):
+	await get_tree().create_timer(duration).timeout
+	_set_animation_window(unit,active_animation)
 
 
 ## Move target instance to new position
 func move_unit_instance(unit: int, trgt_pos: Vector3):
-	var trans = Transform3D()
-	trans = trans.translated(trgt_pos)
+	var trans = units.get_instance_transform(unit)
+	## Erase y value so the shade rcan handle that
+	trgt_pos.y = 0
+	trans.origin = trgt_pos
 	units.set_instance_transform(unit,trans)
 
 
@@ -64,10 +80,10 @@ func face_unit_instance(unit: int, trgt_pos: Vector3):
 	var trgt_vector = pos.direction_to(trgt_pos)
 	var lookdir = atan2(trgt_vector.x, trgt_vector.z)
 	
-	var initial = Quaternion(units.get_instance_transform(unit).basis)
+	var initial = units.get_instance_transform(unit).basis.get_rotation_quaternion()
 	var trans = Transform3D()
 	trans.origin = pos
-	var final = Quaternion(trans.rotated(Vector3.UP,lookdir).basis)
+	var final = trans.rotated(Vector3.UP,lookdir).basis.get_rotation_quaternion()
 	var out_q = initial.slerp(final,0.1)
 	
 	trans.basis = Basis(out_q)
@@ -96,3 +112,14 @@ func delete_unit(unit: int):
 	units.set_visible_instance_count(active_units)
 	## Signal that the last unit is now in the target units place
 	unit_reordered.emit(active_units,unit)
+
+
+## Change instance animation by moving animation window
+func _set_animation_window(unit: int,animation: String):
+	match(animation):
+		IDLE[0]:
+			units.set_instance_custom_data(unit,Color(IDLE[1], IDLE[2], 1, 0))
+		WALK[0]:
+			units.set_instance_custom_data(unit,Color(WALK[1], WALK[2], 1, 0))
+		ATTACK_01[0]:
+			units.set_instance_custom_data(unit,Color(ATTACK_01[1], ATTACK_01[2], 1, 0))

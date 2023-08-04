@@ -13,6 +13,7 @@ var bases := []
 var buildings := []
 var units := []
 var loaded_units := {}
+var unit_model_master := {}
 var selected_units = []
 
 var unit_tracking_queue := []
@@ -57,7 +58,17 @@ func load_units():
 			loaded_units[un] = load("res://Units/"+_unit+".tscn")
 		else:
 			loaded_units[un] = load("res://Units/"+"Infantry"+".tscn")
-
+		unit_model_master[un] = []
+		for mod in faction_data["unit_list"][un]["models"]:
+			##Load model master
+			var model
+			if(FileAccess.file_exists("res://Models/Unit/modified_scenes/"+mod+"_va.tscn")):
+				model = load("res://Models/Units/modified_scenes/"+mod+"_va.tscn").instantiate()
+			else:
+				model = load("res://Models/Units/modified_scenes/knight_base_va.tscn").instantiate()
+			model.name = mod+"_models_master"
+			add_child(model)
+			unit_model_master[un].push_back(model)
 
 '''Prepare End'''
 '''-------------------------------------------------------------------------------------'''
@@ -158,7 +169,7 @@ func spawn_unit(unit_name:String) -> Unit_Base:
 	gamescene.spawn_unit(unit)
 	units.push_back(unit)
 	update_pop()
-	unit.load_data(faction_data["unit_list"][unit_name],gamescene.world)
+	unit.load_data(faction_data["unit_list"][unit_name],unit_model_master[unit_name],0)
 	
 	return unit
 

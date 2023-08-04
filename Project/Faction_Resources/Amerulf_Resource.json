@@ -212,6 +212,8 @@
 	},
 	"unit_list":{
 		"Infantry": {
+			"models":[
+			],
 			"base_cost": {
 				"wood": 1,
 				"stone": 0,
@@ -222,6 +224,8 @@
 			"pop_cost": 1
 		},
 		"Galley": {
+			"models":[
+			],
 			"base_cost": {
 			"wood": 0,
 			"stone": 0,
@@ -232,6 +236,8 @@
 			"pop_cost": 1
 		},
 		"Knights Barge": {
+			"models":[
+			],
 			"base_cost": {
 				"wood": 0,
 				"stone": 0,
@@ -242,6 +248,8 @@
 			"pop_cost": 1
 		},
 		"Mana Cannon": {
+			"models":[
+			],
 			"base_cost": {
 				"wood": 0,
 				"stone": 0,
@@ -252,6 +260,10 @@
 			"pop_cost": 1
 		},
 		"Knight": {
+			"models":[
+				"knight_base",
+				"knight_standard"
+			],
 			"base_cost": {
 				"wood": 1,
 				"stone": 0,
@@ -262,6 +274,8 @@
 			"pop_cost": 1
 		},
 		"Division Captain": {
+			"models":[
+			],
 			"base_cost": {
 				"wood": 0,
 				"stone": 0,
@@ -272,6 +286,8 @@
 			"pop_cost": 1
 		},
 		"Bowman": {
+			"models":[
+			],
 			"base_cost": {
 				"wood": 0,
 				"stone": 0,
@@ -282,6 +298,8 @@
 			"pop_cost": 1
 		},
 		"Cavalry": {
+			"models":[
+			],
 			"base_cost": {
 			"wood": 0,
 			"stone": 0,
@@ -292,6 +310,8 @@
 			"pop_cost": 1
 		},
 		"Ballista": {
+			"models":[
+			],
 			"base_cost": {
 				"wood": 0,
 				"stone": 0,
@@ -302,6 +322,8 @@
 			"pop_cost": 1
 		},
 		"Cavalry Scout": {
+			"models":[
+			],
 			"base_cost": {
 				"wood": 0,
 				"stone": 0,
@@ -312,6 +334,8 @@
 			"pop_cost": 1
 		},
 		"Wyvern Riders": {
+			"models":[
+			],
 			"base_cost": {
 				"wood": 0,
 				"stone": 0,

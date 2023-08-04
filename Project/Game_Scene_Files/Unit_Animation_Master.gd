@@ -4,13 +4,7 @@ var animation_trees : Array[AnimationTree]
 var max_update_batch_size = 60
 
 func _physics_process(delta):
-	var dx = delta *clampf(float(animation_trees.size())/max_update_batch_size,1,500)
-	for i in mini(max_update_batch_size,animation_trees.size()):
-		var tre = animation_trees.pop_front()
-		if tre == null:
-			return
-		tre.advance(dx)
-		animation_trees.push_back(tre)
+	pass
 
 
 ## Add an array to end of trees array

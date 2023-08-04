@@ -8,8 +8,6 @@ signal update_fog
 signal uncovered_area #area enters det area
 signal attacked #did an attack
 signal move_unlocked ## Can travel again
-signal animating_on ## Needs to be animated
-signal animating_off ## Needs to be animated
 
 '''Enums'''
 enum {LAND, NAVAL, AERIAL}
@@ -90,7 +88,11 @@ var is_selected: bool:
 var is_visible: bool:
 	set(value):
 		is_visible = value
-		$UnitModels.visible = is_visible
+		for i in $UnitModels.get_children():
+			if i.name.contains("temp"):
+				## Remove once attack indicator is gone
+				return
+			##i.visible = value
 		$Selection.visible = is_selected
 		update_fog.emit(self, is_visible)
 
@@ -166,8 +168,6 @@ func _ready():
 	## Connect signals
 	nav_agent.waypoint_reached.connect(waypoint)
 	atk_timer.timeout.connect(_attack)
-	screen_notify.screen_entered.connect(_toggle_animating.bind(true))
-	screen_notify.screen_exited.connect(_toggle_animating.bind(false))
 	
 	## Set attack type
 	match main_attack_type:
@@ -208,8 +208,9 @@ func _process(delta):
 '''-------------------------------------------------------------------------------------'''
 ''' Startup Methods Start '''
 ## Load data from owning building
-func load_data(data, world, unit_id):
+func load_data(data, model_masters, id):
 	await get_tree().physics_frame
+	unit_models.load_data(model_masters,Color(actor_owner.faction_data["magic_color"]))
 	## Set data
 	pop_cost = data["pop_cost"]
 	for r in data["base_cost"]:
@@ -217,9 +218,6 @@ func load_data(data, world, unit_id):
 	
 	## Set meta data
 	set_meta("owner_id",actor_owner.actor_ID)
-	
-	## Set Hieghtmap to models
-	unit_models.get_height = Callable(world,"get_loc_height")	
 	
 	## Fog Setup
 	fog_reg.set_actor_owner(actor_owner.actor_ID)
@@ -536,8 +534,7 @@ func _targeted_attack(delta):
 	## Handle tracking target
 	if(position.distance_to(target_enemy.position) <= target_atk_rng):
 		if nav_agent.is_navigation_finished():
-			var trgt = position.direction_to(target_enemy.position)
-			unit_models.face_target(trgt)
+			unit_models.face_target(target_enemy.position)
 			return
 		_set_target_position(position)
 	else:
@@ -555,8 +552,7 @@ func _locked_targeted_attack(delta):
 	## Handle tracking target
 	if(position.distance_to(target_enemy.position) <= target_atk_rng):
 		if nav_agent.is_navigation_finished():
-			var trgt = position.direction_to(target_enemy.position)
-			unit_models.face_target(trgt)
+			unit_models.face_target(target_enemy.position)
 			return
 		_set_target_position(position)
 		_lock_position()
@@ -622,7 +618,7 @@ func _travel(_delta):
 	#	new_velocity = _lerp_stop(new_velocity, delta)
 	new_velocity = new_velocity.normalized()* target_speed
 	# Look in walk direction
-	unit_models.face_target(new_velocity)
+	unit_models.face_target(position + new_velocity)
 	
 	nav_agent.set_velocity(new_velocity)
 	set_velocity(new_velocity)
@@ -697,12 +693,3 @@ func delayed_unlock():
 	await get_tree().create_timer(unit_lockdown_time).timeout
 	if !is_locked_down:
 		_lock_position(false)
-
-
-func _toggle_animating(state:bool):
-	unit_models.animating = state
-	if state:
-		animating_on.emit(unit_models.animation_trees)
-		return
-	animating_off.emit(unit_models.animation_trees)
-	

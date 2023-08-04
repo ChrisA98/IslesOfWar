@@ -34,7 +34,7 @@ transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 1, 0, -1)
 
 [node name="MeshInstance3D" type="MeshInstance3D" parent="UnitModels/KnightMarker_01" index="0"]
 transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, 1, 0)
-layers = 524288
+layers = 262144
 mesh = SubResource("CapsuleMesh_7f6hy")
 
 [node name="KnightMarker_02" type="Node3D" parent="UnitModels" index="1"]
@@ -42,7 +42,7 @@ transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, -1, 0, -1)
 
 [node name="MeshInstance3D" type="MeshInstance3D" parent="UnitModels/KnightMarker_02" index="0"]
 transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, 1, 0)
-layers = 524288
+layers = 262144
 mesh = SubResource("CapsuleMesh_7f6hy")
 
 [node name="KnightMarker_03" type="Node3D" parent="UnitModels" index="2"]
@@ -50,7 +50,7 @@ transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 1, 0, 1)
 
 [node name="MeshInstance3D" type="MeshInstance3D" parent="UnitModels/KnightMarker_03" index="0"]
 transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, 1, 0)
-layers = 524288
+layers = 262144
 mesh = SubResource("CapsuleMesh_7f6hy")
 
 [node name="KnightMarker_04" type="Node3D" parent="UnitModels" index="3"]
@@ -58,15 +58,22 @@ transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, -1, 0, 1)
 
 [node name="MeshInstance3D" type="MeshInstance3D" parent="UnitModels/KnightMarker_04" index="0"]
 transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, 1, 0)
-layers = 524288
+layers = 262144
 mesh = SubResource("CapsuleMesh_7f6hy")
 
 [node name="KnightMarker_05" type="Node3D" parent="UnitModels" index="4"]
 
 [node name="MeshInstance3D" type="MeshInstance3D" parent="UnitModels/KnightMarker_05" index="0"]
 transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, 1, 0)
-layers = 524288
+layers = 262144
 mesh = SubResource("CapsuleMesh_7f6hy")
+
+[node name="Selection" parent="." index="3"]
+visible = false
+
+[node name="Decal" parent="Selection" index="0"]
+visible = false
+cull_mask = 262142
 
 [node name="CollisionShape3D" parent="Fog_Breaker/Area3D" index="0"]
 shape = SubResource("SphereShape3D_bi1b8")
