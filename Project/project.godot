@@ -134,3 +134,7 @@ heightmap_tex={
 "type": "sampler2D",
 "value": "res://Test_Items/Map_data/master.exr"
 }
+game_time={
+"type": "float",
+"value": 0.0
+}

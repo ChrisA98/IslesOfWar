@@ -27,11 +27,11 @@ func load_data(_model_masters : Array, faction_clr : Color):
 		if i.name.contains("temp"):
 			## Remove once attack indicator is gone
 			return
-		unit_nodes[i] = model_masters[0].spawn_unit_instance(i.global_position,Color.GOLD)
+		unit_nodes[i] = model_masters[0].spawn_unit_instance(i.global_position,faction_clr)
 
 
 ## Do on process
-func _process(delta):
+func _process(_delta):
 	_move_models()
 
 
@@ -54,10 +54,10 @@ func face_target(trgt):
 
 
 func unit_attack(atk_spd: float):
-	var attack_id = randi_range(0,attack_animations-1)
+	var attack_id = str(randi_range(1,attack_animations))
 	
 	var unit_attacking = get_child(randi_range(0,unit_nodes.size()-1))
-	model_masters[0].burst_animation(unit_nodes[unit_attacking],"attack_01",atk_spd)
+	model_masters[0].burst_animation(unit_nodes[unit_attacking],"attack_"+attack_id,atk_spd)
 
 
 ## Probably change this when I look more at animating
@@ -71,5 +71,3 @@ func _add_anim_function(anim:Callable):
 	if(animate_calls.has(anim)):
 		return
 	animate_calls.push_back(anim)
-
-

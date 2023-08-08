@@ -57,7 +57,7 @@ func load_units():
 		if(FileAccess.file_exists("res://Units/"+_unit+".tscn")):
 			loaded_units[un] = load("res://Units/"+_unit+".tscn")
 		else:
-			loaded_units[un] = load("res://Units/"+"Infantry"+".tscn")
+			loaded_units[un] = load("res://Units/"+"infantry"+".tscn")
 		unit_model_master[un] = []
 		for mod in faction_data["unit_list"][un]["models"]:
 			##Load model master

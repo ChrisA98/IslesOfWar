@@ -307,6 +307,7 @@ rings = 2
 
 [node name="Level" type="Node3D"]
 script = ExtResource("1_ql81r")
+meshres = 1
 
 [node name="WorldEnvironment" type="WorldEnvironment" parent="."]
 environment = SubResource("Environment_0xqwl")
@@ -336,7 +337,7 @@ shape = SubResource("BoxShape3D_gubrw")
 [node name="Base_Spawns" type="Node" parent="."]
 
 [node name="Base_Spawn" parent="Base_Spawns" instance=ExtResource("6_aid2n")]
-transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 262, 8.4125, 25)
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 262, 9.26421, 25)
 actor_id = 1
 
 [node name="Base_Spawn2" parent="Base_Spawns" instance=ExtResource("6_aid2n")]

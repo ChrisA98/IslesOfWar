@@ -3,6 +3,7 @@ render_mode blend_mix,depth_draw_always,cull_back,diffuse_burley,specular_schlic
 
 global uniform sampler2D heightmap_tex;
 global uniform vec2 heightmap_tex_size = vec2(1000.0,1000.0);
+global uniform float game_time;
 
 uniform sampler2D offset_map;
 uniform sampler2D normal_map;
@@ -15,7 +16,6 @@ uniform float metallic;
 uniform float roughness : hint_range(0,1);
 uniform bool use_color_override;
 
-varying float hide;
 
 float get_height(vec2 x){
   float hgt = (texture(heightmap_tex,x).y) * 100.0;
@@ -25,12 +25,11 @@ float get_height(vec2 x){
 void vertex(){
 	
 	if (COLOR.a > 0.0){
-		hide = 0.0;
 		float time_int = 1.0;
-		float time = modf(TIME * time_scale, time_int)+(float(INSTANCE_ID)/10.0);
+		float time = modf((game_time-INSTANCE_CUSTOM.z) * time_scale, time_int);
 		float num_frames = INSTANCE_CUSTOM.y - INSTANCE_CUSTOM.x;
-		float current_frame = INSTANCE_CUSTOM.x + mod((time * num_frames), num_frames);
-		float interp_frame = INSTANCE_CUSTOM.z + mod((time * num_frames), num_frames);
+		float frame_offset = num_frames * INSTANCE_CUSTOM.w;
+		float current_frame = INSTANCE_CUSTOM.x + mod((time * num_frames)+frame_offset, num_frames);
 		
 		ivec2 tex_size = textureSize(offset_map, 0);
 		float pixel_size = 1.0 / float(tex_size.y);
@@ -64,7 +63,6 @@ void vertex(){
 		NORMAL = new_normal;
 	}else{
 		VERTEX = vec3(0,0,0);
-		hide = 1.0;
 	}
 }
 

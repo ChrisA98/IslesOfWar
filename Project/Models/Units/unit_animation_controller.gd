@@ -1,9 +1,10 @@
+
 extends MultiMeshInstance3D
 class_name unit_animator
 
 signal unit_reordered(old_id,new_id)
 
-enum instance_targets {START_FRAME,END_FRAME,LIVING_STATE,_OPEN}
+enum instance_targets {START_FRAME,END_FRAME,ANIM_START_TIME,ANIM_OFFSET}
 
 ## IDLE CONSTANTS
 const IDLE= ["idle",0, 59]
@@ -13,11 +14,11 @@ const WALK= ["walk",60, 119]
 
 ## BASE ATTACK CONSTANTS
 ## maximum 2 sec attack animation
-const ATTACK_01 = ["attack_01",130, 189]
+const ATTACK_01 = ["attack_1",130, 189]
 
 ## SECONDARY ATTACK CONSTANTS
 ## maximum 2 sec attack animation
-const ATTACK_02 = ["attack_02",190, 249]
+const ATTACK_02 = ["attack_2",190, 249]
 
 @export var max_instances = 1024
 
@@ -116,10 +117,14 @@ func delete_unit(unit: int):
 
 ## Change instance animation by moving animation window
 func _set_animation_window(unit: int,animation: String):
+	var time = Time.get_ticks_msec()/1000.0
+	var current_anim_start = units.get_instance_custom_data(unit).r
 	match(animation):
 		IDLE[0]:
-			units.set_instance_custom_data(unit,Color(IDLE[1], IDLE[2], 1, 0))
+			units.set_instance_custom_data(unit,Color(IDLE[1], IDLE[2], time, randf()))
 		WALK[0]:
-			units.set_instance_custom_data(unit,Color(WALK[1], WALK[2], 1, 0))
+			units.set_instance_custom_data(unit,Color(WALK[1], WALK[2], time, randf()))
 		ATTACK_01[0]:
-			units.set_instance_custom_data(unit,Color(ATTACK_01[1], ATTACK_01[2], 1, 0))
+			if ATTACK_01[1] == current_anim_start:
+				return
+			units.set_instance_custom_data(unit,Color(ATTACK_01[1], ATTACK_01[2], time, 0))

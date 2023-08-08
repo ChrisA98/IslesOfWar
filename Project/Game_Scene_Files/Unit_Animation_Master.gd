@@ -3,9 +3,6 @@ extends Node
 var animation_trees : Array[AnimationTree]
 var max_update_batch_size = 60
 
-func _physics_process(delta):
-	pass
-
 
 ## Add an array to end of trees array
 func append_trees(trees: Array[AnimationTree]):

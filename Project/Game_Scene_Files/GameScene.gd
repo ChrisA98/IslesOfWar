@@ -75,6 +75,10 @@ func _process(_delta):
 		$UI_Node/Time_Bar/Clock_Back.rotation = deg_to_rad(world.sun_rotation-90)
 	else:
 		$UI_Node/Time_Bar/Clock_Back.rotation = deg_to_rad(world.moon_rotation+90)
+	
+	##Update world animation time
+	RenderingServer.global_shader_parameter_set("game_time",Time.get_ticks_msec()/1000.0)
+	
 
 
 ## on player input event

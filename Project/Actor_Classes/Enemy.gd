@@ -302,6 +302,8 @@ func can_afford(res):
 		if resources[r] < res[r] :
 			return r
 	return null
+
+
 ## Update expexcted units when building spawns units
 func upate_exp_units(_bldg, unit):
 	exp_pop -= unit.pop_cost
@@ -315,6 +317,8 @@ func get_target_buildings(bldg):
 		if b.type == bldg:
 			out.push_back(b)
 	return out
+
+
 ## Check area around target base for valid palce location
 func find_build_spot(targ, bldg):
 	var center = targ.position + Vector3(0,15,0)
@@ -348,29 +352,39 @@ func find_build_spot(targ, bldg):
 		if(attempts < 0):
 			return "find"
 	return "clear"
+
+
 ## Check for Buildings in buildings array based on building type
 func check_for_buildings(bldg: String):
 	for b in buildings:
 		if b.type == bldg:
 			return true
 	return false
+
+
 ## return ground at location
 func ping_ground(pos):
 	picker.position.x = pos.x
 	picker.position.z = pos.z
 	picker.force_raycast_update()
 	return picker.get_collider()
+
+
 func ping_ground_depth(pos):
 	picker.position.x = pos.x
 	picker.position.z = pos.z
 	picker.force_raycast_update()
 	return picker.get_collision_point().y
+
+
 func place_building(bld):
 	await super(bld)
 	prepared_building = null
 	bld.visible = true
 	bld.spawned_unit.connect(upate_exp_units)
 	calc_res_rate()
+
+
 ''' Building end '''
 '''-------------------------------------------------------------------------------------'''
 ''' Goal Processing start '''
@@ -389,6 +403,8 @@ func _attempt_add(goal: String, trgt, think_after: bool = true):
 				goal_queue.pop_at(goal_queue.find([goal,trgt]))
 		__add_goal(goal,trgt, think_after)
 	return false
+
+
 ## Waiting for signal goals are stored here
 func _defer_goal():
 	if(deferred_goals.has(goal_queue[-1])):
@@ -398,6 +414,8 @@ func _defer_goal():
 	current_goal = "ponder"
 	target_item = "za warudo"
 	return true
+
+
 # Signal for goal is completed, tries to complete goal now
 func _complete_deffered_goal(trgt):
 	for i in range(deferred_goals.size()):
@@ -405,6 +423,8 @@ func _complete_deffered_goal(trgt):
 			var out = deferred_goals.pop_at(i)
 			_attempt_add(out[0],out[1])
 			return
+
+
 ## Complete goal and get next in queue
 func complete_goal():
 	var erase = target_item

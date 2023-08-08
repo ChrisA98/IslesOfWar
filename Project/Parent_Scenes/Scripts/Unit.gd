@@ -91,7 +91,7 @@ var is_visible: bool:
 		for i in $UnitModels.get_children():
 			if i.name.contains("temp"):
 				## Remove once attack indicator is gone
-				return
+				continue
 			##i.visible = value
 		$Selection.visible = is_selected
 		update_fog.emit(self, is_visible)
@@ -209,6 +209,7 @@ func _process(delta):
 ''' Startup Methods Start '''
 ## Load data from owning building
 func load_data(data, model_masters, id):
+	unit_id = id
 	await get_tree().physics_frame
 	unit_models.load_data(model_masters,Color(actor_owner.faction_data["magic_color"]))
 	## Set data
