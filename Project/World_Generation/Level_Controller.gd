@@ -6,6 +6,7 @@ extends Node3D
 @export var year = 603
 @export var day_cycle = true
 @export_group("Terrain")
+@export var meshres = 25
 @export var terrain_amplitude = 100
 @export var water_table : float = 7
 @export var heightmap_dir: String = "res://Test_Items/Map_data/"
@@ -33,7 +34,6 @@ var normals = PackedVector3Array()
 @onready var nav_manager = preload("res://World_Generation/NavMeshManager.gd")
 @onready var ground = get_node("../Player/Visual_Ground")
 @onready var water = get_node("../Player/Visual_Ground/Water")
-@onready var meshres = 10
 @onready var fog_material = ShaderMaterial.new()
 
 

@@ -170,6 +170,7 @@ func select_from_square():
 			return false
 		click_mode = "select"
 		return false
+	selection_square.get_child(0).enabled = true
 	selection_square.get_child(0).shape.set_size(Vector3(selection_square.size.x,50,selection_square.size.z))
 	selection_square.get_child(0).force_shapecast_update()
 	player_controller.clear_selection()
@@ -179,6 +180,7 @@ func select_from_square():
 		if un.actor_owner.actor_ID == 0:
 			player_controller.select_unit(un,false,false)
 			un.select()
+	selection_square.get_child(0).enabled = false
 	if(player_controller.selected_units.size()>0):
 		click_mode = "command_unit"
 		player_controller.group_selected_units()
@@ -278,7 +280,7 @@ func prepare_bases():
 	prep_player_building(0, null)
 	preview_building.set_pos(p_spawn.position)
 	player_controller.place_building(preview_building)
-	for i in range(100):
+	for i in range(125):
 		preview_building.spawn_unit(player_controller.faction_data["starting_unit"])
 	p_spawn.used = true
 	preview_building = null

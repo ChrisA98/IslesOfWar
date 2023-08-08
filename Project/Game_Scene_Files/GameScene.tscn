@@ -1083,6 +1083,7 @@ texture_albedo = SubResource("GradientTexture2D_6de6p")
 cull_mask = 1048574
 
 [node name="Selection_square" type="Decal" parent="Player"]
+visible = false
 layers = 2
 size = Vector3(1, 500, 1)
 texture_albedo = SubResource("NoiseTexture2D_p3d2n")
@@ -1093,7 +1094,7 @@ cull_mask = 2
 [node name="ShapeCast3D" type="ShapeCast3D" parent="Player/Selection_square"]
 shape = SubResource("BoxShape3D_bjih7")
 target_position = Vector3(0, 0, 0)
-max_results = 128
+max_results = 512
 collision_mask = 4
 
 [node name="Fog_drawer" type="SubViewport" parent="Player"]

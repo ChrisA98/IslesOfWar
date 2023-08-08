@@ -56,6 +56,7 @@ func _update_markers(tex):
 
 ## Create the radius drawers
 func create_drawer(parent):
+	return
 	var m = MeshInstance3D.new()
 	## build mesh
 	m.set_mesh(CylinderMesh.new())

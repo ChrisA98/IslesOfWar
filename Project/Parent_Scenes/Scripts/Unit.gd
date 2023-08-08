@@ -622,7 +622,7 @@ func _travel(_delta):
 	
 	nav_agent.set_velocity(new_velocity)
 	set_velocity(new_velocity)
-	#move_and_slide()
+	move_and_slide()
 
 
 ''' AI Processes Methods End '''
@@ -661,12 +661,9 @@ func _on_navigation_agent_3d_navigation_finished():
 
 
 func _on_NavigationAgent_velocity_computed(safe_velocity):
-	if nav_agent.is_navigation_finished() or is_locked_down:
+	if nav_agent.is_navigation_finished():
 		return
-	if ai_mode.contains("attack"):
-		velocity = safe_velocity
-	else:
-		velocity = lerp(velocity,safe_velocity,0.1)
+	velocity = safe_velocity
 	move_and_slide()
 
 

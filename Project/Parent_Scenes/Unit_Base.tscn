@@ -1,4 +1,4 @@
-[gd_scene load_steps=11 format=3 uid="uid://cs2p3v3o53aki"]
+[gd_scene load_steps=13 format=3 uid="uid://cs2p3v3o53aki"]
 
 [ext_resource type="Script" path="res://Parent_Scenes/Scripts/Unit.gd" id="1_xwgnb"]
 [ext_resource type="Script" path="res://Parent_Scenes/Model_Manager.gd" id="2_33djc"]
@@ -15,16 +15,27 @@ colors = PackedColorArray(1, 0, 0, 1, 1, 0, 0, 1)
 [sub_resource type="GradientTexture1D" id="GradientTexture1D_pwnjg"]
 gradient = SubResource("Gradient_dgplu")
 
-[sub_resource type="Gradient" id="Gradient_8n0cr"]
-interpolation_mode = 2
-offsets = PackedFloat32Array(0, 0.762238, 0.804196)
-colors = PackedColorArray(0.534594, 0.83615, 1, 1, 1, 1, 1, 0, 0, 0, 0, 0)
+[sub_resource type="Gradient" id="Gradient_eeqmd"]
+offsets = PackedFloat32Array(0.414201, 0.579882, 0.650888, 0.852071)
+colors = PackedColorArray(0, 0, 0, 0, 0.233148, 0.457125, 1, 1, 0.107194, 0.210172, 0.45977, 0.45977, 0, 0, 0, 0)
 
-[sub_resource type="GradientTexture2D" id="GradientTexture2D_0hiou"]
-gradient = SubResource("Gradient_8n0cr")
+[sub_resource type="GradientTexture2D" id="GradientTexture2D_rgbk6"]
+gradient = SubResource("Gradient_eeqmd")
+width = 256
+height = 256
 fill = 1
-fill_from = Vector2(0.509709, 0.504854)
-fill_to = Vector2(0.495146, 0.0242718)
+fill_from = Vector2(0.5, 0.5)
+fill_to = Vector2(0.5, 0)
+
+[sub_resource type="StandardMaterial3D" id="StandardMaterial3D_uq86k"]
+transparency = 1
+albedo_texture = SubResource("GradientTexture2D_rgbk6")
+emission_enabled = true
+emission_texture = SubResource("GradientTexture2D_rgbk6")
+
+[sub_resource type="PlaneMesh" id="PlaneMesh_5tc6o"]
+material = SubResource("StandardMaterial3D_uq86k")
+size = Vector2(7, 7)
 
 [sub_resource type="SphereShape3D" id="SphereShape3D_cp7kh"]
 resource_local_to_scene = true
@@ -62,17 +73,16 @@ lower_fade = 1566.18
 path_max_distance = 5.01
 avoidance_enabled = true
 neighbor_distance = 4.0
-time_horizon_agents = 3.0
+max_neighbors = 5
 avoidance_mask = 2
 debug_path_custom_point_size = 10.82
 
 [node name="Selection" type="Node3D" parent="."]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, 0.349025, 0)
+visible = false
 
-[node name="Decal" type="Decal" parent="Selection"]
-transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, -0.0626185, 0)
-size = Vector3(6, 6, 6)
-texture_albedo = SubResource("GradientTexture2D_0hiou")
-cull_mask = 1048574
+[node name="MeshInstance3D" type="MeshInstance3D" parent="Selection"]
+mesh = SubResource("PlaneMesh_5tc6o")
 
 [node name="Attack_Timer" type="Timer" parent="."]
 process_priority = -1

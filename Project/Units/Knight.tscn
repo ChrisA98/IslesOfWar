@@ -68,13 +68,6 @@ transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, 1, 0)
 layers = 262144
 mesh = SubResource("CapsuleMesh_7f6hy")
 
-[node name="Selection" parent="." index="3"]
-visible = false
-
-[node name="Decal" parent="Selection" index="0"]
-visible = false
-cull_mask = 262142
-
 [node name="CollisionShape3D" parent="Fog_Breaker/Area3D" index="0"]
 shape = SubResource("SphereShape3D_bi1b8")
 
