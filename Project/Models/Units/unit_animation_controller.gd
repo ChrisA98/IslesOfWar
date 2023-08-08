@@ -2,7 +2,7 @@
 extends MultiMeshInstance3D
 class_name unit_animator
 
-signal unit_reordered(old_id,new_id)
+signal unit_reordered(master, old_id, new_id)
 
 enum instance_targets {START_FRAME,END_FRAME,ANIM_START_TIME,ANIM_OFFSET}
 
@@ -25,7 +25,9 @@ const ATTACK_02 = ["attack_2",190, 249]
 var active_units = 0
 var active_animation : String
 
+
 @onready var units = multimesh
+@export var model_name: String
 
 func _ready():	
 	units.set_instance_count(0)
@@ -112,7 +114,7 @@ func delete_unit(unit: int):
 	active_units-=1
 	units.set_visible_instance_count(active_units)
 	## Signal that the last unit is now in the target units place
-	unit_reordered.emit(active_units,unit)
+	unit_reordered.emit(self, active_units, unit)
 
 
 ## Change instance animation by moving animation window

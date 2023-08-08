@@ -180,3 +180,4 @@ custom_aabb = AABB(-10000, -10000, -10000, 20000, 20000, 20000)
 multimesh = SubResource("MultiMesh_grtwe")
 script = ExtResource("4_wlvqd")
 max_instances = 5000
+model_name = "knight_base"

@@ -1,6 +1,6 @@
 [gd_scene load_steps=6 format=3 uid="uid://bflndammxm41d"]
 
-[ext_resource type="PackedScene" uid="uid://cs2p3v3o53aki" path="res://Parent_Scenes/Unit_Base.tscn" id="1_1wc84"]
+[ext_resource type="PackedScene" uid="uid://cs2p3v3o53aki" path="res://Parent_Scenes/Unit_Base.tscn" id="1_g7u53"]
 
 [sub_resource type="CylinderShape3D" id="CylinderShape3D_mq4pc"]
 resource_local_to_scene = true
@@ -17,7 +17,7 @@ radius = 25.0
 resource_local_to_scene = true
 radius = 2.0
 
-[node name="Knight" instance=ExtResource("1_1wc84")]
+[node name="Knight" instance=ExtResource("1_g7u53")]
 unit_name = "Knight"
 travel_terrain = 1
 base_atk_spd = 0.83
@@ -29,47 +29,44 @@ damage_type = "Physical"
 [node name="CollisionShape3D" parent="." index="0"]
 shape = SubResource("CylinderShape3D_mq4pc")
 
-[node name="KnightMarker_01" type="Node3D" parent="UnitModels" index="0"]
+[node name="knight_base" type="Node3D" parent="UnitModels" index="0"]
 transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 1, 0, -1)
 
-[node name="MeshInstance3D" type="MeshInstance3D" parent="UnitModels/KnightMarker_01" index="0"]
+[node name="MeshInstance3D" type="MeshInstance3D" parent="UnitModels/knight_base" index="0"]
 transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, 1, 0)
 layers = 262144
 mesh = SubResource("CapsuleMesh_7f6hy")
 
-[node name="KnightMarker_02" type="Node3D" parent="UnitModels" index="1"]
+[node name="knight_base2" type="Node3D" parent="UnitModels" index="1"]
 transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, -1, 0, -1)
 
-[node name="MeshInstance3D" type="MeshInstance3D" parent="UnitModels/KnightMarker_02" index="0"]
+[node name="MeshInstance3D" type="MeshInstance3D" parent="UnitModels/knight_base2" index="0"]
 transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, 1, 0)
 layers = 262144
 mesh = SubResource("CapsuleMesh_7f6hy")
 
-[node name="KnightMarker_03" type="Node3D" parent="UnitModels" index="2"]
+[node name="knight_base3" type="Node3D" parent="UnitModels" index="2"]
 transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 1, 0, 1)
 
-[node name="MeshInstance3D" type="MeshInstance3D" parent="UnitModels/KnightMarker_03" index="0"]
+[node name="MeshInstance3D" type="MeshInstance3D" parent="UnitModels/knight_base3" index="0"]
 transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, 1, 0)
 layers = 262144
 mesh = SubResource("CapsuleMesh_7f6hy")
 
-[node name="KnightMarker_04" type="Node3D" parent="UnitModels" index="3"]
+[node name="knight_base4" type="Node3D" parent="UnitModels" index="3"]
 transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, -1, 0, 1)
 
-[node name="MeshInstance3D" type="MeshInstance3D" parent="UnitModels/KnightMarker_04" index="0"]
+[node name="MeshInstance3D" type="MeshInstance3D" parent="UnitModels/knight_base4" index="0"]
 transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, 1, 0)
 layers = 262144
 mesh = SubResource("CapsuleMesh_7f6hy")
 
-[node name="KnightMarker_05" type="Node3D" parent="UnitModels" index="4"]
+[node name="knight_base5" type="Node3D" parent="UnitModels" index="4"]
 
-[node name="MeshInstance3D" type="MeshInstance3D" parent="UnitModels/KnightMarker_05" index="0"]
+[node name="MeshInstance3D" type="MeshInstance3D" parent="UnitModels/knight_base5" index="0"]
 transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, 1, 0)
 layers = 262144
 mesh = SubResource("CapsuleMesh_7f6hy")
-
-[node name="Selection" parent="." index="3"]
-visible = true
 
 [node name="CollisionShape3D" parent="Fog_Breaker/Area3D" index="0"]
 shape = SubResource("SphereShape3D_bi1b8")

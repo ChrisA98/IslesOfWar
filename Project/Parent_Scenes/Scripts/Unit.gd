@@ -372,6 +372,7 @@ func delayed_delete():
 	ai_mode = "idle_basic"
 	## Deselect if selected
 	get_parent().deselect_unit(self)
+	unit_models.remove_units()
 	actor_owner.units.erase(self)
 	actor_owner.update_pop()
 	unit_list.erase(self)
