@@ -226,6 +226,8 @@ func _prepare_game():
 		e.actor_ID = i
 		game_actors.push_back(e)
 		add_child(e)
+		e.building_added.connect(world.building_added)
+	player_controller.building_added.connect(world.building_added)
 	
 	# Get building buttons UI element ref
 	var res_bldgs = get_node("UI_Node/Build_Menu/Build_Menu_Container/Resource_Buttons").get_popup()

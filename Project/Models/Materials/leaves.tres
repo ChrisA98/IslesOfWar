@@ -9,6 +9,7 @@ render_mode blend_mix,depth_draw_opaque,cull_back,diffuse_burley,specular_schlic
 global uniform sampler2D fog_tex;
 global uniform vec2 heightmap_tex_size = vec2(1000.0,1000.0);
 global uniform float fog_darkness;
+global uniform sampler2D building_locs;
 varying vec2 pos_uv;
 
 uniform float sway_intensity: hint_range(0,0.2);
@@ -32,7 +33,10 @@ varying float id;
 
 void vertex() {
 	pos_uv = vec2((NODE_POSITION_WORLD.x)/heightmap_tex_size.x,(NODE_POSITION_WORLD.z)/heightmap_tex_size.y)+((vec2(VERTEX.x,VERTEX.z)/heightmap_tex_size)) + vec2(.5);
-	
+	vec4 buildings = texture(building_locs, vec2(NODE_POSITION_WORLD.x-(heightmap_tex_size.x/2.0),NODE_POSITION_WORLD.z-(heightmap_tex_size.y/2.0)));
+	if(buildings.r <= 0.5){
+		VERTEX.z=-10000.0;
+	}
 	float wave = sin(2.0 * PI * TIME + (VERTEX.z+VERTEX.x)*0.8);
 	float wave2 = sin(2.0 * PI * (TIME + VERTEX.z+VERTEX.x)*2.0);
 	VERTEX.x += (wave+wave2 *0.4) *sway_intensity;

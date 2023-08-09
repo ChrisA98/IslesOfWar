@@ -25,6 +25,9 @@ var height_data = {}
 var vertices = PackedVector3Array()
 var UVs = PackedVector2Array()
 var normals = PackedVector3Array()
+var map_offset: float
+
+var building_locations = Image.new()
 
 @onready var gamescene = $".."
 @onready var sun = $Sun
@@ -42,7 +45,8 @@ func _ready():
 	
 	var chunks = sqrt(find_files())
 	heightmap = load(heightmap_dir+"master"+".exr").get_image()
-	
+	building_locations = Image.create(chunks*chunk_size,chunks*chunk_size,false,Image.FORMAT_L8)
+	map_offset = (chunk_size*chunks)/2
 	## Prepare chunks
 	for y in range(0,chunks):
 		for x in range(0,chunks):
@@ -306,8 +310,8 @@ func get_region(pos : Vector3):
 
 
 func get_loc_height(pos:Vector3):
-	var x = pos.x+500
-	var y = pos.z+500
+	var x = pos.x+map_offset
+	var y = pos.z+map_offset
 	var t = heightmap.get_pixel(x,y).r * terrain_amplitude
 	return clamp(t,water_table,1000)
 
@@ -320,3 +324,16 @@ func get_base_spawn(trgt_player : int):
 	for i in bases:
 		if i.actor_id == trgt_player:
 			return i
+
+
+## Update tree scatter avoidance texture
+func building_added(pos: Vector3):
+	##subtracted 25 to get square centered on point
+	var pix = Vector2i(round(pos.x+map_offset-1),round(pos.z+map_offset-1))
+	for y in range(3):
+		for x in range(3):
+			building_locations.set_pixel(pix.x+x,pix.y+y,Color.WHITE)
+	
+	get_parent().get_child(0).get_child(5).texture = ImageTexture.create_from_image(building_locations)
+	
+	RenderingServer.global_shader_parameter_set("building_locs",ImageTexture.create_from_image(building_locations))

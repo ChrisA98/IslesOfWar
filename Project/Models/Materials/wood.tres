@@ -31,6 +31,10 @@ uniform vec3 uv2_offset;
 void vertex() {
 	pos_uv = vec2((NODE_POSITION_WORLD.x)/heightmap_tex_size.x,(NODE_POSITION_WORLD.z)/heightmap_tex_size.y)+((vec2(VERTEX.x,VERTEX.z)/heightmap_tex_size)) + vec2(.5);
 	
+	if(pos_uv.r <= 10.0){
+		VERTEX.z=-10000.0;
+	}
+	
 	UV=UV*uv1_scale.xy+uv1_offset.xy;
 }
 

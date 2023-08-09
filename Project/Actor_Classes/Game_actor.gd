@@ -6,7 +6,7 @@ class_name game_actor
 ''' Signals '''
 signal res_changed(res: int, new_amt: int)
 signal pop_changed(curr_pop: int, max_pop: int)
-
+signal building_added(building_pos: Vector3)
 
 '''Actor structure and units'''
 var bases := []
@@ -151,6 +151,8 @@ func place_building(bld):
 	#Adjust max pop
 	adj_max_pop(bld.pop_mod)
 	buildings.sort()
+	
+	building_added.emit(bld.position)
 	return true
 
 

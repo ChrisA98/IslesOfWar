@@ -138,3 +138,7 @@ game_time={
 "type": "float",
 "value": 0.0
 }
+building_locs={
+"type": "sampler2D",
+"value": "res://test.tres"
+}
