@@ -65,6 +65,7 @@ func load_units():
 			if(FileAccess.file_exists("res://Models/Unit/modified_scenes/"+mod+"_va.tscn")):
 				model = load("res://Models/Units/modified_scenes/"+mod+"_va.tscn").instantiate()
 			else:
+				@warning_ignore("assert_always_false")
 				model = load("res://Models/Units/modified_scenes/knight_base_va.tscn").instantiate()
 			model.name = mod+"_models_master"
 			add_child(model)

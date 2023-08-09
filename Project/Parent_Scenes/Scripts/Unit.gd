@@ -88,13 +88,9 @@ var is_selected: bool:
 var is_visible: bool:
 	set(value):
 		is_visible = value
-		for i in $UnitModels.get_children():
-			if i.name.contains("temp"):
-				## Remove once attack indicator is gone
-				continue
-			##i.visible = value
 		$Selection.visible = is_selected
 		update_fog.emit(self, is_visible)
+		unit_models.rendered = value
 
 ''' Cost Vars '''
 var pop_cost := 0

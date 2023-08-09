@@ -53,9 +53,9 @@ func build_unit_list(units: Array, _name: String, pg: int = 0):
 		t.get_child(0).get_child(0).pressed.connect(unit_queue_edit.bind(1,u,true))
 		t.get_child(0).get_child(2).pressed.connect(unit_queue_edit.bind(-1,u,true))
 		
-		unit_buttons[u] = t	## Link button to unit name
-		
+		unit_buttons[u] = t ## Link button to unit name		
 		cnt+=1
+
 
 func build_sec_unit_list(units: Array, _name: String):
 	$Building_Menu/Page_Buttons/sec_units.text = _name

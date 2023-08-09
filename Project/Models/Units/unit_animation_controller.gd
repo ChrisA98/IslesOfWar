@@ -20,11 +20,14 @@ const ATTACK_01 = ["attack_1",130, 189]
 ## maximum 2 sec attack animation
 const ATTACK_02 = ["attack_2",190, 249]
 
+## Attacking idle animation
+const IDLE_ATTACKING= ["idle_attacking",250, 310]
+
+
 @export var max_instances = 1024
 
 var active_units = 0
 var active_animation : String
-
 
 @onready var units = multimesh
 @export var model_name: String

@@ -5,6 +5,10 @@ extends Node3D
 var unit_nodes := {}
 var model_masters : = []
 var unit_Color : Color
+var rendered = false:
+	set(value):
+		rendered = value
+		_hide_units(!value)
 var moving	:= false:
 	set(value):
 		moving = value
@@ -102,3 +106,10 @@ func _add_anim_function(anim:Callable):
 	if(animate_calls.has(anim)):
 		return
 	animate_calls.push_back(anim)
+
+
+func _hide_units(state: bool = true):
+	for i in unit_nodes:
+		var node = unit_nodes[i]
+		model_masters[node[0]].hide_unit(node[1],state)
+	

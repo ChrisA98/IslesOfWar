@@ -52,7 +52,6 @@ preload("res://Faction_Resources/Amerulf_Resource.json")]
 @onready var player_fog_manager = get_node("Player/Fog_drawer")
 @onready var enemy_marker_manager = get_node("UI_Node/Minimap/Enemy_minimap_markers")
 @onready var selection_square = get_node("Player/Selection_square")
-@onready var animation_master = get_node("Unit_Animation_Master")
 
 
 '''### BUILT-IN METHODS ###'''
@@ -62,6 +61,7 @@ func _ready():
 	var lvl = load("res://World_Generation/base_level.tscn").instantiate()
 	world = lvl
 	add_child(lvl)
+
 
 #Called every frame. 'delta' is the elapsed time since the previous frame.
 func _process(_delta):
