@@ -10,6 +10,7 @@ render_mode blend_mix,depth_draw_opaque,cull_back,diffuse_burley,specular_schlic
 global uniform sampler2D fog_tex;
 global uniform vec2 heightmap_tex_size = vec2(1000.0,1000.0);
 global uniform float fog_darkness;
+global uniform sampler2D building_locs;
 varying vec2 pos_uv;
 
 
@@ -29,9 +30,13 @@ uniform vec3 uv2_offset;
 
 
 void vertex() {
-	pos_uv = vec2((NODE_POSITION_WORLD.x)/heightmap_tex_size.x,(NODE_POSITION_WORLD.z)/heightmap_tex_size.y)+((vec2(VERTEX.x,VERTEX.z)/heightmap_tex_size)) + vec2(.5);
+	//Check for buildings
+	vec3 inst_pos = MODEL_MATRIX[3].xyz;
+	pos_uv = vec2((inst_pos.x)/heightmap_tex_size.x,(inst_pos.z)/heightmap_tex_size.y)+ vec2(.5);
+	vec4 buildings = texture(building_locs, pos_uv);
 	
-	if(pos_uv.r <= 10.0){
+	// Hide trees in buildings
+	if(buildings.r >= 0.5){
 		VERTEX.z=-10000.0;
 	}
 	

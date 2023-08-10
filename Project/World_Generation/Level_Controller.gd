@@ -329,11 +329,10 @@ func get_base_spawn(trgt_player : int):
 ## Update tree scatter avoidance texture
 func building_added(pos: Vector3):
 	##subtracted 25 to get square centered on point
-	var pix = Vector2i(round(pos.x+map_offset-1),round(pos.z+map_offset-1))
-	for y in range(3):
-		for x in range(3):
+	var pix = Vector2i(round(pos.x+map_offset-4),round(pos.z+map_offset-4))
+	##Make 10x10 square around building sin tex to hide trees
+	for y in range(9):
+		for x in range(9):
 			building_locations.set_pixel(pix.x+x,pix.y+y,Color.WHITE)
-	
-	get_parent().get_child(0).get_child(5).texture = ImageTexture.create_from_image(building_locations)
-	
+	## Write to global dsharer parameter
 	RenderingServer.global_shader_parameter_set("building_locs",ImageTexture.create_from_image(building_locations))
