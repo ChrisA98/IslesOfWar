@@ -6,7 +6,7 @@ class_name game_actor
 ''' Signals '''
 signal res_changed(res: int, new_amt: int)
 signal pop_changed(curr_pop: int, max_pop: int)
-signal building_added(building_pos: Vector3)
+signal building_added(building_pos: Vector3, hide_grass: bool)
 
 '''Actor structure and units'''
 var bases := []
@@ -152,7 +152,10 @@ func place_building(bld):
 	adj_max_pop(bld.pop_mod)
 	buildings.sort()
 	
-	building_added.emit(bld.position)
+	if(bld.parent_building == null):
+		building_added.emit(bld.position,true, Vector3.ZERO)
+	else:
+		building_added.emit(bld.position,true,bld.parent_building.position)
 	return true
 
 

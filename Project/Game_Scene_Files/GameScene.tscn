@@ -1,4 +1,4 @@
-[gd_scene load_steps=82 format=3 uid="uid://d32tym6bcdu7c"]
+[gd_scene load_steps=85 format=3 uid="uid://d32tym6bcdu7c"]
 
 [ext_resource type="Script" path="res://Game_Scene_Files/GameScene.gd" id="1_7pjje"]
 [ext_resource type="Script" path="res://Game_Scene_Files/UI_Builder.gd" id="2_wj4ul"]
@@ -17,6 +17,7 @@
 [ext_resource type="Texture2D" uid="uid://dnrjlcvb1yulp" path="res://Assets/UI_Elements/Minimap_Viewport.png" id="9_odtsh"]
 [ext_resource type="Script" path="res://Actor_Classes/GameCamera.gd" id="10_jjfcj"]
 [ext_resource type="Shader" uid="uid://cmyeclhrvhn2o" path="res://World_Generation/Foliage_Shader.tres" id="10_l3sfk"]
+[ext_resource type="Shader" path="res://Test_Items/test_shader.gdshader" id="15_oyqke"]
 
 [sub_resource type="Theme" id="Theme_8omj6"]
 default_font_size = 11
@@ -322,6 +323,11 @@ hue_variation_min = -0.05
 hue_variation_max = 0.05
 hue_variation_curve = SubResource("CurveTexture_n0c2i")
 attractor_interaction_enabled = false
+
+[sub_resource type="ShaderMaterial" id="ShaderMaterial_pbqcs"]
+shader = ExtResource("15_oyqke")
+
+[sub_resource type="PlaceholderTexture2D" id="PlaceholderTexture2D_b221k"]
 
 [sub_resource type="PlaneMesh" id="PlaneMesh_ssghn"]
 material = SubResource("ShaderMaterial_rie7d")
@@ -1022,6 +1028,13 @@ preprocess = 4.0
 speed_scale = 0.5
 randomness = 0.5
 visibility_rect = Rect2(-100, -100, 200, 400)
+
+[node name="TextureRect" type="TextureRect" parent="UI_Node"]
+material = SubResource("ShaderMaterial_pbqcs")
+layout_mode = 0
+offset_right = 570.0
+offset_bottom = 570.0
+texture = SubResource("PlaceholderTexture2D_b221k")
 
 [node name="Player" type="Node" parent="."]
 script = ExtResource("9_3h23t")

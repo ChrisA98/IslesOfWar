@@ -23,6 +23,8 @@ signal spawned_unit
 
 ''' Identifying Vars '''
 var actor_owner : game_actor
+var parent_base : Building
+var parent_building : Building
 var display_name : String
 var faction : String
 var faction_short_name : String
@@ -57,6 +59,7 @@ var cost = {"wood": 0,
 "food": 0}
 var pop_mod: int = 0
 var garrisoned_units := []
+var children_buildings := []
 
 
 ''' Unit Spawning Vars '''
@@ -281,6 +284,13 @@ func place():
 	for col in static_body.get_children():
 		if col != static_body.get_child(0):
 			col.queue_free()
+	
+	if get_meta("show_base_radius"):
+		parent_building = parent_base
+		for bldg in parent_base.children_buildings:
+			if bldg.position.distance_to(position) < parent_building.position.distance_to(position):
+				parent_building = bldg
+		parent_base.children_buildings.push_back(self)
 
 
 ## Set snap for building placement
@@ -333,6 +343,7 @@ func near_base(buildings) -> bool:
 		return false
 	for b in buildings:
 		if b.position.distance_to(position) < b.radius:
+			parent_base = b
 			return true
 	return false
 

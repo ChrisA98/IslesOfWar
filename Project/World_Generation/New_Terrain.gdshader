@@ -90,17 +90,7 @@ void fragment(){
 	
 	vec4 buildings = texture(building_locs, pos_uv);
 	
-	vec2 pixel_size = 1.0 / vec2(textureSize(building_locs, 0));
-	for(int y = -15; y <= 15; y+=1)
-	for(int x = -15; x <= 15; x+=1)
-	{
-		vec2 pixel_off = vec2(float(x), float(y));
-		vec4 tex = texture(building_locs, UV + pixel_off * pixel_size);
-		if(tex.r >= 0.5)
-		{
-			ALBEDO = mix(sand_albedo, rockgrass_albedo, 15.0/distance(pos_uv,pixel_off));
-		}
-	}
+	ALBEDO = mix(sand_albedo, ALBEDO, 1.0-buildings.g);
 	
 	vec4 fog_color = texture(fog_tex, pos_uv);
 	if(fog_color.a < 0.1){

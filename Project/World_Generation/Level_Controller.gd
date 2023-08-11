@@ -327,12 +327,37 @@ func get_base_spawn(trgt_player : int):
 
 
 ## Update tree scatter avoidance texture
-func building_added(pos: Vector3):
-	##subtracted 25 to get square centered on point
-	var pix = Vector2i(round(pos.x+map_offset-4),round(pos.z+map_offset-4))
+func building_added(pos: Vector3, hide_grass: bool, road_target: Vector3):
+	var circle_size := 15
+	## Corrective offset
+	pos -= Vector3(1,0,1)
+	
+	var cntr = Vector2(pos.x,pos.z)
 	##Make 10x10 square around building sin tex to hide trees
-	for y in range(9):
-		for x in range(9):
-			building_locations.set_pixel(pix.x+x,pix.y+y,Color.WHITE)
+	_draw_circle_to_buildings_tex(circle_size, Vector2(pos.x,pos.z), hide_grass)
+	
+	##BUild road to base
+	if road_target != Vector3.ZERO:
+		for i in range(cntr.distance_to(Vector2(road_target.x,road_target.z))):
+			var p = cntr + (i * cntr.direction_to(Vector2(road_target.x,road_target.z)))
+			_draw_circle_to_buildings_tex(7, Vector2(p.x,p.y), hide_grass)
+	
 	## Write to global dsharer parameter
 	RenderingServer.global_shader_parameter_set("building_locs",ImageTexture.create_from_image(building_locations))
+
+
+func _draw_circle_to_buildings_tex(circle_size, pos, hide_grass):
+	var pix = Vector2(round(pos.x+map_offset-round(circle_size/2)),round(pos.y+map_offset-round(circle_size/2)))
+	var cntr = Vector2(round(pos.x+map_offset),round(pos.y+map_offset))
+	for y in range(circle_size):
+		for x in range(circle_size):
+			var p =Vector2(pix.x+x,pix.y+y)
+			if p.distance_to(cntr) <= circle_size/2:
+				var col = building_locations.get_pixel(p.x,p.y)
+				col.r = 1-(p.distance_to(cntr)/(circle_size/2))
+				col.r -= .125
+				if(hide_grass):
+					col.g = p.distance_to(cntr)/(circle_size/2)
+					col.g = .125
+				
+				building_locations.set_pixel(p.x,p.y,col)
