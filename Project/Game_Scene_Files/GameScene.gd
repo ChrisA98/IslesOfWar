@@ -5,6 +5,10 @@ signal nav_ready
 signal click_mode_changed(old, new)
 signal prep_ready
 
+@export var debug_controller_swap := 0:
+	set(value):
+		debug_controller_swap = value
+		player_controller = game_actors[value]
 ''' Unit and Building vars '''
 ## World lists
 var world
@@ -181,7 +185,7 @@ func select_from_square():
 	## Select new units
 	for i in selection_square.get_child(0).get_collision_count():
 		var un = (selection_square.get_child(0).get_collider(i))
-		if un.actor_owner.actor_ID == 0:
+		if un.actor_owner.actor_ID == player_controller.actor_ID:
 			player_controller.select_unit(un,false,false)
 			un.select()
 	selection_square.get_child(0).enabled = false
@@ -249,7 +253,7 @@ func _prepare_game():
 			else:
 				loaded_buildings[fac][b] = null
 				push_warning("Scene file ["+b+".tscn] not found")
-			if(fac == 0):
+			if(fac == player_controller.actor_ID):
 				menu_buildings[faction_data[fac]["data"]["buildings"][b].base_display_name] = b
 				match faction_data[fac]["data"]["buildings"][b].category:
 					"resource":
@@ -530,7 +534,7 @@ func _on_day_cycle_timer_timeout():
 ## Trigger when entity enters 
 func added_fog_revealer(child: Node):
 	if child.has_meta("reveals_fog"):
-		if(child.actor_owner.actor_ID == 0):
+		if(child.actor_owner.actor_ID == player_controller.actor_ID):
 			player_fog_manager.create_drawer(child)
 		else:
 			enemy_marker_manager.create_drawer(child)

@@ -11,9 +11,10 @@ albedo_color = Color(0.384314, 0.541176, 0.996078, 1)
 [node name="Farm" instance=ExtResource("1_8w74i")]
 script = ExtResource("1_rw74g")
 resource = "food"
+hide_grass = false
 metadata/show_base_radius = true
 
-[node name="MeshInstance3D" parent="." index="0"]
+[node name="MeshInstance3D" parent="." index="2"]
 transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, 0.512184, 0)
 mesh = SubResource("BoxMesh_8pvv5")
 surface_material_override/0 = SubResource("StandardMaterial3D_xyfiq")

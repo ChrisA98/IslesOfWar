@@ -45,7 +45,12 @@ func _ready():
 	
 	var chunks = sqrt(find_files())
 	heightmap = load(heightmap_dir+"master"+".exr").get_image()
-	building_locations = Image.create(chunks*chunk_size,chunks*chunk_size,false,Image.FORMAT_L8)
+	##Set up buildings tex
+	building_locations = Image.create(chunks*chunk_size,chunks*chunk_size,false,Image.FORMAT_RGBF)
+	for x in range(chunks*chunk_size):
+		for y in range(chunks*chunk_size):
+			building_locations.set_pixel(x,y,Color.BLACK)	
+	RenderingServer.global_shader_parameter_set("building_locs",ImageTexture.create_from_image(building_locations))
 	map_offset = (chunk_size*chunks)/2
 	## Prepare chunks
 	for y in range(0,chunks):
@@ -327,37 +332,38 @@ func get_base_spawn(trgt_player : int):
 
 
 ## Update tree scatter avoidance texture
-func building_added(pos: Vector3, hide_grass: bool, road_target: Vector3):
-	var circle_size := 15
-	## Corrective offset
-	pos -= Vector3(1,0,1)
+func building_added(pos: Vector3, hide_grass: bool, bldg_radius: float, road_target: Vector3):
+	var circle_size := bldg_radius * 15
 	
 	var cntr = Vector2(pos.x,pos.z)
-	##Make 10x10 square around building sin tex to hide trees
+	##Make 10x10 square around buildings in tex to hide trees
 	_draw_circle_to_buildings_tex(circle_size, Vector2(pos.x,pos.z), hide_grass)
 	
-	##BUild road to base
+	##Build road to base
 	if road_target != Vector3.ZERO:
-		for i in range(cntr.distance_to(Vector2(road_target.x,road_target.z))):
+		for i in range(circle_size/2.8, cntr.distance_to(Vector2(road_target.x,road_target.z))):
 			var p = cntr + (i * cntr.direction_to(Vector2(road_target.x,road_target.z)))
-			_draw_circle_to_buildings_tex(7, Vector2(p.x,p.y), hide_grass)
+			_draw_circle_to_buildings_tex(7, Vector2(p.x,p.y), true, .45)
 	
 	## Write to global dsharer parameter
 	RenderingServer.global_shader_parameter_set("building_locs",ImageTexture.create_from_image(building_locations))
 
 
-func _draw_circle_to_buildings_tex(circle_size, pos, hide_grass):
-	var pix = Vector2(round(pos.x+map_offset-round(circle_size/2)),round(pos.y+map_offset-round(circle_size/2)))
-	var cntr = Vector2(round(pos.x+map_offset),round(pos.y+map_offset))
+func _draw_circle_to_buildings_tex(circle_size, pos, hide_grass,lighten_offset:float = .125):
+	var pix = Vector2((pos.x+map_offset-(circle_size/2)),(pos.y+map_offset-(circle_size/2)))
+	var cntr = Vector2((pos.x+map_offset),(pos.y+map_offset))
 	for y in range(circle_size):
 		for x in range(circle_size):
 			var p =Vector2(pix.x+x,pix.y+y)
 			if p.distance_to(cntr) <= circle_size/2:
 				var col = building_locations.get_pixel(p.x,p.y)
-				col.r = 1-(p.distance_to(cntr)/(circle_size/2))
-				col.r -= .125
+				var n_col = Color.BLACK
+				n_col.r += 1-(p.distance_to(cntr)/(circle_size/2)) - lighten_offset
+				col.r = clamp(n_col.r,col.r,1)
+				col.b = clamp(n_col.b,col.b,1)
 				if(hide_grass):
-					col.g = p.distance_to(cntr)/(circle_size/2)
-					col.g = .125
-				
+					n_col.g += 1 - (p.distance_to(cntr)/(circle_size/2)) - lighten_offset
+					col.g = clamp(n_col.g,col.g,1)
+				elif(p.distance_to(cntr) <= circle_size/4):
+					col.g = 0
 				building_locations.set_pixel(p.x,p.y,col)

@@ -2,14 +2,15 @@ extends Building
 
 @onready var valid_region = get_node("Valid_Region")
 @onready var particles_generator = get_node("Valid_Region/GPUParticles3D")
-@onready var radius = 30
+@onready var radius = 30:
+	set(value):
+		radius = value
+		_update_radius(value)
 
 func _ready():
 	super()
-	type = "Base"
-	pop_mod = 5
-	
-	update_radius(radius)
+	pop_mod = 5	
+	_update_radius(radius)
 
 
 func load_data(data):
@@ -48,8 +49,7 @@ func hide_radius():
 	valid_region.visible = false
 
 
-func update_radius(new_radius):
-	radius = new_radius
+func _update_radius(new_radius):
 	var m = CylinderMesh.new()
 	m.set_bottom_radius(new_radius-.025)
 	m.set_cap_bottom(false)

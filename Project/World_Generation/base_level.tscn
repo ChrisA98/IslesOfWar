@@ -338,10 +338,10 @@ shape = SubResource("BoxShape3D_gubrw")
 
 [node name="Base_Spawn" parent="Base_Spawns" instance=ExtResource("6_aid2n")]
 transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 262, 9.26421, 25)
-actor_id = 1
 
 [node name="Base_Spawn2" parent="Base_Spawns" instance=ExtResource("6_aid2n")]
-transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 250.68, 14.2399, -267)
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 274.147, 8.60596, -203.357)
+actor_id = 1
 
 [node name="Forest" parent="." instance=ExtResource("5_8idnn")]
 transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 249.093, 0, -328.466)

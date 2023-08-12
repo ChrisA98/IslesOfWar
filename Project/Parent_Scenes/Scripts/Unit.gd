@@ -52,6 +52,8 @@ var ai_mode :StringName = "idle_basic":
 		else:
 			target_enemy = null
 			atk_timer.stop()
+		if !value.contains("idle"):
+			nav_agent.avoidance_enabled = true
 		unit_models.moving = !value.contains("idle")
 		update_fog.emit(self, (!value.contains("idle") and is_visible))
 		
@@ -162,7 +164,6 @@ var visible_allies := []
 func _ready():
 	call_deferred("_prepare_nav_agent")
 	## Connect signals
-	nav_agent.waypoint_reached.connect(waypoint)
 	atk_timer.timeout.connect(_attack)
 	
 	## Set attack type
@@ -193,7 +194,7 @@ func _ready():
 			ai_methods["attack_commanded"] = Callable(_locked_targeted_attack)
 	
 
-func _process(delta):
+func _physics_process(delta):
 	if(is_queued_for_deletion()):
 		## Needed to fix bug with calling a callable on a queued for deletion object
 		## It'd be cool if their was a workaround that didn't involve an if statement
@@ -283,9 +284,9 @@ func set_mov_target(mov_tar: Vector3):
 ## Queue a movement to be caclulated
 func queue_move(pos:Vector3):
 	queued_move_target = Vector3.ZERO
-	if position.distance_to(pos) > 575:
+	if position.distance_to(pos) > 500:
 		queued_move_target = pos
-		pos = position - (575*position.direction_to(pos))
+		pos = position - (500*position.direction_to(pos))
 	actor_owner.add_unit_tracking(self,Callable(set_mov_target.bind(pos)))
 
 
@@ -606,20 +607,9 @@ func _wandering_basic(delta):
 func _travel(_delta):
 	if nav_agent.is_navigation_finished():
 		return
-	var current_agent_position: Vector3 = global_transform.origin
-	var next_path_position: Vector3 = nav_agent.get_next_path_position()
-	var new_velocity: Vector3 = next_path_position - current_agent_position
-	#Accelerate and decelerrate
-	#if nav_agent.distance_to_target() > intial_path_dist*.1 or nav_agent.distance_to_target() > 3:
-	#	new_velocity = _lerp_start(new_velocity, delta)
-	#else:
-	#	new_velocity = _lerp_stop(new_velocity, delta)
-	new_velocity = new_velocity.normalized()* target_speed
-	# Look in walk direction
-	unit_models.face_target(position + new_velocity)
+		
+	_update_velocity()
 	
-	nav_agent.set_velocity(new_velocity)
-	set_velocity(new_velocity)
 	move_and_slide()
 
 
@@ -639,6 +629,7 @@ func __find_target(trgt, pos:Vector3, _is_visible:bool):
 
 func _on_navigation_agent_3d_navigation_finished():
 	unit_models.moving = false
+	nav_agent.avoidance_enabled = false
 	## Don't stop on other units if not attacking
 	if(!ai_mode.contains("attack")):
 		var targ = _check_pos(position)
@@ -650,24 +641,34 @@ func _on_navigation_agent_3d_navigation_finished():
 		if(queued_move_target != Vector3.ZERO and position.distance_to(queued_move_target) > 5):
 			queue_move(queued_move_target)
 			return
-		#nav_agent.set_velocity(Vector3.ZERO)
-		#set_velocity(Vector3.ZERO)
-		if actor_owner.actor_ID != 0:
-			ai_mode = "idle_aggressive"
-		else:
-			ai_mode = "idle_basic"
+	nav_agent.set_velocity(Vector3.ZERO)
+	set_velocity(Vector3.ZERO)
+	if actor_owner.actor_ID != 0:
+		ai_mode = "idle_aggressive"
+	else:
+		ai_mode = "idle_basic"
 
 
 func _on_NavigationAgent_velocity_computed(safe_velocity):
-	if nav_agent.is_navigation_finished():
-		return
 	velocity = safe_velocity
 	move_and_slide()
 
 
-## Reaches waypoint
-func waypoint(_details):
-	pass
+func _update_velocity():	
+	var current_agent_position: Vector3 = global_transform.origin
+	var next_path_position: Vector3 = nav_agent.get_next_path_position()
+	var new_velocity: Vector3 = next_path_position - current_agent_position
+	#Accelerate and decelerrate
+	#if nav_agent.distance_to_target() > intial_path_dist*.1 or nav_agent.distance_to_target() > 3:
+	#	new_velocity = _lerp_start(new_velocity, delta)
+	#else:
+	#	new_velocity = _lerp_stop(new_velocity, delta)
+	new_velocity = new_velocity.normalized()* target_speed
+	# Look in walk direction
+	unit_models.face_target(position + new_velocity)
+	
+	nav_agent.set_velocity(new_velocity)
+	set_velocity(new_velocity)
 
 
 ## Set locked travel state

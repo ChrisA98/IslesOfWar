@@ -6,13 +6,14 @@
 [node name="Barracks" instance=ExtResource("1_ddopr")]
 transform = Transform3D(5, 0, 0, 0, 5, 0, 0, 0, 5, 0, 0, 0)
 script = ExtResource("2_t33jg")
+build_time = 1.0
+type = "Barracks"
 menu_pages = {
 "page_4": "",
 "research": "",
 "sec_units": "",
 "units": "Infantry"
 }
-build_time = 1.0
 
 [node name="MeshInstance3D" parent="." index="2"]
 transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, -0.0027564, 0)

@@ -11,10 +11,12 @@ signal spawned_unit
 
 
 ''' Export Vars '''
-@export var type: String
-@export var menu_pages = {"units": "","sec_units": "","research": "","page_4": ""}
 @export var build_time : float = 10
+@export var type: String
+@export_group("Appearance")
+@export var hide_grass : bool = true
 @export var fog_rev_radius : float = 50
+@export var menu_pages = {"units": "","sec_units": "","research": "","page_4": ""}
 @export_flags("Land","Naval","Aerial") var garrison_unit_type
 @export_group("Defense")
 @export var base_health : float = 0
@@ -165,7 +167,7 @@ func load_data(data):
 					mesh.mesh.surface_get_material(s).set_albedo(magic_color)
 	else:
 		mesh.set_mesh(BoxMesh.new())
-		push_warning ("Building model ["+type+"] not found")
+		#push_warning ("Building model ["+type+"] not found")
 	## Set Cost
 	for res in cost:
 		cost[res] = data.buildings[type].base_cost[res]
@@ -209,8 +211,6 @@ func set_pos(pos, wait = false):
 	
 	transform = base_transform
 	rotate_y(rot)
-	position = pos
-	align_to_ground()
 	position = pos
 	snap_to_ground()
 	det_area.force_update_transform()

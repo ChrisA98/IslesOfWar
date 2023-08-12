@@ -153,9 +153,9 @@ func place_building(bld):
 	buildings.sort()
 	
 	if(bld.parent_building == null):
-		building_added.emit(bld.position,true, Vector3.ZERO)
+		building_added.emit(bld.position,bld.hide_grass,bld.bldg_radius, Vector3.ZERO)
 	else:
-		building_added.emit(bld.position,true,bld.parent_building.position)
+		building_added.emit(bld.position,bld.hide_grass,bld.bldg_radius,bld.parent_building.position)
 	return true
 
 

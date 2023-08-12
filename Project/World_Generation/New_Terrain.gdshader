@@ -37,7 +37,8 @@ float get_height(vec2 x){
 void vertex() {
 	pos_uv = vec2((NODE_POSITION_WORLD.x)/heightmap_tex_size.x,(NODE_POSITION_WORLD.z)/heightmap_tex_size.y)+((vec2(VERTEX.x,VERTEX.z)/heightmap_tex_size)) + vec2(.5);
 	height = get_height(pos_uv);
-	VERTEX.y = height - NODE_POSITION_WORLD.y;
+	vec4 buildings = texture(building_locs, pos_uv);
+	VERTEX.y = height - NODE_POSITION_WORLD.y - buildings.g;
 		
 	vec2 e = vec2(0.01, 0.0);
 	normal = normalize(vec3(get_height(pos_uv - e) / t_height - get_height(pos_uv + e) / t_height, 2.0 * e.x, get_height(pos_uv - e.yx) / t_height - get_height(pos_uv + e.yx) / t_height));
@@ -88,9 +89,9 @@ void fragment(){
 	NORMAL_MAP_DEPTH = normal.y*.1;
 	NORMAL_MAP = mix(rock_normal, grass_normal, rock_grass_weight);
 	
-	vec4 buildings = texture(building_locs, pos_uv);
+	float buildings = texture(building_locs, pos_uv).g;
 	
-	ALBEDO = mix(sand_albedo, ALBEDO, 1.0-buildings.g);
+	ALBEDO = mix(sand_albedo, ALBEDO, 1.1-buildings);
 	
 	vec4 fog_color = texture(fog_tex, pos_uv);
 	if(fog_color.a < 0.1){

@@ -332,8 +332,8 @@ shader = ExtResource("15_oyqke")
 [sub_resource type="PlaneMesh" id="PlaneMesh_ssghn"]
 material = SubResource("ShaderMaterial_rie7d")
 size = Vector2(400, 400)
-subdivide_width = 100
-subdivide_depth = 125
+subdivide_width = 200
+subdivide_depth = 200
 
 [sub_resource type="PlaneMesh" id="PlaneMesh_pqxku"]
 material = SubResource("ShaderMaterial_5qp3h")
@@ -1030,6 +1030,7 @@ randomness = 0.5
 visibility_rect = Rect2(-100, -100, 200, 400)
 
 [node name="TextureRect" type="TextureRect" parent="UI_Node"]
+visible = false
 material = SubResource("ShaderMaterial_pbqcs")
 layout_mode = 0
 offset_right = 570.0

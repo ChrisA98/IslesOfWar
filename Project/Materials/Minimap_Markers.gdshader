@@ -1,10 +1,11 @@
 shader_type canvas_item;
 
-uniform int space = 100;
+uniform int space = 125;
 
 //markers
 uniform sampler2D friendly_markers;
 uniform sampler2D enemy_markers;
+global uniform sampler2D building_locs;
 
 void fragment() {	
 	// Draw firendly Icons
