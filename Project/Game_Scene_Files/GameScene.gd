@@ -131,7 +131,7 @@ func unit_selected(unit, event):
 			player_controller.command_unit_attack(unit)
 
 
-##remove selected unit from list
+## Remove selected unit from list
 func deselect_unit(unit):
 	player_controller.deselect_unit(unit)
 
@@ -148,7 +148,7 @@ func start_select_square(pos):
 	selection_square_points = [pos, pos]
 
 
-## update dimensions and move Selection Square
+## Update dimensions and move Selection Square
 func update_select_square(pos):
 	if (selection_square_points[0] == Vector3.ZERO):
 		start_select_square(pos)
@@ -290,7 +290,7 @@ func prepare_bases():
 	prep_player_building(0, null)
 	preview_building.set_pos(p_spawn.position)
 	player_controller.place_building(preview_building)
-	for i in range(1):
+	for i in range(150):
 		preview_building.spawn_unit(player_controller.faction_data["starting_unit"])
 	p_spawn.used = true
 	preview_building = null
@@ -501,7 +501,7 @@ func _minimap_Clicked(command : String, pos : Vector2):
 			match click_mode:
 				"command_unit":
 					player_controller.command_unit_move(world_pos)
-				
+
 
 ''' Player Input End '''
 '''-------------------------------------------------------------------------------------'''

@@ -1,8 +1,9 @@
 shader_type spatial;
-
+render_mode specular_toon,sss_mode_skin,cull_back;
 uniform sampler2D heightmap : repeat_disable;
 uniform float t_height;
 uniform float water_level;
+uniform float fresnel_intensity;
 uniform float tide:hint_range(1.0,7.0) = .25;
 uniform float water_turbulence:hint_range(1.0,7.0) = .25;
 
@@ -53,6 +54,7 @@ void vertex() {
 	vec3 normal_blend = mix(mix(norm1,norm2,0.5),vec3(0,0,0),1.2-depth);
 	
 	VERTEX.y = water_level - NODE_POSITION_WORLD.y;
+	NORMAL = normal_blend;
 }
 
 void fragment() {
@@ -62,11 +64,12 @@ void fragment() {
 	vec3 normal_blend = mix(mix(norm1,norm2,0.5),vec3(0,0,0),1.0-depth);
 	
 	vec3 albedo1 = normalize(water_depth_gradient(depth/1.2)).xyz;
+	
 	if(abs(water_level-height) < 0.5){
 		albedo1 = mix(vec3(1,1,1),albedo1,abs(water_level-height)*1.6);
 	}	
 	float fresnel = fresnel(5.0, NORMAL,VIEW);
-	vec3 surface_color = mix(albedo1, water_alb, fresnel);
+	vec3 surface_color = mix(albedo1, water_alb, fresnel*fresnel_intensity);
 	
 	if(height >= water_level-.005){
 		ALPHA = 0.0;

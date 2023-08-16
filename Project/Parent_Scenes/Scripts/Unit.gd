@@ -284,9 +284,9 @@ func set_mov_target(mov_tar: Vector3):
 ## Queue a movement to be caclulated
 func queue_move(pos:Vector3):
 	queued_move_target = Vector3.ZERO
-	if position.distance_to(pos) > 500:
-		queued_move_target = pos
-		pos = position - (500*position.direction_to(pos))
+	##if position.distance_to(pos) > 500:
+	##	queued_move_target = pos
+	##	pos = position - (500*position.direction_to(pos))
 	actor_owner.add_unit_tracking(self,Callable(set_mov_target.bind(pos)))
 
 

@@ -254,25 +254,30 @@ func command_unit_attack(trgt):
 
 ## Add unit to queue to set move target when tracking
 func add_unit_tracking(unit:Unit_Base, track_function: Callable):
-	for u in unit_tracking_queue:
-		if u[0] == unit:
-			u[1] = track_function
+	for u in range(unit_tracking_queue.size()-1):
+		if unit_tracking_queue[u][0] == unit:
+			var _call = unit_tracking_queue.pop_at(u)
+			_call[1] = track_function
+			unit_tracking_queue.push_front(_call)
 			return
-	unit_tracking_queue.push_back([unit,track_function])
+	unit_tracking_queue.push_front([unit,track_function])
 
 
 ## Call set target function from tracking queue
 func pop_front_unit_tracking_queue():
-	var _call = unit_tracking_queue.pop_front()
+	var _call = unit_tracking_queue.pop_back()
 	if is_instance_valid(_call[0]):
 		_call[1].call()
+		return
+	print("error queue popping")
 
 
 ## Remove target unit from unit tracking queue
 func erase_from_tracking_queue(unit:Unit_Base):
-	for u in unit_tracking_queue:
-		if u[0] == unit:
-			unit_tracking_queue.erase(u)
+	for u in range(unit_tracking_queue.size()):
+		if unit_tracking_queue[u][0] == unit:
+			unit_tracking_queue.remove_at(u)
+			return
 
 ''' Unit Tracking Queue End '''
 

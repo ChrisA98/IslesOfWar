@@ -217,6 +217,7 @@ render_priority = 0
 shader = ExtResource("4_h7krx")
 shader_parameter/t_height = 100.0
 shader_parameter/water_level = 7.0
+shader_parameter/fresnel_intensity = null
 shader_parameter/tide = 2.871
 shader_parameter/water_turbulence = 6.652
 shader_parameter/water_alb = Color(0.392157, 0.831373, 0.898039, 1)

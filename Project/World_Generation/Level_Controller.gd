@@ -179,7 +179,7 @@ func _build_fog_war(chunks):
 	picker.queue_free()
 
 
-#check if .exr files exist in target path
+## Check if .exr files exist in target path
 func find_files():
 	var dir = DirAccess.open(heightmap_dir)
 	var cnt = -1
@@ -321,7 +321,7 @@ func get_loc_height(pos:Vector3):
 	return clamp(t,water_table,1000)
 
 
-## get base spawn
+## Get base spawn
 func get_base_spawn(trgt_player : int):
 	var bases = find_child("Base_Spawns").get_children()
 	if use_random_base_spawns:
@@ -343,7 +343,7 @@ func building_added(pos: Vector3, hide_grass: bool, bldg_radius: float, road_tar
 	if road_target != Vector3.ZERO:
 		for i in range(circle_size/2.8, cntr.distance_to(Vector2(road_target.x,road_target.z))):
 			var p = cntr + (i * cntr.direction_to(Vector2(road_target.x,road_target.z)))
-			_draw_circle_to_buildings_tex(7, Vector2(p.x,p.y), true, .45)
+			_draw_circle_to_buildings_tex(9, Vector2(p.x,p.y), true, .45)
 	
 	## Write to global dsharer parameter
 	RenderingServer.global_shader_parameter_set("building_locs",ImageTexture.create_from_image(building_locations))

@@ -120,10 +120,11 @@ colors = PackedColorArray(0.383293, 0.763558, 1, 1, 1.20327e-06, 0.337756, 0.401
 
 [sub_resource type="GradientTexture1D" id="GradientTexture1D_8euv3"]
 gradient = SubResource("Gradient_b6hmg")
+width = 512
+use_hdr = true
 
 [sub_resource type="FastNoiseLite" id="FastNoiseLite_6n0eb"]
 noise_type = 3
-fractal_type = 2
 fractal_octaves = 4
 fractal_lacunarity = 2.142
 fractal_gain = 1.916
@@ -140,15 +141,17 @@ noise = SubResource("FastNoiseLite_6n0eb")
 
 [sub_resource type="FastNoiseLite" id="FastNoiseLite_vgweg"]
 noise_type = 3
-seed = 3
+seed = 63
 fractal_type = 2
+fractal_lacunarity = 1.28
+fractal_gain = -0.465
 
 [sub_resource type="NoiseTexture2D" id="NoiseTexture2D_cxok4"]
 width = 1000
 height = 1000
 seamless = true
 as_normal_map = true
-bump_strength = 12.9
+bump_strength = 15.5
 noise = SubResource("FastNoiseLite_vgweg")
 
 [sub_resource type="ShaderMaterial" id="ShaderMaterial_5qp3h"]
@@ -156,14 +159,15 @@ render_priority = 0
 shader = ExtResource("4_m0yv6")
 shader_parameter/t_height = 100.0
 shader_parameter/water_level = 7.0
-shader_parameter/tide = 2.871
-shader_parameter/water_turbulence = 6.652
-shader_parameter/water_alb = Color(0.392157, 0.831373, 0.898039, 1)
+shader_parameter/fresnel_intensity = 1.04
+shader_parameter/tide = 2.051
+shader_parameter/water_turbulence = 3.676
+shader_parameter/water_alb = Color(0.729412, 0.937255, 0.972549, 1)
 shader_parameter/wave_direction_1 = Vector2(2, -2)
 shader_parameter/wave_direction_2 = Vector2(-2, 2)
-shader_parameter/time_scale = 0.01
+shader_parameter/time_scale = 0.004
 shader_parameter/tex_size = Vector2(1000, 1000)
-shader_parameter/wtr_tex_size = Vector2(1000, 1000)
+shader_parameter/wtr_tex_size = Vector2(500, 500)
 shader_parameter/heightmap = ExtResource("7_ubyyn")
 shader_parameter/water_alb_tex = SubResource("GradientTexture1D_8euv3")
 shader_parameter/water_disp_tex_1 = SubResource("NoiseTexture2D_pd0fy")
@@ -338,8 +342,8 @@ subdivide_depth = 200
 [sub_resource type="PlaneMesh" id="PlaneMesh_pqxku"]
 material = SubResource("ShaderMaterial_5qp3h")
 size = Vector2(400, 400)
-subdivide_width = 100
-subdivide_depth = 100
+subdivide_width = 400
+subdivide_depth = 400
 
 [sub_resource type="FastNoiseLite" id="FastNoiseLite_oe4h0"]
 seed = 2
@@ -1030,7 +1034,6 @@ randomness = 0.5
 visibility_rect = Rect2(-100, -100, 200, 400)
 
 [node name="TextureRect" type="TextureRect" parent="UI_Node"]
-visible = false
 material = SubResource("ShaderMaterial_pbqcs")
 layout_mode = 0
 offset_right = 570.0

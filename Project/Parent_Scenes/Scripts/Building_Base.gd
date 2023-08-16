@@ -212,6 +212,8 @@ func set_pos(pos, wait = false):
 	transform = base_transform
 	rotate_y(rot)
 	position = pos
+	align_to_ground()
+	position = pos
 	snap_to_ground()
 	det_area.force_update_transform()
 	
