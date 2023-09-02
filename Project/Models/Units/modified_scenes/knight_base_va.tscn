@@ -1,6 +1,6 @@
 [gd_scene load_steps=19 format=3 uid="uid://dk70jmmfjufyv"]
 
-[ext_resource type="Shader" path="res://Models/Units/animations/knight_animation_test.gdshader" id="1_kjcfs"]
+[ext_resource type="Shader" path="res://Models/Units/animations/Unit_model_animation.gdshader" id="1_uut1p"]
 [ext_resource type="Script" path="res://Models/Units/unit_animation_controller.gd" id="4_wlvqd"]
 [ext_resource type="Texture2D" uid="uid://deshtgvd1jl3h" path="res://Models/Units/animations/knight_animation_normals.png" id="5_sjqdd"]
 [ext_resource type="Texture2D" uid="uid://de4igdxjonljf" path="res://Models/Units/animations/knight_animations_offsets.exr" id="6_ofrgg"]
@@ -14,7 +14,7 @@ gradient = SubResource("Gradient_gajqh")
 
 [sub_resource type="ShaderMaterial" id="ShaderMaterial_ix4aa"]
 render_priority = 0
-shader = ExtResource("1_kjcfs")
+shader = ExtResource("1_uut1p")
 shader_parameter/time_scale = 0.5
 shader_parameter/specular = 0.0
 shader_parameter/metallic = 0.0
@@ -28,7 +28,7 @@ shader_parameter/texture_albedo = SubResource("GradientTexture1D_fndy0")
 
 [sub_resource type="ShaderMaterial" id="ShaderMaterial_ruerw"]
 render_priority = 0
-shader = ExtResource("1_kjcfs")
+shader = ExtResource("1_uut1p")
 shader_parameter/time_scale = 0.5
 shader_parameter/specular = 1.695
 shader_parameter/metallic = 1.03
@@ -47,7 +47,7 @@ gradient = SubResource("Gradient_61h3w")
 
 [sub_resource type="ShaderMaterial" id="ShaderMaterial_i637h"]
 render_priority = 0
-shader = ExtResource("1_kjcfs")
+shader = ExtResource("1_uut1p")
 shader_parameter/time_scale = 0.5
 shader_parameter/specular = 1.695
 shader_parameter/metallic = 1.03
@@ -66,7 +66,7 @@ gradient = SubResource("Gradient_i65bj")
 
 [sub_resource type="ShaderMaterial" id="ShaderMaterial_6sqy1"]
 render_priority = 0
-shader = ExtResource("1_kjcfs")
+shader = ExtResource("1_uut1p")
 shader_parameter/time_scale = 0.5
 shader_parameter/specular = 1.695
 shader_parameter/metallic = 1.03

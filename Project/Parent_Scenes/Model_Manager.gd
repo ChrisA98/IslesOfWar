@@ -11,6 +11,8 @@ var rendered = false:
 		_hide_units(!value)
 var moving	:= false:
 	set(value):
+		if moving == value:
+			return
 		moving = value
 		if value:
 			_set_unit_animation_state("walk")
@@ -20,21 +22,16 @@ var moving	:= false:
 var animate_calls : Array[Callable]
 
 
-func _ready():
-	pass
-
 
 func load_data(_model_masters : Array, faction_clr : Color):
 	model_masters = _model_masters
 	## Prepare unit models list
 	for i in get_children():
-		if i.name.contains("temp"):
-			## Remove once attack indicator is gone
-			return
 		var m_id = _assign_model_master(i.name)
 		unit_nodes[i] = [m_id,model_masters[m_id].spawn_unit_instance(i.global_position,faction_clr)]
-	for i in model_masters:
-		model_masters[i].unit_reordered.connect(reorder_units)
+		i.get_child(0).queue_free()
+	unit_Color = faction_clr
+	
 
 
 ## Do on process
@@ -44,9 +41,13 @@ func _process(_delta):
 
 ## Make units face target
 func face_target(trgt):
+	if !rendered:
+		return
+	var node = unit_nodes[get_child(0)]
+	var unit_basis = model_masters[node[0]].get_unit_basis(node[1])
 	for i in unit_nodes:
-		var node = unit_nodes[i]
-		model_masters[node[0]].face_unit_instance(node[1],trgt)
+		node = unit_nodes[i]
+		model_masters[node[0]].face_unit_instance(node[1],trgt,unit_basis)
 
 
 func unit_attack(atk_spd: float):
@@ -83,33 +84,26 @@ func remove_units():
 
 ## Moves modelinstances based on node markers
 func _move_models():
+	if !rendered:
+		return
+	var node = unit_nodes[get_child(0)]
+	var unit_basis = model_masters[node[0]].get_unit_basis(node[1])
 	for i in unit_nodes:
-		var node = unit_nodes[i]
-		model_masters[node[0]].move_unit_instance(node[1],i.global_position)
+		node = unit_nodes[i]
+		model_masters[node[0]].move_unit_instance(node[1],i.global_position,unit_basis)
 
 
 ## Update all unit model instance aniamtions
-func _set_unit_animation_state(state: String):
+func _set_unit_animation_state(state: String):	
+	if !rendered:
+		return
 	for i in unit_nodes:
 		var node = unit_nodes[i]
 		model_masters[node[0]].set_animation_state(node[1],state)
 
 
-## Probably change this when I look more at animating
-func _animate(delta):
-	for c in animate_calls:
-		c.call(delta)
-
-
-## Push animation and ensure it doesnt alreayd exist in the array
-func _add_anim_function(anim:Callable):
-	if(animate_calls.has(anim)):
-		return
-	animate_calls.push_back(anim)
-
-
 func _hide_units(state: bool = true):
 	for i in unit_nodes:
 		var node = unit_nodes[i]
-		model_masters[node[0]].hide_unit(node[1],state)
+		model_masters[node[0]].hide_unit(node[1],unit_Color,state)
 	

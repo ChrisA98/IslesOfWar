@@ -1,4 +1,4 @@
-[gd_scene load_steps=14 format=3 uid="uid://cs2p3v3o53aki"]
+[gd_scene load_steps=12 format=3 uid="uid://cs2p3v3o53aki"]
 
 [ext_resource type="Script" path="res://Parent_Scenes/Scripts/Unit.gd" id="1_xwgnb"]
 [ext_resource type="Script" path="res://Parent_Scenes/Model_Manager.gd" id="2_33djc"]
@@ -9,12 +9,6 @@
 resource_local_to_scene = true
 height = 3.5
 radius = 2.0
-
-[sub_resource type="Gradient" id="Gradient_dgplu"]
-colors = PackedColorArray(1, 0, 0, 1, 1, 0, 0, 1)
-
-[sub_resource type="GradientTexture1D" id="GradientTexture1D_pwnjg"]
-gradient = SubResource("Gradient_dgplu")
 
 [sub_resource type="Gradient" id="Gradient_eeqmd"]
 offsets = PackedFloat32Array(0.487179, 0.50193, 0.546976, 0.563707)
@@ -64,14 +58,6 @@ shape = SubResource("CylinderShape3D_603ul")
 
 [node name="UnitModels" type="Node3D" parent="."]
 script = ExtResource("2_33djc")
-
-[node name="attack_indicator_temp" type="Decal" parent="UnitModels"]
-transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, 0, -4)
-visible = false
-size = Vector3(5, 7.265, 15.746)
-texture_albedo = SubResource("GradientTexture1D_pwnjg")
-upper_fade = 0.0104022
-lower_fade = 1566.18
 
 [node name="NavigationAgent3D" type="NavigationAgent3D" parent="."]
 path_max_distance = 5.01

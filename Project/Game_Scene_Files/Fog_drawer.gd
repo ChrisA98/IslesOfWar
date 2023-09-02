@@ -2,7 +2,7 @@ extends SubViewport
 
 @export var minimap_markers_parameter := "friendly_markers"
 @export var draws_fog := true
-@export var markers_path : String = "../../UI_Node/Minimap/Minimap_Container/SubViewport/player_markers"
+@export var markers_path : String = "../../../UI_Node/Minimap/Minimap_Container/SubViewport/player_markers"
 
 var updates := []
 var unit_list := []
@@ -14,6 +14,9 @@ var timer
 
 #draw fog and mirror parents
 var drawers = {}
+
+@onready var circle = preload("res://Game_Scene_Files/UI_Elements/fow_circle.tres")
+@onready var circle_shading = preload("res://Materials/minimap_icon_recolorer.gdshader")
 
 # Called when the node enters the scene tree for the first time.
 func _ready():
@@ -56,27 +59,24 @@ func _update_markers(tex):
 
 ## Create the radius drawers
 func create_drawer(parent):
-	var m = MeshInstance3D.new()
-	## build mesh
-	m.set_mesh(CylinderMesh.new())
-	m.mesh.set_bottom_radius(parent.fog_reg.fog_break_radius)
-	m.mesh.set_cap_bottom(false)
-	m.mesh.set_radial_segments(32)
-	m.mesh.set_rings(1)
-	m.mesh.set_top_radius(parent.fog_reg.fog_break_radius)
-	m.mesh.surface_set_material(0,StandardMaterial3D.new())
-	m.mesh.surface_get_material(0).set_albedo(marker_colors)
+	var s = Sprite2D.new()
+	s.texture = circle
+	s.set_material(ShaderMaterial.new())
+	s.material.set_shader(circle_shading)
+	s.material.set_shader_parameter("icon_color",marker_colors)
+	var size_mod = parent.fog_reg.fog_break_radius/5
+	s.scale = Vector2(size_mod,size_mod)
 	
-	m.position = parent.position
-	drawers[parent] = m
-	add_child(m)
+	s.position = Vector2(parent.position.x,parent.position.z)
+	drawers[parent] = s
+	add_child(s)
+	
 	parent.died.connect(remove_drawer.bind(parent))
 	parent.update_fog.connect(edit_active_drawers)
 	
 	if(parent.has_signal("fog_radius_changed")):
 		parent.fog_radius_changed.connect(update_drawer_radius)
-		m.mesh.surface_get_material(0).set_albedo(Color.BLACK)
-		m.position.y = -30
+		s.material.set_shader_parameter("icon_color",Color.BLACK)
 		return
 	
 	unit_list.push_front(parent)
@@ -96,14 +96,14 @@ func _update_draw(parent):
 		return false
 	drawers[parent].visible = parent.visible
 	drawers[parent].position.x = parent.position.x
-	drawers[parent].position.z = parent.position.z
+	drawers[parent].position.y = parent.position.z
 	return true
 
 
 ## Update drawe mesh
 func update_drawer_radius(parent):
-	drawers[parent].mesh.set_bottom_radius(parent.fog_reg.fog_break_radius)
-	drawers[parent].mesh.set_top_radius(parent.fog_reg.fog_break_radius)
+	var size_mod = parent.fog_reg.fog_break_radius/5
+	drawers[parent].scale = Vector2(size_mod,size_mod)
 
 
 func remove_drawer(drawer):

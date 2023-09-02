@@ -1,5 +1,5 @@
 class_name Unit_Base
-extends CharacterBody3D
+extends Node3D
 
 ''' Signals '''
 signal selected
@@ -74,6 +74,7 @@ var unit_id : int: ##unit id for prganizational purposes
 		name = unit_name+"_"+str(actor_owner.actor_ID)+str(value)
 		unit_id = value
 var formation_core_position: Vector3
+var velocity : Vector3
 
 var stored_trgt_pos	## Target move stored for navmesh generation optimizing
 var queued_move_target := Vector3.ZERO ## Target stored for long distance calculations
@@ -604,13 +605,11 @@ func _wandering_basic(delta):
 
 
 ## Move on process
-func _travel(_delta):
+func _travel(delta):
 	if nav_agent.is_navigation_finished():
 		return
 		
-	_update_velocity()
-	
-	move_and_slide()
+	_update_velocity(delta)
 
 
 ''' AI Processes Methods End '''
@@ -642,7 +641,7 @@ func _on_navigation_agent_3d_navigation_finished():
 			queue_move(queued_move_target)
 			return
 	nav_agent.set_velocity(Vector3.ZERO)
-	set_velocity(Vector3.ZERO)
+	velocity = Vector3.ZERO
 	if actor_owner.actor_ID != 0:
 		ai_mode = "idle_aggressive"
 	else:
@@ -651,24 +650,27 @@ func _on_navigation_agent_3d_navigation_finished():
 
 func _on_NavigationAgent_velocity_computed(safe_velocity):
 	velocity = safe_velocity
-	move_and_slide()
+	if velocity.length() <= 0.1:
+		return
+	global_position += velocity
 
 
-func _update_velocity():	
+func _update_velocity(delta):	
 	var current_agent_position: Vector3 = global_transform.origin
 	var next_path_position: Vector3 = nav_agent.get_next_path_position()
 	var new_velocity: Vector3 = next_path_position - current_agent_position
+	
 	#Accelerate and decelerrate
 	#if nav_agent.distance_to_target() > intial_path_dist*.1 or nav_agent.distance_to_target() > 3:
 	#	new_velocity = _lerp_start(new_velocity, delta)
 	#else:
 	#	new_velocity = _lerp_stop(new_velocity, delta)
+	
 	new_velocity = new_velocity.normalized()* target_speed
 	# Look in walk direction
 	unit_models.face_target(position + new_velocity)
 	
 	nav_agent.set_velocity(new_velocity)
-	set_velocity(new_velocity)
 
 
 ## Set locked travel state
@@ -676,7 +678,7 @@ func _lock_position(state:= true):
 	is_locked_down = state
 	if state:
 		nav_agent.set_velocity(Vector3.ZERO)
-		set_velocity(Vector3.ZERO)
+		velocity = Vector3.ZERO
 		travel_function = Callable(_idling_basic)
 		return
 	travel_function = Callable(_travel)

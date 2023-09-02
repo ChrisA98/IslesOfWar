@@ -53,7 +53,7 @@ var mouse_loc_stored
 preload("res://Faction_Resources/Amerulf_Resource.json")]
 @onready var game_actors = [$Player]
 @onready var global = get_node("/root/Global_Vars")
-@onready var player_fog_manager = get_node("Player/Fog_drawer")
+@onready var player_fog_manager = get_node("Player/SubViewportContainer/Fog_drawer")
 @onready var enemy_marker_manager = get_node("UI_Node/Minimap/Enemy_minimap_markers")
 @onready var selection_square = get_node("Player/Selection_square")
 
@@ -290,7 +290,7 @@ func prepare_bases():
 	prep_player_building(0, null)
 	preview_building.set_pos(p_spawn.position)
 	player_controller.place_building(preview_building)
-	for i in range(150):
+	for i in range(400):
 		preview_building.spawn_unit(player_controller.faction_data["starting_unit"])
 	p_spawn.used = true
 	preview_building = null

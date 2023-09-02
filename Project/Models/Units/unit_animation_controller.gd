@@ -39,6 +39,9 @@ func _ready():
 	units.set_use_colors(true)
 	units.set_instance_count(max_instances)
 	units.set_visible_instance_count(0)
+	
+func _process(delta):
+	pass
 
 
 ## Spawn a new unit instane at target location
@@ -72,21 +75,26 @@ func _burst_animation_helper(unit:int, duration: float):
 
 
 ## Move target instance to new position
-func move_unit_instance(unit: int, trgt_pos: Vector3):
-	var trans = units.get_instance_transform(unit)
-	## Erase y value so the shade rcan handle that
+func move_unit_instance(unit: int, trgt_pos: Vector3, t_basis):
+	var trans = t_basis
+	## Erase y value so the shader can handle that
 	trgt_pos.y = 0
 	trans.origin = trgt_pos
 	units.set_instance_transform(unit,trans)
 
 
+## Get current transform rotation from basis
+func get_unit_basis(unit: int):
+	return units.get_instance_transform(unit)
+
+
 ## Rotate instance to target location
-func face_unit_instance(unit: int, trgt_pos: Vector3):
-	var pos = units.get_instance_transform(unit).origin
+func face_unit_instance(unit: int, trgt_pos: Vector3, m_trans: Transform3D):
+	var pos = m_trans.origin
 	var trgt_vector = pos.direction_to(trgt_pos)
 	var lookdir = atan2(trgt_vector.x, trgt_vector.z)
 	
-	var initial = units.get_instance_transform(unit).basis.get_rotation_quaternion()
+	var initial = m_trans.basis.get_rotation_quaternion()
 	var trans = Transform3D()
 	trans.origin = pos
 	var final = trans.rotated(Vector3.UP,lookdir).basis.get_rotation_quaternion()
@@ -97,8 +105,8 @@ func face_unit_instance(unit: int, trgt_pos: Vector3):
 
 
 ## Hide unit from view
-func hide_unit(unit: int, state : bool = true):	
-	var unit_color = units.get_instance_color(unit)
+func hide_unit(unit: int, col : Color, state : bool = true):	
+	var unit_color = col
 	if state:
 		unit_color.a = 0
 	else:
@@ -123,13 +131,10 @@ func delete_unit(unit: int):
 ## Change instance animation by moving animation window
 func _set_animation_window(unit: int,animation: String):
 	var time = Time.get_ticks_msec()/1000.0
-	var current_anim_start = units.get_instance_custom_data(unit).r
 	match(animation):
 		IDLE[0]:
 			units.set_instance_custom_data(unit,Color(IDLE[1], IDLE[2], time, randf()))
 		WALK[0]:
 			units.set_instance_custom_data(unit,Color(WALK[1], WALK[2], time, randf()))
 		ATTACK_01[0]:
-			if ATTACK_01[1] == current_anim_start:
-				return
 			units.set_instance_custom_data(unit,Color(ATTACK_01[1], ATTACK_01[2], time, 0))

@@ -254,7 +254,7 @@ func command_unit_attack(trgt):
 
 ## Add unit to queue to set move target when tracking
 func add_unit_tracking(unit:Unit_Base, track_function: Callable):
-	for u in range(unit_tracking_queue.size()-1):
+	for u in range(unit_tracking_queue.size()):
 		if unit_tracking_queue[u][0] == unit:
 			var _call = unit_tracking_queue.pop_at(u)
 			_call[1] = track_function
