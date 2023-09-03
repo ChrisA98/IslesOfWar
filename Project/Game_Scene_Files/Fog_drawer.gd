@@ -2,7 +2,7 @@ extends SubViewport
 
 @export var minimap_markers_parameter := "friendly_markers"
 @export var draws_fog := true
-@export var markers_path : String = "../../../UI_Node/Minimap/Minimap_Container/SubViewport/player_markers"
+@export var markers_path : String = "../../UI_Node/Minimap/Minimap_Container/SubViewport/player_markers"
 
 var updates := []
 var unit_list := []

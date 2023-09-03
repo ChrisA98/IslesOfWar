@@ -1,5 +1,5 @@
 class_name Unit_Base
-extends Node3D
+extends CharacterBody3D
 
 ''' Signals '''
 signal selected
@@ -74,7 +74,7 @@ var unit_id : int: ##unit id for prganizational purposes
 		name = unit_name+"_"+str(actor_owner.actor_ID)+str(value)
 		unit_id = value
 var formation_core_position: Vector3
-var velocity : Vector3
+var travel_delta : float
 
 var stored_trgt_pos	## Target move stored for navmesh generation optimizing
 var queued_move_target := Vector3.ZERO ## Target stored for long distance calculations
@@ -166,6 +166,8 @@ func _ready():
 	call_deferred("_prepare_nav_agent")
 	## Connect signals
 	atk_timer.timeout.connect(_attack)
+	screen_notify.screen_entered.connect(_make_visible.bind(true))
+	screen_notify.screen_exited.connect(_make_visible.bind(false))
 	
 	## Set attack type
 	match main_attack_type:
@@ -193,6 +195,7 @@ func _ready():
 			attack_method = Callable(__ranged_proj_attack)
 			projectile_manager = load("res://Parent_Scenes/Projectile_Arc.tscn")
 			ai_methods["attack_commanded"] = Callable(_locked_targeted_attack)
+	
 	
 
 func _physics_process(delta):
@@ -246,6 +249,7 @@ func load_data(data, model_masters, id):
 	fog_reg.detect_area.body_entered.connect(_vision_body_entered)
 	fog_reg.detect_area.body_exited.connect(_vision_body_exited)
 	
+	unit_models.move_models(velocity)
 
 ## Prepare Navigation agent
 func _prepare_nav_agent():
@@ -463,6 +467,9 @@ func _vision_area_exited(area):
 		visible_enemies.erase(area.get_parent())
 
 
+func _make_visible(state := true):
+	unit_models.rendered = state
+
 ''' Movement Methods end '''
 '''-------------------------------------------------------------------------------------'''
 ''' Combat Methods Start '''
@@ -652,8 +659,9 @@ func _on_NavigationAgent_velocity_computed(safe_velocity):
 	velocity = safe_velocity
 	if velocity.length() <= 0.1:
 		return
-	global_position += velocity
-
+	global_transform.origin = global_transform.origin+velocity
+	unit_models.move_models(velocity)
+	
 
 func _update_velocity(delta):	
 	var current_agent_position: Vector3 = global_transform.origin
@@ -666,9 +674,7 @@ func _update_velocity(delta):
 	#else:
 	#	new_velocity = _lerp_stop(new_velocity, delta)
 	
-	new_velocity = new_velocity.normalized()* target_speed
-	# Look in walk direction
-	unit_models.face_target(position + new_velocity)
+	new_velocity = new_velocity.normalized()* target_speed * delta
 	
 	nav_agent.set_velocity(new_velocity)
 

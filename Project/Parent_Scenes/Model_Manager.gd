@@ -9,6 +9,8 @@ var rendered = false:
 	set(value):
 		rendered = value
 		_hide_units(!value)
+		if value:
+			move_models(Vector3.ZERO)
 var moving	:= false:
 	set(value):
 		if moving == value:
@@ -36,17 +38,17 @@ func load_data(_model_masters : Array, faction_clr : Color):
 
 ## Do on process
 func _process(_delta):
-	_move_models()
+	#move_models()
+	pass
 
 
 ## Make units face target
 func face_target(trgt):
 	if !rendered:
 		return
-	var node = unit_nodes[get_child(0)]
-	var unit_basis = model_masters[node[0]].get_unit_basis(node[1])
 	for i in unit_nodes:
-		node = unit_nodes[i]
+		var node = unit_nodes[i]
+		var unit_basis = model_masters[node[0]].get_unit_basis(node[1])
 		model_masters[node[0]].face_unit_instance(node[1],trgt,unit_basis)
 
 
@@ -83,7 +85,7 @@ func remove_units():
 
 
 ## Moves modelinstances based on node markers
-func _move_models():
+func move_models(trgt):
 	if !rendered:
 		return
 	var node = unit_nodes[get_child(0)]
@@ -91,12 +93,11 @@ func _move_models():
 	for i in unit_nodes:
 		node = unit_nodes[i]
 		model_masters[node[0]].move_unit_instance(node[1],i.global_position,unit_basis)
+	face_target(get_child(0).global_position+trgt)
 
 
 ## Update all unit model instance aniamtions
-func _set_unit_animation_state(state: String):	
-	if !rendered:
-		return
+func _set_unit_animation_state(state: String):
 	for i in unit_nodes:
 		var node = unit_nodes[i]
 		model_masters[node[0]].set_animation_state(node[1],state)

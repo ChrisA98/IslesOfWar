@@ -1086,13 +1086,7 @@ size = Vector3(5, 500, 5)
 texture_albedo = SubResource("GradientTexture2D_6de6p")
 cull_mask = 1048574
 
-[node name="SubViewportContainer" type="SubViewportContainer" parent="Player"]
-offset_left = 64.0
-offset_top = 81.0
-offset_right = 1455.0
-offset_bottom = 1128.0
-
-[node name="Fog_drawer" type="SubViewport" parent="Player/SubViewportContainer"]
+[node name="Fog_drawer" type="SubViewport" parent="Player"]
 world_3d = SubResource("World3D_s03bo")
 transparent_bg = true
 handle_input_locally = false
@@ -1107,7 +1101,7 @@ size = Vector2i(1000, 1000)
 render_target_update_mode = 4
 script = ExtResource("3_vc5fr")
 
-[node name="Camera2D" type="Camera2D" parent="Player/SubViewportContainer/Fog_drawer"]
+[node name="Camera2D" type="Camera2D" parent="Player/Fog_drawer"]
 
 [node name="Selection_square" type="Decal" parent="Player"]
 visible = false
@@ -1121,7 +1115,7 @@ cull_mask = 2
 [node name="ShapeCast3D" type="ShapeCast3D" parent="Player/Selection_square"]
 shape = SubResource("BoxShape3D_bjih7")
 target_position = Vector3(0, 0, 0)
-max_results = 512
+max_results = 1028
 collision_mask = 4
 
 [connection signal="menu_opened" from="UI_Node" to="." method="_on_ui_node_menu_opened"]

@@ -46,7 +46,11 @@ radius = 2.0
 [node name="Unit_Base" type="CharacterBody3D" groups=["pickable_object"]]
 collision_layer = 4
 collision_mask = 0
+motion_mode = 1
+floor_stop_on_slope = false
+floor_constant_speed = true
 floor_max_angle = 0.610865
+platform_on_leave = 2
 script = ExtResource("1_xwgnb")
 fog_rev_radius = 35.0
 metadata/reveals_fog = 0

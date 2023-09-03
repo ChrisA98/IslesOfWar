@@ -116,6 +116,10 @@ reset_map_rot={
 3d_physics/layer_16="Terrain"
 3d_physics/layer_20="fog_zones"
 
+[physics]
+
+common/max_physics_steps_per_frame=4
+
 [shader_globals]
 
 heightmap_tex_size={
