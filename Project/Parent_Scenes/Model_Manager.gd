@@ -5,6 +5,7 @@ extends Node3D
 var unit_nodes := {}
 var model_masters : = []
 var unit_Color : Color
+var base_animation_state : String = "idle"
 var rendered = false:
 	set(value):
 		rendered = value
@@ -17,12 +18,17 @@ var moving	:= false:
 			return
 		moving = value
 		if value:
+			base_animation_state = "walk"
 			_set_unit_animation_state("walk")
 			return
-		_set_unit_animation_state("idle")
+		set_idle()
+var attacking := false:
+	set(value):
+		attacking = value
+		if !value and base_animation_state == "idle":
+			set_idle()
 ## Process calls
 var animate_calls : Array[Callable]
-
 
 
 func load_data(_model_masters : Array, faction_clr : Color):
@@ -33,7 +39,6 @@ func load_data(_model_masters : Array, faction_clr : Color):
 		unit_nodes[i] = [m_id,model_masters[m_id].spawn_unit_instance(i.global_position,faction_clr)]
 		i.get_child(0).queue_free()
 	unit_Color = faction_clr
-	
 
 
 ## Do on process
@@ -94,6 +99,15 @@ func move_models(trgt):
 		node = unit_nodes[i]
 		model_masters[node[0]].move_unit_instance(node[1],i.global_position,unit_basis)
 	face_target(get_child(0).global_position+trgt)
+
+
+## set current idle animation
+func set_idle():
+	base_animation_state = "idle"
+	if attacking:		
+		_set_unit_animation_state("idle_attacking")
+		return
+	_set_unit_animation_state("idle")
 
 
 ## Update all unit model instance aniamtions

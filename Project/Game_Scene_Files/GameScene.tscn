@@ -159,7 +159,7 @@ render_priority = 0
 shader = ExtResource("4_m0yv6")
 shader_parameter/t_height = 100.0
 shader_parameter/water_level = 7.0
-shader_parameter/fresnel_intensity = 0.96
+shader_parameter/fresnel_intensity = 0.47
 shader_parameter/tide = 1.493
 shader_parameter/water_turbulence = 3.676
 shader_parameter/water_alb = Color(0.729412, 0.937255, 0.972549, 1)
@@ -803,13 +803,12 @@ projection = 1
 size = 1000.0
 
 [node name="Water" type="MeshInstance3D" parent="UI_Node/Minimap/Minimap_Container/SubViewport"]
-transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, -23.7143, 7, -56.4582)
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, 7, 0)
 layers = 32771
 mesh = SubResource("PlaneMesh_c47cn")
 skeleton = NodePath("../Visual_Ground")
 
 [node name="Visual_Ground" type="MeshInstance3D" parent="UI_Node/Minimap/Minimap_Container/SubViewport"]
-transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, -23.7143, 0, -56.4582)
 layers = 2
 mesh = SubResource("PlaneMesh_ct43f")
 skeleton = NodePath("")

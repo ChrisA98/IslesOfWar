@@ -9,6 +9,8 @@ signal prep_ready
 	set(value):
 		debug_controller_swap = value
 		player_controller = game_actors[value]
+@export var leaders : Array[String]
+
 ''' Unit and Building vars '''
 ## World lists
 var world
@@ -73,8 +75,8 @@ func _process(_delta):
 	world.sun.rotation_degrees = Vector3(-world.sun_rotation,90,-180)
 	world.sun.light_energy = clampf(world.sun_str - ((world.sun_str * (abs(world.sun_rotation-90)/180))*2), world.sun_str*.15,world.sun_str)
 	world.moon_rotation = 180-(180*($UI_Node/Time_Bar/Day_Cycle_Timer.time_left/global.NIGHT_LENGTH))
-	world.moon.rotation_degrees = Vector3(-world.moon_rotation,90,-180)
-	world.moon.light_energy = world.moon_str - ((world.moon_str * (abs(world.moon_rotation-90)/180))*2) + world.moon_str*.02
+	world.moon.rotation_degrees = Vector3(-90,90,-180)
+	world.moon.light_energy = clamp(world.moon_str - ((world.moon_str * (abs(world.moon_rotation-90)/180))*2) + world.moon_str*.1,.1,1)
 	if(world.day_cycle):
 		$UI_Node/Time_Bar/Clock_Back.rotation = deg_to_rad(world.sun_rotation-90)
 	else:
@@ -82,7 +84,6 @@ func _process(_delta):
 	
 	##Update world animation time
 	RenderingServer.global_shader_parameter_set("game_time",Time.get_ticks_msec()/1000.0)
-	
 
 
 ## on player input event
@@ -114,7 +115,6 @@ func spawn_unit(unit):
 	unit.unit_list = world_units
 	unit.selected.connect(unit_selected)
 	return true
-
 
 
 '''-------------------------------------------------------------------------------------'''
@@ -163,6 +163,7 @@ func update_select_square(pos):
 	selection_square.size.y = 20
 	selection_square.size.z = abs(selection_square_points[1].z - selection_square_points[0].z)
 
+
 ## Do square selection and add them to selected_units
 ##
 ## returns true when box selects something, returns false otherwise
@@ -203,7 +204,6 @@ func select_from_square():
 func select_from_list(units):
 	player_controller.clear_selection()
 	player_controller.select_group(units)
-
 
 
 ''' Unit Selection End '''
@@ -290,8 +290,7 @@ func prepare_bases():
 	prep_player_building(0, null)
 	preview_building.set_pos(p_spawn.position)
 	player_controller.place_building(preview_building)
-	for i in range(600):
-		preview_building.spawn_unit(player_controller.faction_data["starting_unit"])
+	preview_building.spawn_unit(player_controller.faction_data["starting_unit"])
 	p_spawn.used = true
 	preview_building = null
 	click_mode = "select"
@@ -393,7 +392,6 @@ func building_pressed(building):
 			_:
 				activated_building = building #pass activated building to gamescene
 				click_mode = "menu"
-	
 
 
 ## Clicks on world

@@ -82,6 +82,9 @@ func _ready():
 	RenderingServer.global_shader_parameter_set("fog_darkness",fog_darkness)
 	RenderingServer.global_shader_parameter_set("heightmap_tex_size",Vector2(heightmap.get_width(),heightmap.get_width()))
 	
+	## Set water Height Data
+	RenderingServer.global_shader_parameter_set("water_depth",water_table)
+	
 	call_deferred("_build_fog_war",chunks)
 	get_parent().call_deferred("_prepare_game")
 
@@ -118,7 +121,6 @@ func _prepare_water(chunks):
 
 
 func _build_fog_war(chunks):
-	
 	## Fog of war walls
 	var fog_wall_size = ((chunk_size*chunks)/65)+1	#gets length of walls
 	var base_fog_wall = $Great_Fog_Wall.find_children("Fog*","Node",false)[-1]

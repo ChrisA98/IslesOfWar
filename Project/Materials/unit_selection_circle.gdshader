@@ -11,6 +11,7 @@ uniform float emission_energy;
 
 global uniform sampler2D heightmap_tex : repeat_disable;
 global uniform vec2 heightmap_tex_size = vec2(1000.0,1000.0);
+global uniform float water_depth;
 
 
 
@@ -23,7 +24,7 @@ void vertex() {
 	vec2 pos_uv = vec2((VERTEX.x)/heightmap_tex_size.x,(VERTEX.z)/heightmap_tex_size.y)+ vec2(.5);
 	
 	VERTEX.y = 0.0;	
-	VERTEX.y = get_height(pos_uv);
+	VERTEX.y = clamp(get_height(pos_uv),water_depth+.25,999);
 }
 
 void fragment() {

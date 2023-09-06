@@ -4,10 +4,15 @@ render_mode blend_mix,depth_draw_always,cull_back,diffuse_burley,specular_schlic
 global uniform sampler2D heightmap_tex;
 global uniform vec2 heightmap_tex_size = vec2(1000.0,1000.0);
 global uniform float game_time;
+global uniform float water_depth;
 
 uniform sampler2D offset_map;
 uniform sampler2D normal_map;
 uniform sampler2D texture_albedo;
+
+uniform bool is_naval_unit;
+uniform float model_y_rotation_deg;
+uniform float vert_offset;
 
 uniform float time_scale = 4.0;
 
@@ -17,9 +22,25 @@ uniform float roughness : hint_range(0,1);
 uniform bool use_color_override;
 
 
-float get_height(vec2 x){
-  float hgt = (texture(heightmap_tex,x).y) * 100.0;
-  return hgt;
+
+vec2 rotate2D(vec2 v, float a) {
+	a = a*0.0174533;
+    float s = sin(a);
+    float c = cos(a);
+    mat2 m = mat2(vec2(c,-s),vec2(s,c));
+    return m * v;
+}
+
+vec3 get_height(vec2 x){
+	return vec3(0,texture(heightmap_tex,x.xy).y * 100.0,0);
+}
+
+vec3 sea_bob(vec3 x, float rand){
+	vec3 offset = x + vec3(0, water_depth + sin(TIME+rand)/4.0,0);
+	offset.y += vert_offset;
+	offset.xy = rotate2D(offset.xy,sin(TIME+rand)*4.0);
+	offset.yz = rotate2D(offset.yz,sin(TIME+5.0+rand)*3.0);
+	return offset;	
 }
 
 void vertex(){
@@ -53,8 +74,12 @@ void vertex(){
 		vec2 pos_uv = vec2((inst_pos.x)/heightmap_tex_size.x,(inst_pos.z)/heightmap_tex_size.y)+ vec2(.5);
 		
 		VERTEX += new_offset;
-		VERTEX.y += get_height(pos_uv);
-		
+		VERTEX.xz = rotate2D(VERTEX.xz,model_y_rotation_deg);
+		if (is_naval_unit){
+			VERTEX = sea_bob(VERTEX,INSTANCE_CUSTOM.w);
+		}else{
+			VERTEX += get_height(pos_uv);
+		}
 		vec3 normal_floor = texture(normal_map, UV2 + frame_floor_uv_offset).xyz;
 		vec3 normal_ceil = texture(normal_map, UV2 + frame_ceil_uv_offset).xyz;
 		vec3 normal_lerp = mix(normal_floor, normal_ceil, lerp_factor);
@@ -67,7 +92,7 @@ void vertex(){
 }
 
 void fragment(){
-		vec3 albedo_col = texture(texture_albedo, UV).rgb;
+		vec4 albedo_col = texture(texture_albedo, UV).rgba;
 		if (use_color_override){
 			ALBEDO=COLOR.rgb;
 		}else{
@@ -76,5 +101,6 @@ void fragment(){
 		METALLIC = metallic;
 		ROUGHNESS = roughness;
 		SPECULAR = specular;
-		ALPHA = 1.0;
+		ALPHA = albedo_col.a;
+		ALPHA_SCISSOR_THRESHOLD = .5;
 }

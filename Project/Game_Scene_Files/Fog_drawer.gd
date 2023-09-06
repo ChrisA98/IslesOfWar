@@ -95,8 +95,8 @@ func _update_draw(parent):
 	if (!drawers.has(parent)):
 		return false
 	drawers[parent].visible = parent.visible
-	drawers[parent].position.x = parent.position.x
-	drawers[parent].position.y = parent.position.z
+	drawers[parent].position.x = parent.position.x - fmod(parent.position.x,3)
+	drawers[parent].position.y = parent.position.z - fmod(parent.position.z,3)
 	return true
 
 

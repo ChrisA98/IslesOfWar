@@ -1,4 +1,4 @@
-
+@tool
 extends MultiMeshInstance3D
 class_name unit_animator
 
@@ -6,6 +6,17 @@ signal unit_reordered(master, old_id, new_id)
 
 enum instance_targets {START_FRAME,END_FRAME,ANIM_START_TIME,ANIM_OFFSET}
 
+@export var preview_unit : bool:
+	set(value):
+		if !Engine.is_editor_hint():
+			return
+		preview_unit = value
+		if value :
+			spawn_unit_instance(Vector3.ZERO,Color.BLUE)
+			_set_animation_window(0,IDLE[0])
+			return
+		delete_unit(1)
+@export var rotation_offset : float
 ## IDLE CONSTANTS
 const IDLE= ["idle",0, 59]
 
@@ -39,9 +50,6 @@ func _ready():
 	units.set_use_colors(true)
 	units.set_instance_count(max_instances)
 	units.set_visible_instance_count(0)
-	
-func _process(delta):
-	pass
 
 
 ## Spawn a new unit instane at target location
@@ -56,7 +64,7 @@ func spawn_unit_instance(pos: Vector3, accent_color : Color):
 	return active_units-1
 
 
-##Set base animation state
+## Set base animation state
 func set_animation_state(unit: int, anim:String):
 	active_animation = anim
 	_set_animation_window(unit,anim)
@@ -138,3 +146,5 @@ func _set_animation_window(unit: int,animation: String):
 			units.set_instance_custom_data(unit,Color(WALK[1], WALK[2], time, randf()))
 		ATTACK_01[0]:
 			units.set_instance_custom_data(unit,Color(ATTACK_01[1], ATTACK_01[2], time, 0))
+		IDLE_ATTACKING[0]:
+			units.set_instance_custom_data(unit,Color(IDLE_ATTACKING[1], IDLE_ATTACKING[2], time, randf()))

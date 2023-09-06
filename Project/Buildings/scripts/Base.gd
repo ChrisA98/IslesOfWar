@@ -26,6 +26,7 @@ func set_pos(pos, _wait = false):
 
 
 func place():
+	_near_water()
 	super()
 	hide_radius()
 
@@ -39,6 +40,22 @@ func near_base(buildings) -> bool:
 		if b.position.distance_to(position) < b.radius + radius:
 			return true
 	return false
+
+
+## Check if base can build a dock
+func _near_water():
+	var near_w = false
+	for i in range(36):
+		var pos = Vector3()
+		var alpha = (i*10)
+		var x = radius * cos(alpha)
+		var z = radius * sin(alpha)
+		var elevation = world.world.get_loc_height(position+Vector3(x,0,z))
+		if elevation <= world.world.water_table:
+			near_w = true
+			break
+	print(near_w)
+		
 
 
 func preview_radius():

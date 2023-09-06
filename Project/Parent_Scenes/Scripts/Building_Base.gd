@@ -287,6 +287,7 @@ func place():
 		if col != static_body.get_child(0):
 			col.queue_free()
 	
+	## Setup building web
 	if get_meta("show_base_radius"):
 		parent_building = parent_base
 		for bldg in parent_base.children_buildings:
@@ -387,6 +388,8 @@ func get_ground_groups():
 			continue
 		if !get_groups().has(t[0]):
 			add_to_group(c.get_collider().get_parent().get_parent().get_groups()[0])	
+
+
 
 ''' Placing logic End '''
 '''-------------------------------------------------------------------------------------'''

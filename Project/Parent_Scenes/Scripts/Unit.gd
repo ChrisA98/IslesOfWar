@@ -17,6 +17,11 @@ enum attack_type{MELEE, RANGE_PROJ, RANGE_AREA, RANGE_BEAM, LOCKED_RANGE_PROJ, L
 ## Area this unit reveals fog in
 @export var unit_name: String
 @export var fog_rev_radius : float = 50
+@export var selection_circle_radius : float = 1:
+	set(value):
+		selection_circle_radius = value
+		$Selection.scale.x = value
+		$Selection.scale.z = value
 
 ''' Movement '''
 @export_group("Travel")
@@ -49,12 +54,13 @@ var ai_mode :StringName = "idle_basic":
 		ai_mode = value
 		if value.contains("attack"):
 			atk_timer.start(current_atk_spd)
+			unit_models.attacking = true
 		else:
 			target_enemy = null
 			atk_timer.stop()
+			unit_models.attacking = false
 		if !value.contains("idle"):
 			nav_agent.avoidance_enabled = true
-		unit_models.moving = !value.contains("idle")
 		update_fog.emit(self, (!value.contains("idle") and is_visible))
 		
 var ai_methods : Dictionary = {
@@ -115,6 +121,7 @@ var target_enemy:
 			if value.has_meta("show_base_radius"):
 				target_atk_rng += value.bldg_radius
 		else:
+			unit_models.attacking = false
 			actor_owner.erase_from_tracking_queue(self)
 		
 		## Previous enemy existed
@@ -195,8 +202,7 @@ func _ready():
 			attack_method = Callable(__ranged_proj_attack)
 			projectile_manager = load("res://Parent_Scenes/Projectile_Arc.tscn")
 			ai_methods["attack_commanded"] = Callable(_locked_targeted_attack)
-	
-	
+
 
 func _physics_process(delta):
 	if(is_queued_for_deletion()):
@@ -204,6 +210,11 @@ func _physics_process(delta):
 		## It'd be cool if their was a workaround that didn't involve an if statement
 		return
 	ai_methods[ai_mode].call(delta)
+
+
+func _process(_delta):
+	unit_models.moving = (velocity.length() > 0.1)
+
 
 '''### Public Methods ###'''
 '''-------------------------------------------------------------------------------------'''
@@ -250,6 +261,7 @@ func load_data(data, model_masters, id):
 	fog_reg.detect_area.body_exited.connect(_vision_body_exited)
 	
 	unit_models.move_models(velocity)
+
 
 ## Prepare Navigation agent
 func _prepare_nav_agent():
@@ -485,15 +497,12 @@ func _attack():
 	if target_enemy.has_meta("show_base_radius") and (position.distance_to(target_enemy.position)-target_enemy.bldg_radius > target_atk_rng):
 		return
 	
-	## Temporasry Code for attack visualization
+	
 	unit_models.unit_attack(base_atk_spd)
-	$UnitModels/attack_indicator_temp.visible = true
 	
 	atk_timer.start(base_atk_spd)
 	attack_method.call()
 	attacked.emit()
-	await get_tree().create_timer(0.25).timeout
-	$UnitModels/attack_indicator_temp.visible = false
 
 
 ## Ranged projectile attack callable
@@ -539,7 +548,7 @@ func _targeted_attack(delta):
 		return
 	
 	## Handle tracking target
-	if(position.distance_to(target_enemy.position) <= target_atk_rng):
+	if(position.distance_to(target_enemy.position) < target_atk_rng*.65):
 		if nav_agent.is_navigation_finished():
 			unit_models.face_target(target_enemy.position)
 			return
@@ -634,7 +643,6 @@ func __find_target(trgt, pos:Vector3, _is_visible:bool):
 
 
 func _on_navigation_agent_3d_navigation_finished():
-	unit_models.moving = false
 	nav_agent.avoidance_enabled = false
 	## Don't stop on other units if not attacking
 	if(!ai_mode.contains("attack")):
@@ -642,17 +650,20 @@ func _on_navigation_agent_3d_navigation_finished():
 		if(targ != position):
 			queue_move(targ)
 			return
+		if actor_owner.actor_ID != 0:
+			ai_mode = "idle_aggressive"
+		else:
+			ai_mode = "idle_basic"
+			
 	
 	if ai_mode.contains("travel"):
 		if(queued_move_target != Vector3.ZERO and position.distance_to(queued_move_target) > 5):
 			queue_move(queued_move_target)
 			return
+	
 	nav_agent.set_velocity(Vector3.ZERO)
 	velocity = Vector3.ZERO
-	if actor_owner.actor_ID != 0:
-		ai_mode = "idle_aggressive"
-	else:
-		ai_mode = "idle_basic"
+
 
 
 func _on_NavigationAgent_velocity_computed(safe_velocity):
@@ -661,7 +672,7 @@ func _on_NavigationAgent_velocity_computed(safe_velocity):
 		return
 	global_transform.origin = global_transform.origin+velocity
 	unit_models.move_models(velocity)
-	
+
 
 func _update_velocity(delta):	
 	var current_agent_position: Vector3 = global_transform.origin

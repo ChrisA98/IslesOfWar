@@ -1,5 +1,6 @@
 {
 	"name": "The Kingdom of Amerulf",
+	"leader": "Aebul",
 	"short_name": "Amerulf",
 	"magic_color": "39b8ff",
 	"buildings":{
@@ -224,7 +225,7 @@
 			"pop_cost": 1
 		},
 		"Galley": {
-			"models":[
+			"models":["galley"
 			],
 			"base_cost": {
 			"wood": 0,

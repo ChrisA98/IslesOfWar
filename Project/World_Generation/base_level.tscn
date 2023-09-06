@@ -338,10 +338,10 @@ shape = SubResource("BoxShape3D_gubrw")
 [node name="Base_Spawns" type="Node" parent="."]
 
 [node name="Base_Spawn" parent="Base_Spawns" instance=ExtResource("6_aid2n")]
-transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 262, 9.26421, 25)
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 262, 9.26421, 35.5066)
 
 [node name="Base_Spawn2" parent="Base_Spawns" instance=ExtResource("6_aid2n")]
-transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 274.147, 8.60596, -203.357)
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 231.711, 16.0589, -231.669)
 actor_id = 1
 
 [node name="Forest" parent="." instance=ExtResource("5_8idnn")]
@@ -399,6 +399,7 @@ shadow_enabled = true
 shadow_bias = 0.04
 shadow_reverse_cull_face = true
 shadow_blur = 2.275
+directional_shadow_mode = 0
 
 [node name="Moon" type="DirectionalLight3D" parent="."]
 transform = Transform3D(-4.37114e-08, 0, 1, 0, 1, 0, -1, 0, -4.37114e-08, 0, 0, 0)
@@ -408,12 +409,12 @@ light_energy = 0.427
 light_indirect_energy = 0.819
 light_cull_mask = 4294967279
 shadow_enabled = true
+shadow_reverse_cull_face = true
 shadow_blur = 7.224
-directional_shadow_mode = 1
+directional_shadow_mode = 0
 directional_shadow_blend_splits = true
 directional_shadow_max_distance = 800.0
 directional_shadow_pancake_size = 76.6
-sky_mode = 1
 
 [editable path="Stone_deposit"]
 [editable path="Stone_deposit2"]

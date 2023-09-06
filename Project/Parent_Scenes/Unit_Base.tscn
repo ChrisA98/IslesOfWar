@@ -74,6 +74,9 @@ debug_path_custom_point_size = 10.82
 [node name="Selection" type="Node3D" parent="."]
 
 [node name="MeshInstance3D" type="MeshInstance3D" parent="Selection"]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, 1.42964, 0)
+sorting_offset = 100.0
+sorting_use_aabb_center = false
 mesh = SubResource("PlaneMesh_5tc6o")
 
 [node name="Attack_Timer" type="Timer" parent="."]

@@ -62,10 +62,9 @@ func load_units():
 		for mod in faction_data["unit_list"][un]["models"]:
 			##Load model master
 			var model
-			if(FileAccess.file_exists("res://Models/Unit/modified_scenes/"+mod+"_va.tscn")):
+			if(FileAccess.file_exists("res://Models/Units/modified_scenes/"+mod+"_va.tscn")):
 				model = load("res://Models/Units/modified_scenes/"+mod+"_va.tscn").instantiate()
 			else:
-				@warning_ignore("assert_always_false")
 				model = load("res://Models/Units/modified_scenes/knight_base_va.tscn").instantiate()
 			model.name = mod+"_models_master"
 			add_child(model)
@@ -152,10 +151,8 @@ func place_building(bld):
 	adj_max_pop(bld.pop_mod)
 	buildings.sort()
 	
-	if(bld.parent_building == null):
-		building_added.emit(bld.position,bld.hide_grass,bld.bldg_radius, Vector3.ZERO)
-	else:
-		building_added.emit(bld.position,bld.hide_grass,bld.bldg_radius,bld.parent_building.position)
+	_update_grass_tex(bld)
+
 	return true
 
 
@@ -163,6 +160,13 @@ func place_building(bld):
 func owns_building(bldg):
 	return buildings.has(bldg)
 
+
+func _update_grass_tex(bld):
+	## Do Grass Modification
+	if(bld.parent_building == null):
+		building_added.emit(bld.position,bld.hide_grass,bld.bldg_radius, Vector3.ZERO)
+	else:
+		building_added.emit(bld.position,bld.hide_grass,bld.bldg_radius,bld.parent_building.position)
 
 '''Building Management End'''
 '''-------------------------------------------------------------------------------------'''
