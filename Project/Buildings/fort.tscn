@@ -1,0 +1,11 @@
+[gd_scene load_steps=3 format=3 uid="uid://r0nhovqb6j2c"]
+
+[ext_resource type="PackedScene" uid="uid://ccoruw5j562l7" path="res://Parent_Scenes/Building_Base.tscn" id="1_go5yj"]
+[ext_resource type="Script" path="res://Buildings/scripts/Base.gd" id="2_q1prm"]
+
+[node name="Fort" instance=ExtResource("1_go5yj")]
+script = ExtResource("2_q1prm")
+radius = 30
+type = "Fort"
+fog_rev_radius = 40.0
+garrison_unit_type = null
