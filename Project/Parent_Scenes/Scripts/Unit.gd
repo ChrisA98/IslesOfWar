@@ -696,9 +696,7 @@ func _lock_position(state:= true):
 	if state:
 		nav_agent.set_velocity(Vector3.ZERO)
 		velocity = Vector3.ZERO
-		travel_function = Callable(_idling_basic)
 		return
-	travel_function = Callable(_travel)
 	move_unlocked.emit()
 
 

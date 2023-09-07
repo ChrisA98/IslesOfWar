@@ -3,11 +3,14 @@ extends Building
 @export var radius = 30:
 	set(value):
 		radius = value
-		_update_radius(value)
+		if is_node_ready():
+			_update_radius(value)
 
 # Variables for AI dock placement
 var can_make_dock : bool
 var water_loc: Vector3
+
+var building_child : Building
 
 @onready var valid_region = get_node("Valid_Region")
 @onready var particles_generator = get_node("Valid_Region/GPUParticles3D")
@@ -27,6 +30,7 @@ func set_pos(pos, _wait = false):
 	super(pos, false)
 	get_node("Valid_Region/GPUParticles3D").restart()
 	if near_base(actor_owner.bases):
+		print("near_base")
 		make_invalid()
 
 
@@ -50,19 +54,20 @@ func near_base(buildings) -> bool:
 ## Check if base can build a dock
 func _near_water():
 	var near_w = false
-	var lowest = Vector3()
+	var lowest = [Vector3(),9999]
 	for i in range(36):
 		var alpha = (i*10)
 		var x = radius * cos(alpha)
 		var z = radius * sin(alpha)
 		var pos = Vector3(x,0,z)
-		lowest = min(lowest,pos)
+		var elevation = world.world.get_loc_height(position)	
+		if elevation <= lowest[1]:
+			lowest = [pos,elevation]
 	
-	var elevation = world.world.get_loc_height(position+lowest)	
-	if elevation <= world.world.water_table:
+	if lowest[1] <= world.world.water_table:
 		near_w = true
 	can_make_dock = near_w
-	water_loc = lowest
+	water_loc = lowest[0]
 
 
 func preview_radius():

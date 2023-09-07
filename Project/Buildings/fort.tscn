@@ -1,11 +1,57 @@
-[gd_scene load_steps=3 format=3 uid="uid://r0nhovqb6j2c"]
+[gd_scene load_steps=8 format=3 uid="uid://r0nhovqb6j2c"]
 
 [ext_resource type="PackedScene" uid="uid://ccoruw5j562l7" path="res://Parent_Scenes/Building_Base.tscn" id="1_go5yj"]
 [ext_resource type="Script" path="res://Buildings/scripts/Base.gd" id="2_q1prm"]
+
+[sub_resource type="Gradient" id="Gradient_f6mc5"]
+colors = PackedColorArray(1, 1, 1, 1, 1, 1, 1, 0)
+
+[sub_resource type="GradientTexture1D" id="GradientTexture1D_dgpkf"]
+gradient = SubResource("Gradient_f6mc5")
+
+[sub_resource type="ParticleProcessMaterial" id="ParticleProcessMaterial_b1t5r"]
+direction = Vector3(0, 1, 0)
+spread = 0.0
+gravity = Vector3(0, 0, 0)
+initial_velocity_min = 0.5
+initial_velocity_max = 0.5
+color_ramp = SubResource("GradientTexture1D_dgpkf")
+attractor_interaction_enabled = false
+
+[sub_resource type="StandardMaterial3D" id="StandardMaterial3D_h2a63"]
+transparency = 1
+blend_mode = 1
+cull_mode = 2
+depth_draw_mode = 1
+shading_mode = 0
+diffuse_mode = 1
+vertex_color_use_as_albedo = true
+disable_receive_shadows = true
+
+[sub_resource type="CylinderMesh" id="CylinderMesh_id064"]
+material = SubResource("StandardMaterial3D_h2a63")
+top_radius = 30.0
+bottom_radius = 30.0
+height = 1.5
+cap_top = false
+cap_bottom = false
 
 [node name="Fort" instance=ExtResource("1_go5yj")]
 script = ExtResource("2_q1prm")
 radius = 30
 type = "Fort"
-fog_rev_radius = 40.0
-garrison_unit_type = null
+fog_rev_radius = 65.0
+metadata/show_base_radius = false
+
+[node name="Valid_Region" type="Node3D" parent="." index="4"]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, 0.0673345, 0.93381)
+
+[node name="GPUParticles3D" type="GPUParticles3D" parent="Valid_Region" index="0"]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0.101, -0.150815, -0.0473027)
+gi_mode = 2
+lifetime = 4.81
+preprocess = 4.0
+visibility_aabb = AABB(-5.55879, -1.53446, -5.77225, 11.1176, 3.06891, 11.5445)
+draw_order = 2
+process_material = SubResource("ParticleProcessMaterial_b1t5r")
+draw_pass_1 = SubResource("CylinderMesh_id064")

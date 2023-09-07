@@ -25,7 +25,7 @@ signal spawned_unit
 
 ''' Identifying Vars '''
 var actor_owner : game_actor
-var parent_base : Building
+var parent_base
 var parent_building : Building
 var display_name : String
 var faction : String
@@ -114,10 +114,14 @@ func _ready():
 		det_area.area_entered.connect(_detection_area_entered)
 		det_area.area_exited.connect(_detection_area_exited)
 		hide_from_mouse()
+	
 
 
 func _process(delta):
 	if(is_building):
+		if parent_base.building_child != null and parent_base.building_child != self:
+			return
+		parent_base.building_child = self
 		build_timer-=delta
 		var prog = ((build_time-build_timer)/build_time)
 		build_particles.position.y = prog
@@ -151,6 +155,8 @@ func init(_pos, snap: int, actor: Node):
 	set_all_over_mats(prev_mat)
 	
 	set_snap(snap)
+	
+	parent_base = actor_owner
 
 
 func load_data(data):	
@@ -396,6 +402,7 @@ func get_ground_groups():
 ''' Building and Fog logic Start '''
 #Finish the building process
 func finish_building():
+	parent_base.building_child = null
 	await get_tree().physics_frame
 	is_building = false
 	build_particles.visible = false

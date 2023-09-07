@@ -21,6 +21,8 @@ var unit_tracking_queue := []
 '''Identifying Data'''
 var actor_ID : int
 var faction_data
+## only build one non base-bound building at a atime
+var building_child : Building
 
 ''' onready vars '''
 @onready var gamescene = $".."
@@ -144,7 +146,7 @@ func place_building(bld):
 		adj_resource(res,bld.cost[res]*-1)
 		
 	#Place bases in bases list
-	if bld.type == "Base":
+	if bld.type == "Base" or bld.type == "Fort":
 		bases.push_back(bld)
 	
 	#Adjust max pop
@@ -163,7 +165,7 @@ func owns_building(bldg):
 
 func _update_grass_tex(bld):
 	## Do Grass Modification
-	if(bld.parent_building == null):
+	if(bld.parent_building == null or bld.parent_building == self):
 		building_added.emit(bld.position,bld.hide_grass,bld.bldg_radius, Vector3.ZERO)
 	else:
 		building_added.emit(bld.position,bld.hide_grass,bld.bldg_radius,bld.parent_building.position)
