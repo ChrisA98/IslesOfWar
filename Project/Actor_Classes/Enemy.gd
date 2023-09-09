@@ -39,7 +39,7 @@ var troop_train_patience = .1
 var build_patience = .1
 var res_search_patience = 5
 var enemy_search_patience = 5
-var speed_of_thought = 1
+var speed_of_thought = 4
 var few_troops_threshold = 2
 var min_troop_attack = 10
 var goal_hierarchy = [
@@ -65,13 +65,15 @@ func _ready():
 	think_timer = Timer.new()
 	add_child(think_timer)
 	think_timer.timeout.connect(think_caller)
-	#think_timer.start(4)
+	think_timer.start(4)
 
 	## -- set resource location categories -- ##
 	resource_locations["Lumber_mill"] = []
 	resource_locations["Mine_stone"] = []
 	resource_locations["Mine_crystal"] = []
 '''### Private METHODS ###'''
+
+
 ## build list of enemeis and declare focused enemy
 func build_enemy_list():
 	for ac in gamescene.game_actors:
@@ -80,13 +82,21 @@ func build_enemy_list():
 	while focused_enemy == self:
 		focused_enemy = gamescene.game_actors\
 		[rng.randi_range(0,gamescene.game_actors.size()-1)]
+		
+
 ''' Decision Making start '''
+
+
 ## Make a deferred cal to _think goal
 func think_caller():
 	call_deferred("_think")
+
+
 ## Decides how to accomplish a goal
 func _think():
 	think_timer.stop()
+	if bases.size() < 1:
+		return
 	match current_goal:
 		"get units":
 			__get_units()
@@ -137,6 +147,8 @@ func ponder():
 			_:
 				pass
 	return false
+
+
 ''' Decision Making end '''
 '''-------------------------------------------------------------------------------------'''
 ''' _think functions start '''
@@ -161,6 +173,8 @@ func __get_units():
 			return
 		think_timer.start(ttt)
 		return
+
+
 func __build():
 	if prepared_building != null:
 		## Currently building this building

@@ -42,6 +42,7 @@ radius = 30
 type = "Fort"
 fog_rev_radius = 65.0
 metadata/show_base_radius = false
+metadata/needs_base = false
 
 [node name="Valid_Region" type="Node3D" parent="." index="4"]
 transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, 0.0673345, 0.93381)

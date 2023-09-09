@@ -368,7 +368,6 @@ transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, -48.7732, 26.549, -364.716)
 transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 344.551, 11.4199, 6.41168)
 
 [node name="Explorable_Fog" type="Node3D" parent="."]
-visible = false
 
 [node name="RayCast3D" type="RayCast3D" parent="Explorable_Fog"]
 transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, 200, 0)

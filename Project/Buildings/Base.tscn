@@ -54,6 +54,7 @@ fog_rev_radius = 75.0
 base_health = 150.0
 base_armor = 0.2
 metadata/show_base_radius = false
+metadata/needs_base = false
 
 [node name="MeshInstance3D" parent="." index="2"]
 transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, 0, 0)

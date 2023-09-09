@@ -8,6 +8,7 @@ signal died
 signal update_fog
 signal fog_radius_changed
 signal spawned_unit
+signal revealed
 
 
 ''' Export Vars '''
@@ -45,8 +46,13 @@ var discovered : bool:
 				$GPUParticles3D.visible = true
 var is_visible : bool:
 	set(value):
+		if actor_owner.actor_ID == 0:
+			is_visible = true
+			return
 		is_visible = value
 		$MeshInstance3D/Hiding.visible = !value
+		if value:
+			revealed.emit()
 
 ''' Building Logic Vars '''
 var is_valid = false
@@ -119,6 +125,8 @@ func _ready():
 
 func _process(delta):
 	if(is_building):
+		if !is_instance_valid(parent_building) and parent_building != null:
+			return
 		if parent_base.building_child != null and parent_base.building_child != self:
 			return
 		parent_base.building_child = self
@@ -145,7 +153,11 @@ func init(_pos, snap: int, actor: Node):
 	faction = actor_owner.faction_data.name
 	faction_short_name = actor_owner.faction_data.short_name
 	
-	load_data(actor_owner.faction_data)	
+	load_data(actor_owner.faction_data)
+	
+	if actor_owner.actor_ID == 0:
+		is_visible = true
+		
 	# Populate base materials
 	for i in range(mesh.get_surface_override_material_count()):
 		base_mats.push_back(mesh.mesh.surface_get_material(i))
@@ -241,10 +253,9 @@ func set_pos(pos, wait = false):
 		return
 	
 	## Make invalid if locked to base radius
-	if(get_meta("show_base_radius")):
-		if near_base(actor_owner.bases) == false:
-			make_invalid()
-			return "out of zone"
+	if near_base(actor_owner.bases) == false and get_meta("needs_base"):
+		make_invalid()
+		return "out of zone"
 	
 	## Make sure can be seen
 	if !is_visible_area() and type != "Base":
@@ -294,7 +305,7 @@ func place():
 			col.queue_free()
 	
 	## Setup building web
-	if get_meta("show_base_radius"):
+	if parent_base != actor_owner:
 		parent_building = parent_base
 		for bldg in parent_base.children_buildings:
 			if bldg.position.distance_to(position) < parent_building.position.distance_to(position):
@@ -339,10 +350,11 @@ func check_collision():
 
 
 func in_water():
-	picker.force_raycast_update()
-	if(picker.get_collider() != null):
-		if(picker.get_collider().get_groups().size() == 0):
-			return false
+	var corners = static_body.find_children("Corner*")
+	for c in corners:
+		c.force_raycast_update()
+		if(picker.get_collider() != null and picker.get_collider().get_groups().size() == 0):
+			return false	
 	return true
 
 
@@ -354,6 +366,7 @@ func near_base(buildings) -> bool:
 		if b.position.distance_to(position) < b.radius:
 			parent_base = b
 			return true
+	parent_base = actor_owner
 	return false
 
 
@@ -529,11 +542,17 @@ func empty_garrison():
 ## Delay delete and remove from lists
 func delayed_delete():
 	actor_owner.buildings.erase(self)
+	if parent_base.has_meta("show_base_radius"):
+		parent_base.children_buildings.erase(self)
 	world.world_buildings.erase(self)
 	actor_owner.update_pop()
 	await get_tree().physics_frame
 	queue_free()
-	world.update_navigation(get_groups()[0])
+	if get_groups().size() < 1:
+		return	
+	for g in get_groups():
+		world.update_navigation(g)
+
 
 ''' Destruction End '''
 '''-------------------------------------------------------------------------------------'''

@@ -30,7 +30,6 @@ func set_pos(pos, _wait = false):
 	super(pos, false)
 	get_node("Valid_Region/GPUParticles3D").restart()
 	if near_base(actor_owner.bases):
-		print("near_base")
 		make_invalid()
 
 
@@ -43,8 +42,8 @@ func place():
 func near_base(buildings) -> bool:
 	if buildings == null:
 		return false
-	for b in buildings:
-		if b == self:
+	for b in world.world_buildings:
+		if b == self or !b.has_method("_near_water"):
 			break
 		if b.position.distance_to(position) < b.radius + radius:
 			return true
@@ -76,6 +75,15 @@ func preview_radius():
 
 func hide_radius():
 	valid_region.visible = false
+
+
+func delayed_delete():
+	actor_owner.bases.erase(self)
+	for i in children_buildings:
+		if i.is_building:
+			i.delayed_delete()
+	await get_tree().physics_frame
+	super()
 
 
 func _update_radius(new_radius):

@@ -1,5 +1,15 @@
-# Blender 3.5.1 MTL File: 'None'
+# Blender 3.6.2 MTL File: 'Amerulf_Fort.blend'
 # www.blender.org
+
+newmtl Material
+Ns 250.000000
+Ka 1.000000 1.000000 1.000000
+Ks 0.500000 0.500000 0.500000
+Ke 0.000000 0.000000 0.000000
+Ni 1.450000
+d 1.000000
+illum 2
+map_Kd D:/Holder/GameDev/IslesOfWar/Blender_Files/Units/vis_textures/Amerulfian_flag.png
 
 newmtl Roof
 Ns 250.000000
@@ -14,19 +24,19 @@ illum 2
 newmtl Stone
 Ns 250.000000
 Ka 1.000000 1.000000 1.000000
-Kd 0.031359 0.034323 0.044168
-Ks 0.500000 0.500000 0.500000
+Ks 0.000000 0.000000 0.000000
 Ke 0.000000 0.000000 0.000000
 Ni 1.450000
 d 1.000000
-illum 2
+illum 1
+map_Kd Tex/Stone_01.png
 
 newmtl Wood
-Ns 250.000000
+Ns 0.000000
 Ka 1.000000 1.000000 1.000000
-Kd 0.083401 0.049410 0.023993
-Ks 0.500000 0.500000 0.500000
+Ks 0.000000 0.000000 0.000000
 Ke 0.000000 0.000000 0.000000
 Ni 1.450000
 d 1.000000
-illum 2
+illum 1
+map_Kd D:/Holder/GameDev/IslesOfWar/Blender_Files/Units/vis_textures/wood_tex.png

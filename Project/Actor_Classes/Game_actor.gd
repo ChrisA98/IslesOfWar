@@ -2,7 +2,6 @@ extends Node
 class_name game_actor
 
 
-
 ''' Signals '''
 signal res_changed(res: int, new_amt: int)
 signal pop_changed(curr_pop: int, max_pop: int)
@@ -15,6 +14,7 @@ var units := []
 var loaded_units := {}
 var unit_model_master := {}
 var selected_units = []
+
 
 var unit_tracking_queue := []
 
@@ -35,6 +35,7 @@ var building_child : Building
 "food": 200}
 @onready var pop: int = 0
 @onready var max_pop: int = 0
+@onready var training_pop = 0
 
 '''### BUILT-IN METHODS ###'''
 # Called when the node enters the scene tree for the first time.
@@ -153,8 +154,8 @@ func place_building(bld):
 	adj_max_pop(bld.pop_mod)
 	buildings.sort()
 	
-	_update_grass_tex(bld)
-
+	call_deferred("_update_grass_tex",bld)
+	
 	return true
 
 
@@ -164,6 +165,8 @@ func owns_building(bldg):
 
 
 func _update_grass_tex(bld):
+	if !bld.is_visible:
+		await bld.revealed
 	## Do Grass Modification
 	if(bld.parent_building == null or bld.parent_building == self):
 		building_added.emit(bld.position,bld.hide_grass,bld.bldg_radius, Vector3.ZERO)

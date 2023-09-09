@@ -11,7 +11,7 @@ script = ExtResource("2_8girq")
 resource = ""
 rpc = 0
 generate_time = 10
-metadata/show_base_radius = false
+metadata/needs_base = false
 
 [node name="RallyPoint" parent="." index="4"]
 visible = false

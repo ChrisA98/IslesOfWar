@@ -77,6 +77,7 @@ garrison_unit_type = 1
 metadata/show_base_radius = true
 metadata/has_build_radius = true
 metadata/reveals_fog = 0
+metadata/needs_base = true
 
 [node name="Train_Timer" type="Timer" parent="."]
 

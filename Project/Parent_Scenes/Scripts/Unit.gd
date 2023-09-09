@@ -99,7 +99,7 @@ var is_visible: bool:
 		is_visible = value
 		$Selection.visible = is_selected
 		update_fog.emit(self, is_visible)
-		unit_models.rendered = value
+		_make_visible(value)
 
 ''' Cost Vars '''
 var pop_cost := 0
@@ -231,6 +231,8 @@ func load_data(data, model_masters, id):
 	
 	## Set meta data
 	set_meta("owner_id",actor_owner.actor_ID)
+	if actor_owner.actor_ID != 0:
+		_make_visible(false)
 	
 	## Fog Setup
 	fog_reg.set_actor_owner(actor_owner.actor_ID)
@@ -480,7 +482,7 @@ func _vision_area_exited(area):
 
 
 func _make_visible(state := true):
-	unit_models.rendered = state
+	unit_models.rendered = is_visible
 
 ''' Movement Methods end '''
 '''-------------------------------------------------------------------------------------'''
