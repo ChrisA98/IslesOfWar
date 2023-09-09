@@ -47,7 +47,7 @@ size = Vector3(2.13995, 0.8, 2.92249)
 [node name="Base" instance=ExtResource("1_l4fnw")]
 transform = Transform3D(5, 0, 0, 0, 5, 0, 0, 0, 5, 0, 0, 0)
 script = ExtResource("2_hibt6")
-radius = 30
+radius = 50
 build_time = 0.0
 type = "Base"
 fog_rev_radius = 75.0

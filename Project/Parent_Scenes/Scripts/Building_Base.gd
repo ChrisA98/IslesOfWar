@@ -26,7 +26,12 @@ signal revealed
 
 ''' Identifying Vars '''
 var actor_owner : game_actor
-var parent_base
+var parent_base:
+	set(value):
+		if is_building and parent_base.building_child == self:
+			parent_base.building_child = null
+			value.building_child = self
+		parent_base = value
 var parent_building : Building
 var display_name : String
 var faction : String
@@ -50,7 +55,6 @@ var is_visible : bool:
 			is_visible = true
 			return
 		is_visible = value
-		$MeshInstance3D/Hiding.visible = !value
 		if value:
 			revealed.emit()
 

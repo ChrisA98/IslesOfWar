@@ -38,7 +38,7 @@ cap_bottom = false
 
 [node name="Fort" instance=ExtResource("1_go5yj")]
 script = ExtResource("2_q1prm")
-radius = 30
+radius = 40
 type = "Fort"
 fog_rev_radius = 65.0
 metadata/show_base_radius = false

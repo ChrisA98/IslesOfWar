@@ -36,15 +36,26 @@ func set_pos(pos, _wait = false):
 func place():
 	_near_water()
 	super()
+	## Adopt orphan buildings nearby
+	for bldg in _get_nearby_orphan_buildings():
+		bldg.parent_base = self
+		bldg.parent_building = self
+		children_buildings.push_back(bldg)
+		actor_owner.update_grass_tex(bldg)
 	hide_radius()
+	building_child = self
 
+
+func finish_building():
+	super()
+	building_child = null
 
 func near_base(buildings) -> bool:
 	if buildings == null:
 		return false
 	for b in world.world_buildings:
 		if b == self or !b.has_method("_near_water"):
-			break
+			continue
 		if b.position.distance_to(position) < b.radius + radius:
 			return true
 	return false
@@ -102,3 +113,16 @@ func set_radius_color(hex):
 	var mat = particles_generator.get_draw_pass_mesh(0).surface_get_material(0)
 	mat.albedo_color = hex
 	particles_generator.get_draw_pass_mesh(0).surface_set_material(0,mat)
+
+
+## Get any nearby buildings owned by owning actor and not connected to a base
+## that aren't other bases
+func _get_nearby_orphan_buildings():
+	var out_arr = []
+	for b in actor_owner.buildings:
+		if position.distance_to(b.position) > radius or b.parent_base != actor_owner:
+			continue
+		if b.has_method("set_radius_color"):
+			continue
+		out_arr.push_back(b)
+	return out_arr

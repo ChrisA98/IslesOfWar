@@ -1,9 +1,11 @@
-[gd_scene load_steps=12 format=3 uid="uid://cs2p3v3o53aki"]
+[gd_scene load_steps=16 format=3 uid="uid://cs2p3v3o53aki"]
 
 [ext_resource type="Script" path="res://Parent_Scenes/Scripts/Unit.gd" id="1_xwgnb"]
 [ext_resource type="Script" path="res://Parent_Scenes/Model_Manager.gd" id="2_33djc"]
 [ext_resource type="PackedScene" uid="uid://p576jcs2kqxc" path="res://World_Generation/fog_breaker.tscn" id="2_510m0"]
+[ext_resource type="Script" path="res://Parent_Scenes/Attack_Manager.gd" id="2_valla"]
 [ext_resource type="Shader" path="res://Materials/unit_selection_circle.gdshader" id="3_ygqqt"]
+[ext_resource type="Shader" path="res://Parent_Scenes/res/health_bar.gdshader" id="6_k1orl"]
 
 [sub_resource type="CylinderShape3D" id="CylinderShape3D_603ul"]
 resource_local_to_scene = true
@@ -43,6 +45,14 @@ radius = 25.0
 resource_local_to_scene = true
 radius = 2.0
 
+[sub_resource type="ShaderMaterial" id="ShaderMaterial_wihje"]
+render_priority = 0
+shader = ExtResource("6_k1orl")
+
+[sub_resource type="PlaneMesh" id="PlaneMesh_x4rqk"]
+material = SubResource("ShaderMaterial_wihje")
+size = Vector2(0.5, 4)
+
 [node name="Unit_Base" type="CharacterBody3D" groups=["pickable_object"]]
 collision_layer = 4
 collision_mask = 0
@@ -55,6 +65,9 @@ script = ExtResource("1_xwgnb")
 fog_rev_radius = 35.0
 metadata/reveals_fog = 0
 metadata/owner_id = 0
+
+[node name="Main_Attack_Manager" type="Node" parent="."]
+script = ExtResource("2_valla")
 
 [node name="CollisionShape3D" type="CollisionShape3D" parent="."]
 transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, 1.75, 0)
@@ -107,6 +120,10 @@ shape = SubResource("CylinderShape3D_jn7np")
 
 [node name="VisibleOnScreenNotifier3D" type="VisibleOnScreenNotifier3D" parent="."]
 aabb = AABB(-2, -1, -2, 4, 5, 4)
+
+[node name="Health_Bar" type="MeshInstance3D" parent="."]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, 3.7873, 0)
+mesh = SubResource("PlaneMesh_x4rqk")
 
 [connection signal="input_event" from="." to="." method="_on_input_event"]
 [connection signal="navigation_finished" from="NavigationAgent3D" to="." method="_on_navigation_agent_3d_navigation_finished"]

@@ -96,7 +96,7 @@ var is_selected: bool:
 		$Selection.visible = value
 var is_visible: bool:
 	set(value):
-		is_visible = value
+		is_visible = true
 		$Selection.visible = is_selected
 		update_fog.emit(self, is_visible)
 		_make_visible(value)
@@ -110,8 +110,6 @@ var res_cost := {"wood": 0,
 "food": 0}
 
 ''' Derived and assigned Combat vars '''
-var projectile_manager
-var attack_method : Callable # method to attack with
 var target_enemy:
 	set(value):
 		if(value != null):
@@ -167,6 +165,7 @@ var visible_allies := []
 		nav_agent.max_speed = value
 ## Function called to travel and can be changed to accomodate locked position
 @onready var travel_function := Callable(_travel)
+@onready var main_attack_manager = get_node("Main_Attack_Manager")
 
 '''### Built-In Methods ###'''
 func _ready():
@@ -178,30 +177,13 @@ func _ready():
 	
 	## Set attack type
 	match main_attack_type:
-		attack_type.MELEE:
-			## Close range striking
-			attack_method = Callable(__melee_attack)
-		attack_type.RANGE_PROJ:
-			## Preprocessed arc projectile is used
-			attack_method = Callable(__ranged_proj_attack)
-			projectile_manager = load("res://Parent_Scenes/Projectile_Arc.tscn")
-		attack_type.RANGE_AREA:
-			## Attack targets area and deals damage directly to target enemy from range
-			attack_method = Callable(__ranged_area_attack)
 		attack_type.RANGE_BEAM:
-			## beam is creayed is used
-			attack_method = Callable(__ranged_beam_attack)
-			projectile_manager = load("res://Parent_Scenes/attack_beam.tscn")
 			ai_methods["attack_commanded"] = Callable(_locked_targeted_attack)
 		attack_type.LOCKED_RANGE_AREA:
-			## Attack targets area and deals damage directly to target enemy from range
-			attack_method = Callable(__ranged_area_attack)
 			ai_methods["attack_commanded"] = Callable(_locked_targeted_attack)
 		attack_type.LOCKED_RANGE_PROJ:
-			## Preprocessed arc projectile is used
-			attack_method = Callable(__ranged_proj_attack)
-			projectile_manager = load("res://Parent_Scenes/Projectile_Arc.tscn")
 			ai_methods["attack_commanded"] = Callable(_locked_targeted_attack)
+	main_attack_manager.call_deferred("init",main_attack_type, ranged_atk_sprd, melee_dmg_var, damage_type)
 
 
 func _physics_process(delta):
@@ -253,6 +235,8 @@ func load_data(data, model_masters, id):
 	else:
 		## Non_player units need not clear fog
 		fog_reg.detect_area.set_collision_mask_value(20,false)
+		## Non_player units need see world objects
+		det_area.set_collision_mask_value(6,true)
 		is_visible = false
 		det_area.area_entered.connect(_det_area_entered)
 		det_area.area_exited.connect(_det_area_exited)
@@ -503,42 +487,8 @@ func _attack():
 	unit_models.unit_attack(base_atk_spd)
 	
 	atk_timer.start(base_atk_spd)
-	attack_method.call()
+	main_attack_manager.attack(position, target_enemy, current_atk_str)
 	attacked.emit()
-
-
-## Ranged projectile attack callable
-func __ranged_proj_attack():
-	var dis = position.distance_to(target_enemy.position)
-	var shot = projectile_manager.instantiate()
-	var variance = Vector3(rng.randf_range(-ranged_atk_sprd,ranged_atk_sprd),0,rng.randf_range(-ranged_atk_sprd,ranged_atk_sprd))
-	add_child(shot)
-	shot.fire(position+Vector3.UP*3, target_enemy.position+variance, dis, current_atk_str, damage_type)
-
-
-func __ranged_beam_attack():
-	var beam = projectile_manager.instantiate()
-	move_unlocked.connect(beam.end_beam)
-	target_enemy.died.connect(beam.end_beam)
-	add_child(beam)
-	beam.begin_firing(Vector3.UP - Vector3.MODEL_FRONT*2, current_atk_str, damage_type, target_enemy.position - position)
-
-
-## Ranged area attack callable
-func __ranged_area_attack():
-	if rng.randf_range(0,.25) < ranged_atk_sprd:
-		## Target missed with shot
-		return
-	## Do animation later
-	target_enemy.damage(current_atk_str,damage_type)
-
-
-## Melee attack callable
-func __melee_attack():
-	var variance = rng.randf_range(-current_atk_str*melee_dmg_var,current_atk_str*melee_dmg_var)
-	## Do animation later
-	target_enemy.damage(current_atk_str+variance,damage_type)
-
 
 ''' Combat Methods End '''
 '''-------------------------------------------------------------------------------------'''
@@ -613,10 +563,9 @@ func _idling_aggressive(_delta):
 
 
 ## Wander randomly
-func _wandering_basic(delta):	
+func _wandering_basic(delta):
 	if nav_agent.is_navigation_finished():
 		var pos = Vector3(rng.randf_range(-100,100),250,rng.randf_range(-100,100))+position
-		pos.y = get_ground_depth(pos)
 		_set_target_position(pos)
 		return
 	travel_function.call(delta)
@@ -645,6 +594,8 @@ func __find_target(trgt, pos:Vector3, _is_visible:bool):
 
 
 func _on_navigation_agent_3d_navigation_finished():
+	if ai_mode.contains("wandering"):
+		return
 	nav_agent.avoidance_enabled = false
 	## Don't stop on other units if not attacking
 	if(!ai_mode.contains("attack")):

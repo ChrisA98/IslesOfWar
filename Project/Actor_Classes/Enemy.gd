@@ -226,7 +226,9 @@ func __uncover_loc():
 	searching_units[r_unit] = target_item
 	_defer_goal()
 	if(!r_unit.uncovered_area.is_connected(unit_uncovered)):
+
 		r_unit.uncovered_area.connect(unit_uncovered)
+
 func __find():
 	## Replace with hierarchy base Selection later
 	var r_unit = units[rng.randi_range(0,units.size()-1)]	# Select random unit
@@ -505,7 +507,7 @@ func searched_too_long(timer, unit, target):
 	timer.stop()
 	timer.queue_free()
 	if(typeof(target) == TYPE_STRING):
-		for nod in gamescene.get_child(1).get_children():
+		for nod in gamescene.find_child("level",true,false).get_children():
 			if nod.name.contains(target):
 				unit.set_mov_target(nod.position)
 	else:

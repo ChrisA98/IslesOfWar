@@ -154,7 +154,7 @@ func place_building(bld):
 	adj_max_pop(bld.pop_mod)
 	buildings.sort()
 	
-	call_deferred("_update_grass_tex",bld)
+	call_deferred("update_grass_tex",bld)
 	
 	return true
 
@@ -164,7 +164,7 @@ func owns_building(bldg):
 	return buildings.has(bldg)
 
 
-func _update_grass_tex(bld):
+func update_grass_tex(bld):
 	if !bld.is_visible:
 		await bld.revealed
 	## Do Grass Modification

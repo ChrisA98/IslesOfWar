@@ -66,6 +66,7 @@ func _ready():
 	# Load level
 	var lvl = load("res://World_Generation/base_level.tscn").instantiate()
 	world = lvl
+	world.name = "level"
 	add_child(lvl)
 
 

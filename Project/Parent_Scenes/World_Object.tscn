@@ -18,8 +18,8 @@ transform = Transform3D(3.075, 0, 0, 0, 3.075, 0, 0, 0, 3.075, 0, 2.471, 0)
 mesh = SubResource("TextMesh_wbs3m")
 
 [node name="Affected_Area" type="Area3D" parent="."]
-collision_layer = 3
-collision_mask = 3
+collision_layer = 32
+collision_mask = 5
 input_ray_pickable = false
 metadata/is_world_obj = true
 

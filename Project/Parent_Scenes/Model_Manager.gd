@@ -33,6 +33,8 @@ var animate_calls : Array[Callable]
 
 func load_data(_model_masters : Array, faction_clr : Color):
 	model_masters = _model_masters
+	for mm in _model_masters:
+		mm.unit_reordered.connect(reorder_units)
 	## Prepare unit models list
 	for i in get_children():
 		var m_id = _assign_model_master(i.name)
@@ -67,7 +69,8 @@ func unit_attack(atk_spd: float):
 
 ## Reorder nodes from master list
 func reorder_units(master,old_id,new_id):
-	for node in unit_nodes:
+	for u in unit_nodes:
+		var node = unit_nodes[u]
 		if model_masters[node[0]] != master:
 			continue
 		if old_id == node[1]:
@@ -82,7 +85,7 @@ func _assign_model_master(mod_name:String):
 	return 0
 
 
-## Remove unit from  list
+## Remove unit from list
 func remove_units():
 	for u in unit_nodes:
 		var node = unit_nodes[u]
