@@ -220,6 +220,10 @@ func __build():
 
 
 func __uncover_loc():
+	if units.size() < 1:
+		## needs units firat
+		_attempt_add("get units","something")
+		return
 	## Replace with heirarchy base Selection later
 	var r_unit = units[rng.randi_range(0,units.size()-1)]	# Select random unit
 	r_unit.set_mov_target(target_item.position)
@@ -229,7 +233,12 @@ func __uncover_loc():
 
 		r_unit.uncovered_area.connect(unit_uncovered)
 
+
 func __find():
+	if units.size() < 1:
+		## needs units firat
+		_attempt_add("get units","something")
+		return
 	## Replace with hierarchy base Selection later
 	var r_unit = units[rng.randi_range(0,units.size()-1)]	# Select random unit
 	## Look for item randomly
@@ -250,8 +259,13 @@ func __find():
 	if(!r_unit.uncovered_area.is_connected(unit_uncovered)):
 		r_unit.uncovered_area.connect(unit_uncovered)
 		r_unit.died.connect(_searcher_died.bind(r_unit))
-		
+
+
 func __attack():
+	if units.size() < 1:
+		## needs units firat
+		_attempt_add("get units","something")
+		return
 	# No known enemy locations
 	if (enemy_locations[focused_enemy].size() == 0):
 		_attempt_add("find",focused_enemy)
@@ -344,7 +358,8 @@ func find_build_spot(targ, bldg):
 	while bldg.is_valid == false:
 		var variation = Vector3(rng.randf_range(1,targ.radius),0,rng.randf_range(1,targ.radius))
 		variation.y = ping_ground_depth(center + variation)
-		if(!ping_ground(center + variation + Vector3(0,10,0)).name.contains("Floor")):
+		var g = ping_ground(center + variation + Vector3(0,10,0))
+		if(g != null and !g.name.contains("Floor")):
 			#Stop trying to build on top of buildings
 			continue
 		var np = center + variation

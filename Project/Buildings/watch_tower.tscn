@@ -1,0 +1,29 @@
+[gd_scene load_steps=6 format=3 uid="uid://d37p40ckyt1q0"]
+
+[ext_resource type="PackedScene" uid="uid://ccoruw5j562l7" path="res://Parent_Scenes/Building_Base.tscn" id="1_ibqm7"]
+[ext_resource type="Script" path="res://Watch_Tower.gd" id="2_d0ia4"]
+[ext_resource type="Shader" path="res://Parent_Scenes/res/health_bar.gdshader" id="3_72x1r"]
+
+[sub_resource type="ShaderMaterial" id="ShaderMaterial_v7jqo"]
+resource_local_to_scene = true
+render_priority = 0
+shader = ExtResource("3_72x1r")
+shader_parameter/health_amount = 0.99
+shader_parameter/health_bar_color = Color(0.152941, 0.121569, 0.698039, 1)
+
+[sub_resource type="PlaneMesh" id="PlaneMesh_5w5oq"]
+resource_local_to_scene = true
+material = SubResource("ShaderMaterial_v7jqo")
+size = Vector2(0.235, 4)
+orientation = 2
+
+[node name="Watch Tower" instance=ExtResource("1_ibqm7")]
+script = ExtResource("2_d0ia4")
+garrison_unit_type = null
+base_armor = 0.1
+
+[node name="Attack_Manager" parent="." index="0"]
+vertical_fire_offset = 15
+
+[node name="Health_Bar" parent="." index="2"]
+mesh = SubResource("PlaneMesh_5w5oq")

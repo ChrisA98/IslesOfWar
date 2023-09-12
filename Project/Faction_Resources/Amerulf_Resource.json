@@ -1,8 +1,14 @@
 {
 	"name": "The Kingdom of Amerulf",
-	"leader": "Aebul",
 	"short_name": "Amerulf",
 	"magic_color": "39b8ff",
+	"primary_color_options" : 
+		["39b8ff",
+		"d639ff",
+		"ff399a",
+		"ff6639",
+		"fff439",
+		"7cff39"],
 	"buildings":{
 		"Base": {
 			"base_cost": {

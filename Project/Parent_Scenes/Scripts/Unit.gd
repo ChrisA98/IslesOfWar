@@ -32,9 +32,13 @@ enum attack_type{MELEE, RANGE_PROJ, RANGE_AREA, RANGE_BEAM, LOCKED_RANGE_PROJ, L
 
 ''' Export Combat vars '''
 @export_group("Combat")
+@export_range(0,.99) var base_armor : float = 0.1:
+	set(value):
+		base_armor = value
+@export var base_health : float = 1:
+	set(value):
+		base_health = value
 @export var base_atk_spd : float = 1
-@export_range(0,.99) var base_armor : float = 0.1
-@export var base_health : float = 1
 @export var base_atk_str : float = 10
 @export var main_attack_type : attack_type	## Is a ranged attacker
 @export var damage_type : String
@@ -62,7 +66,7 @@ var ai_mode :StringName = "idle_basic":
 		if !value.contains("idle"):
 			nav_agent.avoidance_enabled = true
 		update_fog.emit(self, (!value.contains("idle") and is_visible))
-		
+
 var ai_methods : Dictionary = {
 	"idle_basic" : Callable(_idling_basic),
 	"idle_aggressive" : Callable(_idling_aggressive),
@@ -93,13 +97,16 @@ var unit_list
 var is_selected: bool:
 	set(value):
 		is_selected = value
-		$Selection.visible = value
+		$Selection.visible = value	
+		if !value and health.is_damaged:
+			return
+		health.health_bar_visible = value
 var is_visible: bool:
 	set(value):
 		is_visible = true
 		$Selection.visible = is_selected
 		update_fog.emit(self, is_visible)
-		_make_visible(value)
+		_make_visible()
 
 ''' Cost Vars '''
 var pop_cost := 0
@@ -136,11 +143,7 @@ var visible_allies := []
 
 ''' On-Ready Vars '''
 ''' Derived and assigned Combat vars '''
-@onready var max_health : float = base_health ##max health after any modifiers
-@onready var health : float = max_health :## active health after any modifiers
-	set(value):
-		health = clampf(value,-1,max_health)
-@onready var armor : float = base_armor ## base armor after modifers
+@onready var health = get_node("Health_Bar")
 @onready var melee_dmg_var : float = _m_attack_damage_variance ## modified variance
 @onready var ranged_atk_sprd : float = _r_attack_attack_spread ## modified variance
 @onready var current_atk_str : float = base_atk_str  #with modifiers
@@ -205,7 +208,7 @@ func _process(_delta):
 func load_data(data, model_masters, id):
 	unit_id = id
 	await get_tree().physics_frame
-	unit_models.load_data(model_masters,Color(actor_owner.faction_data["magic_color"]))
+	unit_models.load_data(model_masters,Color(actor_owner.actor_color))
 	## Set data
 	pop_cost = data["pop_cost"]
 	for r in data["base_cost"]:
@@ -247,6 +250,10 @@ func load_data(data, model_masters, id):
 	fog_reg.detect_area.body_exited.connect(_vision_body_exited)
 	
 	unit_models.move_models(velocity)
+	
+	## Prepare health data
+	health.init_health(base_health)
+	health.init_armor(base_armor)
 
 
 ## Prepare Navigation agent
@@ -342,10 +349,10 @@ func _on_input_event(_camera, event, _position, _normal, _shape_idx):
 ##
 ## returns true if killed or false if survived
 ## type is for later implementation
-func damage(amt: float, _type: String):
-	health -= (amt - amt*armor)
+func damage(amt: float, type: String):
+	health.damage(amt, type)
 	## DIE
-	if(health <= 0):
+	if(health.health <= 0):
 		died.emit()
 		delayed_delete()
 		return true
@@ -465,7 +472,9 @@ func _vision_area_exited(area):
 		visible_enemies.erase(area.get_parent())
 
 
-func _make_visible(state := true):
+func _make_visible(state = null):
+	if state != null:
+		is_visible = state
 	unit_models.rendered = is_visible
 
 ''' Movement Methods end '''

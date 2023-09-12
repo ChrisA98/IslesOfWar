@@ -1,7 +1,21 @@
-[gd_scene load_steps=5 format=3 uid="uid://b2bk4qiqnbll5"]
+[gd_scene load_steps=8 format=3 uid="uid://b2bk4qiqnbll5"]
 
 [ext_resource type="PackedScene" uid="uid://dvsgehqxy6lav" path="res://Buildings/Resource_building.tscn" id="1_4ie1e"]
 [ext_resource type="Script" path="res://Buildings/scripts/Lumber_Mill.gd" id="2_alkm7"]
+[ext_resource type="Shader" path="res://Parent_Scenes/res/health_bar.gdshader" id="3_x6mwo"]
+
+[sub_resource type="ShaderMaterial" id="ShaderMaterial_kfy2q"]
+resource_local_to_scene = true
+render_priority = 0
+shader = ExtResource("3_x6mwo")
+shader_parameter/health_amount = 0.99
+shader_parameter/health_bar_color = Color(0.152941, 0.121569, 0.698039, 1)
+
+[sub_resource type="PlaneMesh" id="PlaneMesh_g1q5n"]
+resource_local_to_scene = true
+material = SubResource("ShaderMaterial_kfy2q")
+size = Vector2(0.235, 4)
+orientation = 2
 
 [sub_resource type="BoxMesh" id="BoxMesh_8pvv5"]
 
@@ -11,8 +25,12 @@ albedo_color = Color(0.384314, 0.541176, 0.996078, 1)
 [node name="Lumber_mill" instance=ExtResource("1_4ie1e")]
 script = ExtResource("2_alkm7")
 resource = "wood"
+base_armor = 0.1
 
-[node name="MeshInstance3D" parent="." index="2"]
+[node name="Health_Bar" parent="." index="1"]
+mesh = SubResource("PlaneMesh_g1q5n")
+
+[node name="MeshInstance3D" parent="." index="3"]
 transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, 0.512184, 0)
 mesh = SubResource("BoxMesh_8pvv5")
 surface_material_override/0 = SubResource("StandardMaterial3D_xyfiq")

@@ -46,17 +46,6 @@ func __mouse_motion_handling(event) -> bool:
 		rotate_y(event.get_relative().x/100)
 		$"../../UI_Node/Minimap/Minimap_Container".set_rotation_degrees(rotation_degrees.y)
 		
-	## Selector management
-	if ui_controller.menu_counter > 0:
-		return true
-	var to = cam.project_ray_normal(event.position) * 1000
-	$"../selector_collidor".position = cam.global_position
-	$"../selector_collidor".target_position = to - cam.position
-	if !$"../selector_collidor".is_colliding():
-		return false
-	$selector.visible = (gamescene.click_mode != "build" and gamescene.click_mode != "square_selecting")
-	$selector.position = $"../selector_collidor".get_collision_point()
-		
 	#Hide mouse off screen
 	if get_viewport().get_mouse_position().x > (get_viewport().size.x-8) or get_viewport().get_mouse_position().y > (get_viewport().size.y-8):
 		return false
@@ -66,11 +55,7 @@ func __mouse_motion_handling(event) -> bool:
 
 func _input(event):
 	if event is InputEventMouseMotion:
-		if __mouse_motion_handling(event):
-			$selector.visible = false
-			Input.set_mouse_mode(Input.MOUSE_MODE_CONFINED)
-		else:
-			Input.set_mouse_mode(Input.MOUSE_MODE_CONFINED_HIDDEN)
+		__mouse_motion_handling(event)
 	
 	#only read mouse position on screen while in game window
 	#scroll wheel input

@@ -1,12 +1,22 @@
-[gd_scene load_steps=11 format=3 uid="uid://48ivs7pw4rhd"]
+[gd_scene load_steps=14 format=3 uid="uid://48ivs7pw4rhd"]
 
 [ext_resource type="PackedScene" uid="uid://ccoruw5j562l7" path="res://Parent_Scenes/Building_Base.tscn" id="1_l4fnw"]
 [ext_resource type="Script" path="res://Buildings/scripts/Base.gd" id="2_hibt6"]
+[ext_resource type="Shader" path="res://Parent_Scenes/res/health_bar.gdshader" id="3_xmru2"]
+[ext_resource type="ArrayMesh" uid="uid://bqux1fsngqxbj" path="res://Models/Amerulf/Base_Am.obj" id="4_eyrwt"]
 
-[sub_resource type="BoxMesh" id="BoxMesh_txyb7"]
+[sub_resource type="ShaderMaterial" id="ShaderMaterial_y4p7d"]
+resource_local_to_scene = true
+render_priority = 0
+shader = ExtResource("3_xmru2")
+shader_parameter/health_amount = 0.99
+shader_parameter/health_bar_color = Color(0, 0.741176, 0.0235294, 1)
 
-[sub_resource type="BoxShape3D" id="BoxShape3D_r4gvb"]
-size = Vector3(2, 2, 2)
+[sub_resource type="PlaneMesh" id="PlaneMesh_u58hr"]
+resource_local_to_scene = true
+material = SubResource("ShaderMaterial_y4p7d")
+size = Vector2(0.235, 4)
+orientation = 2
 
 [sub_resource type="Gradient" id="Gradient_auwj1"]
 colors = PackedColorArray(1, 1, 1, 1, 1, 1, 1, 0)
@@ -41,6 +51,9 @@ height = 1.5
 cap_top = false
 cap_bottom = false
 
+[sub_resource type="BoxShape3D" id="BoxShape3D_r4gvb"]
+size = Vector3(2, 2, 2)
+
 [sub_resource type="BoxShape3D" id="BoxShape3D_rep37"]
 size = Vector3(2.13995, 0.8, 2.92249)
 
@@ -56,24 +69,10 @@ base_armor = 0.2
 metadata/show_base_radius = false
 metadata/needs_base = false
 
-[node name="MeshInstance3D" parent="." index="2"]
-transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, 0, 0)
-mesh = SubResource("BoxMesh_txyb7")
-
-[node name="Hiding" parent="MeshInstance3D" index="0"]
-transform = Transform3D(0.999994, 0.00318968, -0.000583429, -0.00318933, 0.999994, 0.000606472, 0.00058536, -0.000604608, 0.999999, 0, 1, 0)
-size = Vector3(2.4, 2.4, 2.4)
-
-[node name="StaticBody3D" parent="." index="3"]
-transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, 0.504915, 0)
-
-[node name="CollisionShape3D" parent="StaticBody3D" index="0"]
-transform = Transform3D(0.9, 0, 0, 0, 0.9, 0, 0, 0, 0.9, 0, 0.5, 0)
-shape = SubResource("BoxShape3D_r4gvb")
-
-[node name="CollisionShape3D2" parent="StaticBody3D" index="1"]
-transform = Transform3D(0.2, 0, 0, 0, 0.2, 0, 0, 0, 0.2, 0, 0, 1.7338)
-disabled = true
+[node name="Health_Bar" parent="." index="2"]
+transform = Transform3D(-8.74228e-09, -0.2, 0, 0.2, -8.74228e-09, 0, 0, 0, 0.2, 0, 2.30167, 0)
+visible = true
+mesh = SubResource("PlaneMesh_u58hr")
 
 [node name="Valid_Region" type="Node3D" parent="." index="4"]
 transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, -0.00605364, 0.0253027)
@@ -89,10 +88,29 @@ draw_order = 2
 process_material = SubResource("ParticleProcessMaterial_wbdji")
 draw_pass_1 = SubResource("CylinderMesh_5guih")
 
-[node name="RallyPoint" parent="." index="5"]
+[node name="MeshInstance3D" parent="." index="5"]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, 0, 0)
+mesh = ExtResource("4_eyrwt")
+
+[node name="Hiding" parent="MeshInstance3D" index="0"]
+transform = Transform3D(0.999994, 0.00318968, -0.000583429, -0.00318933, 0.999994, 0.000606472, 0.00058536, -0.000604608, 0.999999, 0, 1, 0)
+size = Vector3(2.4, 2.4, 2.4)
+
+[node name="StaticBody3D" parent="." index="6"]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, 0.504915, 0)
+
+[node name="CollisionShape3D" parent="StaticBody3D" index="0"]
+transform = Transform3D(0.9, 0, 0, 0, 0.9, 0, 0, 0, 0.9, 0, 0.5, 0)
+shape = SubResource("BoxShape3D_r4gvb")
+
+[node name="CollisionShape3D2" parent="StaticBody3D" index="1"]
+transform = Transform3D(0.2, 0, 0, 0, 0.2, 0, 0, 0, 0.2, 0, 0, 1.7338)
+disabled = true
+
+[node name="RallyPoint" parent="." index="7"]
 transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, 0.0803117, 3.12781)
 
-[node name="SpawnPoint" parent="." index="6"]
+[node name="SpawnPoint" parent="." index="8"]
 transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, 0.0231627, 2.67383)
 
 [node name="CollisionShape3D" parent="Detection_Area" index="0"]

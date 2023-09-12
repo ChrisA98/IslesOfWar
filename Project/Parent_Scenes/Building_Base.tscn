@@ -1,10 +1,26 @@
-[gd_scene load_steps=19 format=3 uid="uid://ccoruw5j562l7"]
+[gd_scene load_steps=24 format=3 uid="uid://ccoruw5j562l7"]
 
 [ext_resource type="Script" path="res://Parent_Scenes/Scripts/Building_Base.gd" id="1_y54u3"]
+[ext_resource type="Script" path="res://Parent_Scenes/Attack_Manager.gd" id="2_ldwq8"]
 [ext_resource type="Material" uid="uid://tv8sxu1y3jw7" path="res://Materials/preview_building.tres" id="2_y34xx"]
 [ext_resource type="PackedScene" uid="uid://p576jcs2kqxc" path="res://World_Generation/fog_breaker.tscn" id="3_02et3"]
 [ext_resource type="Shader" path="res://Materials/fog_of_war_overlay.gdshader" id="3_6iqix"]
 [ext_resource type="PackedScene" uid="uid://dk381vs3dbmou" path="res://Buildings/sub_scenes/building_menu.tscn" id="3_gjrqr"]
+[ext_resource type="Shader" path="res://Parent_Scenes/res/health_bar.gdshader" id="3_t3qep"]
+[ext_resource type="Script" path="res://Parent_Scenes/health_manager.gd" id="4_cofv4"]
+
+[sub_resource type="ShaderMaterial" id="ShaderMaterial_omsm0"]
+resource_local_to_scene = true
+render_priority = 0
+shader = ExtResource("3_t3qep")
+shader_parameter/health_amount = 0.99
+shader_parameter/health_bar_color = Color(0.152941, 0.121569, 0.698039, 1)
+
+[sub_resource type="PlaneMesh" id="PlaneMesh_sjwjf"]
+resource_local_to_scene = true
+material = SubResource("ShaderMaterial_omsm0")
+size = Vector2(0.235, 4)
+orientation = 2
 
 [sub_resource type="ShaderMaterial" id="ShaderMaterial_7hrmx"]
 render_priority = 0
@@ -74,12 +90,23 @@ rings = 4
 transform = Transform3D(5, 0, 0, 0, 5, 0, 0, 0, 5, 0, -0.0421534, 0)
 script = ExtResource("1_y54u3")
 garrison_unit_type = 1
+base_armor = 0.3
 metadata/show_base_radius = true
 metadata/has_build_radius = true
 metadata/reveals_fog = 0
 metadata/needs_base = true
 
+[node name="Attack_Manager" type="Node" parent="."]
+script = ExtResource("2_ldwq8")
+
 [node name="Train_Timer" type="Timer" parent="."]
+
+[node name="Health_Bar" type="MeshInstance3D" parent="."]
+transform = Transform3D(-8.74228e-09, -0.2, 0, 0.2, -8.74228e-09, 0, 0, 0, 0.2, 0, 1.34902, 0)
+visible = false
+mesh = SubResource("PlaneMesh_sjwjf")
+skeleton = NodePath("../Menu")
+script = ExtResource("4_cofv4")
 
 [node name="Menu" parent="." instance=ExtResource("3_gjrqr")]
 visible = false

@@ -64,7 +64,7 @@ func create_drawer(parent):
 	s.set_material(ShaderMaterial.new())
 	s.material.set_shader(circle_shading)
 	s.material.set_shader_parameter("icon_color",marker_colors)
-	var size_mod = parent.fog_reg.fog_break_radius/5
+	var size_mod = parent.fog_reg.fog_break_radius/40
 	s.scale = Vector2(size_mod,size_mod)
 	
 	s.position = Vector2(parent.position.x,parent.position.z)
@@ -92,17 +92,17 @@ func edit_active_drawers(unit,add:bool):
 
 ## Move drawers
 func _update_draw(parent):
-	if (!drawers.has(parent)):
+	if (!drawers.has(parent) or !is_instance_valid(parent)):
 		return false
 	drawers[parent].visible = parent.visible
-	drawers[parent].position.x = parent.position.x - fmod(parent.position.x,3)
-	drawers[parent].position.y = parent.position.z - fmod(parent.position.z,3)
+	drawers[parent].position.x = parent.position.x
+	drawers[parent].position.y = parent.position.z
 	return true
 
 
 ## Update drawe mesh
 func update_drawer_radius(parent):
-	var size_mod = parent.fog_reg.fog_break_radius/5
+	var size_mod = parent.fog_reg.fog_break_radius/40
 	drawers[parent].scale = Vector2(size_mod,size_mod)
 
 

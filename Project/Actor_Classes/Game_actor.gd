@@ -14,6 +14,7 @@ var units := []
 var loaded_units := {}
 var unit_model_master := {}
 var selected_units = []
+var actor_color : Color
 
 
 var unit_tracking_queue := []

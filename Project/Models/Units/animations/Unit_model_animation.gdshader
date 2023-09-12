@@ -22,7 +22,6 @@ uniform float roughness : hint_range(0,1);
 uniform bool use_color_override;
 
 
-
 vec2 rotate2D(vec2 v, float a) {
 	a = a*0.0174533;
     float s = sin(a);
@@ -31,9 +30,11 @@ vec2 rotate2D(vec2 v, float a) {
     return m * v;
 }
 
+
 vec3 get_height(vec2 x){
 	return vec3(0,texture(heightmap_tex,x.xy).y * 100.0,0);
 }
+
 
 vec3 sea_bob(vec3 x, float rand){
 	vec3 offset = x + vec3(0, water_depth + sin(TIME+rand)/4.0,0);
@@ -43,8 +44,8 @@ vec3 sea_bob(vec3 x, float rand){
 	return offset;	
 }
 
-void vertex(){
-	
+
+void vertex(){	
 	if (COLOR.a > 0.0){
 		float time_int = 1.0;
 		float time = modf((game_time-INSTANCE_CUSTOM.z) * time_scale, time_int);
@@ -90,6 +91,7 @@ void vertex(){
 		VERTEX = vec3(0,0,0);
 	}
 }
+
 
 void fragment(){
 		vec4 albedo_col = texture(texture_albedo, UV).rgba;

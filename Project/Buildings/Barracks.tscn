@@ -1,7 +1,21 @@
-[gd_scene load_steps=3 format=3 uid="uid://s8v1hdp4b7u2"]
+[gd_scene load_steps=6 format=3 uid="uid://s8v1hdp4b7u2"]
 
 [ext_resource type="PackedScene" uid="uid://ccoruw5j562l7" path="res://Parent_Scenes/Building_Base.tscn" id="1_ddopr"]
 [ext_resource type="Script" path="res://Buildings/scripts/Barracks.gd" id="2_t33jg"]
+[ext_resource type="Shader" path="res://Parent_Scenes/res/health_bar.gdshader" id="3_x68bj"]
+
+[sub_resource type="ShaderMaterial" id="ShaderMaterial_oxvoh"]
+resource_local_to_scene = true
+render_priority = 0
+shader = ExtResource("3_x68bj")
+shader_parameter/health_amount = 0.99
+shader_parameter/health_bar_color = Color(0.152941, 0.121569, 0.698039, 1)
+
+[sub_resource type="PlaneMesh" id="PlaneMesh_1i0t4"]
+resource_local_to_scene = true
+material = SubResource("ShaderMaterial_oxvoh")
+size = Vector2(0.235, 4)
+orientation = 2
 
 [node name="Barracks" instance=ExtResource("1_ddopr")]
 transform = Transform3D(5, 0, 0, 0, 5, 0, 0, 0, 5, 0, 0, 0)
@@ -14,18 +28,22 @@ menu_pages = {
 "sec_units": "",
 "units": "Infantry"
 }
+base_health = 270.0
 
-[node name="MeshInstance3D" parent="." index="2"]
+[node name="Health_Bar" parent="." index="1"]
+mesh = SubResource("PlaneMesh_1i0t4")
+
+[node name="MeshInstance3D" parent="." index="3"]
 transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, -0.0027564, 0)
 
-[node name="StaticBody3D" parent="." index="3"]
+[node name="StaticBody3D" parent="." index="4"]
 transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, 0.496792, 0)
 
 [node name="CollisionShape3D2" parent="StaticBody3D" index="1"]
 transform = Transform3D(0.2, 0, 0, 0, 0.2, 0, 0, 0, 0.2, 0, 0, 1.08503)
 
-[node name="RallyPoint" parent="." index="4"]
+[node name="RallyPoint" parent="." index="5"]
 transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, 0.0776555, 1.09582)
 
-[node name="SpawnPoint" parent="." index="5"]
+[node name="SpawnPoint" parent="." index="6"]
 transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, 0.106123, 0.625176)

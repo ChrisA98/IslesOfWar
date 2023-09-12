@@ -80,12 +80,7 @@ var train_queue := []		#units queued to train
 var is_training := false	#building is training
 
 ''' On-Ready Vars '''
-## Combat variables
-@onready var armor: float = base_armor
-@onready var max_health: float = base_health
-@onready var health: float = max_health:
-	set(value):
-		health = clampf(value,-1,max_health)
+@onready var health = get_node("Health_Bar")
 
 @onready var world = get_parent()
 ## Children references
@@ -173,6 +168,10 @@ func init(_pos, snap: int, actor: Node):
 	set_snap(snap)
 	
 	parent_base = actor_owner
+	
+	## Update health and armor values	
+	health.init_health(base_health)
+	health.init_armor(base_armor)
 
 
 func load_data(data):	
@@ -470,9 +469,9 @@ func set_all_shader(shad):
 '''-------------------------------------------------------------------------------------'''
 ''' Combat Start '''
 func damage(amt: float, _type: String):
-	health -= (amt - amt*armor)
+	health.damage(amt,_type)
 	## DIE
-	if(health <= 0):
+	if(health.health <= 0):
 		died.emit()
 		delayed_delete()
 		return true
@@ -546,7 +545,8 @@ func empty_garrison():
 ## Delay delete and remove from lists
 func delayed_delete():
 	actor_owner.buildings.erase(self)
-	if parent_base.has_meta("show_base_radius"):
+	
+	if is_instance_valid(parent_base) and parent_base.has_meta("show_base_radius"):
 		parent_base.children_buildings.erase(self)
 	world.world_buildings.erase(self)
 	actor_owner.update_pop()

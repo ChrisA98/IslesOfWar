@@ -40,8 +40,18 @@ func load_data(_model_masters : Array, faction_clr : Color):
 		var m_id = _assign_model_master(i.name)
 		unit_nodes[i] = [m_id,model_masters[m_id].spawn_unit_instance(i.global_position,faction_clr)]
 		i.get_child(0).queue_free()
+	flip_nodes()
 	unit_Color = faction_clr
 
+
+## flip the unit nodes so they go max to min
+func flip_nodes():
+	var keys = unit_nodes.keys()
+	var out = {}
+	for i in unit_nodes.size():
+		var targ_nod = keys[unit_nodes.size()-i-1] 
+		out[targ_nod] = unit_nodes[targ_nod]
+	unit_nodes = out
 
 ## Do on process
 func _process(_delta):
@@ -68,13 +78,14 @@ func unit_attack(atk_spd: float):
 
 
 ## Reorder nodes from master list
-func reorder_units(master,old_id,new_id):
+func reorder_units(master, old_id, new_id):
 	for u in unit_nodes:
 		var node = unit_nodes[u]
 		if model_masters[node[0]] != master:
 			continue
 		if old_id == node[1]:
 			node[1] = new_id
+		
 
 
 ## Get target modle master from list
@@ -90,10 +101,11 @@ func remove_units():
 	for u in unit_nodes:
 		var node = unit_nodes[u]
 		model_masters[node[0]].delete_unit(node[1])
+		node[1] = 0
 
 
 ## Moves modelinstances based on node markers
-func move_models(trgt):
+func move_models(trgt = null):
 	if !rendered:
 		return
 	var node = unit_nodes[get_child(0)]
@@ -101,6 +113,8 @@ func move_models(trgt):
 	for i in unit_nodes:
 		node = unit_nodes[i]
 		model_masters[node[0]].move_unit_instance(node[1],i.global_position,unit_basis)
+	if trgt == null:
+		return
 	face_target(get_child(0).global_position+trgt)
 
 

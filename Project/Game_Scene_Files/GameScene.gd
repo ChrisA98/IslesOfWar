@@ -242,33 +242,54 @@ func _prepare_game():
 	var gen_bldgs = get_node("UI_Node/Build_Menu/Build_Menu_Container/General_Buttons").get_popup()
 	gen_bldgs.id_pressed.connect(prep_player_building.bind(gen_bldgs))
 	
-	# Load building scenes from JSON data
+	# Load JSON data
 	for fac in range(faction_data.size()):
 		loaded_buildings.push_back({})
 		game_actors[fac].faction_data = faction_data[fac].data
 		game_actors[fac].load_units()
-		for b in faction_data[fac].data.buildings:			
-			#check for file and load if exists
-			if(FileAccess.file_exists ("res://Buildings/"+b+".tscn")):
-				loaded_buildings[fac][b] = load("res://Buildings/"+b+".tscn")
-			else:
-				loaded_buildings[fac][b] = null
-				push_warning("Scene file ["+b+".tscn] not found")
-			if(fac == player_controller.actor_ID):
-				menu_buildings[faction_data[fac]["data"]["buildings"][b].base_display_name] = b
-				match faction_data[fac]["data"]["buildings"][b].category:
-					"resource":
-						res_bldgs.add_item(faction_data[fac]["data"]["buildings"][b].base_display_name)
-					"military":
-						mil_bldgs.add_item(faction_data[fac]["data"]["buildings"][b].base_display_name)
-					"base":
-						gen_bldgs.add_item(faction_data[fac]["data"]["buildings"][b].base_display_name)
-					_:
-						pass
+		
+		_load_buildings(fac, res_bldgs, mil_bldgs, gen_bldgs)
+		
+	
+	_assign_colors()
 	
 	call_deferred("prepare_bases")
 	call_deferred("custom_nav_setup")
 
+
+## Load building data from JSON
+func _load_buildings(fac, res_bldgs, mil_bldgs, gen_bldgs):
+	for b in faction_data[fac].data.buildings:
+		#check for file and load if exists
+		if(FileAccess.file_exists ("res://Buildings/"+b+".tscn")):
+			loaded_buildings[fac][b] = load("res://Buildings/"+b+".tscn")
+		else:
+			loaded_buildings[fac][b] = null
+			push_warning("Scene file ["+b+".tscn] not found")
+		if(fac == player_controller.actor_ID):
+			menu_buildings[faction_data[fac]["data"]["buildings"][b].base_display_name] = b
+			match faction_data[fac]["data"]["buildings"][b].category:
+				"resource":
+					res_bldgs.add_item(faction_data[fac]["data"]["buildings"][b].base_display_name)
+				"military":
+					mil_bldgs.add_item(faction_data[fac]["data"]["buildings"][b].base_display_name)
+				"base":
+					gen_bldgs.add_item(faction_data[fac]["data"]["buildings"][b].base_display_name)
+				_:
+					pass
+
+
+## get_faction count
+func _assign_colors():
+	var km = 0
+	var _ty = 0
+	var _cl = 0
+	for i in game_actors:
+		match i.faction_data["name"]:
+			"The Kingdom of Amerulf":
+				i.actor_color = i.faction_data["primary_color_options"][km]
+				km += 1
+	
 
 ## Place starting bases
 func prepare_bases():
@@ -315,21 +336,23 @@ func custom_nav_setup():
 ## Recieve signal for navigation updates
 func _navmesh_update_start():
 	for unit in world_units:
-		if unit.ai_mode.contains("travel"):
-			var ind = clamp(unit.nav_agent.get_current_navigation_path_index()+15,0,unit.nav_agent.get_current_navigation_path().size()-1)
-			if(ind < 0):
-				continue
-			var pos = unit.nav_agent.get_current_navigation_path()[ind]
-			unit.stored_trgt_pos = unit.nav_agent.get_final_position()
-			unit.queue_move(pos)
-			travel_queue_units.push_back(unit)
+		if !unit.ai_mode.contains("travel"):
+			continue
+		var ind = clamp(unit.nav_agent.get_current_navigation_path_index()+15,0,unit.nav_agent.get_current_navigation_path().size()-1)
+		if(ind < 0):
+			continue
+		var pos = unit.nav_agent.get_current_navigation_path()[ind]
+		unit.stored_trgt_pos = unit.nav_agent.get_final_position()
+		unit.queue_move(pos)
+		travel_queue_units.push_back(unit)
 
 
 ## Recieve signal for navigation updates
 func _navmesh_updated():
 	for unit in travel_queue_units:
-		unit.queue_move(unit.stored_trgt_pos)
-		unit.stored_trgt_pos = null
+		if is_instance_valid(unit):
+			unit.queue_move(unit.stored_trgt_pos)
+			unit.stored_trgt_pos = null
 	travel_queue_units.clear()
 
 
