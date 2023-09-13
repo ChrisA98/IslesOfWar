@@ -27,10 +27,10 @@ script = ExtResource("2_alkm7")
 resource = "wood"
 base_armor = 0.1
 
-[node name="Health_Bar" parent="." index="1"]
+[node name="Health_Bar" parent="." index="2"]
 mesh = SubResource("PlaneMesh_g1q5n")
 
-[node name="MeshInstance3D" parent="." index="3"]
+[node name="MeshInstance3D" parent="." index="4"]
 transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, 0.512184, 0)
 mesh = SubResource("BoxMesh_8pvv5")
 surface_material_override/0 = SubResource("StandardMaterial3D_xyfiq")

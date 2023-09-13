@@ -67,6 +67,11 @@ func _ready():
 	var lvl = load("res://World_Generation/base_level.tscn").instantiate()
 	world = lvl
 	world.name = "level"
+	
+	## Transfer level material to visual ground
+	var world_material = lvl.find_child("Visual_Ground").mesh.get_material()	
+	player_controller.find_child("Visual_Ground").mesh.set_material(world_material)
+	
 	add_child(lvl)
 
 

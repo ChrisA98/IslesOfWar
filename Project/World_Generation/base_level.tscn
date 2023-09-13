@@ -99,7 +99,7 @@ bump_strength = 10.8
 noise = SubResource("FastNoiseLite_dlv7m")
 
 [sub_resource type="Gradient" id="Gradient_im8lq"]
-colors = PackedColorArray(0, 0.260467, 0, 1, 0.305169, 0.557647, 0.256383, 1)
+colors = PackedColorArray(0, 0.260467, 0, 1, 0.571765, 0.594111, 0.191985, 1)
 
 [sub_resource type="FastNoiseLite" id="FastNoiseLite_al3lm"]
 noise_type = 0

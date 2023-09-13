@@ -30,20 +30,20 @@ menu_pages = {
 }
 base_health = 270.0
 
-[node name="Health_Bar" parent="." index="1"]
+[node name="Health_Bar" parent="." index="2"]
 mesh = SubResource("PlaneMesh_1i0t4")
 
-[node name="MeshInstance3D" parent="." index="3"]
+[node name="MeshInstance3D" parent="." index="4"]
 transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, -0.0027564, 0)
 
-[node name="StaticBody3D" parent="." index="4"]
+[node name="StaticBody3D" parent="." index="5"]
 transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, 0.496792, 0)
 
 [node name="CollisionShape3D2" parent="StaticBody3D" index="1"]
 transform = Transform3D(0.2, 0, 0, 0, 0.2, 0, 0, 0, 0.2, 0, 0, 1.08503)
 
-[node name="RallyPoint" parent="." index="5"]
+[node name="RallyPoint" parent="." index="6"]
 transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, 0.0776555, 1.09582)
 
-[node name="SpawnPoint" parent="." index="6"]
+[node name="SpawnPoint" parent="." index="7"]
 transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, 0.106123, 0.625176)
