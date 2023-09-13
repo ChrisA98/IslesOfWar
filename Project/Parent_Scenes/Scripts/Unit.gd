@@ -173,10 +173,6 @@ var visible_allies := []
 '''### Built-In Methods ###'''
 func _ready():
 	call_deferred("_prepare_nav_agent")
-	## Connect signals
-	atk_timer.timeout.connect(_attack)
-	screen_notify.screen_entered.connect(_make_visible.bind(true))
-	screen_notify.screen_exited.connect(_make_visible.bind(false))
 	
 	## Set attack type
 	match main_attack_type:
@@ -187,7 +183,8 @@ func _ready():
 		attack_type.LOCKED_RANGE_PROJ:
 			ai_methods["attack_commanded"] = Callable(_locked_targeted_attack)
 	main_attack_manager.call_deferred("init",main_attack_type, ranged_atk_sprd, melee_dmg_var, damage_type)
-
+	call_deferred("_connect_signals")
+	
 
 func _physics_process(delta):
 	if(is_queued_for_deletion()):
@@ -200,7 +197,13 @@ func _physics_process(delta):
 func _process(_delta):
 	unit_models.moving = (velocity.length() > 0.1)
 
-
+## Stop signal from firing before everything is ready
+func _connect_signals():
+	await  get_tree().physics_frame
+	## Connect signals
+	atk_timer.timeout.connect(_attack)
+	screen_notify.screen_entered.connect(_make_visible.bind(true))
+	screen_notify.screen_exited.connect(_make_visible.bind(false))
 '''### Public Methods ###'''
 '''-------------------------------------------------------------------------------------'''
 ''' Startup Methods Start '''
@@ -246,6 +249,7 @@ func load_data(data, model_masters, id):
 		fog_reg.detect_area.area_entered.connect(_vision_area_entered)
 		fog_reg.detect_area.area_exited.connect(_vision_area_exited)
 	
+	fog_reg.detect_area.set_collision_mask_value(3,true)
 	fog_reg.detect_area.body_entered.connect(_vision_body_entered)
 	fog_reg.detect_area.body_exited.connect(_vision_body_exited)
 	
@@ -484,6 +488,7 @@ func _make_visible(state = null):
 func _attack():
 	# Attack targeting
 	if !is_instance_valid(target_enemy):
+		ai_mode = "idle_aggressive"
 		return
 	
 	if (position.distance_to(target_enemy.position) > target_atk_rng) and !target_enemy.has_meta("show_base_radius"):
@@ -506,6 +511,7 @@ func _attack():
 func _targeted_attack(delta):
 	# Attack targeting
 	if !is_instance_valid(target_enemy):
+		ai_mode = "idle_aggressive"
 		return
 	
 	## Handle tracking target
@@ -555,11 +561,13 @@ func _garrisoning(delta):
 
 ## Idle Functions
 func _idling_basic(_delta):
+	nav_agent.velocity = Vector3.ZERO
 	pass
 
 
 ## Flee from enemies
 func _idling_defensive(_delta):
+	nav_agent.velocity = Vector3.ZERO
 	if(visible_enemies.size() > 0):
 		_set_target_position(actor_owner.forts[rng.randi_range(0,actor_owner.forts.size()-1)].position)
 		ai_mode = "traveling_basic"
@@ -567,6 +575,7 @@ func _idling_defensive(_delta):
 
 ## Fight encountered enemies
 func _idling_aggressive(_delta):
+	nav_agent.velocity = Vector3.ZERO
 	if(visible_enemies.size() > 0):
 		declare_enemy(visible_enemies[0])
 

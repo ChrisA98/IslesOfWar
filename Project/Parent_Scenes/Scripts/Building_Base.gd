@@ -42,7 +42,6 @@ var faction_short_name : String
 var magic_color : Color
 var tier: int = 0
 
-
 var base_mats = [] ## Stores base materials
 var discovered : bool:
 	set(value):

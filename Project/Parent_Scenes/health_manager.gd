@@ -8,6 +8,7 @@ var health_bar_visible: bool:
 	set(value):	
 		health_bar_visible = value
 		if hide_override:
+			visible = false
 			return
 		visible = health_bar_visible
 var is_damaged := false
