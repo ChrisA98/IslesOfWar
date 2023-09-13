@@ -12,9 +12,11 @@ var ranged_atk_sprd
 var melee_dmg_var
 var damage_type
 
+var collision_exceptions := []
+
 
 ## Pepepare with data from initializing node node
-func init(_attack_type, _ranged_atk_sprd, _melee_dmg_var, _damage_type):
+func init(_attack_type, _ranged_atk_sprd, _melee_dmg_var, _damage_type, proj_data = null):
 	if !is_node_ready():
 		await ready
 	ranged_atk_sprd = _ranged_atk_sprd
@@ -50,12 +52,20 @@ func init(_attack_type, _ranged_atk_sprd, _melee_dmg_var, _damage_type):
 func attack(position, target_enemy, current_atk_str):
 	attack_method.call(position, target_enemy, current_atk_str)
 
+
+func set_collision_exception(arr: Array):
+	collision_exceptions = arr.duplicate()
+
+
+func add_collision_exception(ex):
+	collision_exceptions.push_back(ex)
 '''-------------------------------------------------------------------------------------'''
 ''' Combat Methods Start '''
 ## Ranged projectile attack callable
 func __ranged_proj_attack(position, target_enemy, current_atk_str):
 	var dis = position.distance_to(target_enemy.position)
 	var shot = projectile_manager.instantiate()
+	shot.collision_exceptions = collision_exceptions
 	var variance = Vector3(randf_range(-ranged_atk_sprd,ranged_atk_sprd),0,randf_range(-ranged_atk_sprd,ranged_atk_sprd))
 	add_child(shot)
 	shot.fire(position+Vector3.UP*vertical_fire_offset, target_enemy.position+variance, dis, current_atk_str, damage_type)

@@ -7,10 +7,17 @@ var base_armor : float = 0.1
 var health_bar_visible: bool:
 	set(value):	
 		health_bar_visible = value
-		visible = value
+		if hide_override:
+			return
+		visible = health_bar_visible
 var is_damaged := false
+## Force hide health_bar
+var hide_override: bool:
+	set(value):
+		hide_override = value
+		health_bar_visible = health_bar_visible
 
-##	max health after any modifiers
+##	Max health after any modifiers
 @onready var max_health : float = base_health 
 ## active health after any modifiers
 @onready var health : float = max_health :

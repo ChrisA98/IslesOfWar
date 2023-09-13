@@ -16,11 +16,6 @@ func _ready():
 	for but in $Building_Menu/Page_Buttons.get_children():
 		but.pressed.connect(switch_page.bind(but))
 		
-	## hide unused pages
-	for pag in visible_pages:
-		if (get_parent().menu_pages[pag] != ""):
-			visible_pages[pag] = true
-		$Building_Menu/Page_Buttons.find_child(pag).visible = visible_pages[pag]
 	
 	$"Always_Buttons/Garrison Button".pressed.connect(get_parent().empty_garrison,CONNECT_DEFERRED)
 	
@@ -30,7 +25,13 @@ func _ready():
 
 
 ## Set menu base visibilities and data
-func set_menu_data(bldg_name:String):
+func set_menu_data(bldg_name:String):	
+	## hide unused pages
+	for pag in visible_pages:
+		if (get_parent().menu_pages[pag] != ""):
+			visible_pages[pag] = true
+		$Building_Menu/Page_Buttons.find_child(pag).visible = visible_pages[pag]
+	
 	$Building_Menu/Building_Label.text = "[center][b]"+bldg_name+"[/b][/center]"	#set building name
 
 

@@ -39,7 +39,7 @@ rings = 4
 [resource]
 resource_local_to_scene = true
 script = ExtResource("1_mjxcr")
-travel_speed = 10.0
+travel_speed = 25.0
 lifespan = 1.0
 arc_height = 5.0
 impact_particle_material = SubResource("ParticleProcessMaterial_rgikh")

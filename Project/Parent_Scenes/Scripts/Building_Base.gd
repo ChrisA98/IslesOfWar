@@ -21,6 +21,9 @@ signal revealed
 @export_flags("Land","Naval","Aerial") var garrison_unit_type
 @export_group("Defense")
 @export var base_health : float = 0
+@export var attack_radius := 0.0
+@export var atk_speed = 2
+@export var atk_str = 0.
 @export_range(0,.99) var base_armor : float = .1
 
 
@@ -45,10 +48,13 @@ var discovered : bool:
 	set(value):
 		discovered = value
 		if value:
+			health.hide_override = false
 			$MeshInstance3D.visible = true
 			hide_from_mouse(false)
 			if(is_building):
 				$GPUParticles3D.visible = true
+			return
+		health.hide_override = true
 var is_visible : bool:
 	set(value):
 		if actor_owner.actor_ID == 0:
@@ -60,7 +66,22 @@ var is_visible : bool:
 
 ''' Building Logic Vars '''
 var is_valid = false
-var is_building : bool = false
+var is_building : bool = false:
+	set(value):
+		if value:
+			process_functions.push_back(Callable(_build))
+			return
+		process_functions.erase(Callable(_build))
+var can_attack : bool:
+	set(value):
+		can_attack = value
+		fog_reg.detect_area.set_collision_mask_value(3,can_attack)
+		if can_attack:
+			atk_timer = Timer.new()
+			add_child(atk_timer)
+			atk_timer.timeout.connect(_attack)
+			atk_timer.start(atk_speed)
+var atk_timer : Timer
 var snapping = 0
 var rot = 0
 #Cost to build
@@ -72,6 +93,8 @@ var cost = {"wood": 0,
 var pop_mod: int = 0
 var garrisoned_units := []
 var children_buildings := []
+var visible_enemies := []
+var process_functions := []
 
 
 ''' Unit Spawning Vars '''
@@ -81,6 +104,7 @@ var is_training := false	#building is training
 
 ''' On-Ready Vars '''
 @onready var health = get_node("Health_Bar")
+@onready var attack_manager = get_node("Attack_Manager")
 
 @onready var world = get_parent()
 ## Children references
@@ -110,7 +134,11 @@ func _ready():
 	build_shader = build_shader.duplicate(true)
 	build_particles.visible = false
 	position = Vector3(0,-100,0)
-	fog_reg.set_actor_owner(actor_owner.actor_ID)
+	
+	fog_reg.set_actor_owner(actor_owner.actor_ID)	
+	fog_reg.detect_area.body_entered.connect(_vision_body_entered)
+	fog_reg.detect_area.body_exited.connect(_vision_body_exited)
+	
 	if (actor_owner.actor_ID == 0):
 		discovered = true
 	else:
@@ -123,20 +151,29 @@ func _ready():
 
 
 func _process(delta):
-	if(is_building):
-		if !is_instance_valid(parent_building) and parent_building != null:
+	for c in process_functions:
+		c.call(delta)
+
+
+## Build Building
+func _build(delta):
+	if !is_instance_valid(parent_base) and parent_building != null:
 			return
-		if parent_base.building_child != null and parent_base.building_child != self:
-			return
-		parent_base.building_child = self
-		build_timer-=delta
-		var prog = ((build_time-build_timer)/build_time)
-		build_particles.position.y = prog
-		for i in range(mesh.get_surface_override_material_count()):
-			mesh.mesh.surface_get_material(i).set_shader_parameter("progress", prog)
-		if prog > 1:
-			finish_building()
-			return
+	if parent_base.building_child != null and parent_base.building_child != self:
+		return
+	parent_base.building_child = self
+	build_timer-=delta
+	var prog = ((build_time-build_timer)/build_time)
+	build_particles.position.y = prog
+	for i in range(mesh.get_surface_override_material_count()):
+		mesh.mesh.surface_get_material(i).set_shader_parameter("progress", prog)
+	if prog > 1:
+		finish_building()
+		return
+
+
+## Update training data
+func _train(_delta):
 	if(is_training):
 		menu.update_train_prog(train_queue[0],trn_timer.get_time_left()/trn_timer.get_wait_time())
 
@@ -457,7 +494,8 @@ func set_all_over_mats(mat):
 ## Set all surfaces to override material
 func set_mat_over_color(col):
 	for i in range(mesh.get_surface_override_material_count()):
-		mesh.get_surface_override_material(i).albedo_color = col
+		if mesh.get_surface_override_material(i) != null:
+			mesh.get_surface_override_material(i).albedo_color = col
 
 
 ## sets material to a shader for building
@@ -477,6 +515,40 @@ func damage(amt: float, _type: String):
 		return true
 	return false
 
+## Attack function
+func _attack():
+	atk_timer.start(atk_speed)
+	if visible_enemies.size() < 1:
+		return
+	var target_enemy = visible_enemies[0]
+	# Attack targeting
+	if !is_instance_valid(target_enemy):
+		return
+	
+	if (position.distance_to(target_enemy.position) > attack_radius):
+		return
+	
+	
+	attack_manager.attack(position, target_enemy, atk_str)
+
+
+## Add enemies to sight array
+func _vision_body_entered(body):
+	if body.has_meta("owner_id") and body.get_meta("owner_id") != actor_owner.actor_ID:
+		visible_enemies.push_back(body)
+
+
+## Remove enemies from sight array
+func _vision_body_exited(body):
+	if visible_enemies.has(body):
+		visible_enemies.erase(body)
+
+
+## Sort by distance to position
+func distance_sort(a, b):
+	if position.distance_to(a.position) < position.distance_to(b.position):
+		return true
+	return false
 ''' Combat End '''
 '''-------------------------------------------------------------------------------------'''
 ''' User Input Start '''
@@ -495,6 +567,10 @@ func show_menu(state: = true):
 		return
 	if is_instance_valid(menu):
 		menu.visible = state
+		if state and !process_functions.has(Callable(_train)):
+			process_functions.push_back(Callable(_train))
+		if !state:
+			process_functions.erase(Callable(_train))
 
 
 ## Deactivate picking

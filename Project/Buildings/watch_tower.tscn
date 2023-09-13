@@ -19,7 +19,10 @@ orientation = 2
 
 [node name="Watch Tower" instance=ExtResource("1_ibqm7")]
 script = ExtResource("2_d0ia4")
-garrison_unit_type = null
+type = "Watch_tower"
+fog_rev_radius = 20.0
+base_health = 20.0
+attack_radius = 100.0
 base_armor = 0.1
 
 [node name="Attack_Manager" parent="." index="0"]

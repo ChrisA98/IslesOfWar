@@ -207,9 +207,16 @@
 		},
 		"Watch_tower": {
 			"base_cost": {
-				"wood": 10,
+				"wood": 0,
 				"stone": 10,
-				"riches": 10,
+				"riches": 0,
+				"crystals": 0,
+				"food": 0,
+			},
+			"upgrade_cost_mod": {
+				"wood": 0,
+				"stone": 10,
+				"riches": 5,
 				"crystals": 0,
 				"food": 0,
 			},

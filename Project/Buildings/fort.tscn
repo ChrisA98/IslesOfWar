@@ -1,7 +1,21 @@
-[gd_scene load_steps=8 format=3 uid="uid://r0nhovqb6j2c"]
+[gd_scene load_steps=11 format=3 uid="uid://r0nhovqb6j2c"]
 
 [ext_resource type="PackedScene" uid="uid://ccoruw5j562l7" path="res://Parent_Scenes/Building_Base.tscn" id="1_go5yj"]
 [ext_resource type="Script" path="res://Buildings/scripts/Base.gd" id="2_q1prm"]
+[ext_resource type="Shader" path="res://Parent_Scenes/res/health_bar.gdshader" id="3_r1yln"]
+
+[sub_resource type="ShaderMaterial" id="ShaderMaterial_cre1v"]
+resource_local_to_scene = true
+render_priority = 0
+shader = ExtResource("3_r1yln")
+shader_parameter/health_amount = 0.99
+shader_parameter/health_bar_color = Color(0.152941, 0.121569, 0.698039, 1)
+
+[sub_resource type="PlaneMesh" id="PlaneMesh_jkoaq"]
+resource_local_to_scene = true
+material = SubResource("ShaderMaterial_cre1v")
+size = Vector2(0.235, 4)
+orientation = 2
 
 [sub_resource type="Gradient" id="Gradient_f6mc5"]
 colors = PackedColorArray(1, 1, 1, 1, 1, 1, 1, 0)
@@ -41,8 +55,12 @@ script = ExtResource("2_q1prm")
 radius = 40
 type = "Fort"
 fog_rev_radius = 65.0
+attack_radius = 100.0
 metadata/show_base_radius = false
 metadata/needs_base = false
+
+[node name="Health_Bar" parent="." index="2"]
+mesh = SubResource("PlaneMesh_jkoaq")
 
 [node name="Valid_Region" type="Node3D" parent="." index="4"]
 transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, 0.0673345, 0.93381)

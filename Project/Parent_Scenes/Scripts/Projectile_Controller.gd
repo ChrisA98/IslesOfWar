@@ -8,6 +8,7 @@ var travel_speed : float
 var lifespan : float
 var damage: float
 var damage_type: String
+var collision_exceptions = []
 
 var projectiles : Array
 
@@ -56,6 +57,9 @@ func _destroy_projectile(projectile):
 
 ## Projectile collided with objects
 func _proj_collided(hit_trgt: Node3D,proj):
+	if collision_exceptions.has(hit_trgt):
+		## ignore these ones
+		return
 	## Check for unit hit
 	if(hit_trgt.has_method("damage") and hit_trgt != get_parent()):
 		call_deferred("_destroy_projectile",proj)
