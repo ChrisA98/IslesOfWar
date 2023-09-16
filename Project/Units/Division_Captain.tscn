@@ -1,11 +1,27 @@
-[gd_scene load_steps=5 format=3 uid="uid://bcxk78fwe46s4"]
+[gd_scene load_steps=9 format=3 uid="uid://dngsp1onw8v00"]
 
 [ext_resource type="PackedScene" uid="uid://cs2p3v3o53aki" path="res://Parent_Scenes/Unit_Base.tscn" id="1_ehqfy"]
+[ext_resource type="Shader" path="res://Parent_Scenes/res/health_bar.gdshader" id="2_lajw7"]
 
 [sub_resource type="CylinderShape3D" id="CylinderShape3D_h0x5g"]
 resource_local_to_scene = true
 height = 3.5
 radius = 2.0
+
+[sub_resource type="CapsuleMesh" id="CapsuleMesh_kria1"]
+
+[sub_resource type="ShaderMaterial" id="ShaderMaterial_n2b05"]
+resource_local_to_scene = true
+render_priority = 0
+shader = ExtResource("2_lajw7")
+shader_parameter/health_amount = 0.99
+shader_parameter/health_bar_color = Color(0.152941, 0.121569, 0.698039, 1)
+
+[sub_resource type="PlaneMesh" id="PlaneMesh_hba5l"]
+resource_local_to_scene = true
+material = SubResource("ShaderMaterial_n2b05")
+size = Vector2(0.235, 4)
+orientation = 2
 
 [sub_resource type="SphereShape3D" id="SphereShape3D_2ahck"]
 resource_local_to_scene = true
@@ -18,14 +34,25 @@ radius = 2.0
 [node name="Division_Captain" instance=ExtResource("1_ehqfy")]
 unit_name = "Division Captain"
 travel_terrain = 1
-base_atk_spd = 2.0
 base_armor = 0.2
 base_health = 52.5
+base_atk_spd = 2.0
 base_atk_str = 6.25
 damage_type = "Physical"
 
-[node name="CollisionShape3D" parent="." index="0"]
+[node name="CollisionShape3D" parent="." index="1"]
 shape = SubResource("CylinderShape3D_h0x5g")
+
+[node name="division_captain" type="Node3D" parent="UnitModels" index="0"]
+transform = Transform3D(1.75, 0, 0, 0, 1.75, 0, 0, 0, 1.75, 0, 0, 0)
+
+[node name="MeshInstance3D" type="MeshInstance3D" parent="UnitModels/division_captain" index="0"]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, 1, 0)
+layers = 262144
+mesh = SubResource("CapsuleMesh_kria1")
+
+[node name="Health_Bar" parent="." index="4"]
+mesh = SubResource("PlaneMesh_hba5l")
 
 [node name="CollisionShape3D" parent="Fog_Breaker/Area3D" index="0"]
 shape = SubResource("SphereShape3D_2ahck")

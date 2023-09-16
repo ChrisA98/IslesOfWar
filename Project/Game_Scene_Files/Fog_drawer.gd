@@ -107,5 +107,6 @@ func update_drawer_radius(parent):
 
 
 func remove_drawer(drawer):
-	drawers[drawer].queue_free()
-	drawers.erase(drawer)
+	if drawers.has(drawer):
+		drawers[drawer].queue_free()
+		drawers.erase(drawer)

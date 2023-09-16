@@ -289,6 +289,7 @@
 		},
 		"Division Captain": {
 			"models":[
+				"division_captain",
 			],
 			"base_cost": {
 				"wood": 0,
