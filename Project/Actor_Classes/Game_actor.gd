@@ -11,6 +11,7 @@ signal building_added(building_pos: Vector3, hide_grass: bool)
 var bases := []
 var buildings := []
 var units := []
+var squads : Array[Squad] = []
 var loaded_units := {}
 var unit_model_master := {}
 var selected_units = []
@@ -207,7 +208,7 @@ func can_afford_unit(unit:String):
 func select_unit(unit, clr := true):
 	if clr:
 		clear_selection()
-	selected_units.push_back((unit))
+	selected_units.push_back(unit)
 	unit.select()
 
 
@@ -217,7 +218,7 @@ func deselect_unit(unit):
 	unit.select(false)
 
 
-## Select a group of iunits
+## Select a group of units
 func select_group(_units):
 	for u in _units:
 		select_unit(u,false)

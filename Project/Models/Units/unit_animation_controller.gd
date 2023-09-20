@@ -45,11 +45,12 @@ var active_animation : String
 
 func _ready():	
 	units.set_instance_count(0)
-	active_units = 1
+	active_units = 0
 	units.set_use_custom_data(true)
 	units.set_use_colors(true)
 	units.set_instance_count(max_instances)
 	units.set_visible_instance_count(active_units)
+	spawn_unit_instance(Vector3.ZERO,Color.TRANSPARENT)
 
 
 ## Spawn a new unit instane at target location

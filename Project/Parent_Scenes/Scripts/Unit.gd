@@ -284,15 +284,15 @@ func _prepare_nav_agent():
 ## Set target move location
 ##
 ## Called by outside functions
-func set_mov_target(mov_tar: Vector3):
+func set_mov_target(mov_tar: Vector3, clear:= true):
 	if is_locked_down:
 		call_deferred("delayed_unlock")
 		await move_unlocked
 		ai_mode = "traveling_basic"
-		_set_target_position(mov_tar,true)
+		_set_target_position(mov_tar,clear)
 		return
 	ai_mode = "traveling_basic"
-	_set_target_position(mov_tar,true)
+	_set_target_position(mov_tar,clear)
 
 
 ## Queue a movement to be caclulated
@@ -397,11 +397,13 @@ func delayed_delete():
 ''' Movement Methods Start '''
 ## Check target position for other units
 func _check_pos(pos, mod = 1):
-	for i in unit_list:
+	if mod > 200:
+		return pos
+	for i in actor_owner.units:
 		if i == self:
 			continue
 		elif (i.position.distance_to(pos) <= unit_radius and i.ai_mode.contains("idle")):
-			formation_end_position = i.formation_end_position+mod
+			formation_end_position = i.formation_end_position+1
 			return _check_pos(i.formation_core_position+actor_owner.formation_pos(self,formation_end_position),mod+1)
 	return pos
 
@@ -619,7 +621,7 @@ func _on_navigation_agent_3d_navigation_finished():
 	if(!ai_mode.contains("attack")):
 		var targ = _check_pos(position)
 		if(targ != position):
-			queue_move(targ)
+			set_mov_target(targ,false)
 			return
 		if actor_owner.actor_ID != 0:
 			ai_mode = "idle_aggressive"
