@@ -91,8 +91,8 @@ func _generate_projectile() -> PathFollow3D:
 	coll_shape.shape = SphereShape3D.new()
 	coll_shape.max_results = 8
 	coll_shape.set_collision_mask_value(1, false)
-	coll_shape.set_collision_mask_value(2, true)
 	coll_shape.set_collision_mask_value(3, true)
+	coll_shape.set_collision_mask_value(4, true)
 	coll_shape.set_collision_mask_value(16, true)
 	coll_shape.shape.radius = 0.75
 	proj_out.add_child(coll_shape)

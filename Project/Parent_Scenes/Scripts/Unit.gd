@@ -93,6 +93,7 @@ var is_locked_down: bool
 ''' Identifying Vars '''
 var actor_owner
 var unit_list
+var dying := false
 
 var is_selected: bool:
 	set(value):
@@ -107,6 +108,11 @@ var is_visible: bool:
 		$Selection.visible = is_selected
 		update_fog.emit(self, is_visible)
 		_make_visible()
+var current_squad = null:
+	set(value):
+		if current_squad != null:
+			current_squad.erase(self)
+		current_squad = value
 
 ''' Cost Vars '''
 var pop_cost := 0
@@ -183,6 +189,7 @@ func _ready():
 		attack_type.LOCKED_RANGE_PROJ:
 			ai_methods["attack_commanded"] = Callable(_locked_targeted_attack)
 	main_attack_manager.call_deferred("init",main_attack_type, ranged_atk_sprd, melee_dmg_var, damage_type)
+	main_attack_manager.set_collision_exception(actor_owner.units)
 	call_deferred("_connect_signals")
 	
 
@@ -356,7 +363,8 @@ func _on_input_event(_camera, event, _position, _normal, _shape_idx):
 func damage(amt: float, type: String):
 	health.damage(amt, type)
 	## DIE
-	if(health.health <= 0):
+	if(health.health <= 0 and dying == false):
+		dying = true
 		died.emit()
 		delayed_delete()
 		return true

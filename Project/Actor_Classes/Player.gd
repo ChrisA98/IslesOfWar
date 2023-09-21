@@ -64,9 +64,10 @@ func clear_selection():
 ## Get unit denominations for unit list
 func group_selected_units():
 	var u = {}
-	for i in selected_units:
-		if(u.has(i.unit_name)):
-			u[i.unit_name].push_back(i)
-		else:
-			u[i.unit_name] = [i]
+	if selected_squad != null:
+		for i in selected_squad.units:
+			if(u.has(i.unit_name)):
+				u[i.unit_name].push_back(i)
+			else:
+				u[i.unit_name] = [i]
 	UI_controller.set_unit_list(u)

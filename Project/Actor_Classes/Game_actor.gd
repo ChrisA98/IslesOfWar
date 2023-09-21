@@ -12,9 +12,9 @@ var bases := []
 var buildings := []
 var units := []
 var squads : Array[Squad] = []
+var selected_squad := Squad.new()
 var loaded_units := {}
 var unit_model_master := {}
-var selected_units = []
 var actor_color : Color
 
 
@@ -122,7 +122,7 @@ func update_pop():
 	pop = pop_cnt
 	pop_changed.emit(pop, max_pop)
 
-'''Resource Management End'''
+''' Resource Management End '''
 '''-------------------------------------------------------------------------------------'''
 ''' Building Management Start '''
 
@@ -175,7 +175,7 @@ func update_grass_tex(bld):
 	else:
 		building_added.emit(bld.position,bld.hide_grass,bld.bldg_radius,bld.parent_building.position)
 
-'''Building Management End'''
+''' Building Management End '''
 '''-------------------------------------------------------------------------------------'''
 ''' Unit Training Start '''
 
@@ -208,13 +208,17 @@ func can_afford_unit(unit:String):
 func select_unit(unit, clr := true):
 	if clr:
 		clear_selection()
-	selected_units.push_back(unit)
+	if selected_squad == null:
+		selected_squad = Squad.new()
+		selected_squad.actor_owner = self
+		squads.push_back(selected_squad)
+	selected_squad.push_back(unit)
 	unit.select()
 
 
 ## Remove unit from list
 func deselect_unit(unit):
-	selected_units.erase(unit)
+	selected_squad.erase(unit)
 	unit.select(false)
 
 
@@ -226,9 +230,15 @@ func select_group(_units):
 
 ## Clear unit selected list
 func clear_selection():
-	for u in selected_units:
-		u.select(false)
-	selected_units.clear()
+	if selected_squad == null:
+		return
+	for i in selected_squad.units:
+		i.select(false)
+	selected_squad = null
+
+
+func remove_squad(squad:Squad):
+	squads.erase(squad)
 
 
 '''Unit Selection End'''
@@ -241,12 +251,12 @@ func formation_pos(unit, place:int):
 	return Vector3(fmod(place,7)*unit.unit_radius*2.5,0,int(round(place/7)*unit.unit_radius*2.5))
 
 
-## Command selected_units to move to location
+## Command squad to move to location
 func command_unit_move(position):
 	##Local command function
 	var cmnd = func(pos=position, unit:=0):
-		var variation = formation_pos(selected_units[unit],unit)
-		selected_units[unit].queue_move(pos+variation)
+		var variation = selected_squad.get_formation_pos(unit)
+		selected_squad.units[unit].queue_move(pos+variation)
 	
 	_group_command(cmnd,[position,0])
 
@@ -255,9 +265,18 @@ func command_unit_move(position):
 func command_unit_attack(trgt):
 	##Local command function
 	var cmnd = func(target = trgt, unit:=0):
-		selected_units[unit].declare_enemy(target)
+		selected_squad.units[unit].declare_enemy(target)
 	
 	_group_command(cmnd,[trgt,0])
+
+## Command selected units to garrison in trgt building
+func command_unit_garrison(trgt):
+	##Local command function
+	var cmnd = func(target = trgt, unit:=0):
+		selected_squad.units[unit].set_garrison_target(target)
+	
+	_group_command(cmnd,[trgt,0])
+
 
 '''Unit Commanding End'''
 '''-------------------------------------------------------------------------------------'''
@@ -300,7 +319,7 @@ func erase_from_tracking_queue(unit:Unit_Base):
 ## Give a command to all selected units
 ## iterate var must be at end of arg array
 func _group_command(cmnd: Callable, args: Array):
-	for j in range(selected_units.size()):
+	for j in range(selected_squad.units.size()):
 			args[-1] = j	## set iteration
 			cmnd.callv(args)
 

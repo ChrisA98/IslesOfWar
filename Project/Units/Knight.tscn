@@ -37,7 +37,7 @@ travel_terrain = 1
 base_armor = 0.15
 base_health = 49.0
 base_atk_spd = 0.83
-base_atk_str = 27.5
+base_atk_str = 2.75
 damage_type = "Physical"
 
 [node name="CollisionShape3D" parent="." index="1"]

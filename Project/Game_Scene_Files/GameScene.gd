@@ -196,7 +196,7 @@ func select_from_square():
 			player_controller.select_unit(un,false,false)
 			un.select()
 	selection_square.get_child(0).enabled = false
-	if(player_controller.selected_units.size()>0):
+	if(player_controller.selected_squad.units.size()>0):
 		click_mode = "command_unit"
 		player_controller.group_selected_units()
 	else:
@@ -415,8 +415,7 @@ func building_pressed(building):
 			return
 		match click_mode:
 			"command_unit":
-				for u in player_controller.selected_units:
-					u.set_garrison_target(building)
+				player_controller.command_unit_garrison(building)
 				player_controller.clear_selection()
 			_:
 				activated_building = building #pass activated building to gamescene
@@ -454,7 +453,7 @@ func ground_click(_camera, event, pos, _normal, _shape_idx, _shape):
 				player_controller.command_unit_move(pos)
 			if Input.is_mouse_button_pressed(MOUSE_BUTTON_MIDDLE):
 				##DEBUG tool to teleport units
-				for i in player_controller.selected_units:
+				for i in player_controller.selected_squad.units:
 					i.position = pos + Vector3.UP
 		"select":
 			if event is InputEventMouseButton:
@@ -504,10 +503,6 @@ func click_mod_update(old, new):
 		["command_unit", _]:
 			player_controller.clear_selection()
 		[_, "command_unit"]:
-			## Maybe can remove this line later
-			for u in player_controller.units:
-				if !player_controller.selected_units.has(u):
-					u.select(false)
 			UI_controller.set_unit_list()
 		["build", _]:
 			if(preview_building != null and new != "select"):

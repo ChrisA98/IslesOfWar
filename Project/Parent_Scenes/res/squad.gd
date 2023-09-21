@@ -9,13 +9,14 @@ var active_formation: formations:
 		match value:
 			formations.COLUMNS:
 				formation_call = Callable(_columns_formation)
-var formation_size : int
+var formation_size := 7
 var units : Array[Unit_Base]
 var formation_call : Callable = Callable(_columns_formation)
+var actor_owner : game_actor
 
 ## Get formation_position
-func get_formation_pos(unit: Unit_Base):
-	return formation_call.call(unit)
+func get_formation_pos(unit_id: int):
+	return formation_call.call(units[unit_id])
 
 
 func set_active_formation(type: formations):
@@ -24,9 +25,8 @@ func set_active_formation(type: formations):
 
 ## Take array of selected units and make a squad
 func build_squad(s_units):
-	units = s_units.duplicate()
-	s_units = self
-	units.sort_custom(_sort_by_id)
+	for u in s_units:
+		push_back(u)
 
 
 ## Check if squad has unit
@@ -37,6 +37,8 @@ func has(unit) -> bool:
 ## Erase unit from squad
 func erase(unit):
 	units.erase(unit)
+	if units.size() <= 0 and actor_owner != null and actor_owner.selected_squad != self:
+		actor_owner.remove_squad(self)
 
 
 ## Remove any units in squad that exist in target array
@@ -47,8 +49,10 @@ func erase_array(trgt_units: Array):
 
 ## Add unit to squad
 func push_back(unit):
+	unit.current_squad = self
 	units.push_back(unit)
 	units.sort_custom(_sort_by_id)
+	unit.died.connect(erase.bind(unit))
 
 
 ## Sort units by id

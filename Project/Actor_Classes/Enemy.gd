@@ -275,8 +275,8 @@ func __attack():
 		## Select all units
 		## Maybe change this to keep defensive units
 		if(i.ai_mode.contains("idle")):
-			selected_units.push_back(i)
-	if(selected_units.size() > 0):
+			select_unit(i)
+	if(selected_squad.units.size() > 0):
 		command_unit_attack(trgt_loc)
 	clear_selection()
 	complete_goal()

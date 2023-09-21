@@ -6,17 +6,7 @@ signal unit_reordered(master, old_id, new_id)
 
 enum instance_targets {START_FRAME,END_FRAME,ANIM_START_TIME,ANIM_OFFSET}
 
-@export var preview_unit : bool:
-	set(value):
-		if !Engine.is_editor_hint():
-			return
-		preview_unit = value
-		if value :
-			spawn_unit_instance(Vector3.ZERO,Color.BLUE)
-			_set_animation_window(0,IDLE[0])
-			return
-		delete_unit(1)
-@export var rotation_offset : float
+
 ## IDLE CONSTANTS
 const IDLE= ["idle",0, 59]
 
@@ -35,6 +25,17 @@ const ATTACK_02 = ["attack_2",190, 249]
 const IDLE_ATTACKING= ["idle_attacking",250, 310]
 
 
+@export var preview_unit : bool:
+	set(value):
+		if !Engine.is_editor_hint():
+			return
+		preview_unit = value
+		if value :
+			spawn_unit_instance(Vector3.ZERO,Color.BLUE)
+			_set_animation_window(0,IDLE[0])
+			return
+		delete_unit(1)
+@export var rotation_offset : float
 @export var max_instances = 1024
 
 var active_units = 0

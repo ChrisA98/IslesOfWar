@@ -302,6 +302,7 @@
 		},
 		"Bowman": {
 			"models":[
+				"archer",
 			],
 			"base_cost": {
 				"wood": 0,
