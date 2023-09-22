@@ -189,7 +189,6 @@ func _ready():
 		attack_type.LOCKED_RANGE_PROJ:
 			ai_methods["attack_commanded"] = Callable(_locked_targeted_attack)
 	main_attack_manager.call_deferred("init",main_attack_type, ranged_atk_sprd, melee_dmg_var, damage_type)
-	main_attack_manager.set_collision_exception(actor_owner.units)
 	call_deferred("_connect_signals")
 	
 
@@ -211,6 +210,8 @@ func _connect_signals():
 	atk_timer.timeout.connect(_attack)
 	screen_notify.screen_entered.connect(_make_visible.bind(true))
 	screen_notify.screen_exited.connect(_make_visible.bind(false))
+
+
 '''### Public Methods ###'''
 '''-------------------------------------------------------------------------------------'''
 ''' Startup Methods Start '''
@@ -261,6 +262,8 @@ func load_data(data, model_masters, id):
 	fog_reg.detect_area.body_exited.connect(_vision_body_exited)
 	
 	unit_models.move_models(velocity)
+	main_attack_manager.set_collision_exception(actor_owner.units)
+	
 	
 	## Prepare health data
 	health.init_health(base_health)

@@ -218,6 +218,8 @@ func select_unit(unit, clr := true):
 
 ## Remove unit from list
 func deselect_unit(unit):
+	if selected_squad == null:
+		return
 	selected_squad.erase(unit)
 	unit.select(false)
 

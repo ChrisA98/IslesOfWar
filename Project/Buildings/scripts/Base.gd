@@ -19,7 +19,6 @@ func _ready():
 	super()
 	pop_mod = 5	
 	_update_radius(radius)
-	can_attack = true
 	attack_manager.call_deferred("init",attack_manager.attack_type.RANGE_PROJ, .125, 0, "damage_type")
 	attack_manager.add_collision_exception($StaticBody3D)
 

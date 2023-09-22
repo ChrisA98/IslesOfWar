@@ -4,6 +4,8 @@ enum attack_type{MELEE, RANGE_PROJ, RANGE_AREA, RANGE_BEAM, LOCKED_RANGE_PROJ, L
 
 @export var vertical_fire_offset := 3
 @export var forward_fire_offset := 2
+@export var projectile_data : Projectile_Data
+@export var beam_data : Beam_Data
 
 var main_attack_type : attack_type	## Is a ranged attacker
 var attack_method : Callable # method to attack with
@@ -54,7 +56,7 @@ func attack(position, target_enemy, current_atk_str):
 
 
 func set_collision_exception(arr: Array):
-	collision_exceptions = arr.duplicate()
+	collision_exceptions = arr
 
 
 func add_collision_exception(ex):
@@ -65,6 +67,7 @@ func add_collision_exception(ex):
 func __ranged_proj_attack(position, target_enemy, current_atk_str):
 	var dis = position.distance_to(target_enemy.position)
 	var shot = projectile_manager.instantiate()
+	shot.proj_data = projectile_data
 	shot.collision_exceptions = collision_exceptions
 	var variance = Vector3(randf_range(-ranged_atk_sprd,ranged_atk_sprd),0,randf_range(-ranged_atk_sprd,ranged_atk_sprd))
 	add_child(shot)
@@ -73,6 +76,7 @@ func __ranged_proj_attack(position, target_enemy, current_atk_str):
 
 func __ranged_beam_attack(position, target_enemy, current_atk_str):
 	var beam = projectile_manager.instantiate()
+	beam.beam_data = beam_data
 	if get_parent().has_user_signal("move_unlocked"):
 		get_parent().move_unlocked.connect(beam.end_beam)
 	target_enemy.died.connect(beam.end_beam)

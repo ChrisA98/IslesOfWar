@@ -57,7 +57,7 @@ func _destroy_projectile(projectile):
 
 ## Projectile collided with objects
 func _proj_collided(hit_trgt: Node3D,proj):
-	if collision_exceptions.has(hit_trgt):
+	if collision_exceptions.has(hit_trgt) or hit_trgt == null:
 		## ignore these ones
 		return
 	## Check for unit hit
