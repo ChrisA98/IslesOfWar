@@ -4,6 +4,7 @@ enum attack_type{MELEE, RANGE_PROJ, RANGE_AREA, RANGE_BEAM, LOCKED_RANGE_PROJ, L
 
 @export var vertical_fire_offset := 3
 @export var forward_fire_offset := 2
+@export var attack_anim_offset : float = 0
 @export var projectile_data : Projectile_Data
 @export var beam_data : Beam_Data
 
@@ -14,6 +15,7 @@ var ranged_atk_sprd
 var melee_dmg_var
 var damage_type
 
+var suspended : bool = false
 var collision_exceptions := []
 
 
@@ -52,6 +54,18 @@ func init(_attack_type, _ranged_atk_sprd, _melee_dmg_var, _damage_type, proj_dat
 
 ## Call attack method
 func attack(position, target_enemy, current_atk_str):
+	if attack_anim_offset == 0:
+		attack_method.call(position, target_enemy, current_atk_str)
+		return
+	suspended = false
+	call_deferred("_delayed_attack",position, target_enemy, current_atk_str)
+
+
+## Delay attack for animation
+func _delayed_attack(position, target_enemy, current_atk_str):
+	await get_tree().create_timer(attack_anim_offset).timeout
+	if suspended:
+		return
 	attack_method.call(position, target_enemy, current_atk_str)
 
 

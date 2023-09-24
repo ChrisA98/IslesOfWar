@@ -62,6 +62,7 @@ var ai_mode :StringName = "idle_basic":
 		else:
 			target_enemy = null
 			atk_timer.stop()
+			main_attack_manager.suspended = true
 			unit_models.attacking = false
 		if !value.contains("idle"):
 			nav_agent.avoidance_enabled = true

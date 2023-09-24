@@ -188,7 +188,7 @@ func __build():
 		match target_item:
 			"Barracks","Trade_post", "Farm":	#Fort Buildings
 				var frt = bases[rng.randi_range(0,bases.size()-1)]
-				match(await find_build_spot(frt,prepared_building)):
+				match(await find_build_spot_base(frt,prepared_building)):
 					"clear":
 						complete_goal()
 					_:
@@ -200,7 +200,7 @@ func __build():
 					_attempt_add("find",target_item)
 					return
 				var res_node = resource_locations[target_item][rng.randi_range(0,bases.size()-1)]
-				match (await find_build_spot(res_node,prepared_building)):
+				match (await find_build_spot_base(res_node,prepared_building)):
 					"clear":
 						complete_goal()	
 					"uncover_loc":
@@ -349,8 +349,8 @@ func get_target_buildings(bldg):
 	return out
 
 
-## Check area around target base for valid palce location
-func find_build_spot(targ, bldg):
+## Check area around target base for valid place location
+func find_build_spot_base(targ, bldg):
 	var center = targ.position + Vector3(0,15,0)
 	var attempts = 50
 	var sure = false #not sure if avaialable area exists
@@ -384,6 +384,58 @@ func find_build_spot(targ, bldg):
 			return "find"
 	return "clear"
 
+
+## Check area around target base for valid place location
+func find_build_spot_discovered_area(targ, bldg):
+	var center = targ.position + Vector3(0,15,0)
+	var end_point = _get_closest_unit(targ.position,targ.radius).position
+	var direction = center.direction_to(end_point)
+	var distance = center.distance_to(end_point)
+	var attempts = 50
+	var sure = false #not sure if available area exists
+	bldg.set_pos(center+(direction*distance))
+	while bldg.is_valid == false:
+		distance *= .9
+		var variation = (direction*distance)
+		variation.y = ping_ground_depth(center + variation)
+		var g = ping_ground(center + variation + Vector3(0,10,0))
+		if(g != null and !g.name.contains("Floor")):
+			#Stop trying to build on top of buildings
+			continue
+		var np = center + variation
+		np.y -= center.y
+		if await bldg.set_pos(np,true) == "cant see" and !sure:
+			if(targ.has_meta("reveals_fog")):
+				sure = true
+				attempts += 1
+			else:
+				for ar in targ.local_area.get_overlapping_areas():
+					if(ar.has_meta("fog_owner_id") and ar.get_meta("fog_owner_id") == actor_ID):
+						sure = true
+						attempts += 1
+			if !sure:
+				return "uncover_loc"  ## move troop to location to see it
+		if(bldg.is_valid):
+			place_building(prepared_building)
+			return "clear"
+		if !sure:
+			attempts -= 1
+		if(attempts < 0):
+			return "find"
+	return "clear"
+
+## get closest unit within set range
+## returns false if no unit is in range
+func _get_closest_unit(trgt, min_distance):
+	var closest: Unit_Base
+	var distance = min_distance
+	for i in units:
+		if i.position.distance_to(trgt) <= distance:
+			closest = i
+			distance = i.position.distance_to(trgt)
+	if closest != null:
+		return closest
+	return false
 
 ## Check for Buildings in buildings array based on building type
 func check_for_buildings(bldg: String):

@@ -27,6 +27,7 @@ var attacking := false:
 		attacking = value
 		if !value and base_animation_state == "idle":
 			set_idle()
+var last_model_burst_animated: int = 0
 ## Process calls
 var animate_calls : Array[Callable]
 
@@ -71,8 +72,10 @@ func face_target(trgt):
 
 func unit_attack(atk_spd: float):
 	var attack_id = str(randi_range(1,attack_animations))
-	
-	var unit_attacking = get_child(randi_range(0,unit_nodes.size()-1))
+	last_model_burst_animated += 1 
+	if last_model_burst_animated >= unit_nodes.size():
+		last_model_burst_animated = 0
+	var unit_attacking = get_child(last_model_burst_animated)
 	var node = unit_nodes[unit_attacking]
 	model_masters[node[0]].burst_animation(node[1],"attack_"+attack_id,atk_spd)
 

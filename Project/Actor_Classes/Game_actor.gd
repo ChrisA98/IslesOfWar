@@ -209,9 +209,7 @@ func select_unit(unit, clr := true):
 	if clr:
 		clear_selection()
 	if selected_squad == null:
-		selected_squad = Squad.new()
-		selected_squad.actor_owner = self
-		squads.push_back(selected_squad)
+		selected_squad = add_squad()
 	selected_squad.push_back(unit)
 	unit.select()
 
@@ -232,14 +230,21 @@ func select_group(_units):
 
 ## Clear unit selected list
 func clear_selection():
-	if selected_squad == null:
-		return
 	for i in selected_squad.units:
 		i.select(false)
-	selected_squad = null
+	selected_squad = add_squad()
 
+
+func add_squad() -> Squad:
+	var s = Squad.new()
+	s.actor_owner = self
+	squads.push_back(s)
+	return s
+	
 
 func remove_squad(squad:Squad):
+	if selected_squad == squad:
+		selected_squad = add_squad()
 	squads.erase(squad)
 
 
