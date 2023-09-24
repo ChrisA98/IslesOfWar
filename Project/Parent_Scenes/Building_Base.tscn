@@ -1,4 +1,4 @@
-[gd_scene load_steps=25 format=3 uid="uid://ccoruw5j562l7"]
+[gd_scene load_steps=23 format=3 uid="uid://ccoruw5j562l7"]
 
 [ext_resource type="Script" path="res://Parent_Scenes/Scripts/Building_Base.gd" id="1_y54u3"]
 [ext_resource type="Script" path="res://Parent_Scenes/Attack_Manager.gd" id="2_ldwq8"]
@@ -22,19 +22,6 @@ resource_local_to_scene = true
 material = SubResource("ShaderMaterial_omsm0")
 size = Vector2(0.235, 4)
 orientation = 2
-
-[sub_resource type="Gradient" id="Gradient_2a2sv"]
-interpolation_mode = 1
-offsets = PackedFloat32Array(0.483254)
-colors = PackedColorArray(0, 0, 0, 0.686275)
-
-[sub_resource type="GradientTexture2D" id="GradientTexture2D_uf0qr"]
-gradient = SubResource("Gradient_2a2sv")
-width = 512
-height = 512
-fill = 1
-fill_from = Vector2(0.5, 0.5)
-fill_to = Vector2(0.75, 0.75)
 
 [sub_resource type="ShaderMaterial" id="ShaderMaterial_7hrmx"]
 render_priority = 0
@@ -113,17 +100,7 @@ script = ExtResource("4_cofv4")
 visible = false
 
 [node name="BuildingModel" type="Node3D" parent="."]
-transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, 0.5, 0)
 script = ExtResource("6_y2mdn")
-
-[node name="Hiding" type="Decal" parent="BuildingModel"]
-transform = Transform3D(0.999994, 0.00318969, -0.000583422, -0.00318933, 0.999994, 0.000606477, 0.00058536, -0.000604608, 0.999999, 0, 0, 0)
-visible = false
-size = Vector3(1.2, 1.2, 1.2)
-texture_albedo = SubResource("GradientTexture2D_uf0qr")
-upper_fade = 0.0003484
-lower_fade = 0.000186703
-cull_mask = 1048573
 
 [node name="MeshInstance3D" type="MeshInstance3D" parent="."]
 transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, 0.5, 0)

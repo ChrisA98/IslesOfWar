@@ -48,7 +48,7 @@ var discovered : bool:
 		discovered = value
 		if value:
 			health.hide_override = false
-			$MeshInstance3D.visible = true
+			building_model.visible = true
 			hide_from_mouse(false)
 			if(is_building):
 				$GPUParticles3D.visible = true
@@ -83,6 +83,9 @@ var can_attack : bool:
 var atk_timer : Timer
 var snapping = 0
 var rot = 0
+var building_model
+
+
 #Cost to build
 var cost = {"wood": 0,
 "stone": 0,
@@ -108,6 +111,7 @@ var is_training := false	#building is training
 @onready var world = get_parent()
 ## Children references
 @onready var mesh = get_node("MeshInstance3D")
+@onready var building_model_loader = get_node("BuildingModel")
 @onready var collision_box = get_node("StaticBody3D/CollisionShape3D")
 @onready var bldg_radius = collision_box.shape.size.x
 @onready var static_body = get_node("StaticBody3D")
@@ -138,10 +142,12 @@ func _ready():
 	fog_reg.detect_area.body_entered.connect(_vision_body_entered)
 	fog_reg.detect_area.body_exited.connect(_vision_body_exited)
 	
+	building_model = building_model_loader.load_model()
+	
 	if (actor_owner.actor_ID == 0):
 		discovered = true
 	else:
-		$BuildingModel.visible = false
+		building_model.visible = false
 		discovered = false
 		det_area.area_entered.connect(_detection_area_entered)
 		det_area.area_exited.connect(_detection_area_exited)
@@ -164,8 +170,7 @@ func _build(delta):
 	build_timer-=delta
 	var prog = ((build_time-build_timer)/build_time)
 	build_particles.position.y = prog
-	for i in range(mesh.get_surface_override_material_count()):
-		mesh.mesh.surface_get_material(i).set_shader_parameter("progress", prog)
+	building_model.set_override_shader_parameter("progress",prog)
 	if prog > 1:
 		finish_building()
 		return
@@ -182,7 +187,6 @@ func _train(_delta):
 ## Initialize certain elements at start
 func init(_pos, snap: int, actor: Node):
 	#position = pos
-	mesh.transparency = .55
 	static_body.set_ray_pickable(false)
 	actor_owner = actor
 	faction = actor_owner.faction_data.name
@@ -192,14 +196,11 @@ func init(_pos, snap: int, actor: Node):
 	
 	if actor_owner.actor_ID == 0:
 		is_visible = true
-		
-	# Populate base materials
-	for i in range(mesh.get_surface_override_material_count()):
-		base_mats.push_back(mesh.mesh.surface_get_material(i))
-
-	for i in range(mesh.get_surface_override_material_count()):
-		mesh.mesh.surface_set_material(i,ShaderMaterial.new())	##Later load materials here
-	set_all_over_mats(prev_mat)
+	
+	building_model.init(actor_owner.actor_color)
+	
+	building_model.set_material_override(prev_mat)
+	building_model.transparency = .55
 	
 	set_snap(snap)
 	
@@ -212,19 +213,7 @@ func init(_pos, snap: int, actor: Node):
 
 func load_data(data):	
 	magic_color = data["magic_color"]
-	var suffix = faction_short_name.substr(0,2)
-	# Check for mesh file and load if exists
-	if(FileAccess.file_exists("res://Models/"+faction_short_name+"/"+type+"_"+suffix+".obj")):
-		var b_mesh = load("res://Models/"+faction_short_name+"/"+type+"_"+suffix+".obj")
-		if(b_mesh != null):
-			mesh.set_mesh(b_mesh.duplicate(true))
-		if(type == "Barracks"):
-			for s in range(mesh.mesh.get_surface_count()):
-				if(mesh.mesh.surface_get_name(s) == "Roof"):
-					mesh.mesh.surface_get_material(s).set_albedo(magic_color)
-	else:
-		mesh.set_mesh(BoxMesh.new())
-		#push_warning ("Building model ["+type+"] not found")
+
 	## Set Cost
 	for res in cost:
 		cost[res] = data.buildings[type].base_cost[res]
@@ -316,11 +305,12 @@ func place():
 	static_body.set_collision_layer_value(1,true)
 	# Hide reference pieces
 	$RallyPoint.visible = false
-		
-	set_all_shader(build_shader)
-	set_all_over_mats(null)
-	for i in range(mesh.get_surface_override_material_count()):
-		mesh.mesh.surface_get_material(i).set_shader_parameter("magic_color", magic_color)
+	
+	var _build_shader = ShaderMaterial.new()
+	_build_shader.set_shader(build_shader)
+	
+	building_model.set_material_override(_build_shader)
+	building_model.set_override_shader_parameter("magic_color", magic_color)
 	# Start building
 	is_building = true
 	if(discovered):
@@ -360,13 +350,13 @@ func set_snap(snp):
 ## Can place
 func make_valid():
 	is_valid = true
-	set_mat_over_color(Color.CORNFLOWER_BLUE)
+	building_model.set_override_albedo(Color.CORNFLOWER_BLUE)
 
 
 ## Cannot place
 func make_invalid():
 	is_valid = false
-	set_mat_over_color(Color.INDIAN_RED)
+	building_model.set_override_albedo(Color.INDIAN_RED)
 
 
 ## Call to see if purchasable
@@ -458,14 +448,13 @@ func finish_building():
 	await get_tree().physics_frame
 	is_building = false
 	build_particles.visible = false
-	mesh.transparency = 0
+	building_model.transparency = 0
 	fog_reg.fog_break_radius = fog_rev_radius
 	update_fog.emit(self, true)
 	fog_radius_changed.emit(self)	
 		
 	# Reset to base materials
-	for i in range(mesh.get_surface_override_material_count()):
-		mesh.mesh.surface_set_material(i,base_mats[i])
+	building_model.clear_material_override()
 
 
 func _detection_area_entered(area):
@@ -482,27 +471,6 @@ func _detection_area_exited(area):
 
 
 ''' Building logic End '''
-'''-------------------------------------------------------------------------------------'''
-''' Material Setting Start '''
-## Set all surfaces to override material
-func set_all_over_mats(mat):
-	for i in range(mesh.get_surface_override_material_count()):
-		mesh.set_surface_override_material(i, mat)
-
-
-## Set all surfaces to override material
-func set_mat_over_color(col):
-	for i in range(mesh.get_surface_override_material_count()):
-		if mesh.get_surface_override_material(i) != null:
-			mesh.get_surface_override_material(i).albedo_color = col
-
-
-## sets material to a shader for building
-func set_all_shader(shad):
-	for i in range(mesh.get_surface_override_material_count()):
-		mesh.mesh.surface_get_material(i).set_shader(shad)
-
-''' Material Setting End '''
 '''-------------------------------------------------------------------------------------'''
 ''' Combat Start '''
 func damage(amt: float, _type: String):

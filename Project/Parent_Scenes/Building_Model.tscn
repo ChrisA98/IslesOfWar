@@ -1,8 +1,36 @@
-[gd_scene load_steps=2 format=3 uid="uid://bnmi8gc8nnhqt"]
+[gd_scene load_steps=5 format=3 uid="uid://bnmi8gc8nnhqt"]
 
 [ext_resource type="Script" path="res://Parent_Scenes/Building_Model_Controller.gd" id="1_h7k3n"]
+[ext_resource type="Shader" uid="uid://cihsj0qbnmaw3" path="res://Parent_Scenes/res/building_shader.tres" id="2_e6moq"]
+
+[sub_resource type="ShaderMaterial" id="ShaderMaterial_hlqic"]
+render_priority = 0
+shader = ExtResource("2_e6moq")
+shader_parameter/t_height = 100.0
+shader_parameter/heightmap_lock = null
+shader_parameter/point_size = null
+shader_parameter/roughness = null
+shader_parameter/metallic_texture_channel = null
+shader_parameter/specular = null
+shader_parameter/metallic = null
+shader_parameter/normal_scale = null
+shader_parameter/uv1_scale = null
+shader_parameter/uv2_scale = null
+shader_parameter/use_player_albedo = null
+shader_parameter/player_albedo = null
+shader_parameter/color_albedo = Color(1, 1, 1, 1)
+
+[sub_resource type="CylinderMesh" id="CylinderMesh_bhhwi"]
+resource_local_to_scene = true
+material = SubResource("ShaderMaterial_hlqic")
+bottom_radius = 0.9
+height = 1.0
+radial_segments = 10
+rings = 1
 
 [node name="Building_Model" type="Node3D"]
 script = ExtResource("1_h7k3n")
 
 [node name="MeshInstance3D" type="MeshInstance3D" parent="."]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, 0.450854, 0)
+mesh = SubResource("CylinderMesh_bhhwi")

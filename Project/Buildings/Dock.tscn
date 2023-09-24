@@ -1,7 +1,24 @@
-[gd_scene load_steps=3 format=3 uid="uid://x073djafeq1u"]
+[gd_scene load_steps=7 format=3 uid="uid://x073djafeq1u"]
 
 [ext_resource type="PackedScene" uid="uid://ccoruw5j562l7" path="res://Parent_Scenes/Building_Base.tscn" id="1_wuqpt"]
 [ext_resource type="Script" path="res://Buildings/scripts/Dock.gd" id="2_xu1jq"]
+[ext_resource type="Shader" path="res://Parent_Scenes/res/health_bar.gdshader" id="3_x15i5"]
+
+[sub_resource type="ShaderMaterial" id="ShaderMaterial_t8epg"]
+resource_local_to_scene = true
+render_priority = 0
+shader = ExtResource("3_x15i5")
+shader_parameter/health_amount = 0.99
+shader_parameter/health_bar_color = Color(0.152941, 0.121569, 0.698039, 1)
+
+[sub_resource type="PlaneMesh" id="PlaneMesh_d8qf6"]
+resource_local_to_scene = true
+material = SubResource("ShaderMaterial_t8epg")
+size = Vector2(0.235, 4)
+orientation = 2
+
+[sub_resource type="BoxShape3D" id="BoxShape3D_vf3xi"]
+size = Vector3(2.84, 2.545, 1.72)
 
 [node name="Dock" instance=ExtResource("1_wuqpt")]
 script = ExtResource("2_xu1jq")
@@ -12,7 +29,13 @@ menu_pages = {
 "sec_units": "",
 "units": "Ships"
 }
-garrison_unit_type = 1
+
+[node name="Health_Bar" parent="." index="2"]
+mesh = SubResource("PlaneMesh_d8qf6")
+
+[node name="CollisionShape3D" parent="StaticBody3D" index="0"]
+transform = Transform3D(0.8, 0, 0, 0, 0.8, 0, 0, 0, 0.8, -0.403302, 0.402624, -0.259959)
+shape = SubResource("BoxShape3D_vf3xi")
 
 [node name="CollisionShape3D2" parent="StaticBody3D" index="1"]
 transform = Transform3D(0.2, 0, 0, 0, 0.2, 0, 0, 0, 0.2, 0, 0, 0.898475)
@@ -22,8 +45,8 @@ transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, 1, 0.910313)
 target_position = Vector3(0, -5, 0)
 collision_mask = 65535
 
-[node name="RallyPoint" parent="." index="4"]
+[node name="RallyPoint" parent="." index="7"]
 transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, 0.0733881, 1.92666)
 
-[node name="SpawnPoint" parent="." index="5"]
+[node name="SpawnPoint" parent="." index="8"]
 transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, -0.0474244, 0.886082)

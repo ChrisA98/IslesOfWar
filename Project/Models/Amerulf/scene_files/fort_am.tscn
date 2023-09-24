@@ -1,35 +1,38 @@
-[gd_scene load_steps=10 format=3 uid="uid://dyxtoysvkrefd"]
+[gd_scene load_steps=14 format=3 uid="uid://dyxtoysvkrefd"]
 
 [ext_resource type="PackedScene" uid="uid://bnmi8gc8nnhqt" path="res://Parent_Scenes/Building_Model.tscn" id="1_s58iy"]
 [ext_resource type="Shader" uid="uid://cihsj0qbnmaw3" path="res://Parent_Scenes/res/building_shader.tres" id="2_d6rbo"]
 [ext_resource type="Texture2D" uid="uid://c1xd071wvnesr" path="res://Models/Units/textures/wood_tex.png" id="3_dr3gy"]
+[ext_resource type="Texture2D" uid="uid://c5snwwdpukoch" path="res://Models/Units/textures/wood_norm_1.png" id="4_misw0"]
 [ext_resource type="Texture2D" uid="uid://dwejmjvt754e" path="res://Models/Amerulf/Tex/Stone_01.png" id="4_snm75"]
 [ext_resource type="Texture2D" uid="uid://berexigqyo63g" path="res://Models/Amerulf/Tex/Stone_01_Normal_Map.png" id="5_6k3g4"]
+[ext_resource type="Shader" uid="uid://vlnudqa1d4vl" path="res://Parent_Scenes/res/building_shader_no_culling.tres" id="7_7wn1n"]
+[ext_resource type="Texture2D" uid="uid://dwxfb3jgbc0yo" path="res://Models/Units/textures/Amerulfian_flag.png" id="8_i6jfy"]
 
 [sub_resource type="ShaderMaterial" id="ShaderMaterial_jv1b3"]
 render_priority = 0
 shader = ExtResource("2_d6rbo")
 shader_parameter/t_height = 100.0
 shader_parameter/heightmap_lock = null
-shader_parameter/albedo = Color(1, 1, 1, 1)
 shader_parameter/point_size = 1.0
 shader_parameter/roughness = 0.59
 shader_parameter/metallic_texture_channel = null
-shader_parameter/specular = 0.446
+shader_parameter/specular = 0.519
 shader_parameter/metallic = 0.0
-shader_parameter/normal_scale = 1.0
+shader_parameter/normal_scale = 1.663
 shader_parameter/uv1_scale = Vector3(1, 1, 1)
 shader_parameter/uv2_scale = Vector3(1, 1, 1)
-shader_parameter/use_color_albedo = null
-shader_parameter/color_albedo = null
+shader_parameter/use_player_albedo = null
+shader_parameter/player_albedo = null
+shader_parameter/color_albedo = Color(0.854902, 0.666667, 0.270588, 1)
 shader_parameter/texture_albedo = ExtResource("3_dr3gy")
+shader_parameter/texture_normal = ExtResource("4_misw0")
 
 [sub_resource type="ShaderMaterial" id="ShaderMaterial_sibxt"]
 render_priority = 0
 shader = ExtResource("2_d6rbo")
 shader_parameter/t_height = 100.0
 shader_parameter/heightmap_lock = null
-shader_parameter/albedo = Color(1, 1, 1, 1)
 shader_parameter/point_size = 1.0
 shader_parameter/roughness = 0.77
 shader_parameter/metallic_texture_channel = null
@@ -38,17 +41,18 @@ shader_parameter/metallic = 0.0
 shader_parameter/normal_scale = 1.481
 shader_parameter/uv1_scale = Vector3(1, 1, 1)
 shader_parameter/uv2_scale = Vector3(1, 1, 1)
-shader_parameter/use_color_albedo = null
-shader_parameter/color_albedo = null
+shader_parameter/use_player_albedo = null
+shader_parameter/player_albedo = null
+shader_parameter/color_albedo = Color(0.733333, 0.741176, 0.662745, 1)
 shader_parameter/texture_albedo = ExtResource("4_snm75")
 shader_parameter/texture_normal = ExtResource("5_6k3g4")
 
 [sub_resource type="ShaderMaterial" id="ShaderMaterial_akk0t"]
+resource_local_to_scene = true
 render_priority = 0
 shader = ExtResource("2_d6rbo")
 shader_parameter/t_height = 100.0
 shader_parameter/heightmap_lock = null
-shader_parameter/albedo = Color(1, 1, 1, 1)
 shader_parameter/point_size = 1.0
 shader_parameter/roughness = 0.59
 shader_parameter/metallic_texture_channel = null
@@ -57,10 +61,30 @@ shader_parameter/metallic = 0.0
 shader_parameter/normal_scale = 1.0
 shader_parameter/uv1_scale = Vector3(1, 1, 1)
 shader_parameter/uv2_scale = Vector3(1, 1, 1)
-shader_parameter/use_color_albedo = true
+shader_parameter/use_player_albedo = true
+shader_parameter/player_albedo = null
 shader_parameter/color_albedo = Color(0, 0, 0.639216, 1)
 
+[sub_resource type="ShaderMaterial" id="ShaderMaterial_em1ha"]
+render_priority = 0
+shader = ExtResource("7_7wn1n")
+shader_parameter/t_height = 100.0
+shader_parameter/heightmap_lock = null
+shader_parameter/point_size = 1.0
+shader_parameter/roughness = 0.371
+shader_parameter/metallic_texture_channel = null
+shader_parameter/specular = 0.189
+shader_parameter/metallic = 0.177
+shader_parameter/normal_scale = 0.963001
+shader_parameter/uv1_scale = Vector3(1, 1, 1)
+shader_parameter/uv2_scale = Vector3(1, 1, 1)
+shader_parameter/use_player_albedo = null
+shader_parameter/player_albedo = null
+shader_parameter/color_albedo = Color(1, 1, 1, 1)
+shader_parameter/texture_albedo = ExtResource("8_i6jfy")
+
 [sub_resource type="ArrayMesh" id="ArrayMesh_pub1k"]
+resource_local_to_scene = true
 _surfaces = [{
 "aabb": AABB(0.099825, 0.199649, -0.945479, 0.798598, 0.12011, 0.40127),
 "attribute_data": PackedByteArray(85, 50, 88, 63, 142, 61, 187, 63, 114, 221, 212, 61, 21, 197, 169, 63, 85, 50, 88, 63, 130, 199, 51, 63, 114, 221, 212, 61, 147, 199, 51, 63),
@@ -199,7 +223,8 @@ _surfaces = [{
 "format": 4119,
 "index_count": 6,
 "index_data": PackedByteArray(0, 0, 1, 0, 2, 0, 2, 0, 1, 0, 3, 0),
-"name": "Material",
+"material": SubResource("ShaderMaterial_em1ha"),
+"name": "Flag",
 "primitive": 3,
 "vertex_count": 4,
 "vertex_data": PackedByteArray(0, 0, 0, 0, 117, 146, 251, 63, 25, 61, 183, 186, 255, 255, 255, 127, 255, 255, 255, 255, 0, 0, 0, 0, 230, 60, 12, 64, 25, 61, 183, 186, 255, 255, 255, 127, 255, 255, 255, 255, 0, 0, 0, 0, 117, 146, 251, 63, 182, 161, 186, 190, 255, 255, 255, 127, 255, 255, 255, 255, 0, 0, 0, 0, 230, 60, 12, 64, 182, 161, 186, 190, 255, 255, 255, 127, 255, 255, 255, 255)
@@ -208,4 +233,5 @@ _surfaces = [{
 [node name="Building_Model" instance=ExtResource("1_s58iy")]
 
 [node name="MeshInstance3D" parent="." index="0"]
+transform = Transform3D(-4.37114e-08, 0, -1, 0, 1, 0, 1, 0, -4.37114e-08, 0, 0, 0)
 mesh = SubResource("ArrayMesh_pub1k")

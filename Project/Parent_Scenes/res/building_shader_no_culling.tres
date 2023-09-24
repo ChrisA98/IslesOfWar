@@ -1,7 +1,6 @@
-[gd_resource type="Shader" format=3 uid="uid://cihsj0qbnmaw3"]
+[gd_resource type="Shader" format=3 uid="uid://vlnudqa1d4vl"]
 
 [resource]
-resource_local_to_scene = true
 code = "// NOTE: Shader automatically converted from Godot Engine 4.1.1.stable's StandardMaterial3D.
 
 shader_type spatial;
@@ -11,7 +10,7 @@ global uniform vec2 heightmap_tex_size = vec2(1000.0,1000.0);
 uniform float t_height = 100;
 uniform bool heightmap_lock;
 
-render_mode blend_mix,depth_draw_opaque,cull_back,diffuse_burley,specular_schlick_ggx;
+render_mode blend_mix,depth_draw_opaque,cull_disabled,diffuse_burley,specular_schlick_ggx;
 uniform sampler2D texture_albedo : source_color,filter_linear_mipmap,repeat_enable;
 uniform float point_size : hint_range(0,128);
 uniform float roughness : hint_range(0,1);

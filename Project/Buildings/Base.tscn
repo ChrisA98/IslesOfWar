@@ -72,7 +72,7 @@ metadata/show_base_radius = false
 metadata/needs_base = false
 
 [node name="Health_Bar" parent="." index="2"]
-transform = Transform3D(-8.74228e-09, -0.2, 0, 0.2, -8.74228e-09, 0, 0, 0, 0.2, 0, 2.30167, 0)
+transform = Transform3D(-8.74228e-09, -0.2, 0, 0.2, -8.74228e-09, 0, 0, 0, 0.2, 0, 2.65136, 0)
 visible = true
 mesh = SubResource("PlaneMesh_yle0p")
 
