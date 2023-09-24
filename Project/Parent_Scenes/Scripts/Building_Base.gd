@@ -141,7 +141,7 @@ func _ready():
 	if (actor_owner.actor_ID == 0):
 		discovered = true
 	else:
-		$MeshInstance3D.visible = false
+		$BuildingModel.visible = false
 		discovered = false
 		det_area.area_entered.connect(_detection_area_entered)
 		det_area.area_exited.connect(_detection_area_exited)

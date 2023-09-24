@@ -1,0 +1,8 @@
+[gd_scene load_steps=2 format=3 uid="uid://bnmi8gc8nnhqt"]
+
+[ext_resource type="Script" path="res://Parent_Scenes/Building_Model_Controller.gd" id="1_h7k3n"]
+
+[node name="Building_Model" type="Node3D"]
+script = ExtResource("1_h7k3n")
+
+[node name="MeshInstance3D" type="MeshInstance3D" parent="."]

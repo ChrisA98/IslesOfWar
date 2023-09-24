@@ -1,0 +1,21 @@
+[remap]
+
+importer="wavefront_obj"
+importer_version=1
+type="Mesh"
+uid="uid://bqux1fsngqxbj"
+path="res://.godot/imported/Base_Am.obj-9b68762119008ac8eb9181fa9c581cfb.mesh"
+
+[deps]
+
+files=["res://.godot/imported/Base_Am.obj-9b68762119008ac8eb9181fa9c581cfb.mesh"]
+
+source_file="res://Models/Amerulf/base_models/Base_Am.obj"
+dest_files=["res://.godot/imported/Base_Am.obj-9b68762119008ac8eb9181fa9c581cfb.mesh", "res://.godot/imported/Base_Am.obj-9b68762119008ac8eb9181fa9c581cfb.mesh"]
+
+[params]
+
+generate_tangents=true
+scale_mesh=Vector3(1, 1, 1)
+offset_mesh=Vector3(0, 0, 0)
+optimize_mesh=true

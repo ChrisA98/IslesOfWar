@@ -1,4 +1,4 @@
-[gd_scene load_steps=24 format=3 uid="uid://ccoruw5j562l7"]
+[gd_scene load_steps=25 format=3 uid="uid://ccoruw5j562l7"]
 
 [ext_resource type="Script" path="res://Parent_Scenes/Scripts/Building_Base.gd" id="1_y54u3"]
 [ext_resource type="Script" path="res://Parent_Scenes/Attack_Manager.gd" id="2_ldwq8"]
@@ -8,6 +8,7 @@
 [ext_resource type="PackedScene" uid="uid://dk381vs3dbmou" path="res://Buildings/sub_scenes/building_menu.tscn" id="3_gjrqr"]
 [ext_resource type="Shader" path="res://Parent_Scenes/res/health_bar.gdshader" id="3_t3qep"]
 [ext_resource type="Script" path="res://Parent_Scenes/health_manager.gd" id="4_cofv4"]
+[ext_resource type="Script" path="res://Parent_Scenes/BuildingModel_Loader.gd" id="6_y2mdn"]
 
 [sub_resource type="ShaderMaterial" id="ShaderMaterial_omsm0"]
 resource_local_to_scene = true
@@ -22,15 +23,6 @@ material = SubResource("ShaderMaterial_omsm0")
 size = Vector2(0.235, 4)
 orientation = 2
 
-[sub_resource type="ShaderMaterial" id="ShaderMaterial_7hrmx"]
-render_priority = 0
-shader = ExtResource("3_6iqix")
-
-[sub_resource type="StandardMaterial3D" id="StandardMaterial3D_eebkm"]
-
-[sub_resource type="BoxMesh" id="BoxMesh_1iip8"]
-material = SubResource("StandardMaterial3D_eebkm")
-
 [sub_resource type="Gradient" id="Gradient_2a2sv"]
 interpolation_mode = 1
 offsets = PackedFloat32Array(0.483254)
@@ -43,6 +35,15 @@ height = 512
 fill = 1
 fill_from = Vector2(0.5, 0.5)
 fill_to = Vector2(0.75, 0.75)
+
+[sub_resource type="ShaderMaterial" id="ShaderMaterial_7hrmx"]
+render_priority = 0
+shader = ExtResource("3_6iqix")
+
+[sub_resource type="StandardMaterial3D" id="StandardMaterial3D_eebkm"]
+
+[sub_resource type="BoxMesh" id="BoxMesh_1iip8"]
+material = SubResource("StandardMaterial3D_eebkm")
 
 [sub_resource type="BoxShape3D" id="BoxShape3D_ibp2k"]
 
@@ -111,12 +112,11 @@ script = ExtResource("4_cofv4")
 [node name="Menu" parent="." instance=ExtResource("3_gjrqr")]
 visible = false
 
-[node name="MeshInstance3D" type="MeshInstance3D" parent="."]
+[node name="BuildingModel" type="Node3D" parent="."]
 transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, 0.5, 0)
-material_overlay = SubResource("ShaderMaterial_7hrmx")
-mesh = SubResource("BoxMesh_1iip8")
+script = ExtResource("6_y2mdn")
 
-[node name="Hiding" type="Decal" parent="MeshInstance3D"]
+[node name="Hiding" type="Decal" parent="BuildingModel"]
 transform = Transform3D(0.999994, 0.00318969, -0.000583422, -0.00318933, 0.999994, 0.000606477, 0.00058536, -0.000604608, 0.999999, 0, 0, 0)
 visible = false
 size = Vector3(1.2, 1.2, 1.2)
@@ -124,6 +124,12 @@ texture_albedo = SubResource("GradientTexture2D_uf0qr")
 upper_fade = 0.0003484
 lower_fade = 0.000186703
 cull_mask = 1048573
+
+[node name="MeshInstance3D" type="MeshInstance3D" parent="."]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, 0.5, 0)
+visible = false
+material_overlay = SubResource("ShaderMaterial_7hrmx")
+mesh = SubResource("BoxMesh_1iip8")
 
 [node name="StaticBody3D" type="StaticBody3D" parent="." groups=["pickable_object"]]
 transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, 0.507441, 0)
