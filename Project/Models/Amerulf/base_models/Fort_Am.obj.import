@@ -1,0 +1,21 @@
+[remap]
+
+importer="wavefront_obj"
+importer_version=1
+type="Mesh"
+uid="uid://bo4ece2esk6qb"
+path="res://.godot/imported/Fort_Am.obj-cff40fda9249a586f2b11a7334577b86.mesh"
+
+[deps]
+
+files=["res://.godot/imported/Fort_Am.obj-cff40fda9249a586f2b11a7334577b86.mesh"]
+
+source_file="res://Models/Amerulf/base_models/Fort_Am.obj"
+dest_files=["res://.godot/imported/Fort_Am.obj-cff40fda9249a586f2b11a7334577b86.mesh", "res://.godot/imported/Fort_Am.obj-cff40fda9249a586f2b11a7334577b86.mesh"]
+
+[params]
+
+generate_tangents=true
+scale_mesh=Vector3(1, 1, 1)
+offset_mesh=Vector3(0, 0, 0)
+optimize_mesh=true
