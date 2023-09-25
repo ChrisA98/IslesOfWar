@@ -1,7 +1,8 @@
-[gd_scene load_steps=4 format=3 uid="uid://c3871d4d2sgjf"]
+[gd_scene load_steps=13 format=3 uid="uid://c3871d4d2sgjf"]
 
 [ext_resource type="Script" path="res://Parent_Scenes/Scripts/Projectile_Controller.gd" id="1_elwhl"]
-[ext_resource type="Resource" uid="uid://bc23qo1nhbhla" path="res://Parent_Scenes/res/projectile_data.tres" id="2_mqjkn"]
+[ext_resource type="Texture2D" uid="uid://bkvfsyrdm6knb" path="res://Models/Units/textures/arrow.png" id="2_3tscj"]
+[ext_resource type="Script" path="res://Parent_Scenes/Scripts/projectile_data.gd" id="3_idq7m"]
 
 [sub_resource type="Curve3D" id="Curve3D_ysj2p"]
 resource_local_to_scene = true
@@ -12,8 +13,55 @@ _data = {
 }
 point_count = 8
 
+[sub_resource type="StandardMaterial3D" id="StandardMaterial3D_vxd70"]
+albedo_color = Color(0.321569, 0.168627, 0.0235294, 1)
+
+[sub_resource type="SphereMesh" id="SphereMesh_qt3ra"]
+material = SubResource("StandardMaterial3D_vxd70")
+radius = 0.1
+height = 0.2
+radial_segments = 4
+rings = 1
+
+[sub_resource type="Curve" id="Curve_ghkoo"]
+_data = [Vector2(0, 1), 0.0, 0.0, 0, 0, Vector2(1, 0), 0.0, 0.0, 0, 0]
+point_count = 2
+
+[sub_resource type="CurveTexture" id="CurveTexture_g6r53"]
+curve = SubResource("Curve_ghkoo")
+
+[sub_resource type="ParticleProcessMaterial" id="ParticleProcessMaterial_kk4vq"]
+direction = Vector3(0, 1, 0)
+spread = 18.75
+initial_velocity_min = 0.2
+initial_velocity_max = 33.17
+linear_accel_min = 15.28
+linear_accel_max = 15.28
+scale_curve = SubResource("CurveTexture_g6r53")
+
+[sub_resource type="StandardMaterial3D" id="StandardMaterial3D_jkxxg"]
+transparency = 1
+cull_mode = 2
+albedo_texture = ExtResource("2_3tscj")
+billboard_keep_scale = true
+
+[sub_resource type="PlaneMesh" id="PlaneMesh_40ens"]
+material = SubResource("StandardMaterial3D_jkxxg")
+size = Vector2(8, 3)
+orientation = 0
+
+[sub_resource type="Resource" id="Resource_nioj2"]
+resource_local_to_scene = true
+script = ExtResource("3_idq7m")
+travel_speed = 75.0
+lifespan = 2.0
+arc_height = 3.0
+impact_particle_material = SubResource("ParticleProcessMaterial_kk4vq")
+impact_particle = SubResource("SphereMesh_qt3ra")
+projectile_mesh = SubResource("PlaneMesh_40ens")
+
 [node name="projectile_arc" type="Path3D"]
 top_level = true
 curve = SubResource("Curve3D_ysj2p")
 script = ExtResource("1_elwhl")
-proj_data = ExtResource("2_mqjkn")
+proj_data = SubResource("Resource_nioj2")

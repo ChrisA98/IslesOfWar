@@ -65,11 +65,11 @@ dof_blur_far_distance = 1000.0
 render_priority = 0
 shader = ExtResource("2_ec6ww")
 
-[sub_resource type="Gradient" id="Gradient_1g27v"]
+[sub_resource type="Gradient" id="Gradient_rl8fp"]
 interpolation_mode = 2
 colors = PackedColorArray(0.32, 0.293013, 0.2848, 1, 0.631702, 0.622596, 0.584646, 1)
 
-[sub_resource type="FastNoiseLite" id="FastNoiseLite_dlv7m"]
+[sub_resource type="FastNoiseLite" id="FastNoiseLite_t6d3w"]
 noise_type = 4
 frequency = 0.0066
 fractal_octaves = 3
@@ -87,8 +87,8 @@ domain_warp_fractal_lacunarity = 6.086
 width = 1000
 height = 1000
 seamless = true
-color_ramp = SubResource("Gradient_1g27v")
-noise = SubResource("FastNoiseLite_dlv7m")
+color_ramp = SubResource("Gradient_rl8fp")
+noise = SubResource("FastNoiseLite_t6d3w")
 
 [sub_resource type="NoiseTexture2D" id="NoiseTexture2D_fcitg"]
 width = 1000
@@ -96,12 +96,12 @@ height = 1000
 seamless = true
 as_normal_map = true
 bump_strength = 10.8
-noise = SubResource("FastNoiseLite_dlv7m")
+noise = SubResource("FastNoiseLite_t6d3w")
 
-[sub_resource type="Gradient" id="Gradient_im8lq"]
+[sub_resource type="Gradient" id="Gradient_0thh2"]
 colors = PackedColorArray(0, 0.260467, 0, 1, 0.571765, 0.594111, 0.191985, 1)
 
-[sub_resource type="FastNoiseLite" id="FastNoiseLite_al3lm"]
+[sub_resource type="FastNoiseLite" id="FastNoiseLite_u83fl"]
 noise_type = 0
 frequency = 0.1316
 fractal_octaves = 10
@@ -118,8 +118,8 @@ domain_warp_fractal_gain = 0.971
 width = 1000
 height = 1000
 seamless = true
-color_ramp = SubResource("Gradient_im8lq")
-noise = SubResource("FastNoiseLite_al3lm")
+color_ramp = SubResource("Gradient_0thh2")
+noise = SubResource("FastNoiseLite_u83fl")
 
 [sub_resource type="NoiseTexture2D" id="NoiseTexture2D_e22tc"]
 width = 1000
@@ -128,20 +128,20 @@ invert = true
 seamless = true
 as_normal_map = true
 bump_strength = 3.5
-noise = SubResource("FastNoiseLite_al3lm")
+noise = SubResource("FastNoiseLite_u83fl")
 
-[sub_resource type="Gradient" id="Gradient_2i80b"]
+[sub_resource type="Gradient" id="Gradient_3v6cb"]
 colors = PackedColorArray(0.859586, 0.873469, 0.643777, 1, 0.550264, 0.542165, 0.456681, 1)
 
-[sub_resource type="FastNoiseLite" id="FastNoiseLite_l7c1p"]
+[sub_resource type="FastNoiseLite" id="FastNoiseLite_ehi5e"]
 frequency = 0.019
 
 [sub_resource type="NoiseTexture2D" id="NoiseTexture2D_x1bul"]
 width = 1000
 height = 1000
 seamless = true
-color_ramp = SubResource("Gradient_2i80b")
-noise = SubResource("FastNoiseLite_l7c1p")
+color_ramp = SubResource("Gradient_3v6cb")
+noise = SubResource("FastNoiseLite_ehi5e")
 
 [sub_resource type="NoiseTexture2D" id="NoiseTexture2D_23uga"]
 width = 1000
@@ -149,10 +149,10 @@ height = 1000
 seamless = true
 as_normal_map = true
 normalize = false
-color_ramp = SubResource("Gradient_2i80b")
-noise = SubResource("FastNoiseLite_l7c1p")
+color_ramp = SubResource("Gradient_3v6cb")
+noise = SubResource("FastNoiseLite_ehi5e")
 
-[sub_resource type="ShaderMaterial" id="ShaderMaterial_rie7d"]
+[sub_resource type="ShaderMaterial" id="ShaderMaterial_gnvmf"]
 resource_local_to_scene = true
 render_priority = 0
 shader = ExtResource("2_ueirr")
@@ -170,19 +170,19 @@ shader_parameter/sand_alb_tex = SubResource("NoiseTexture2D_x1bul")
 shader_parameter/sand_norm_tex = SubResource("NoiseTexture2D_23uga")
 
 [sub_resource type="PlaneMesh" id="PlaneMesh_17eok"]
-material = SubResource("ShaderMaterial_rie7d")
+material = SubResource("ShaderMaterial_gnvmf")
 size = Vector2(1000, 1000)
 subdivide_width = 100
 subdivide_depth = 100
 
-[sub_resource type="Gradient" id="Gradient_b6hmg"]
+[sub_resource type="Gradient" id="Gradient_kcurd"]
 interpolation_mode = 2
 colors = PackedColorArray(0.383293, 0.763558, 1, 1, 1.20327e-06, 0.337756, 0.401284, 1)
 
 [sub_resource type="GradientTexture1D" id="GradientTexture1D_8euv3"]
-gradient = SubResource("Gradient_b6hmg")
+gradient = SubResource("Gradient_kcurd")
 
-[sub_resource type="FastNoiseLite" id="FastNoiseLite_6n0eb"]
+[sub_resource type="FastNoiseLite" id="FastNoiseLite_rkjtp"]
 noise_type = 3
 fractal_type = 2
 fractal_octaves = 4
@@ -197,9 +197,9 @@ height = 1000
 seamless = true
 seamless_blend_skirt = 0.596
 as_normal_map = true
-noise = SubResource("FastNoiseLite_6n0eb")
+noise = SubResource("FastNoiseLite_rkjtp")
 
-[sub_resource type="FastNoiseLite" id="FastNoiseLite_vgweg"]
+[sub_resource type="FastNoiseLite" id="FastNoiseLite_5bdcn"]
 noise_type = 3
 seed = 3
 fractal_type = 2
@@ -210,9 +210,9 @@ height = 1000
 seamless = true
 as_normal_map = true
 bump_strength = 12.9
-noise = SubResource("FastNoiseLite_vgweg")
+noise = SubResource("FastNoiseLite_5bdcn")
 
-[sub_resource type="ShaderMaterial" id="ShaderMaterial_5m4l7"]
+[sub_resource type="ShaderMaterial" id="ShaderMaterial_1nm3f"]
 render_priority = 0
 shader = ExtResource("4_h7krx")
 shader_parameter/t_height = 100.0
@@ -232,7 +232,7 @@ shader_parameter/water_disp_tex_1 = SubResource("NoiseTexture2D_pd0fy")
 shader_parameter/water_disp_tex_2 = SubResource("NoiseTexture2D_cxok4")
 
 [sub_resource type="PlaneMesh" id="PlaneMesh_1nhq6"]
-material = SubResource("ShaderMaterial_5m4l7")
+material = SubResource("ShaderMaterial_1nm3f")
 size = Vector2(1000, 1000)
 subdivide_width = 20
 subdivide_depth = 20
@@ -347,11 +347,13 @@ actor_id = 1
 [node name="Forest" parent="." instance=ExtResource("5_8idnn")]
 transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 249.093, 0, -328.466)
 random_seed = 491
+preview_forest = false
 tree_cnt = 150
 
 [node name="Forest2" parent="." instance=ExtResource("5_8idnn")]
 transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 114.56, 0, 102.392)
 random_seed = 821
+preview_forest = false
 tree_cnt = 150
 max_slope = 0.255
 

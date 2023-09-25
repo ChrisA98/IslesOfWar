@@ -1,4 +1,7 @@
 extends Node3D
+
+signal loaded
+
 ''' Time keeping vars '''
 @export var use_random_base_spawns := false
 @export_group("Time")
@@ -145,7 +148,7 @@ func _build_fog_war(chunks):
 		te.position.x = -((chunk_size*chunks/2)+65)
 		$Great_Fog_Wall.add_child(te)
 	
-	await get_tree().physics_frame
+	await get_tree().create_timer(1).timeout
 	
 	## Fog of war explorable
 	var fog_explor_range = (chunk_size*chunks)/25	#gets length of walls
@@ -165,12 +168,12 @@ func _build_fog_war(chunks):
 			$Explorable_Fog.add_child(te)
 	
 	
-	await get_tree().physics_frame
+	await get_tree().create_timer(1).timeout
 	
 	## Assign fog network
 	for fog in range(1,$Explorable_Fog.get_children().size()-1):
 		$Explorable_Fog.get_children()[fog].get_neighbors()
-	await get_tree().physics_frame
+	await get_tree().create_timer(1).timeout
 	for fog in range(1,$Explorable_Fog.get_children().size()-1):
 		$Explorable_Fog.get_children()[fog].get_child(0).set_deferred("monitorable",false)
 	## isolate fog units
@@ -179,6 +182,7 @@ func _build_fog_war(chunks):
 		#$Explorable_Fog.get_children()[fog].disable_isolated()
 	
 	picker.queue_free()
+	loaded.emit()
 
 
 ## Check if .exr files exist in target path

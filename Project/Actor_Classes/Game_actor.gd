@@ -11,6 +11,7 @@ signal building_added(building_pos: Vector3, hide_grass: bool)
 var bases := []
 var buildings := []
 var units := []
+var unit_id_inc :int = 0
 var squads : Array[Squad] = []
 var selected_squad := Squad.new()
 var loaded_units := {}
@@ -186,7 +187,8 @@ func spawn_unit(unit_name:String) -> Unit_Base:
 	gamescene.spawn_unit(unit)
 	units.push_back(unit)
 	update_pop()
-	unit.load_data(faction_data["unit_list"][unit_name],unit_model_master[unit_name],0)
+	unit.load_data(faction_data["unit_list"][unit_name],unit_model_master[unit_name],unit_id_inc)
+	unit_id_inc+=1
 	
 	return unit
 

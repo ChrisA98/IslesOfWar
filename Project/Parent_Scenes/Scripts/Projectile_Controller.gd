@@ -78,7 +78,7 @@ func _proj_collided(hit_trgt: Node3D,proj):
 ## Create a projectile with loaded data
 func _generate_projectile() -> PathFollow3D:
 	var proj_out = PathFollow3D.new()
-	proj_out.rotation_mode = PathFollow3D.ROTATION_NONE
+	proj_out.rotation_mode = PathFollow3D.ROTATION_ORIENTED
 	proj_out.loop = false
 	
 	## Create projectile mesh

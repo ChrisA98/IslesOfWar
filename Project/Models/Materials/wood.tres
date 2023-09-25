@@ -36,7 +36,7 @@ void vertex() {
 	vec4 buildings = texture(building_locs, pos_uv);
 	
 	// Hide trees in buildings
-	if(buildings.r > 0.0){
+	if(buildings.r < 0.0){
 		VERTEX.z=-10000.0;
 	}
 	

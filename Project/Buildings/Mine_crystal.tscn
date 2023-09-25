@@ -1,12 +1,159 @@
-[gd_scene load_steps=3 format=3 uid="uid://cn20fep4dp4sw"]
+[gd_scene load_steps=32 format=3 uid="uid://cn20fep4dp4sw"]
 
 [ext_resource type="PackedScene" uid="uid://dvsgehqxy6lav" path="res://Buildings/Resource_building.tscn" id="1_yenkp"]
 [ext_resource type="Script" path="res://Buildings/scripts/Mine.gd" id="2_p5h62"]
+[ext_resource type="Script" path="res://Parent_Scenes/Scripts/projectile_data.gd" id="3_r1u2f"]
+[ext_resource type="Script" path="res://Parent_Scenes/Scripts/beam_data.gd" id="4_cc0ep"]
+[ext_resource type="Shader" path="res://Parent_Scenes/res/health_bar.gdshader" id="5_8g7wv"]
+
+[sub_resource type="StandardMaterial3D" id="StandardMaterial3D_vxd70"]
+albedo_color = Color(0.321569, 0.168627, 0.0235294, 1)
+
+[sub_resource type="SphereMesh" id="SphereMesh_uish5"]
+material = SubResource("StandardMaterial3D_vxd70")
+radius = 0.1
+height = 0.2
+radial_segments = 4
+rings = 1
+
+[sub_resource type="Curve" id="Curve_0xt2m"]
+_data = [Vector2(0, 1), 0.0, 0.0, 0, 0, Vector2(1, 0), 0.0, 0.0, 0, 0]
+point_count = 2
+
+[sub_resource type="CurveTexture" id="CurveTexture_6clb7"]
+curve = SubResource("Curve_0xt2m")
+
+[sub_resource type="ParticleProcessMaterial" id="ParticleProcessMaterial_rgikh"]
+direction = Vector3(0, 1, 0)
+spread = 18.75
+initial_velocity_min = 0.2
+initial_velocity_max = 33.17
+linear_accel_min = 15.28
+linear_accel_max = 15.28
+scale_curve = SubResource("CurveTexture_6clb7")
+
+[sub_resource type="StandardMaterial3D" id="StandardMaterial3D_jrqsp"]
+albedo_color = Color(0.360784, 0.360784, 0.360784, 1)
+
+[sub_resource type="SphereMesh" id="SphereMesh_0ggfi"]
+material = SubResource("StandardMaterial3D_jrqsp")
+radial_segments = 8
+rings = 4
+
+[sub_resource type="Resource" id="Resource_kbp41"]
+resource_local_to_scene = true
+script = ExtResource("3_r1u2f")
+travel_speed = 25.0
+lifespan = 1.0
+arc_height = 5.0
+impact_particle_material = SubResource("ParticleProcessMaterial_rgikh")
+impact_particle = SubResource("SphereMesh_uish5")
+projectile_mesh = SubResource("SphereMesh_0ggfi")
+
+[sub_resource type="Gradient" id="Gradient_gslc2"]
+colors = PackedColorArray(0.619608, 0, 0.768627, 0.431373, 0.619608, 0, 0.768627, 0.266667)
+
+[sub_resource type="GradientTexture2D" id="GradientTexture2D_fkndr"]
+gradient = SubResource("Gradient_gslc2")
+fill_from = Vector2(0, 1)
+fill_to = Vector2(0, 0.025641)
+
+[sub_resource type="Gradient" id="Gradient_335os"]
+colors = PackedColorArray(0.619608, 0, 0.768627, 0.431373, 0.619608, 0, 0.768627, 0.266667)
+
+[sub_resource type="GradientTexture2D" id="GradientTexture2D_mqeo6"]
+gradient = SubResource("Gradient_335os")
+fill_from = Vector2(0, 1)
+fill_to = Vector2(0, 0.025641)
+
+[sub_resource type="StandardMaterial3D" id="StandardMaterial3D_58klp"]
+transparency = 1
+albedo_texture = SubResource("GradientTexture2D_fkndr")
+emission_enabled = true
+emission_texture = SubResource("GradientTexture2D_mqeo6")
+
+[sub_resource type="CylinderMesh" id="CylinderMesh_u7d3e"]
+material = SubResource("StandardMaterial3D_58klp")
+top_radius = 0.135
+bottom_radius = 0.15
+height = 7.42
+
+[sub_resource type="Gradient" id="Gradient_0xanv"]
+colors = PackedColorArray(0.619608, 0, 0.768627, 0.431373, 0.619608, 0, 0.768627, 0.266667)
+
+[sub_resource type="GradientTexture2D" id="GradientTexture2D_6xqfl"]
+gradient = SubResource("Gradient_0xanv")
+fill_from = Vector2(0, 1)
+fill_to = Vector2(0, 0.025641)
+
+[sub_resource type="Gradient" id="Gradient_whaju"]
+colors = PackedColorArray(0.619608, 0, 0.768627, 0.431373, 0.619608, 0, 0.768627, 0.266667)
+
+[sub_resource type="GradientTexture2D" id="GradientTexture2D_3ucaa"]
+gradient = SubResource("Gradient_whaju")
+fill_from = Vector2(0, 1)
+fill_to = Vector2(0, 0.025641)
+
+[sub_resource type="StandardMaterial3D" id="StandardMaterial3D_v2wx5"]
+transparency = 1
+albedo_texture = SubResource("GradientTexture2D_6xqfl")
+emission_enabled = true
+emission_texture = SubResource("GradientTexture2D_3ucaa")
+
+[sub_resource type="SphereMesh" id="SphereMesh_mpesd"]
+material = SubResource("StandardMaterial3D_v2wx5")
+radius = 0.125
+height = 0.25
+
+[sub_resource type="Curve" id="Curve_bla15"]
+_data = [Vector2(0, 1), 0.0, 0.0, 0, 0, Vector2(1, 0), 0.0, 0.0, 0, 0]
+point_count = 2
+
+[sub_resource type="CurveTexture" id="CurveTexture_imy0k"]
+curve = SubResource("Curve_bla15")
+
+[sub_resource type="ParticleProcessMaterial" id="ParticleProcessMaterial_r3hrv"]
+direction = Vector3(0, -0.187609, -0.982244)
+spread = 81.81
+initial_velocity_max = 9.69
+linear_accel_min = 15.28
+linear_accel_max = 15.28
+scale_curve = SubResource("CurveTexture_imy0k")
+
+[sub_resource type="Resource" id="Resource_w53je"]
+resource_local_to_scene = true
+script = ExtResource("4_cc0ep")
+radius = 0.15
+lifespan = 10.0
+impact_particle_material = SubResource("ParticleProcessMaterial_r3hrv")
+impact_particle = SubResource("SphereMesh_mpesd")
+beam_mesh = SubResource("CylinderMesh_u7d3e")
+
+[sub_resource type="ShaderMaterial" id="ShaderMaterial_7lfjn"]
+resource_local_to_scene = true
+render_priority = 0
+shader = ExtResource("5_8g7wv")
+shader_parameter/health_amount = 0.99
+shader_parameter/health_bar_color = Color(0.152941, 0.121569, 0.698039, 1)
+
+[sub_resource type="PlaneMesh" id="PlaneMesh_xr6nd"]
+resource_local_to_scene = true
+material = SubResource("ShaderMaterial_7lfjn")
+size = Vector2(0.235, 4)
+orientation = 2
 
 [node name="Mine_Crystal" instance=ExtResource("1_yenkp")]
 script = ExtResource("2_p5h62")
 targ_zone = "Crystal_deposit"
 resource = "crystals"
+type = "Mine"
+
+[node name="Attack_Manager" parent="." index="0"]
+projectile_data = SubResource("Resource_kbp41")
+beam_data = SubResource("Resource_w53je")
+
+[node name="Health_Bar" parent="." index="2"]
+mesh = SubResource("PlaneMesh_xr6nd")
 
 [node name="CollisionShape3D" parent="Detection_Area" index="0"]
 transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, -0.0803504, -0.0157573)

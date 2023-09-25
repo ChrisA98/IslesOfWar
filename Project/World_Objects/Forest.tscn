@@ -73,13 +73,11 @@ buffer = PackedFloat32Array(0.947735, 0, 0, -0.876429, 0, 0.947735, 0, -1000, 0,
 script = ExtResource("2_1jgc7")
 random_seed = 1
 prev = false
+preview_forest = null
 heightmap = ExtResource("3_8wrjv")
 tree_cnt = 500
 max_slope = 0.195
 metadata/res_building = "Lumber_mill"
-
-[node name="Editor_Mesh" parent="." index="0"]
-visible = false
 
 [node name="Parent_mesh" type="MeshInstance3D" parent="." index="1"]
 transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, 46.3296, 0)

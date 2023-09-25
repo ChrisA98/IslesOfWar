@@ -21,16 +21,16 @@ linear_accel_min = 15.28
 linear_accel_max = 15.28
 scale_curve = SubResource("CurveTexture_g6r53")
 
-[sub_resource type="StandardMaterial3D" id="StandardMaterial3D_jkxxg"]
+[sub_resource type="StandardMaterial3D" id="StandardMaterial3D_ecbeg"]
 transparency = 1
 cull_mode = 2
 albedo_texture = ExtResource("2_0p5hf")
+uv1_scale = Vector3(1, -1, 1)
 billboard_keep_scale = true
 
 [sub_resource type="PlaneMesh" id="PlaneMesh_ulnxm"]
-material = SubResource("StandardMaterial3D_jkxxg")
+material = SubResource("StandardMaterial3D_ecbeg")
 size = Vector2(4, 1.5)
-orientation = 0
 
 [sub_resource type="Resource" id="Resource_4pxjv"]
 resource_local_to_scene = true

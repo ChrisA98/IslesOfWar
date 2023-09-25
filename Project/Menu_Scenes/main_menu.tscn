@@ -1,0 +1,452 @@
+[gd_scene load_steps=42 format=3 uid="uid://62g7oef0gqtd"]
+
+[ext_resource type="Script" path="res://MainMenu_Controller.gd" id="1_ns5k2"]
+[ext_resource type="Texture2D" uid="uid://ebnnpja8nn3s" path="res://Assets/UI_Elements/main_menu.png" id="2_4h4i5"]
+[ext_resource type="Texture2D" uid="uid://duocdtqks24tx" path="res://Assets/UI_Elements/Icon.png" id="3_473d1"]
+[ext_resource type="Texture2D" uid="uid://4cgathaf2j1i" path="res://Assets/UI_Elements/wood_long_button.png" id="4_is5u2"]
+[ext_resource type="Theme" uid="uid://c7f8s3w636ohq" path="res://Assets/Themes/main_menu.tres" id="5_xww4n"]
+[ext_resource type="PackedScene" uid="uid://crswchumae5b0" path="res://World_Objects/Forest.tscn" id="6_mr85e"]
+[ext_resource type="Shader" path="res://Materials/fog_of_war_overlay.gdshader" id="7_o463w"]
+[ext_resource type="PackedScene" uid="uid://b3gq8qnyggh71" path="res://Models/Amerulf/scene_files/dock_am.tscn" id="8_4r4xb"]
+[ext_resource type="Shader" path="res://World_Generation/New_Terrain.gdshader" id="8_nw1va"]
+[ext_resource type="Shader" path="res://World_Generation/Water.gdshader" id="9_7kseo"]
+[ext_resource type="Texture2D" uid="uid://drbfk3h3s6x1b" path="res://Test_Items/HeightMap.exr" id="10_tgon2"]
+
+[sub_resource type="Gradient" id="Gradient_o8r15"]
+offsets = PackedFloat32Array(0)
+colors = PackedColorArray(0, 0, 0, 1)
+
+[sub_resource type="GradientTexture1D" id="GradientTexture1D_6meig"]
+gradient = SubResource("Gradient_o8r15")
+width = 1
+
+[sub_resource type="Animation" id="Animation_2r6hm"]
+resource_name = "fade"
+tracks/0/type = "value"
+tracks/0/imported = false
+tracks/0/enabled = true
+tracks/0/path = NodePath(".:modulate")
+tracks/0/interp = 1
+tracks/0/loop_wrap = true
+tracks/0/keys = {
+"times": PackedFloat32Array(0, 0.2),
+"transitions": PackedFloat32Array(1, 1),
+"update": 0,
+"values": [Color(1, 1, 1, 1), Color(1, 1, 1, 0)]
+}
+
+[sub_resource type="AnimationLibrary" id="AnimationLibrary_htw8b"]
+_data = {
+"fade": SubResource("Animation_2r6hm")
+}
+
+[sub_resource type="ProceduralSkyMaterial" id="ProceduralSkyMaterial_o7t8u"]
+sky_top_color = Color(0.427451, 0.756863, 0.92549, 1)
+sky_horizon_color = Color(0.811765, 0.611765, 0.380392, 1)
+
+[sub_resource type="Sky" id="Sky_18bbf"]
+sky_material = SubResource("ProceduralSkyMaterial_o7t8u")
+radiance_size = 2
+
+[sub_resource type="Environment" id="Environment_xmapw"]
+background_mode = 2
+sky = SubResource("Sky_18bbf")
+sky_rotation = Vector3(-0.0349066, 0, -0.0366519)
+ambient_light_source = 3
+ambient_light_energy = 4.3
+ssr_enabled = true
+fog_density = 0.0
+fog_sky_affect = 0.0
+volumetric_fog_density = 0.0
+volumetric_fog_gi_inject = 4.68
+volumetric_fog_length = 997.05
+volumetric_fog_temporal_reprojection_amount = 0.841
+adjustment_enabled = true
+adjustment_brightness = 1.15
+adjustment_contrast = 1.09
+adjustment_saturation = 1.6
+
+[sub_resource type="ShaderMaterial" id="ShaderMaterial_cwybj"]
+render_priority = 0
+shader = ExtResource("7_o463w")
+
+[sub_resource type="Gradient" id="Gradient_1g27v"]
+interpolation_mode = 2
+colors = PackedColorArray(0.32, 0.293013, 0.2848, 1, 0.631702, 0.622596, 0.584646, 1)
+
+[sub_resource type="FastNoiseLite" id="FastNoiseLite_dlv7m"]
+noise_type = 4
+frequency = 0.0066
+fractal_octaves = 3
+fractal_lacunarity = 2.416
+fractal_gain = 0.239
+fractal_weighted_strength = 1.0
+fractal_ping_pong_strength = 2.037
+domain_warp_enabled = true
+domain_warp_amplitude = 30.168
+domain_warp_frequency = 0.032
+domain_warp_fractal_octaves = 1
+domain_warp_fractal_lacunarity = 6.086
+
+[sub_resource type="NoiseTexture2D" id="NoiseTexture2D_bnx7p"]
+width = 1000
+height = 1000
+seamless = true
+color_ramp = SubResource("Gradient_1g27v")
+noise = SubResource("FastNoiseLite_dlv7m")
+
+[sub_resource type="NoiseTexture2D" id="NoiseTexture2D_u47ln"]
+width = 1000
+height = 1000
+seamless = true
+as_normal_map = true
+bump_strength = 10.8
+noise = SubResource("FastNoiseLite_dlv7m")
+
+[sub_resource type="Gradient" id="Gradient_im8lq"]
+colors = PackedColorArray(0, 0.260467, 0, 1, 0.571765, 0.594111, 0.191985, 1)
+
+[sub_resource type="FastNoiseLite" id="FastNoiseLite_al3lm"]
+noise_type = 0
+frequency = 0.1316
+fractal_octaves = 10
+fractal_lacunarity = 2.123
+fractal_gain = 0.874
+domain_warp_enabled = true
+domain_warp_amplitude = 30.164
+domain_warp_frequency = -0.03
+domain_warp_fractal_type = 2
+domain_warp_fractal_lacunarity = 6.062
+domain_warp_fractal_gain = 0.971
+
+[sub_resource type="NoiseTexture2D" id="NoiseTexture2D_cpr4c"]
+width = 1000
+height = 1000
+seamless = true
+color_ramp = SubResource("Gradient_im8lq")
+noise = SubResource("FastNoiseLite_al3lm")
+
+[sub_resource type="NoiseTexture2D" id="NoiseTexture2D_d1nek"]
+width = 1000
+height = 1000
+invert = true
+seamless = true
+as_normal_map = true
+bump_strength = 3.5
+noise = SubResource("FastNoiseLite_al3lm")
+
+[sub_resource type="Gradient" id="Gradient_2i80b"]
+colors = PackedColorArray(0.859586, 0.873469, 0.643777, 1, 0.550264, 0.542165, 0.456681, 1)
+
+[sub_resource type="FastNoiseLite" id="FastNoiseLite_l7c1p"]
+frequency = 0.019
+
+[sub_resource type="NoiseTexture2D" id="NoiseTexture2D_fp465"]
+width = 1000
+height = 1000
+seamless = true
+color_ramp = SubResource("Gradient_2i80b")
+noise = SubResource("FastNoiseLite_l7c1p")
+
+[sub_resource type="NoiseTexture2D" id="NoiseTexture2D_qv6ok"]
+width = 1000
+height = 1000
+seamless = true
+as_normal_map = true
+normalize = false
+color_ramp = SubResource("Gradient_2i80b")
+noise = SubResource("FastNoiseLite_l7c1p")
+
+[sub_resource type="ShaderMaterial" id="ShaderMaterial_rie7d"]
+resource_local_to_scene = true
+render_priority = 0
+shader = ExtResource("8_nw1va")
+shader_parameter/t_height = 100.0
+shader_parameter/water_table = 7.0
+shader_parameter/max_sand_height = 9.0
+shader_parameter/universal_tex_scaling = 10.972
+shader_parameter/min_rock_slope = 0.156
+shader_parameter/max_grass_slope = 0.362
+shader_parameter/grass_alb_tex = SubResource("NoiseTexture2D_cpr4c")
+shader_parameter/grass_norm_tex = SubResource("NoiseTexture2D_d1nek")
+shader_parameter/cliff_alb_tex = SubResource("NoiseTexture2D_bnx7p")
+shader_parameter/cliff_norm_tex = SubResource("NoiseTexture2D_u47ln")
+shader_parameter/sand_alb_tex = SubResource("NoiseTexture2D_fp465")
+shader_parameter/sand_norm_tex = SubResource("NoiseTexture2D_qv6ok")
+
+[sub_resource type="PlaneMesh" id="PlaneMesh_hb3wi"]
+material = SubResource("ShaderMaterial_rie7d")
+size = Vector2(500, 200)
+subdivide_width = 100
+subdivide_depth = 100
+
+[sub_resource type="Gradient" id="Gradient_b6hmg"]
+interpolation_mode = 2
+colors = PackedColorArray(0.383293, 0.763558, 1, 1, 1.20327e-06, 0.337756, 0.401284, 1)
+
+[sub_resource type="GradientTexture1D" id="GradientTexture1D_7t4to"]
+gradient = SubResource("Gradient_b6hmg")
+
+[sub_resource type="FastNoiseLite" id="FastNoiseLite_6n0eb"]
+noise_type = 3
+fractal_type = 2
+fractal_octaves = 4
+fractal_lacunarity = 2.142
+fractal_gain = 1.916
+fractal_weighted_strength = 1.0
+fractal_ping_pong_strength = 7.072
+
+[sub_resource type="NoiseTexture2D" id="NoiseTexture2D_5ywnp"]
+width = 1000
+height = 1000
+seamless = true
+seamless_blend_skirt = 0.596
+as_normal_map = true
+noise = SubResource("FastNoiseLite_6n0eb")
+
+[sub_resource type="FastNoiseLite" id="FastNoiseLite_vgweg"]
+noise_type = 3
+seed = 3
+fractal_type = 2
+
+[sub_resource type="NoiseTexture2D" id="NoiseTexture2D_gjivw"]
+width = 1000
+height = 1000
+seamless = true
+as_normal_map = true
+bump_strength = 12.9
+noise = SubResource("FastNoiseLite_vgweg")
+
+[sub_resource type="ShaderMaterial" id="ShaderMaterial_5m4l7"]
+render_priority = 0
+shader = ExtResource("9_7kseo")
+shader_parameter/t_height = 100.0
+shader_parameter/water_level = 7.0
+shader_parameter/fresnel_intensity = null
+shader_parameter/tide = 2.871
+shader_parameter/water_turbulence = 6.652
+shader_parameter/water_alb = Color(0.392157, 0.831373, 0.898039, 1)
+shader_parameter/wave_direction_1 = Vector2(2, -2)
+shader_parameter/wave_direction_2 = Vector2(-2, 2)
+shader_parameter/time_scale = 0.01
+shader_parameter/tex_size = Vector2(1000, 1000)
+shader_parameter/wtr_tex_size = Vector2(1000, 1000)
+shader_parameter/heightmap = ExtResource("10_tgon2")
+shader_parameter/water_alb_tex = SubResource("GradientTexture1D_7t4to")
+shader_parameter/water_disp_tex_1 = SubResource("NoiseTexture2D_5ywnp")
+shader_parameter/water_disp_tex_2 = SubResource("NoiseTexture2D_gjivw")
+
+[sub_resource type="PlaneMesh" id="PlaneMesh_tn5gu"]
+material = SubResource("ShaderMaterial_5m4l7")
+size = Vector2(2000, 2000)
+subdivide_width = 650
+subdivide_depth = 650
+
+[node name="MainMenu" type="Control"]
+top_level = true
+z_index = 4096
+layout_mode = 3
+anchors_preset = 15
+anchor_right = 1.0
+anchor_bottom = 1.0
+grow_horizontal = 2
+grow_vertical = 2
+script = ExtResource("1_ns5k2")
+
+[node name="load_screen" type="TextureRect" parent="."]
+visible = false
+layout_mode = 0
+offset_right = 1920.0
+offset_bottom = 1080.0
+texture = ExtResource("2_4h4i5")
+
+[node name="fade" type="TextureRect" parent="."]
+visible = false
+z_index = 4000
+layout_mode = 1
+anchors_preset = 15
+anchor_right = 1.0
+anchor_bottom = 1.0
+grow_horizontal = 2
+grow_vertical = 2
+texture = SubResource("GradientTexture1D_6meig")
+
+[node name="AnimationPlayer" type="AnimationPlayer" parent="fade"]
+libraries = {
+"": SubResource("AnimationLibrary_htw8b")
+}
+
+[node name="Main" type="Control" parent="."]
+z_index = -1
+anchors_preset = 0
+offset_right = 40.0
+offset_bottom = 40.0
+
+[node name="TextureRect" type="TextureRect" parent="Main"]
+visible = false
+layout_mode = 1
+anchors_preset = 15
+anchor_right = 1.0
+anchor_bottom = 1.0
+offset_right = 1880.0
+offset_bottom = 1040.0
+grow_horizontal = 2
+grow_vertical = 2
+texture = ExtResource("2_4h4i5")
+
+[node name="TextureRect2" type="TextureRect" parent="Main"]
+layout_mode = 1
+anchors_preset = 5
+anchor_left = 0.5
+anchor_right = 0.5
+offset_left = 540.0
+offset_top = 100.0
+offset_right = 3792.0
+offset_bottom = 3345.0
+grow_horizontal = 2
+scale = Vector2(0.25, 0.25)
+texture = ExtResource("3_473d1")
+stretch_mode = 3
+
+[node name="VBoxContainer" type="VBoxContainer" parent="Main"]
+layout_mode = 1
+offset_left = 50.0
+offset_top = 150.0
+offset_right = 568.0
+offset_bottom = 666.0
+
+[node name="Campaign_Button" type="TextureButton" parent="Main/VBoxContainer"]
+layout_mode = 2
+texture_normal = ExtResource("4_is5u2")
+
+[node name="RichTextLabel" type="RichTextLabel" parent="Main/VBoxContainer/Campaign_Button"]
+layout_mode = 1
+anchors_preset = -1
+anchor_left = 0.1
+anchor_top = 0.2
+anchor_right = 0.9
+anchor_bottom = 1.0
+grow_horizontal = 2
+grow_vertical = 2
+mouse_filter = 2
+theme = ExtResource("5_xww4n")
+bbcode_enabled = true
+text = "[center]Campaign
+"
+
+[node name="Multiplayer_Button" type="TextureButton" parent="Main/VBoxContainer"]
+layout_mode = 2
+texture_normal = ExtResource("4_is5u2")
+
+[node name="RichTextLabel" type="RichTextLabel" parent="Main/VBoxContainer/Multiplayer_Button"]
+layout_mode = 1
+anchors_preset = -1
+anchor_left = 0.1
+anchor_top = 0.2
+anchor_right = 0.9
+anchor_bottom = 1.0
+grow_horizontal = 2
+grow_vertical = 2
+mouse_filter = 2
+theme = ExtResource("5_xww4n")
+bbcode_enabled = true
+text = "[center]Multiplayer
+"
+
+[node name="Maps_Button" type="TextureButton" parent="Main/VBoxContainer"]
+layout_mode = 2
+texture_normal = ExtResource("4_is5u2")
+
+[node name="RichTextLabel" type="RichTextLabel" parent="Main/VBoxContainer/Maps_Button"]
+layout_mode = 1
+anchors_preset = -1
+anchor_left = 0.1
+anchor_top = 0.2
+anchor_right = 0.9
+anchor_bottom = 1.0
+grow_horizontal = 2
+grow_vertical = 2
+mouse_filter = 2
+theme = ExtResource("5_xww4n")
+bbcode_enabled = true
+text = "[center]Maps
+"
+
+[node name="Settings_Button" type="TextureButton" parent="Main/VBoxContainer"]
+layout_mode = 2
+texture_normal = ExtResource("4_is5u2")
+
+[node name="RichTextLabel" type="RichTextLabel" parent="Main/VBoxContainer/Settings_Button"]
+layout_mode = 1
+anchors_preset = -1
+anchor_left = 0.1
+anchor_top = 0.2
+anchor_right = 0.9
+anchor_bottom = 1.0
+grow_horizontal = 2
+grow_vertical = 2
+mouse_filter = 2
+theme = ExtResource("5_xww4n")
+bbcode_enabled = true
+text = "[center]Settings
+"
+
+[node name="Quit_Button" type="TextureButton" parent="Main/VBoxContainer"]
+layout_mode = 2
+texture_normal = ExtResource("4_is5u2")
+
+[node name="RichTextLabel" type="RichTextLabel" parent="Main/VBoxContainer/Quit_Button"]
+layout_mode = 1
+anchors_preset = -1
+anchor_left = 0.1
+anchor_top = 0.2
+anchor_right = 0.9
+anchor_bottom = 1.0
+grow_horizontal = 2
+grow_vertical = 2
+mouse_filter = 2
+theme = ExtResource("5_xww4n")
+bbcode_enabled = true
+text = "[center]Quit Game
+"
+
+[node name="Background" type="Node3D" parent="."]
+
+[node name="WorldEnvironment" type="WorldEnvironment" parent="Background"]
+environment = SubResource("Environment_xmapw")
+
+[node name="DirectionalLight3D" type="DirectionalLight3D" parent="Background"]
+transform = Transform3D(-0.224086, -0.317936, 0.92125, 0.0948408, 0.933689, 0.345298, -0.969944, 0.164749, -0.179073, 0, 0, 0)
+light_color = Color(1, 0.921569, 0.87451, 1)
+light_angular_distance = 4.25
+directional_shadow_mode = 0
+
+[node name="Forest2" parent="Background" instance=ExtResource("6_mr85e")]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 84.1644, 0, -365.889)
+random_seed = 186
+preview_forest = true
+tree_cnt = 200
+max_slope = 0.326
+
+[node name="Building_Model" parent="Background" instance=ExtResource("8_4r4xb")]
+transform = Transform3D(-4.71683, 8.90344e-09, 0.774525, -0.0796692, 4.75465, -0.485183, -0.770417, -0.49168, -4.69181, 159.139, 7.93417, -432.601)
+
+[node name="Camera3D" type="Camera3D" parent="Background"]
+transform = Transform3D(0.716407, 0.241295, -0.654628, -0.0129464, 0.942725, 0.333319, 0.697563, -0.230317, 0.678499, 24.6398, 56.8581, -367.296)
+
+[node name="Visual_Ground" type="MeshInstance3D" parent="Background"]
+transform = Transform3D(1, 0, -2.98023e-08, 0, 1, 0, 2.98023e-08, 0, 1, 125.816, 0, -353.337)
+layers = 262144
+material_overlay = SubResource("ShaderMaterial_cwybj")
+mesh = SubResource("PlaneMesh_hb3wi")
+skeleton = NodePath("")
+
+[node name="Water" type="MeshInstance3D" parent="Background/Visual_Ground"]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 450, 7, -450)
+layers = 262144
+mesh = SubResource("PlaneMesh_tn5gu")
+skeleton = NodePath("")
+
+[connection signal="pressed" from="Main/VBoxContainer/Multiplayer_Button" to="." method="_multiplayer_button"]
+[connection signal="pressed" from="Main/VBoxContainer/Maps_Button" to="." method="_maps"]
+[connection signal="pressed" from="Main/VBoxContainer/Quit_Button" to="." method="_quit_game"]

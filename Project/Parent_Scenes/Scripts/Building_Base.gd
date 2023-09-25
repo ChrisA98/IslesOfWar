@@ -103,6 +103,7 @@ var process_functions := []
 var units := {}				#spawnable units
 var train_queue := []		#units queued to train
 var is_training := false	#building is training
+var trained_squad := Squad.new()
 
 ''' On-Ready Vars '''
 @onready var health = get_node("Health_Bar")
@@ -137,6 +138,8 @@ func _ready():
 	build_shader = build_shader.duplicate(true)
 	build_particles.visible = false
 	position = Vector3(0,-100,0)
+	
+	trained_squad.formation_size = 1
 	
 	fog_reg.set_actor_owner(actor_owner.actor_ID)	
 	fog_reg.detect_area.body_entered.connect(_vision_body_entered)
@@ -523,7 +526,7 @@ func distance_sort(a, b):
 func _on_static_body_3d_input_event(_camera, event, _position, _normal, _shape_idx):
 	if event is InputEventMouseButton:
 		pressed.emit(self)
-		if(actor_owner.actor_ID == 0):
+		if(actor_owner.actor_ID == 0 and !is_building):
 			show_menu()
 
 
@@ -533,6 +536,8 @@ func show_menu(state: = true):
 		## Building is being built
 		return
 	if is_instance_valid(menu):
+		for i in get_tree().get_nodes_in_group("menu_group_1"):
+			i.visible = false
 		menu.visible = state
 		if state and !process_functions.has(Callable(_train)):
 			process_functions.push_back(Callable(_train))
@@ -659,6 +664,8 @@ func pop_train_queue(unit: String = ""):
 ##
 ## unit_override sets a a specific unit to spawn from the owning_actor list
 func spawn_unit(unit_override: String):
+	if trained_squad == null:
+		_generate_squad()
 	var new_unit
 	if(unit_override == "nan"):
 		menu.unit_queue_edit(-1,train_queue[0])
@@ -671,14 +678,25 @@ func spawn_unit(unit_override: String):
 		new_unit.position = spawn.global_position
 		await get_tree().create_timer(.05).timeout
 		new_unit.visible = true
-		new_unit.set_mov_target(rally.global_position)
+		trained_squad.push_back(new_unit)
+		new_unit.set_mov_target(rally.global_position+trained_squad.get_newest_formation_position())
 	else:
 		new_unit = actor_owner.spawn_unit(unit_override)
 		
 		new_unit.position = spawn.global_position
 		new_unit.position.y = new_unit.get_ground_depth()
+		
+		trained_squad.push_back(new_unit)
 	
 	spawned_unit.emit(self,new_unit)
 
+
+func _generate_squad():
+	trained_squad = Squad.new()
+	trained_squad.actor_owner = actor_owner
+	trained_squad.formation_size = 1
+	
+	
+	
 
 ''' Training End '''

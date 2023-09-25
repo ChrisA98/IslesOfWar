@@ -5,13 +5,14 @@ var rng = RandomNumberGenerator.new()
 @export_range(1,10000000) var random_seed : int = 1
 @export var prev : bool :
 	set(_value):
-		if Engine.is_editor_hint() and trees != null:
+		if trees != null:
 			position.y = 0
 			rng.seed = random_seed
 			trees.set_instance_count(0)
 			trees.set_use_custom_data(true)
 			trees.set_instance_count(tree_cnt)
 			_generate_trees_debug()
+@export var preview_forest: bool
 
 @export var heightmap: Texture2D
 
@@ -24,7 +25,7 @@ func _ready():
 	super()
 	position.y = 0
 	rng.seed = random_seed
-	if !Engine.is_editor_hint():
+	if !Engine.is_editor_hint() and !preview_forest:
 		trees.set_instance_count(0)
 		trees.set_use_custom_data(true)
 		trees.set_instance_count(tree_cnt)
@@ -36,6 +37,7 @@ func _ready():
 ## Generate forest evenly around radius
 func _generate_forest():
 	await get_tree().physics_frame
+	
 	$Parent_mesh.position.y = get_parent().get_loc_height(position)
 	for i in range(trees.get_instance_count()):
 		var trans = Transform3D()
@@ -64,7 +66,6 @@ func set_fog_overlay(mat):
 
 
 func _generate_trees_debug():
-	await get_tree().physics_frame
 	$Parent_mesh.position.y = get_loc_height(position)
 	for i in range(trees.get_instance_count()):
 		var trans = Transform3D()

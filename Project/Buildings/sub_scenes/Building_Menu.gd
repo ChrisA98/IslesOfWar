@@ -10,12 +10,15 @@ var unit_buttons := {}
 var active_train
 var active_res
 var has_mouse: bool
+var show: bool:
+	set(value):
+		show = value
+		visible = value
 
 func _ready():
 	# bind page buttons
 	for but in $Building_Menu/Page_Buttons.get_children():
 		but.pressed.connect(switch_page.bind(but))
-		
 	
 	$"Always_Buttons/Garrison Button".pressed.connect(get_parent().empty_garrison,CONNECT_DEFERRED)
 	
@@ -66,6 +69,7 @@ func build_sec_unit_list(units: Array, _name: String):
 	visible_pages["sec_units"] = true
 	await get_tree().physics_frame
 	build_unit_list(units, _name, 1)
+
 
 ## Set menu page
 func switch_page(page):	

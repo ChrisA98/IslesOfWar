@@ -2,17 +2,24 @@ extends Object
 
 class_name Squad
 
+
 enum formations{COLUMNS}
+
+var def_formation := formations.COLUMNS
+var def_formation_size := 7
 
 var active_formation: formations:
 	set(value):
 		match value:
 			formations.COLUMNS:
 				formation_call = Callable(_columns_formation)
-var formation_size := 7
+var formation_size := def_formation_size
 var units : Array[Unit_Base]
 var formation_call : Callable = Callable(_columns_formation)
 var actor_owner : game_actor
+
+func get_newest_formation_position() -> Vector3:
+	return get_formation_pos(units.size()-1)
 
 ## Get formation_position
 func get_formation_pos(unit_id: int):

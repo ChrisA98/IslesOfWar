@@ -1,6 +1,7 @@
 extends Node3D
 
 ''' Signals '''
+signal loaded
 signal nav_ready
 signal click_mode_changed(old, new)
 signal prep_ready
@@ -71,8 +72,13 @@ func _ready():
 	## Transfer level material to visual ground
 	var world_material = lvl.find_child("Visual_Ground").mesh.get_material()	
 	player_controller.find_child("Visual_Ground").mesh.set_material(world_material)
+	lvl.loaded.connect(_loaded_signal)
 	
 	add_child(lvl)
+
+
+func _loaded_signal():
+	loaded.emit()
 
 
 #Called every frame. 'delta' is the elapsed time since the previous frame.
