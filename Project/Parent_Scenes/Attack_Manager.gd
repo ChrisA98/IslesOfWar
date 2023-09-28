@@ -20,7 +20,7 @@ var collision_exceptions := []
 
 
 ## Pepepare with data from initializing node node
-func init(_attack_type, _ranged_atk_sprd, _melee_dmg_var, _damage_type, proj_data = null):
+func init(_attack_type, _ranged_atk_sprd, _melee_dmg_var, _damage_type):
 	if !is_node_ready():
 		await ready
 	ranged_atk_sprd = _ranged_atk_sprd

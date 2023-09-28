@@ -1,7 +1,7 @@
 [gd_scene load_steps=17 format=3 uid="uid://b65xslyxb50to"]
 
 [ext_resource type="PackedScene" uid="uid://cs2p3v3o53aki" path="res://Parent_Scenes/Unit_Base.tscn" id="1_hbhqq"]
-[ext_resource type="Texture2D" uid="uid://bkvfsyrdm6knb" path="res://Models/Units/textures/arrow.png" id="2_0p5hf"]
+[ext_resource type="Texture2D" uid="uid://bkvfsyrdm6knb" path="res://Assets/Models/Units/textures/arrow.png" id="2_0p5hf"]
 [ext_resource type="Shader" path="res://Parent_Scenes/res/health_bar.gdshader" id="2_a2i51"]
 [ext_resource type="Script" path="res://Parent_Scenes/Scripts/projectile_data.gd" id="2_xgyqx"]
 

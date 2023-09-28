@@ -1,11 +1,71 @@
-[gd_scene load_steps=5 format=3 uid="uid://c58k0anaqvqxd"]
+[gd_scene load_steps=18 format=3 uid="uid://dtlm74ctoiuak"]
 
 [ext_resource type="PackedScene" uid="uid://cs2p3v3o53aki" path="res://Parent_Scenes/Unit_Base.tscn" id="1_ln56q"]
+[ext_resource type="Script" path="res://Parent_Scenes/Scripts/projectile_data.gd" id="2_7vdcm"]
+[ext_resource type="Shader" path="res://Parent_Scenes/res/health_bar.gdshader" id="2_sooru"]
+
+[sub_resource type="StandardMaterial3D" id="StandardMaterial3D_08dk5"]
+albedo_color = Color(0, 0, 0, 1)
+
+[sub_resource type="SphereMesh" id="SphereMesh_k33d4"]
+material = SubResource("StandardMaterial3D_08dk5")
+radius = 0.235
+radial_segments = 5
+rings = 1
+
+[sub_resource type="Curve" id="Curve_ghkoo"]
+_data = [Vector2(0, 1), 0.0, 0.0, 0, 0, Vector2(1, 0), 0.0, 0.0, 0, 0]
+point_count = 2
+
+[sub_resource type="CurveTexture" id="CurveTexture_g6r53"]
+curve = SubResource("Curve_ghkoo")
+
+[sub_resource type="ParticleProcessMaterial" id="ParticleProcessMaterial_kk4vq"]
+direction = Vector3(0, 1, 0)
+spread = 18.75
+initial_velocity_min = 0.2
+initial_velocity_max = 33.17
+linear_accel_min = 15.28
+linear_accel_max = 15.28
+scale_curve = SubResource("CurveTexture_g6r53")
+
+[sub_resource type="StandardMaterial3D" id="StandardMaterial3D_6jwnh"]
+albedo_color = Color(0.121569, 0.0509804, 0.0313726, 1)
+
+[sub_resource type="SphereMesh" id="SphereMesh_dqxs3"]
+material = SubResource("StandardMaterial3D_6jwnh")
+radial_segments = 5
+rings = 3
+
+[sub_resource type="Resource" id="Resource_djrnb"]
+resource_local_to_scene = true
+script = ExtResource("2_7vdcm")
+travel_speed = 150.0
+lifespan = 1.0
+arc_height = 5.0
+impact_particle_material = SubResource("ParticleProcessMaterial_kk4vq")
+impact_particle = SubResource("SphereMesh_k33d4")
+projectile_mesh = SubResource("SphereMesh_dqxs3")
 
 [sub_resource type="CylinderShape3D" id="CylinderShape3D_k0750"]
 resource_local_to_scene = true
 height = 3.5
-radius = 2.0
+radius = 4.0
+
+[sub_resource type="CapsuleMesh" id="CapsuleMesh_m8kfi"]
+
+[sub_resource type="ShaderMaterial" id="ShaderMaterial_sr467"]
+resource_local_to_scene = true
+render_priority = 0
+shader = ExtResource("2_sooru")
+shader_parameter/health_amount = 0.99
+shader_parameter/health_bar_color = Color(0.152941, 0.121569, 0.698039, 1)
+
+[sub_resource type="PlaneMesh" id="PlaneMesh_cycku"]
+resource_local_to_scene = true
+material = SubResource("ShaderMaterial_sr467")
+size = Vector2(0.235, 4)
+orientation = 2
 
 [sub_resource type="SphereShape3D" id="SphereShape3D_tsamw"]
 resource_local_to_scene = true
@@ -18,19 +78,34 @@ radius = 2.0
 [node name="Galleon" instance=ExtResource("1_ln56q")]
 unit_name = "Galleon"
 fog_rev_radius = 50.0
+selection_circle_radius = 4.0
 max_speed = 9
 travel_terrain = 2
 accel = 2
 deccel = 1
-base_atk_spd = 1.25
 base_health = 280.0
+base_atk_spd = 1.25
 base_atk_str = 20.0
 main_attack_type = 1
 damage_type = "magical"
 target_atk_rng = 35
 
-[node name="CollisionShape3D" parent="." index="0"]
+[node name="Main_Attack_Manager" parent="." index="0"]
+projectile_data = SubResource("Resource_djrnb")
+
+[node name="CollisionShape3D" parent="." index="1"]
 shape = SubResource("CylinderShape3D_k0750")
+
+[node name="galleon" type="Node3D" parent="UnitModels" index="0"]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, 0.0457468, 1)
+
+[node name="MeshInstance3D" type="MeshInstance3D" parent="UnitModels/galleon" index="0"]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, 1, 0)
+layers = 262144
+mesh = SubResource("CapsuleMesh_m8kfi")
+
+[node name="Health_Bar" parent="." index="4"]
+mesh = SubResource("PlaneMesh_cycku")
 
 [node name="CollisionShape3D" parent="Fog_Breaker/Area3D" index="0"]
 shape = SubResource("SphereShape3D_tsamw")

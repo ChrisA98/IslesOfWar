@@ -1,0 +1,66 @@
+[gd_scene load_steps=10 format=3 uid="uid://dxuf83gobsul"]
+
+[ext_resource type="PackedScene" uid="uid://cs2p3v3o53aki" path="res://Parent_Scenes/Unit_Base.tscn" id="1_yp2kn"]
+[ext_resource type="Script" path="res://Units/scripts/Transport_Ship.gd" id="2_jcnfy"]
+[ext_resource type="Shader" path="res://Parent_Scenes/res/health_bar.gdshader" id="3_vgwu2"]
+
+[sub_resource type="CylinderShape3D" id="CylinderShape3D_7xapl"]
+resource_local_to_scene = true
+height = 3.5
+radius = 3.0
+
+[sub_resource type="CapsuleMesh" id="CapsuleMesh_au6j3"]
+
+[sub_resource type="ShaderMaterial" id="ShaderMaterial_n8cae"]
+resource_local_to_scene = true
+render_priority = 0
+shader = ExtResource("3_vgwu2")
+shader_parameter/health_amount = 0.99
+shader_parameter/health_bar_color = Color(0.152941, 0.121569, 0.698039, 1)
+
+[sub_resource type="PlaneMesh" id="PlaneMesh_e7dwi"]
+resource_local_to_scene = true
+material = SubResource("ShaderMaterial_n8cae")
+size = Vector2(0.235, 4)
+orientation = 2
+
+[sub_resource type="SphereShape3D" id="SphereShape3D_ny6vo"]
+resource_local_to_scene = true
+radius = 25.0
+
+[sub_resource type="CylinderShape3D" id="CylinderShape3D_iwdo6"]
+resource_local_to_scene = true
+radius = 2.0
+
+[node name="Transport_Ship" instance=ExtResource("1_yp2kn")]
+script = ExtResource("2_jcnfy")
+unit_name = "Transport Ship"
+selection_circle_radius = 3.0
+max_speed = 20
+travel_terrain = 2
+base_armor = 0.25
+base_health = 210.0
+base_atk_spd = 0.0
+base_atk_str = 0.0
+
+[node name="CollisionShape3D" parent="." index="1"]
+shape = SubResource("CylinderShape3D_7xapl")
+
+[node name="transport_ship" type="Node3D" parent="UnitModels" index="0"]
+transform = Transform3D(-4.37114e-08, 0, 1, 0, 1, 0, -1, 0, -4.37114e-08, 0, 0.233778, 0)
+
+[node name="MeshInstance3D" type="MeshInstance3D" parent="UnitModels/transport_ship" index="0"]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, 1, 0)
+layers = 262144
+mesh = SubResource("CapsuleMesh_au6j3")
+
+[node name="Health_Bar" parent="." index="4"]
+mesh = SubResource("PlaneMesh_e7dwi")
+
+[node name="CollisionShape3D" parent="Fog_Breaker/Area3D" index="0"]
+shape = SubResource("SphereShape3D_ny6vo")
+
+[node name="CollisionShape3D" parent="Detection_Area" index="0"]
+shape = SubResource("CylinderShape3D_iwdo6")
+
+[editable path="Fog_Breaker"]

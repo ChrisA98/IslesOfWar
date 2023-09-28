@@ -14,6 +14,8 @@ signal revealed
 ''' Export Vars '''
 @export var build_time : float = 10
 @export var type: String
+@export var building_height: float = 1
+
 @export_group("Appearance")
 @export var hide_grass : bool = true
 @export var fog_rev_radius : float = 50
@@ -171,7 +173,7 @@ func _build(delta):
 		return
 	parent_base.building_child = self
 	build_timer-=delta
-	var prog = ((build_time-build_timer)/build_time)
+	var prog = ((build_time-build_timer)/build_time)*building_height
 	build_particles.position.y = prog
 	building_model.set_override_shader_parameter("progress",prog)
 	if prog > 1:

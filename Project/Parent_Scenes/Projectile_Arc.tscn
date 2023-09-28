@@ -1,7 +1,7 @@
 [gd_scene load_steps=13 format=3 uid="uid://c3871d4d2sgjf"]
 
 [ext_resource type="Script" path="res://Parent_Scenes/Scripts/Projectile_Controller.gd" id="1_elwhl"]
-[ext_resource type="Texture2D" uid="uid://bkvfsyrdm6knb" path="res://Models/Units/textures/arrow.png" id="2_3tscj"]
+[ext_resource type="Texture2D" uid="uid://bkvfsyrdm6knb" path="res://Assets/Models/Units/textures/arrow.png" id="2_3tscj"]
 [ext_resource type="Script" path="res://Parent_Scenes/Scripts/projectile_data.gd" id="3_idq7m"]
 
 [sub_resource type="Curve3D" id="Curve3D_ysj2p"]

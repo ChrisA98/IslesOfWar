@@ -1,8 +1,133 @@
-[gd_scene load_steps=7 format=3 uid="uid://x073djafeq1u"]
+[gd_scene load_steps=36 format=3 uid="uid://x073djafeq1u"]
 
 [ext_resource type="PackedScene" uid="uid://ccoruw5j562l7" path="res://Parent_Scenes/Building_Base.tscn" id="1_wuqpt"]
 [ext_resource type="Script" path="res://Buildings/scripts/Dock.gd" id="2_xu1jq"]
 [ext_resource type="Shader" path="res://Parent_Scenes/res/health_bar.gdshader" id="3_x15i5"]
+[ext_resource type="Script" path="res://Parent_Scenes/Scripts/projectile_data.gd" id="3_y0hed"]
+[ext_resource type="Script" path="res://Parent_Scenes/Scripts/beam_data.gd" id="4_oiymi"]
+
+[sub_resource type="StandardMaterial3D" id="StandardMaterial3D_vxd70"]
+albedo_color = Color(0.321569, 0.168627, 0.0235294, 1)
+
+[sub_resource type="SphereMesh" id="SphereMesh_uish5"]
+material = SubResource("StandardMaterial3D_vxd70")
+radius = 0.1
+height = 0.2
+radial_segments = 4
+rings = 1
+
+[sub_resource type="Curve" id="Curve_0xt2m"]
+_data = [Vector2(0, 1), 0.0, 0.0, 0, 0, Vector2(1, 0), 0.0, 0.0, 0, 0]
+point_count = 2
+
+[sub_resource type="CurveTexture" id="CurveTexture_6clb7"]
+curve = SubResource("Curve_0xt2m")
+
+[sub_resource type="ParticleProcessMaterial" id="ParticleProcessMaterial_rgikh"]
+direction = Vector3(0, 1, 0)
+spread = 18.75
+initial_velocity_min = 0.2
+initial_velocity_max = 33.17
+linear_accel_min = 15.28
+linear_accel_max = 15.28
+scale_curve = SubResource("CurveTexture_6clb7")
+
+[sub_resource type="StandardMaterial3D" id="StandardMaterial3D_jrqsp"]
+albedo_color = Color(0.360784, 0.360784, 0.360784, 1)
+
+[sub_resource type="SphereMesh" id="SphereMesh_0ggfi"]
+material = SubResource("StandardMaterial3D_jrqsp")
+radial_segments = 8
+rings = 4
+
+[sub_resource type="Resource" id="Resource_2jpes"]
+resource_local_to_scene = true
+script = ExtResource("3_y0hed")
+travel_speed = 25.0
+lifespan = 1.0
+arc_height = 5.0
+impact_particle_material = SubResource("ParticleProcessMaterial_rgikh")
+impact_particle = SubResource("SphereMesh_uish5")
+projectile_mesh = SubResource("SphereMesh_0ggfi")
+
+[sub_resource type="Gradient" id="Gradient_gslc2"]
+colors = PackedColorArray(0.619608, 0, 0.768627, 0.431373, 0.619608, 0, 0.768627, 0.266667)
+
+[sub_resource type="GradientTexture2D" id="GradientTexture2D_fkndr"]
+gradient = SubResource("Gradient_gslc2")
+fill_from = Vector2(0, 1)
+fill_to = Vector2(0, 0.025641)
+
+[sub_resource type="Gradient" id="Gradient_335os"]
+colors = PackedColorArray(0.619608, 0, 0.768627, 0.431373, 0.619608, 0, 0.768627, 0.266667)
+
+[sub_resource type="GradientTexture2D" id="GradientTexture2D_mqeo6"]
+gradient = SubResource("Gradient_335os")
+fill_from = Vector2(0, 1)
+fill_to = Vector2(0, 0.025641)
+
+[sub_resource type="StandardMaterial3D" id="StandardMaterial3D_58klp"]
+transparency = 1
+albedo_texture = SubResource("GradientTexture2D_fkndr")
+emission_enabled = true
+emission_texture = SubResource("GradientTexture2D_mqeo6")
+
+[sub_resource type="CylinderMesh" id="CylinderMesh_u7d3e"]
+material = SubResource("StandardMaterial3D_58klp")
+top_radius = 0.135
+bottom_radius = 0.15
+height = 7.42
+
+[sub_resource type="Gradient" id="Gradient_0xanv"]
+colors = PackedColorArray(0.619608, 0, 0.768627, 0.431373, 0.619608, 0, 0.768627, 0.266667)
+
+[sub_resource type="GradientTexture2D" id="GradientTexture2D_6xqfl"]
+gradient = SubResource("Gradient_0xanv")
+fill_from = Vector2(0, 1)
+fill_to = Vector2(0, 0.025641)
+
+[sub_resource type="Gradient" id="Gradient_whaju"]
+colors = PackedColorArray(0.619608, 0, 0.768627, 0.431373, 0.619608, 0, 0.768627, 0.266667)
+
+[sub_resource type="GradientTexture2D" id="GradientTexture2D_3ucaa"]
+gradient = SubResource("Gradient_whaju")
+fill_from = Vector2(0, 1)
+fill_to = Vector2(0, 0.025641)
+
+[sub_resource type="StandardMaterial3D" id="StandardMaterial3D_v2wx5"]
+transparency = 1
+albedo_texture = SubResource("GradientTexture2D_6xqfl")
+emission_enabled = true
+emission_texture = SubResource("GradientTexture2D_3ucaa")
+
+[sub_resource type="SphereMesh" id="SphereMesh_mpesd"]
+material = SubResource("StandardMaterial3D_v2wx5")
+radius = 0.125
+height = 0.25
+
+[sub_resource type="Curve" id="Curve_5e503"]
+_data = [Vector2(0, 1), 0.0, 0.0, 0, 0, Vector2(1, 0), 0.0, 0.0, 0, 0]
+point_count = 2
+
+[sub_resource type="CurveTexture" id="CurveTexture_tox6d"]
+curve = SubResource("Curve_5e503")
+
+[sub_resource type="ParticleProcessMaterial" id="ParticleProcessMaterial_r3hrv"]
+direction = Vector3(0, -0.187609, -0.982244)
+spread = 81.81
+initial_velocity_max = 9.69
+linear_accel_min = 15.28
+linear_accel_max = 15.28
+scale_curve = SubResource("CurveTexture_tox6d")
+
+[sub_resource type="Resource" id="Resource_qbmlh"]
+resource_local_to_scene = true
+script = ExtResource("4_oiymi")
+radius = 0.15
+lifespan = 10.0
+impact_particle_material = SubResource("ParticleProcessMaterial_r3hrv")
+impact_particle = SubResource("SphereMesh_mpesd")
+beam_mesh = SubResource("CylinderMesh_u7d3e")
 
 [sub_resource type="ShaderMaterial" id="ShaderMaterial_t8epg"]
 resource_local_to_scene = true
@@ -20,9 +145,32 @@ orientation = 2
 [sub_resource type="BoxShape3D" id="BoxShape3D_vf3xi"]
 size = Vector3(2.84, 2.545, 1.72)
 
+[sub_resource type="Gradient" id="Gradient_tr6fe"]
+
+[sub_resource type="GradientTexture1D" id="GradientTexture1D_5p35x"]
+gradient = SubResource("Gradient_tr6fe")
+
+[sub_resource type="ParticleProcessMaterial" id="ParticleProcessMaterial_vjiqy"]
+emission_shape = 6
+emission_ring_axis = Vector3(0, 1, 0)
+emission_ring_height = 0.1
+emission_ring_radius = 1.495
+emission_ring_inner_radius = 0.0
+direction = Vector3(0, 10, 0)
+spread = 107.86
+gravity = Vector3(0, -10, 0)
+initial_velocity_min = 0.54
+initial_velocity_max = 0.54
+linear_accel_min = 6.35
+linear_accel_max = 33.33
+radial_accel_min = 3.17
+radial_accel_max = 20.49
+color_ramp = SubResource("GradientTexture1D_5p35x")
+
 [node name="Dock" instance=ExtResource("1_wuqpt")]
 script = ExtResource("2_xu1jq")
 type = "Dock"
+building_height = 4.0
 menu_pages = {
 "page_4": "",
 "research": "",
@@ -30,11 +178,15 @@ menu_pages = {
 "units": "Ships"
 }
 
+[node name="Attack_Manager" parent="." index="0"]
+projectile_data = SubResource("Resource_2jpes")
+beam_data = SubResource("Resource_qbmlh")
+
 [node name="Health_Bar" parent="." index="2"]
 mesh = SubResource("PlaneMesh_d8qf6")
 
 [node name="CollisionShape3D" parent="StaticBody3D" index="0"]
-transform = Transform3D(0.8, 0, 0, 0, 0.8, 0, 0, 0, 0.8, -0.403302, 0.402624, -0.259959)
+transform = Transform3D(0.8, 0, 0, 0, 0.8, 0, 0, 0, 0.8, 0.31446, 0.402624, -0.0202782)
 shape = SubResource("BoxShape3D_vf3xi")
 
 [node name="CollisionShape3D2" parent="StaticBody3D" index="1"]
@@ -50,3 +202,8 @@ transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, 0.0733881, 1.92666)
 
 [node name="SpawnPoint" parent="." index="8"]
 transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, -0.0474244, 0.886082)
+
+[node name="GPUParticles3D" parent="." index="10"]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0.412421, 0, 0)
+amount = 500
+process_material = SubResource("ParticleProcessMaterial_vjiqy")

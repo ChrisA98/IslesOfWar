@@ -1,0 +1,70 @@
+[gd_resource type="Shader" format=3 uid="uid://bm6cl02a4ujx6"]
+
+[resource]
+code = "// NOTE: Shader automatically converted from Godot Engine 4.1.stable's StandardMaterial3D.
+
+shader_type spatial;
+render_mode blend_mix,depth_draw_opaque,cull_back,diffuse_burley,specular_schlick_ggx,world_vertex_coords;
+
+global uniform sampler2D fog_tex;
+global uniform vec2 heightmap_tex_size = vec2(1000.0,1000.0);
+global uniform float fog_darkness;
+global uniform sampler2D building_locs;
+varying vec2 pos_uv;
+
+uniform float sway_intensity: hint_range(0,0.2);
+uniform float red_variance : hint_range(0,25);
+uniform float green_variance : hint_range(0,25);
+uniform float blue_variance : hint_range(0,25);
+uniform vec4 albedo : source_color;
+uniform float roughness : hint_range(0,1);
+uniform sampler2D texture_metallic : hint_default_white,filter_linear_mipmap,repeat_enable;
+uniform vec4 metallic_texture_channel;
+uniform sampler2D texture_roughness : hint_roughness_r,filter_linear_mipmap,repeat_enable;
+uniform float specular;
+uniform float metallic;
+uniform vec3 uv1_scale;
+uniform vec3 uv1_offset;
+
+varying float id;
+
+void vertex() {
+	//Check for buildings
+	vec3 inst_pos = MODEL_MATRIX[3].xyz;
+	pos_uv = vec2((inst_pos.x)/heightmap_tex_size.x,(inst_pos.z)/heightmap_tex_size.y)+ vec2(.5);
+	vec4 buildings = texture(building_locs, pos_uv);
+	
+	// Either Hide tree or place it in with waving model
+	if(buildings.r > 0.0){
+		VERTEX.z=-10000.0;
+	}else{
+		float wave = sin(2.0 * PI * TIME + (VERTEX.z+VERTEX.x)*0.8);
+		float wave2 = sin(2.0 * PI * (TIME + VERTEX.z+VERTEX.x)*2.0);
+		VERTEX.x += (wave+wave2 *0.4) *sway_intensity;
+		VERTEX.z -= (wave-wave2 *0.4)*sway_intensity;
+		UV=UV*uv1_scale.xy+uv1_offset.xy;
+		id = float(NODE_POSITION_WORLD.x + NODE_POSITION_WORLD.z);
+	}
+}
+
+
+void fragment() {
+	vec2 base_uv = UV;
+	ALBEDO = albedo.rgb;
+	ALBEDO.r += cos(id)/(26.0-red_variance);
+	ALBEDO.g += sin(id)/(26.0-green_variance);
+	ALBEDO.b += sin(id)/(26.0-blue_variance);
+	float metallic_tex = dot(texture(texture_metallic,base_uv),metallic_texture_channel);
+	METALLIC = metallic_tex * metallic;
+	vec4 roughness_texture_channel = vec4(1.0,0.0,0.0,0.0);
+	float roughness_tex = dot(texture(texture_roughness,base_uv),roughness_texture_channel);
+	ROUGHNESS = roughness_tex * roughness;
+	SPECULAR = specular;
+	
+	
+	vec4 fog_color = texture(fog_tex, pos_uv);
+	if(fog_color.a < 0.1){
+		ALBEDO = mix(ALBEDO, vec3 (0,0,0), fog_darkness);
+	}
+}
+"

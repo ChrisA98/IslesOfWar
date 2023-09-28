@@ -118,7 +118,7 @@
 				"crystals": 0,
 				"food": 0,
 			},
-			"unit_list":["Galley","Knights Barge","Transport Ship"],
+			"unit_list":["Galley","Galleon","Transport Ship"],
 			"base_display_name": "Dock",
 			"category": "military"
 		},
@@ -249,8 +249,8 @@
 			},
 			"pop_cost": 1
 		},
-		"Knights Barge": {
-			"models":[
+		"Galleon": {
+			"models":["galleon"
 			],
 			"base_cost": {
 				"wood": 0,
@@ -260,6 +260,18 @@
 				"food": 0,
 			},
 			"pop_cost": 1
+		},
+		"Transport Ship": {
+			"models":["transport_ship"
+			],
+			"base_cost": {
+				"wood": 16,
+				"stone": 0,
+				"riches": 8,
+				"crystals": 10,
+				"food": 0,
+			},
+			"pop_cost": 3
 		},
 		"Mana Cannon": {
 			"models":[

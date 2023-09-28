@@ -63,7 +63,8 @@ preload("res://Faction_Resources/Amerulf_Resource.json")]
 
 '''### BUILT-IN METHODS ###'''
 #Called when the node enters the scene tree for the first time.
-func _ready():
+func _init():
+	print("loading game")
 	# Load level
 	var lvl = load("res://World_Generation/base_level.tscn").instantiate()
 	world = lvl
@@ -75,6 +76,7 @@ func _ready():
 	lvl.loaded.connect(_loaded_signal)
 	
 	add_child(lvl)
+	print("loaded game")
 
 
 func _loaded_signal():

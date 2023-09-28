@@ -156,7 +156,7 @@ radial_segments = 8
 rings = 4
 
 [node name="Building_Base" type="Node3D"]
-transform = Transform3D(5, 0, 0, 0, 5, 0, 0, 0, 5, 0, -0.0421534, 0)
+transform = Transform3D(5, 0, 0, 0, 5, 0, 0, 0, 5, 0, 0, 0)
 script = ExtResource("1_y54u3")
 garrison_unit_type = 1
 base_armor = 0.3

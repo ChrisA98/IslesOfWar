@@ -68,10 +68,10 @@ func load_units():
 		for mod in faction_data["unit_list"][un]["models"]:
 			##Load model master
 			var model
-			if(FileAccess.file_exists("res://Models/Units/modified_scenes/"+mod+"_va.tscn")):
-				model = load("res://Models/Units/modified_scenes/"+mod+"_va.tscn").instantiate()
+			if(FileAccess.file_exists("res://Assets/Models/Units/modified_scenes/"+mod+"_va.tscn")):
+				model = load("res://Assets/Models/Units/modified_scenes/"+mod+"_va.tscn").instantiate()
 			else:
-				model = load("res://Models/Units/modified_scenes/knight_base_va.tscn").instantiate()
+				model = load("res://Assets/Models/Units/modified_scenes/knight_base_va.tscn").instantiate()
 			model.name = mod+"_models_master"
 			add_child(model)
 			unit_model_master[un].push_back(model)

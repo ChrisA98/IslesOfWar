@@ -36,24 +36,28 @@ var building_locations = Image.new()
 @onready var sun = $Sun
 @onready var moon = $Moon
 @onready var noise_image: Image = Image.new()
-@onready var chunk_size = 500
+var chunk_size = 500
 @onready var nav_manager = preload("res://World_Generation/NavMeshManager.gd")
 @onready var ground = get_node("../Player/Visual_Ground")
 @onready var water = get_node("../Player/Visual_Ground/Water")
-@onready var fog_material = ShaderMaterial.new()
+var fog_material = ShaderMaterial.new()
 
 
-func _ready():
+func _init():
+	print("loading level")
 	fog_material.set_shader(load("res://Materials/fog_of_war_overlay.gdshader"))
 	
+	print("loaded shader")
 	var chunks = sqrt(find_files())
 	heightmap = load(heightmap_dir+"master"+".exr").get_image()
+	print("loaded heightmap")
 	##Set up buildings tex
 	building_locations = Image.create(chunks*chunk_size,chunks*chunk_size,false,Image.FORMAT_RGBF)
 	for x in range(chunks*chunk_size):
 		for y in range(chunks*chunk_size):
 			building_locations.set_pixel(x,y,Color.BLACK)	
 	RenderingServer.global_shader_parameter_set("building_locs",ImageTexture.create_from_image(building_locations))
+	print("loading map")
 	map_offset = (chunk_size*chunks)/2
 	## Prepare chunks
 	for y in range(0,chunks):
@@ -74,13 +78,13 @@ func _ready():
 			i.get_child(0).get_child(0).set_meta("is_ground", true)
 			i.set_nav_region()
 	
-	
+	print("loading water")
 	_prepare_water(chunks)
-	
+	print("loading sun")
 	# Set Sun and moon in place
 	$Sun.rotation_degrees = Vector3(0,90,-180)
 	$Moon.rotation_degrees = Vector3(0,90,-180)
-	
+	print("loading fog")
 	## Set fog global data
 	RenderingServer.global_shader_parameter_set("fog_darkness",fog_darkness)
 	RenderingServer.global_shader_parameter_set("heightmap_tex_size",Vector2(heightmap.get_width(),heightmap.get_width()))
@@ -90,6 +94,8 @@ func _ready():
 	
 	call_deferred("_build_fog_war",chunks)
 	get_parent().call_deferred("_prepare_game")
+	print("loaded level")
+	loaded.emit()
 
 
 ## Prepare water navigation
@@ -182,7 +188,6 @@ func _build_fog_war(chunks):
 		#$Explorable_Fog.get_children()[fog].disable_isolated()
 	
 	picker.queue_free()
-	loaded.emit()
 
 
 ## Check if .exr files exist in target path

@@ -1,7 +1,8 @@
-[gd_scene load_steps=42 format=3 uid="uid://62g7oef0gqtd"]
+[gd_scene load_steps=39 format=3 uid="uid://62g7oef0gqtd"]
 
 [ext_resource type="Script" path="res://MainMenu_Controller.gd" id="1_ns5k2"]
 [ext_resource type="Texture2D" uid="uid://ebnnpja8nn3s" path="res://Assets/UI_Elements/main_menu.png" id="2_4h4i5"]
+[ext_resource type="PackedScene" uid="uid://buvgi6aaxx4dp" path="res://Menu_Scenes/load_screen.tscn" id="2_m5s68"]
 [ext_resource type="Texture2D" uid="uid://duocdtqks24tx" path="res://Assets/UI_Elements/Icon.png" id="3_473d1"]
 [ext_resource type="Texture2D" uid="uid://4cgathaf2j1i" path="res://Assets/UI_Elements/wood_long_button.png" id="4_is5u2"]
 [ext_resource type="Theme" uid="uid://c7f8s3w636ohq" path="res://Assets/Themes/main_menu.tres" id="5_xww4n"]
@@ -11,34 +12,6 @@
 [ext_resource type="Shader" path="res://World_Generation/New_Terrain.gdshader" id="8_nw1va"]
 [ext_resource type="Shader" path="res://World_Generation/Water.gdshader" id="9_7kseo"]
 [ext_resource type="Texture2D" uid="uid://drbfk3h3s6x1b" path="res://Test_Items/HeightMap.exr" id="10_tgon2"]
-
-[sub_resource type="Gradient" id="Gradient_o8r15"]
-offsets = PackedFloat32Array(0)
-colors = PackedColorArray(0, 0, 0, 1)
-
-[sub_resource type="GradientTexture1D" id="GradientTexture1D_6meig"]
-gradient = SubResource("Gradient_o8r15")
-width = 1
-
-[sub_resource type="Animation" id="Animation_2r6hm"]
-resource_name = "fade"
-tracks/0/type = "value"
-tracks/0/imported = false
-tracks/0/enabled = true
-tracks/0/path = NodePath(".:modulate")
-tracks/0/interp = 1
-tracks/0/loop_wrap = true
-tracks/0/keys = {
-"times": PackedFloat32Array(0, 0.2),
-"transitions": PackedFloat32Array(1, 1),
-"update": 0,
-"values": [Color(1, 1, 1, 1), Color(1, 1, 1, 0)]
-}
-
-[sub_resource type="AnimationLibrary" id="AnimationLibrary_htw8b"]
-_data = {
-"fade": SubResource("Animation_2r6hm")
-}
 
 [sub_resource type="ProceduralSkyMaterial" id="ProceduralSkyMaterial_o7t8u"]
 sky_top_color = Color(0.427451, 0.756863, 0.92549, 1)
@@ -253,28 +226,8 @@ grow_horizontal = 2
 grow_vertical = 2
 script = ExtResource("1_ns5k2")
 
-[node name="load_screen" type="TextureRect" parent="."]
-visible = false
-layout_mode = 0
-offset_right = 1920.0
-offset_bottom = 1080.0
-texture = ExtResource("2_4h4i5")
-
-[node name="fade" type="TextureRect" parent="."]
-visible = false
-z_index = 4000
+[node name="Load_Screen" parent="." instance=ExtResource("2_m5s68")]
 layout_mode = 1
-anchors_preset = 15
-anchor_right = 1.0
-anchor_bottom = 1.0
-grow_horizontal = 2
-grow_vertical = 2
-texture = SubResource("GradientTexture1D_6meig")
-
-[node name="AnimationPlayer" type="AnimationPlayer" parent="fade"]
-libraries = {
-"": SubResource("AnimationLibrary_htw8b")
-}
 
 [node name="Main" type="Control" parent="."]
 z_index = -1

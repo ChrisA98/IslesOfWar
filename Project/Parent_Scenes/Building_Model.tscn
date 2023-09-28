@@ -1,7 +1,7 @@
 [gd_scene load_steps=5 format=3 uid="uid://bnmi8gc8nnhqt"]
 
 [ext_resource type="Script" path="res://Parent_Scenes/Building_Model_Controller.gd" id="1_h7k3n"]
-[ext_resource type="Shader" uid="uid://cihsj0qbnmaw3" path="res://Parent_Scenes/res/building_shader.tres" id="2_e6moq"]
+[ext_resource type="Shader" uid="uid://cihsj0qbnmaw3" path="res://Assets/Models/Materials/building_shader.tres" id="2_e6moq"]
 
 [sub_resource type="ShaderMaterial" id="ShaderMaterial_hlqic"]
 render_priority = 0

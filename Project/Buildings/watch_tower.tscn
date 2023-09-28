@@ -1,9 +1,9 @@
 [gd_scene load_steps=33 format=3 uid="uid://d37p40ckyt1q0"]
 
 [ext_resource type="PackedScene" uid="uid://ccoruw5j562l7" path="res://Parent_Scenes/Building_Base.tscn" id="1_ibqm7"]
-[ext_resource type="Script" path="res://Watch_Tower.gd" id="2_d0ia4"]
-[ext_resource type="Texture2D" uid="uid://bkvfsyrdm6knb" path="res://Models/Units/textures/arrow.png" id="3_7mnvi"]
+[ext_resource type="Script" path="res://Buildings/scripts/Watch_Tower.gd" id="2_d0ia4"]
 [ext_resource type="Shader" path="res://Parent_Scenes/res/health_bar.gdshader" id="3_72x1r"]
+[ext_resource type="Texture2D" uid="uid://bkvfsyrdm6knb" path="res://Assets/Models/Units/textures/arrow.png" id="3_pn2ln"]
 [ext_resource type="Script" path="res://Parent_Scenes/Scripts/projectile_data.gd" id="4_r5cs2"]
 [ext_resource type="Script" path="res://Parent_Scenes/Scripts/beam_data.gd" id="5_j1itx"]
 
@@ -36,7 +36,7 @@ scale_curve = SubResource("CurveTexture_g6r53")
 [sub_resource type="StandardMaterial3D" id="StandardMaterial3D_3gn4k"]
 transparency = 1
 cull_mode = 2
-albedo_texture = ExtResource("3_7mnvi")
+albedo_texture = ExtResource("3_pn2ln")
 uv1_scale = Vector3(1, -1, 1)
 billboard_keep_scale = true
 
@@ -147,8 +147,10 @@ size = Vector2(0.235, 4)
 orientation = 2
 
 [node name="Watch Tower" instance=ExtResource("1_ibqm7")]
+transform = Transform3D(5, 0, 0, 0, 5, 0, 0, 0, 5, 0, 0, 0)
 script = ExtResource("2_d0ia4")
 type = "Watch_tower"
+prev_build_height = 0.673
 fog_rev_radius = 20.0
 base_health = 20.0
 attack_radius = 200.0

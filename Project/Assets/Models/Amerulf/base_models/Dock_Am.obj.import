@@ -1,0 +1,21 @@
+[remap]
+
+importer="wavefront_obj"
+importer_version=1
+type="Mesh"
+uid="uid://dsrf5dtj188f4"
+path="res://.godot/imported/Dock_Am.obj-eff5b71bdfe95a04defcc72b4ebfe39b.mesh"
+
+[deps]
+
+files=["res://.godot/imported/Dock_Am.obj-eff5b71bdfe95a04defcc72b4ebfe39b.mesh"]
+
+source_file="res://Assets/Models/Amerulf/base_models/Dock_Am.obj"
+dest_files=["res://.godot/imported/Dock_Am.obj-eff5b71bdfe95a04defcc72b4ebfe39b.mesh", "res://.godot/imported/Dock_Am.obj-eff5b71bdfe95a04defcc72b4ebfe39b.mesh"]
+
+[params]
+
+generate_tangents=true
+scale_mesh=Vector3(1, 1, 1)
+offset_mesh=Vector3(0, 0, 0)
+optimize_mesh=true
