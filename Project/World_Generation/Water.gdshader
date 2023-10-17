@@ -1,6 +1,7 @@
 shader_type spatial;
 render_mode specular_toon,sss_mode_skin,cull_back;
-uniform sampler2D heightmap : repeat_disable;
+
+global uniform sampler2D heightmap_tex : repeat_disable;
 uniform float t_height;
 uniform float water_level;
 uniform float fresnel_intensity;
@@ -16,7 +17,7 @@ uniform vec2 wave_direction_2 = vec2(-2.0,2);
 uniform float time_scale : hint_range(0.0,0.2) = 0.025;
 
 varying float height;
-uniform vec2 tex_size = vec2(1000.0,1000.0);
+global uniform vec2 heightmap_tex_size = vec2(1000.0,1000.0);
 uniform vec2 wtr_tex_size = vec2(512.0,512.0);
 varying vec2 pos_uv;
 varying vec2 wtr_pos_uv;
@@ -36,12 +37,12 @@ vec4 water_depth_gradient(float position) {
 }
 
 float get_height(vec2 x){
-  float hgt = (texture(heightmap,x).y) * t_height;
+  float hgt = (texture(heightmap_tex,x).y) * t_height;
   return hgt;
 }
 
 void vertex() {
-	pos_uv = vec2((NODE_POSITION_WORLD.x)/tex_size.x,(NODE_POSITION_WORLD.z)/tex_size.y)+((vec2(VERTEX.x,VERTEX.z)/tex_size)) + vec2(.5);
+	pos_uv = vec2((NODE_POSITION_WORLD.x)/heightmap_tex_size.x,(NODE_POSITION_WORLD.z)/heightmap_tex_size.y)+((vec2(VERTEX.x,VERTEX.z)/heightmap_tex_size)) + vec2(.5);
 	wtr_pos_uv = vec2((NODE_POSITION_WORLD.x)/wtr_tex_size.x,(NODE_POSITION_WORLD.z)/wtr_tex_size.y)+((vec2(VERTEX.x,VERTEX.z)/wtr_tex_size)) + vec2(.5);
 	height = get_height(pos_uv);
 	float depth = clamp((water_level-height)/tide,0.001,0.99);

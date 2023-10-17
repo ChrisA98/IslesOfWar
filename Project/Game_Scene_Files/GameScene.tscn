@@ -166,9 +166,7 @@ shader_parameter/water_alb = Color(0.729412, 0.937255, 0.972549, 1)
 shader_parameter/wave_direction_1 = Vector2(2, -2)
 shader_parameter/wave_direction_2 = Vector2(-2, 2)
 shader_parameter/time_scale = 0.004
-shader_parameter/tex_size = Vector2(1000, 1000)
 shader_parameter/wtr_tex_size = Vector2(500, 500)
-shader_parameter/heightmap = ExtResource("7_ubyyn")
 shader_parameter/water_alb_tex = SubResource("GradientTexture1D_r7ayg")
 shader_parameter/water_disp_tex_1 = SubResource("NoiseTexture2D_8nv0g")
 shader_parameter/water_disp_tex_2 = SubResource("NoiseTexture2D_ix3s1")
@@ -490,9 +488,7 @@ shader_parameter/water_alb = Color(0.729412, 0.937255, 0.972549, 1)
 shader_parameter/wave_direction_1 = Vector2(2, -2)
 shader_parameter/wave_direction_2 = Vector2(-2, 2)
 shader_parameter/time_scale = 0.004
-shader_parameter/tex_size = Vector2(1000, 1000)
 shader_parameter/wtr_tex_size = Vector2(500, 500)
-shader_parameter/heightmap = ExtResource("7_ubyyn")
 shader_parameter/water_alb_tex = SubResource("GradientTexture1D_8euv3")
 shader_parameter/water_disp_tex_1 = SubResource("NoiseTexture2D_pd0fy")
 shader_parameter/water_disp_tex_2 = SubResource("NoiseTexture2D_cxok4")
@@ -582,6 +578,7 @@ noise = SubResource("FastNoiseLite_kogvw")
 [sub_resource type="BoxShape3D" id="BoxShape3D_bjih7"]
 
 [node name="GameScene" type="Node3D"]
+process_mode = 3
 script = ExtResource("1_7pjje")
 
 [node name="UI_Node" type="Control" parent="."]

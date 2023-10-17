@@ -72,6 +72,7 @@ rings = 2
 size = Vector3(50, 300, 50)
 
 [node name="Fog_Of_War" type="GPUParticles3D"]
+process_mode = 3
 layers = 17
 sorting_offset = 100.0
 cast_shadow = 0

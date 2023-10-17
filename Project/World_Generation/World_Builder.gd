@@ -41,7 +41,6 @@ func build_map(img, path):
 	var out = create_mesh(img)
 	if ResourceSaver.save(out,path,ResourceSaver.FLAG_COMPRESS) != OK:
 		print("ERROR")
-	
 
 
 func create_chunks(img: Image):

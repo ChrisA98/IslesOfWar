@@ -37,9 +37,11 @@ func _load_gamescene_thread(path):
 	print("loading")
 	var gamescene_load = load(path)
 	var scene = gamescene_load.instantiate()
+	while !scene.ready_to_load:
+		print("...")
 	get_tree().root.call_deferred("add_child",scene)
 	await scene.loaded
-	print("loaded")
+	print("finished loading")
 	gamescene_loaded.emit()
 
 

@@ -1,9 +1,8 @@
-[gd_scene load_steps=47 format=3 uid="uid://1gj112g47vqj"]
+[gd_scene load_steps=46 format=3 uid="uid://1gj112g47vqj"]
 
 [ext_resource type="Script" path="res://World_Generation/Level_Controller.gd" id="1_ql81r"]
 [ext_resource type="Shader" path="res://Materials/fog_of_war_overlay.gdshader" id="2_ec6ww"]
 [ext_resource type="Shader" path="res://World_Generation/New_Terrain.gdshader" id="2_ueirr"]
-[ext_resource type="Texture2D" uid="uid://drbfk3h3s6x1b" path="res://Test_Items/HeightMap.exr" id="3_6mwi0"]
 [ext_resource type="Shader" path="res://World_Generation/Water.gdshader" id="4_h7krx"]
 [ext_resource type="PackedScene" uid="uid://crswchumae5b0" path="res://World_Objects/Forest.tscn" id="5_8idnn"]
 [ext_resource type="PackedScene" uid="uid://dcah4free3fs2" path="res://Actor_Classes/base_spawn.tscn" id="6_aid2n"]
@@ -225,9 +224,7 @@ shader_parameter/water_alb = Color(0.392157, 0.831373, 0.898039, 1)
 shader_parameter/wave_direction_1 = Vector2(2, -2)
 shader_parameter/wave_direction_2 = Vector2(-2, 2)
 shader_parameter/time_scale = 0.01
-shader_parameter/tex_size = Vector2(1000, 1000)
 shader_parameter/wtr_tex_size = Vector2(1000, 1000)
-shader_parameter/heightmap = ExtResource("3_6mwi0")
 shader_parameter/water_alb_tex = SubResource("GradientTexture1D_8euv3")
 shader_parameter/water_disp_tex_1 = SubResource("NoiseTexture2D_pd0fy")
 shader_parameter/water_disp_tex_2 = SubResource("NoiseTexture2D_cxok4")

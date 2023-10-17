@@ -21,6 +21,10 @@ config/icon="res://icon.svg"
 
 Global_Vars="*res://global_vars.gd"
 
+[debug]
+
+settings/profiler/max_functions=32678
+
 [display]
 
 window/size/viewport_width=1920

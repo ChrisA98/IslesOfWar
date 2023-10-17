@@ -48,6 +48,8 @@ var click_mode: String = "select":
 		click_mode_changed.emit(click_mode, value)
 		click_mode = value
 var mouse_loc_stored
+var process_functions: Array[Callable]
+var ready_to_load = false
 
 ''' onready vars '''
 @onready var UI_controller = $UI_Node
@@ -70,21 +72,32 @@ func _init():
 	world = lvl
 	world.name = "level"
 	
-	## Transfer level material to visual ground
-	var world_material = lvl.find_child("Visual_Ground").mesh.get_material()	
-	player_controller.find_child("Visual_Ground").mesh.set_material(world_material)
 	lvl.loaded.connect(_loaded_signal)
 	
+	lvl.init(self)	
 	add_child(lvl)
+	
+	ready_to_load = true
 	print("loaded game")
 
+func _ready():	
+	## Transfer level material to visual ground
+	var world_material = world.find_child("Visual_Ground").mesh.get_material()	
+	player_controller.find_child("Visual_Ground").mesh.set_material(world_material)
 
 func _loaded_signal():
 	loaded.emit()
+	process_functions.push_back(_update_sky)
 
 
 #Called every frame. 'delta' is the elapsed time since the previous frame.
 func _process(_delta):
+	for c in process_functions:
+		c.call()
+	##Update world animation time
+	RenderingServer.global_shader_parameter_set("game_time",Time.get_ticks_msec()/1000.0)
+
+func _update_sky():
 	world.sun_rotation = clampf(180-(180*($UI_Node/Time_Bar/Day_Cycle_Timer.time_left/global.DAY_LENGTH)),0,180)
 	world.sun.rotation_degrees = Vector3(-world.sun_rotation,90,-180)
 	world.sun.light_energy = clampf(world.sun_str - ((world.sun_str * (abs(world.sun_rotation-90)/180))*2), world.sun_str*.15,world.sun_str)
@@ -96,9 +109,6 @@ func _process(_delta):
 	else:
 		$UI_Node/Time_Bar/Clock_Back.rotation = deg_to_rad(world.moon_rotation+90)
 	
-	##Update world animation time
-	RenderingServer.global_shader_parameter_set("game_time",Time.get_ticks_msec()/1000.0)
-
 
 ## on player input event
 func _input(event):
@@ -224,6 +234,7 @@ func select_from_list(units):
 '''-------------------------------------------------------------------------------------'''
 ''' Prep Game and world management Start '''
 func _prepare_game():
+	await get_tree().physics_frame
 	# Connect ground signals
 	for i in world.find_children("Region*"):
 		for j in i.find_children("Floor"):
@@ -265,6 +276,8 @@ func _prepare_game():
 		
 	
 	_assign_colors()
+	
+	set_process_mode(PROCESS_MODE_PAUSABLE)
 	
 	call_deferred("prepare_bases")
 	call_deferred("custom_nav_setup")

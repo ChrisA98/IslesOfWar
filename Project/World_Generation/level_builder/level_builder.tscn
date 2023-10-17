@@ -1,20 +1,32 @@
-[gd_scene load_steps=35 format=3 uid="uid://hva1em7ponql"]
+[gd_scene load_steps=37 format=3 uid="uid://hva1em7ponql"]
 
 [ext_resource type="Script" path="res://World_Generation/level_builder/Level_Builder.gd" id="1_18iqu"]
 [ext_resource type="Shader" path="res://World_Generation/New_Terrain.gdshader" id="2_jxrs8"]
+[ext_resource type="Script" path="res://World_Generation/level_builder/brush.gd" id="2_vq7n1"]
 [ext_resource type="Script" path="res://World_Generation/level_builder/chunk_editor.gd" id="3_x81um"]
 [ext_resource type="Shader" path="res://World_Generation/Water.gdshader" id="4_76ggg"]
-[ext_resource type="Texture2D" uid="uid://drbfk3h3s6x1b" path="res://Test_Items/HeightMap.exr" id="5_hphto"]
 [ext_resource type="Script" path="res://World_Generation/level_builder/Editor_Cam_controller.gd" id="6_f37vi"]
 
 [sub_resource type="Gradient" id="Gradient_c7l3w"]
-offsets = PackedFloat32Array(0, 0.442922, 0.875)
-colors = PackedColorArray(1, 1, 1, 0.490196, 1, 1, 1, 0.490196, 1, 1, 1, 0)
+interpolation_mode = 2
+colors = PackedColorArray(1, 1, 1, 0.0392157, 1, 1, 1, 0)
 
 [sub_resource type="GradientTexture2D" id="GradientTexture2D_abga6"]
 gradient = SubResource("Gradient_c7l3w")
-width = 640
-height = 640
+width = 512
+height = 512
+fill = 1
+fill_from = Vector2(0.5, 0.5)
+fill_to = Vector2(0.5, 0)
+
+[sub_resource type="Gradient" id="Gradient_t0wwc"]
+interpolation_mode = 2
+colors = PackedColorArray(0, 0, 0, 0.0392157, 0, 0, 0, 0)
+
+[sub_resource type="GradientTexture2D" id="GradientTexture2D_s8ak6"]
+gradient = SubResource("Gradient_t0wwc")
+width = 512
+height = 512
 fill = 1
 fill_from = Vector2(0.5, 0.5)
 fill_to = Vector2(0.5, 0)
@@ -132,8 +144,8 @@ shader_parameter/sand_norm_tex = SubResource("NoiseTexture2D_8e7yg")
 [sub_resource type="PlaneMesh" id="PlaneMesh_rgect"]
 material = SubResource("ShaderMaterial_rie7d")
 size = Vector2(500, 500)
-subdivide_width = 200
-subdivide_depth = 200
+subdivide_width = 400
+subdivide_depth = 400
 
 [sub_resource type="Gradient" id="Gradient_kcurd"]
 interpolation_mode = 2
@@ -184,9 +196,7 @@ shader_parameter/water_alb = Color(0.392157, 0.831373, 0.898039, 1)
 shader_parameter/wave_direction_1 = Vector2(2, -2)
 shader_parameter/wave_direction_2 = Vector2(-2, 2)
 shader_parameter/time_scale = 0.01
-shader_parameter/tex_size = Vector2(1000, 1000)
 shader_parameter/wtr_tex_size = Vector2(1000, 1000)
-shader_parameter/heightmap = ExtResource("5_hphto")
 shader_parameter/water_alb_tex = SubResource("GradientTexture1D_7aoj2")
 shader_parameter/water_disp_tex_1 = SubResource("NoiseTexture2D_rv5b1")
 shader_parameter/water_disp_tex_2 = SubResource("NoiseTexture2D_57abc")
@@ -206,12 +216,24 @@ map_data = PackedFloat32Array(0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0,
 
 [node name="Level_Builder" type="Node3D"]
 script = ExtResource("1_18iqu")
+map_size = 2000
 default_map_path = "res://Assets/Levels/default_map"
 
-[node name="editor_cursor" type="Decal" parent="."]
+[node name="editor_cursor" type="Node3D" parent="."]
+script = ExtResource("2_vq7n1")
+
+[node name="editor_cursor_drawer" type="Decal" parent="editor_cursor"]
 transform = Transform3D(1, 0, 0, 0, 1000, 0, 0, 0, 1, 0, 0, 0)
-size = Vector3(1, 100, 1)
+size = Vector3(300, 100, 300)
 texture_albedo = SubResource("GradientTexture2D_abga6")
+upper_fade = 0.0147109
+lower_fade = 318.034
+cull_mask = 2
+
+[node name="editor_cursor_eraser" type="Decal" parent="editor_cursor"]
+transform = Transform3D(1, 0, 0, 0, 1000, 0, 0, 0, 1, 0, 0, 0)
+size = Vector3(300, 100, 300)
+texture_albedo = SubResource("GradientTexture2D_s8ak6")
 upper_fade = 0.0147109
 lower_fade = 318.034
 cull_mask = 2
@@ -261,7 +283,7 @@ environment = SubResource("Environment_xl1fn")
 fov = 37.8493
 
 [node name="environment_prev" type="Camera3D" parent="Editor_Cam"]
-transform = Transform3D(1, 0, 0, 0, 0.707107, 0.707107, 0, -0.707107, 0.707107, 0, 0, 0)
+transform = Transform3D(1, 0, 0, 0, -4.37114e-08, 1, 0, -1, -4.37114e-08, 0, 0, 0)
 environment = SubResource("Environment_h4cl6")
 
 [node name="visual_ground" type="Node3D" parent="."]

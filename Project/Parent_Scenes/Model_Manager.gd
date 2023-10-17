@@ -1,6 +1,8 @@
 extends Node3D
 
 @export var attack_animations := 1
+@export var rotate_as_whole : bool
+@export var attacking_model_id : int = -1
 
 var unit_nodes := {}
 var model_masters : = []
@@ -30,6 +32,15 @@ var attacking := false:
 var last_model_burst_animated: int = 0
 ## Process calls
 var animate_calls : Array[Callable]
+var facing_function = Callable(_face_target_units)
+var attack_function = Callable(_unit_attack_seq)
+
+
+func _ready():
+	if rotate_as_whole:
+		facing_function = Callable(_face_target_as_whole)
+	if attacking_model_id != -1:
+		attack_function = Callable(unit_attack_specific)
 
 
 func load_data(_model_masters : Array, faction_clr : Color):
@@ -60,22 +71,53 @@ func _process(_delta):
 	pass
 
 
-## Make units face target
 func face_target(trgt):
 	if !rendered:
 		return
+	facing_function.call(trgt)
+
+
+## Make units face target
+func _face_target_units(trgt):
 	for i in unit_nodes:
 		var node = unit_nodes[i]
 		var unit_basis = model_masters[node[0]].get_unit_basis(node[1])
 		model_masters[node[0]].face_unit_instance(node[1],trgt,unit_basis)
 
 
+func _face_target_as_whole(trgt):
+	var pos = get_child(0).global_position
+	var trgt_vector = pos.direction_to(trgt)
+	var lookdir = atan2(trgt_vector.x, trgt_vector.z)
+	
+	var initial = transform.basis.get_rotation_quaternion()
+	var trans = Transform3D()
+	trans.origin = position
+	var final = trans.rotated(Vector3.UP,lookdir).basis.get_rotation_quaternion()
+	var out_q = initial.slerp(final,0.1)
+	
+	trans.basis = Basis(out_q)
+	transform = trans
+	_face_target_units(trgt)
+
+
 func unit_attack(atk_spd: float):
+	attack_function.call(atk_spd)
+
+
+func _unit_attack_seq(atk_spd: float):
 	var attack_id = str(randi_range(1,attack_animations))
 	last_model_burst_animated += 1 
 	if last_model_burst_animated >= unit_nodes.size():
 		last_model_burst_animated = 0
 	var unit_attacking = get_child(last_model_burst_animated)
+	var node = unit_nodes[unit_attacking]
+	model_masters[node[0]].burst_animation(node[1],"attack_"+attack_id,atk_spd)
+
+
+func unit_attack_specific(atk_spd: float):
+	var attack_id = str(randi_range(1,attack_animations))
+	var unit_attacking = get_child(attacking_model_id)
 	var node = unit_nodes[unit_attacking]
 	model_masters[node[0]].burst_animation(node[1],"attack_"+attack_id,atk_spd)
 

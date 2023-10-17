@@ -1,8 +1,9 @@
 shader_type canvas_item;
 
+global uniform sampler2D heightmap_tex : repeat_disable;
 global uniform float game_time;
+uniform float progress;
 
 void fragment() {
-	float t = mod(game_time,1);
-	COLOR = vec4(t,-t,-t,1);
+	COLOR = texture(heightmap_tex,UV);
 }

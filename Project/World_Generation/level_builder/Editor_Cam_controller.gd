@@ -8,9 +8,6 @@ var max_speed = 5
 var accel = 8
 
 func _input(event):		
-	if event.is_action_pressed("rmb"):
-		_switch_cam()
-	
 	#close game, TESTING ONLY
 	if event.is_action_pressed(("esc")):
 		get_tree().quit()

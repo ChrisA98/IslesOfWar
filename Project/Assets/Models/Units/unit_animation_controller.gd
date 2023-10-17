@@ -24,6 +24,7 @@ const ATTACK_02 = ["attack_2",190, 249]
 ## Attacking idle animation
 const IDLE_ATTACKING= ["idle_attacking",250, 310]
 
+## 1-960 Frames
 
 @export var preview_unit : bool:
 	set(value):

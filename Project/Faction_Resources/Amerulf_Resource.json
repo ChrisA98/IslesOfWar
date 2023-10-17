@@ -339,6 +339,8 @@
 		},
 		"Ballista": {
 			"models":[
+				"ballista",
+				"knight_standard"
 			],
 			"base_cost": {
 				"wood": 0,

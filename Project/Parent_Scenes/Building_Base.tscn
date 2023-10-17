@@ -67,12 +67,12 @@ material = SubResource("StandardMaterial3D_v2wx5")
 radius = 0.125
 height = 0.25
 
-[sub_resource type="Curve" id="Curve_0xt2m"]
+[sub_resource type="Curve" id="Curve_glaor"]
 _data = [Vector2(0, 1), 0.0, 0.0, 0, 0, Vector2(1, 0), 0.0, 0.0, 0, 0]
 point_count = 2
 
-[sub_resource type="CurveTexture" id="CurveTexture_6clb7"]
-curve = SubResource("Curve_0xt2m")
+[sub_resource type="CurveTexture" id="CurveTexture_fpr1v"]
+curve = SubResource("Curve_glaor")
 
 [sub_resource type="ParticleProcessMaterial" id="ParticleProcessMaterial_r3hrv"]
 direction = Vector3(0, -0.187609, -0.982244)
@@ -80,7 +80,7 @@ spread = 81.81
 initial_velocity_max = 9.69
 linear_accel_min = 15.28
 linear_accel_max = 15.28
-scale_curve = SubResource("CurveTexture_6clb7")
+scale_curve = SubResource("CurveTexture_fpr1v")
 
 [sub_resource type="Resource" id="Resource_wl4bu"]
 resource_local_to_scene = true
