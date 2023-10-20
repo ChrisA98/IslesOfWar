@@ -20,13 +20,13 @@ var chunk_heightmap_image : Image
 
 
 
-func draw_brush_to_map(pos:Vector3, brush, size, strength: float):
+func draw_brush_to_map(pos:Vector3, brush, size):
 	var local_pos = _convert_pos_to_local(pos)
 	
 	
 	level_builder_controller.heightmap.flip_y()
 	level_builder_controller.heightmap.rotate_90(CLOCKWISE)
-	_draw_brush(local_pos,brush,strength)
+	_draw_brush(local_pos,brush)
 	level_builder_controller.heightmap.rotate_90(COUNTERCLOCKWISE)
 	level_builder_controller.heightmap.flip_y()
 	
@@ -56,7 +56,7 @@ func draw_brush_to_map(pos:Vector3, brush, size, strength: float):
 		
 	updated_map.emit()
 
-func _draw_brush(pos,brush,strength):
+func _draw_brush(pos,brush):
 	var brush_tex = brush.get_image()
 	pos.x -= brush_tex.get_size().x/2
 	pos.y -= brush_tex.get_size().y/2
@@ -105,7 +105,7 @@ func load_map(hm):
 	chunk_heightmap_image = hm
 	chunk_heightmap_image.flip_y()
 	chunk_heightmap_image.rotate_90(CLOCKWISE)
-	#_generate_collision_shape()
+	_generate_collision_shape()
 
 
 func _generate_collision_shape():
@@ -130,12 +130,3 @@ func _generate_collision_shape():
 	hm.set_map_data(PackedFloat32Array(height_data))
 	collision_mesh.set_shape(hm)
 
-
-
-func _debug_sphere(pos):
-	var m = MeshInstance3D.new()
-	m.mesh = SphereMesh.new()
-	m.scale = Vector3(5,5,5)
-	m.position = pos
-	m.position.y += 5
-	return m

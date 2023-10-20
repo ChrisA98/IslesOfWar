@@ -169,7 +169,7 @@ building_locs={
 }
 water_depth={
 "type": "float",
-"value": 0.0
+"value": 7.0
 }
 heightmap_tex={
 "type": "sampler2D",

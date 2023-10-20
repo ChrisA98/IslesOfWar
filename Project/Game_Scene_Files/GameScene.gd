@@ -57,7 +57,6 @@ var ready_to_load = false
 @onready var faction_data = [preload("res://Faction_Resources/Amerulf_Resource.json"),
 preload("res://Faction_Resources/Amerulf_Resource.json")]
 @onready var game_actors = [$Player]
-@onready var global = get_node("/root/Global_Vars")
 @onready var player_fog_manager = get_node("Player/Fog_drawer")
 @onready var enemy_marker_manager = get_node("UI_Node/Minimap/Enemy_minimap_markers")
 @onready var selection_square = get_node("Player/Selection_square")
@@ -66,7 +65,7 @@ preload("res://Faction_Resources/Amerulf_Resource.json")]
 '''### BUILT-IN METHODS ###'''
 #Called when the node enters the scene tree for the first time.
 func _init():
-	print("loading game")
+	Global_Vars.load_text = ("loading game")
 	# Load level
 	var lvl = load("res://World_Generation/base_level.tscn").instantiate()
 	world = lvl
@@ -78,7 +77,7 @@ func _init():
 	add_child(lvl)
 	
 	ready_to_load = true
-	print("loaded game")
+	Global_Vars.load_text = "loaded game"
 
 func _ready():	
 	## Transfer level material to visual ground
@@ -98,10 +97,10 @@ func _process(_delta):
 	RenderingServer.global_shader_parameter_set("game_time",Time.get_ticks_msec()/1000.0)
 
 func _update_sky():
-	world.sun_rotation = clampf(180-(180*($UI_Node/Time_Bar/Day_Cycle_Timer.time_left/global.DAY_LENGTH)),0,180)
+	world.sun_rotation = clampf(180-(180*($UI_Node/Time_Bar/Day_Cycle_Timer.time_left/Global_Vars.DAY_LENGTH)),0,180)
 	world.sun.rotation_degrees = Vector3(-world.sun_rotation,90,-180)
 	world.sun.light_energy = clampf(world.sun_str - ((world.sun_str * (abs(world.sun_rotation-90)/180))*2), world.sun_str*.15,world.sun_str)
-	world.moon_rotation = 180-(180*($UI_Node/Time_Bar/Day_Cycle_Timer.time_left/global.NIGHT_LENGTH))
+	world.moon_rotation = 180-(180*($UI_Node/Time_Bar/Day_Cycle_Timer.time_left/Global_Vars.NIGHT_LENGTH))
 	world.moon.rotation_degrees = Vector3(-90,90,-180)
 	world.moon.light_energy = clamp(world.moon_str - ((world.moon_str * (abs(world.moon_rotation-90)/180))*2) + world.moon_str*.1,.1,1)
 	if(world.day_cycle):
@@ -334,6 +333,7 @@ func prepare_bases():
 	# Add player first Base
 	var p_spawn = world.get_base_spawn(0)
 	player_controller.set_cam_pos(p_spawn.position + Vector3(0,20,0))
+	
 	player_controller.get_child(0).force_raycast_update()
 	prep_player_building(0, null)
 	preview_building.set_pos(p_spawn.position)
@@ -345,7 +345,7 @@ func prepare_bases():
 	
 	await get_tree().physics_frame
 	prep_ready.emit()
-
+	$Curtain.queue_free()
 
 ## Setup navigation
 func custom_nav_setup():
@@ -567,7 +567,7 @@ func _on_day_cycle_timer_timeout():
 	
 	world.day_cycle = !world.day_cycle
 		
-	if world.year_day >= global.YEAR_LENGTH:
+	if world.year_day >= Global_Vars.YEAR_LENGTH:
 		world.year_day = 0
 		world.year += 1	
 	

@@ -8,15 +8,20 @@ const CHUNK_SIZE = 500
 
 var heightmap
 var chunk_map =[]
-var refresh_rate = 3
-var refresh_counter = 5
 
 ## Cursor info
-var mouse_position
+var mouse_held := false
+var mouse_position : Vector3
 var active_chunk
+
+
+var undo_cache = []
+var undo_max_size = 32000
 
 @onready var ground_prev = get_node("visual_ground")
 @onready var cursor = get_node("editor_cursor")
+@onready var ui_node = get_node("UI")
+
 
 func _ready():
 	_load_main_heightmap()
@@ -26,19 +31,21 @@ func _ready():
 
 
 func _process(_delta):
-	refresh_counter -= 1
-	if Input.is_mouse_button_pressed(MOUSE_BUTTON_LEFT):
-		if refresh_counter <= 0:
-			refresh_counter = refresh_rate
-			active_chunk.draw_brush_to_map(mouse_position,cursor.draw_tex,100,.1)
-			return
-	if Input.is_mouse_button_pressed(MOUSE_BUTTON_RIGHT):
-		if refresh_counter <= 0:
-			refresh_counter = refresh_rate
-			active_chunk.draw_brush_to_map(mouse_position,cursor.erase_tex,100, -1)
-			return
+	if mouse_held and !ui_node.mouse_used:
+		active_chunk.draw_brush_to_map(mouse_position,cursor.get_draw_tex(),cursor.radius)
+		_push_undo()
+		if !Input.is_mouse_button_pressed(MOUSE_BUTTON_LEFT):
+			mouse_held = false
 
 
+## Set last brush stroke to undo cache
+func _push_undo():
+	if(undo_cache.size() > undo_max_size):
+		undo_cache.pop_front()
+	undo_cache.push_back([mouse_position,cursor.get_draw_tex(),cursor.radius])
+
+
+## Create initial map
 func _load_main_heightmap(def = null):
 	heightmap = Image.create(map_size,map_size,false,Image.FORMAT_RGBA8)
 	heightmap.fill(Color(.1,.1,.1,1))
@@ -46,6 +53,7 @@ func _load_main_heightmap(def = null):
 	#heightmap = load(default_map_path+"/master.exr").get_image()
 
 
+## Create brushes at start of level
 func _populate_chunks():
 	@warning_ignore("integer_division")
 	var chunks = map_size/CHUNK_SIZE
@@ -78,10 +86,17 @@ func _populate_chunks():
 
 
 ## Ground Shape interacted with
-func ground_click(_camera, _event:InputEvent, pos:Vector3, _normal, _shape_idx, chunk):
+func ground_click(_camera, event:InputEvent, pos:Vector3, _normal, _shape_idx, chunk):
 	cursor.position = pos
 	mouse_position = pos
-	active_chunk = chunk
+	active_chunk = chunk	
+	if event is InputEventMouseButton:
+		if event.button_index == 1:
+			mouse_held = event.is_pressed()
+			
+			
+	if event.is_action("ui_undo"):
+		pass
 
 
 func _update_heightmap_master():

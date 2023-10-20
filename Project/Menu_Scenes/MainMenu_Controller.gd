@@ -8,13 +8,13 @@ var gamescene_instance
 var is_loading
 
 @onready var main_menu = get_node("Main")
+@onready var global = get_node("/root/Global_Vars")
 
 var gamescene_path = "res://Game_Scene_Files/GameScene.tscn"
 
 
 
 func _multiplayer_button():
-	print("test")
 	call_deferred("_load_gamescene")
 
 
@@ -38,9 +38,9 @@ func _load_gamescene_thread(path):
 	var gamescene_load = load(path)
 	var scene = gamescene_load.instantiate()
 	while !scene.ready_to_load:
-		print("...")
+		pass
 	get_tree().root.call_deferred("add_child",scene)
-	await scene.loaded
+	await scene.ready
 	print("finished loading")
 	gamescene_loaded.emit()
 

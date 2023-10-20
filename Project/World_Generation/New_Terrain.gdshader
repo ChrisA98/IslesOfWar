@@ -5,8 +5,6 @@ global uniform sampler2D heightmap_tex : repeat_disable;
 global uniform sampler2D building_locs;
 
 uniform float t_height;
-uniform float water_table:hint_range(-50.0,50.0) = 1;
-uniform float max_sand_height:hint_range(-50.0,50.0) = 1;
 uniform float universal_tex_scaling = 6;
 uniform sampler2D grass_alb_tex : source_color;
 uniform sampler2D grass_norm_tex : source_color;
@@ -23,6 +21,7 @@ global uniform sampler2D fog_tex;
 //mesh displacement
 global uniform vec2 heightmap_tex_size = vec2(1000.0,1000.0);
 global uniform float fog_darkness;
+global uniform float water_depth;
 
 varying vec3 normal;
 varying float height;
@@ -77,10 +76,10 @@ void fragment(){
 	alb_basic = mix(alb_basic, grass_albedo, rock_grass_weight);
 	float sand_rockgrass_weight = height;
 	//Calculating Sand/RockGrass Weight
-	sand_rockgrass_weight = max(water_table, sand_rockgrass_weight);
-	sand_rockgrass_weight = min(max_sand_height, sand_rockgrass_weight);
-	sand_rockgrass_weight -= water_table;
-	sand_rockgrass_weight /= max_sand_height - water_table;
+	sand_rockgrass_weight = max(water_depth, sand_rockgrass_weight);
+	sand_rockgrass_weight = min(water_depth+2.0, sand_rockgrass_weight);
+	sand_rockgrass_weight -= water_depth;
+	sand_rockgrass_weight /= water_depth+2.0 - water_depth;
 	//Mixing and Assigning Albedo
 	vec3 rockgrass_albedo = mix(rock_albedo, grass_albedo, rock_grass_weight);
 	ALBEDO = mix(sand_albedo, rockgrass_albedo, sand_rockgrass_weight);

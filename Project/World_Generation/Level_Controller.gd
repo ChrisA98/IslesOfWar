@@ -37,6 +37,7 @@ var gamescene: Node3D
 @onready var moon = $Moon
 var noise_image: Image = Image.new()
 var chunk_size = 500
+var chunks
 var nav_manager
 @onready var ground = get_node("../Player/Visual_Ground")
 @onready var water = get_node("../Player/Visual_Ground/Water")
@@ -45,11 +46,11 @@ var fog_material = ShaderMaterial.new()
 
 func init(_gamescene):
 	gamescene = _gamescene
-	print("loading level")
+	Global_Vars.load_text = ("loading level")
 	fog_material.set_shader(load("res://Materials/fog_of_war_overlay.gdshader"))
 	
-	print("loaded shader")
-	var chunks = sqrt(find_files())
+	Global_Vars.load_text = ("loaded shader")
+	chunks = sqrt(find_files())
 	heightmap = load(heightmap_dir+"master"+".exr").get_image()
 	print("loaded heightmap _ chunks = "+str(chunks))
 	##Set up buildings tex
@@ -58,7 +59,7 @@ func init(_gamescene):
 		for y in range(chunks*chunk_size):
 			building_locations.set_pixel(x,y,Color.BLACK)	
 	RenderingServer.global_shader_parameter_set("building_locs",ImageTexture.create_from_image(building_locations))
-	print("loading map")
+	Global_Vars.load_text = ("loading map")
 	nav_manager = load("res://World_Generation/NavMeshManager.gd")
 	map_offset = (chunk_size*chunks)/2
 	## Prepare chunks
@@ -80,8 +81,7 @@ func init(_gamescene):
 			i.get_child(0).get_child(0).set_meta("is_ground", true)
 			i.set_nav_region()
 	
-	_prepare_water(chunks)
-	print("loading fog")
+	Global_Vars.load_text = ("loading fog")
 	## Set fog global data
 	RenderingServer.global_shader_parameter_set("fog_darkness",fog_darkness)
 	RenderingServer.global_shader_parameter_set("heightmap_tex_size",Vector2(heightmap.get_width(),heightmap.get_width()))
@@ -89,21 +89,22 @@ func init(_gamescene):
 	## Set water Height Data
 	RenderingServer.global_shader_parameter_set("water_depth",water_table)
 	
-	call_deferred("_build_fog_war",chunks)
+	call_deferred("_build_fog_war")
 
 func _ready():
 	$Water/StaticBody3D.input_event.connect(gamescene.ground_click.bind($Water/StaticBody3D)) 
-	print("loading sun")
+	Global_Vars.load_text = ("loading sun")
 	# Set Sun and moon in place
 	$Sun.rotation_degrees = Vector3(0,90,-180)
 	$Moon.rotation_degrees = Vector3(0,90,-180)
 	loaded.emit()
 	get_parent().call_deferred("_prepare_game")
+	_prepare_water()
 
 
 ## Prepare water navigation
-func _prepare_water(chunks):
-	print("loading water")
+func _prepare_water():
+	Global_Vars.load_text = ("loading water")
 	
 	var wtr_nav_region = NavigationRegion3D.new()
 	wtr_nav_region.set_script(nav_manager)

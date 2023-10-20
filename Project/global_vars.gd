@@ -23,6 +23,8 @@ const NIGHT_LENGTH : int = 46
 var navmesh_baking : NavigationRegion3D
 var queued_nav_bakes: Array
 
+var load_text = "Loading Something"
+
 func month_to_string(yr_day: int, yr: int) -> String:
 	var out = ""
 	var month_day = (yr_day%28)+1

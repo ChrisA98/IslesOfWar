@@ -2,8 +2,8 @@ shader_type spatial;
 render_mode specular_toon,sss_mode_skin,cull_back;
 
 global uniform sampler2D heightmap_tex : repeat_disable;
+global uniform float water_depth;
 uniform float t_height;
-uniform float water_level;
 uniform float fresnel_intensity;
 uniform float tide:hint_range(1.0,7.0) = .25;
 uniform float water_turbulence:hint_range(1.0,7.0) = .25;
@@ -45,7 +45,7 @@ void vertex() {
 	pos_uv = vec2((NODE_POSITION_WORLD.x)/heightmap_tex_size.x,(NODE_POSITION_WORLD.z)/heightmap_tex_size.y)+((vec2(VERTEX.x,VERTEX.z)/heightmap_tex_size)) + vec2(.5);
 	wtr_pos_uv = vec2((NODE_POSITION_WORLD.x)/wtr_tex_size.x,(NODE_POSITION_WORLD.z)/wtr_tex_size.y)+((vec2(VERTEX.x,VERTEX.z)/wtr_tex_size)) + vec2(.5);
 	height = get_height(pos_uv);
-	float depth = clamp((water_level-height)/tide,0.001,0.99);
+	float depth = clamp((water_depth-height)/tide,0.001,0.99);
 	
 	time_1 = (TIME * wave_direction_1) * time_scale;
 	time_2 = (TIME * wave_direction_2) * time_scale;
@@ -54,25 +54,25 @@ void vertex() {
 	norm2 = texture(water_disp_tex_2,wtr_pos_uv + time_2).rgb;
 	vec3 normal_blend = mix(mix(norm1,norm2,0.5),vec3(0,0,0),1.2-depth);
 	
-	VERTEX.y = water_level - NODE_POSITION_WORLD.y;
+	VERTEX.y = water_depth - NODE_POSITION_WORLD.y;
 	NORMAL = normal_blend;
 }
 
 void fragment() {
 	
 	float _tide =  tide + norm1.r;
-	float depth = clamp((water_level-height)/_tide,0,1);
+	float depth = clamp((water_depth-height)/_tide,0,1);
 	vec3 normal_blend = mix(mix(norm1,norm2,0.5),vec3(0,0,0),1.0-depth);
 	
 	vec3 albedo1 = normalize(water_depth_gradient(depth/1.2)).xyz;
 	
-	if(abs(water_level-height) < 0.5){
-		albedo1 = mix(vec3(1,1,1),albedo1,abs(water_level-height)*1.6);
+	if(abs(water_depth-height) < 0.5){
+		albedo1 = mix(vec3(1,1,1),albedo1,abs(water_depth-height)*1.6);
 	}	
 	float fresnel = fresnel(5.0, NORMAL,VIEW);
 	vec3 surface_color = mix(albedo1, water_alb, fresnel*fresnel_intensity);
 	
-	if(height >= water_level-.005){
+	if(height >= water_depth-.005){
 		ALPHA = 0.0;
 	}else{
 		ALPHA = clamp(depth*2.3,0.3,1.0);
