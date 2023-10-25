@@ -1,8 +1,8 @@
 [gd_scene load_steps=38 format=3 uid="uid://hva1em7ponql"]
 
 [ext_resource type="Script" path="res://World_Generation/level_builder/Level_Builder.gd" id="1_18iqu"]
+[ext_resource type="Script" path="res://World_Generation/level_builder/Level_Builder_UI.gd" id="2_efsya"]
 [ext_resource type="Shader" path="res://World_Generation/New_Terrain.gdshader" id="2_jxrs8"]
-[ext_resource type="Script" path="res://World_Generation/level_builder/Level_Builder_UIUI.gd" id="2_l4oru"]
 [ext_resource type="Script" path="res://World_Generation/level_builder/brush.gd" id="2_vq7n1"]
 [ext_resource type="Script" path="res://World_Generation/level_builder/chunk_editor.gd" id="3_x81um"]
 [ext_resource type="Shader" path="res://World_Generation/Water.gdshader" id="4_76ggg"]
@@ -217,7 +217,7 @@ map_data = PackedFloat32Array(0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0,
 
 [node name="Level_Builder" type="Node3D"]
 script = ExtResource("1_18iqu")
-map_size = 3000
+map_size = 2000
 default_map_path = "res://Assets/Levels/default_map"
 
 [node name="UI" type="Control" parent="."]
@@ -228,23 +228,61 @@ anchor_bottom = 1.0
 grow_horizontal = 2
 grow_vertical = 2
 mouse_filter = 2
-script = ExtResource("2_l4oru")
+script = ExtResource("2_efsya")
+
+[node name="edit_mode_panel" type="PanelContainer" parent="UI"]
+layout_mode = 1
+anchors_preset = -1
+anchor_right = 0.058
+anchor_bottom = 0.293
+offset_right = 0.639999
+offset_bottom = -250.44
+
+[node name="edit_options" type="VBoxContainer" parent="UI/edit_mode_panel"]
+layout_mode = 2
+
+[node name="edit_terrain_button" type="Button" parent="UI/edit_mode_panel/edit_options"]
+layout_mode = 2
+mouse_filter = 1
+text = "Edit Terrain"
+
+[node name="edit_ground_button" type="Button" parent="UI/edit_mode_panel/edit_options"]
+layout_mode = 2
+mouse_filter = 1
+text = "Edit Ground"
+
+[node name="place_objects_button" type="Button" parent="UI/edit_mode_panel/edit_options"]
+layout_mode = 2
+mouse_filter = 1
+text = "Place Objects"
+
+[node name="edit_atmosphere" type="Button" parent="UI/edit_mode_panel/edit_options"]
+layout_mode = 2
+mouse_filter = 1
+text = "Place Objects"
 
 [node name="Brush_Panel" type="Panel" parent="UI"]
+visible = false
 layout_mode = 1
 anchors_preset = -1
-anchor_top = 0.867
+anchor_top = 0.9
+anchor_right = 1.0
+anchor_bottom = 1.011
+
+[node name="HBoxContainer" type="HBoxContainer" parent="UI/Brush_Panel"]
+layout_mode = 1
+anchors_preset = 15
 anchor_right = 1.0
 anchor_bottom = 1.0
+grow_horizontal = 2
+grow_vertical = 2
 
-[node name="Brush_Strength" type="Panel" parent="UI/Brush_Panel"]
-layout_mode = 1
-anchors_preset = -1
-anchor_right = 0.16
-anchor_bottom = 1.0
+[node name="Brush_Strength" type="Panel" parent="UI/Brush_Panel/HBoxContainer"]
+layout_mode = 2
+size_flags_horizontal = 3
 mouse_filter = 2
 
-[node name="label" type="RichTextLabel" parent="UI/Brush_Panel/Brush_Strength"]
+[node name="label" type="RichTextLabel" parent="UI/Brush_Panel/HBoxContainer/Brush_Strength"]
 layout_mode = 1
 anchors_preset = 15
 anchor_right = 1.0
@@ -254,11 +292,11 @@ offset_bottom = -75.64
 grow_horizontal = 2
 grow_vertical = 2
 mouse_filter = 2
-theme_override_font_sizes/normal_font_size = 38
+theme_override_font_sizes/normal_font_size = 30
 bbcode_enabled = true
 text = "[center]Brush Strength[/center]"
 
-[node name="Slider" type="HSlider" parent="UI/Brush_Panel/Brush_Strength"]
+[node name="Slider" type="HSlider" parent="UI/Brush_Panel/HBoxContainer/Brush_Strength"]
 layout_mode = 1
 anchors_preset = 15
 anchor_right = 1.0
@@ -268,10 +306,9 @@ grow_vertical = 2
 mouse_filter = 1
 value = 12.0
 
-[node name="value" type="RichTextLabel" parent="UI/Brush_Panel/Brush_Strength"]
+[node name="value" type="RichTextLabel" parent="UI/Brush_Panel/HBoxContainer/Brush_Strength"]
 layout_mode = 1
 anchors_preset = -1
-anchor_left = 0.361
 anchor_top = 0.5
 anchor_right = 1.0
 anchor_bottom = 1.0
@@ -282,19 +319,17 @@ offset_bottom = -0.640015
 grow_horizontal = 2
 grow_vertical = 2
 mouse_filter = 2
-theme_override_font_sizes/normal_font_size = 41
-text = "12
+theme_override_font_sizes/normal_font_size = 30
+bbcode_enabled = true
+text = "[center]12[/center]
 "
 
-[node name="Brush_Elevation" type="Panel" parent="UI/Brush_Panel"]
-layout_mode = 1
-anchors_preset = -1
-anchor_left = 0.16
-anchor_right = 0.321
-anchor_bottom = 1.0
+[node name="Brush_Elevation" type="Panel" parent="UI/Brush_Panel/HBoxContainer"]
+layout_mode = 2
+size_flags_horizontal = 3
 mouse_filter = 2
 
-[node name="label" type="RichTextLabel" parent="UI/Brush_Panel/Brush_Elevation"]
+[node name="label" type="RichTextLabel" parent="UI/Brush_Panel/HBoxContainer/Brush_Elevation"]
 layout_mode = 1
 anchors_preset = 15
 anchor_right = 1.0
@@ -304,11 +339,11 @@ offset_bottom = -75.64
 grow_horizontal = 2
 grow_vertical = 2
 mouse_filter = 2
-theme_override_font_sizes/normal_font_size = 39
+theme_override_font_sizes/normal_font_size = 30
 bbcode_enabled = true
 text = "[center]Elevation[/center]"
 
-[node name="Slider" type="HSlider" parent="UI/Brush_Panel/Brush_Elevation"]
+[node name="Slider" type="HSlider" parent="UI/Brush_Panel/HBoxContainer/Brush_Elevation"]
 layout_mode = 1
 anchors_preset = 15
 anchor_right = 1.0
@@ -318,10 +353,9 @@ grow_vertical = 2
 mouse_filter = 1
 value = 12.0
 
-[node name="value" type="RichTextLabel" parent="UI/Brush_Panel/Brush_Elevation"]
+[node name="value" type="RichTextLabel" parent="UI/Brush_Panel/HBoxContainer/Brush_Elevation"]
 layout_mode = 1
 anchors_preset = -1
-anchor_left = 0.361
 anchor_top = 0.5
 anchor_right = 1.0
 anchor_bottom = 1.0
@@ -332,19 +366,16 @@ offset_bottom = -0.640015
 grow_horizontal = 2
 grow_vertical = 2
 mouse_filter = 2
-theme_override_font_sizes/normal_font_size = 41
-text = "12
-"
+theme_override_font_sizes/normal_font_size = 30
+bbcode_enabled = true
+text = "[center]12[/center]"
 
-[node name="Brush_Radius" type="Panel" parent="UI/Brush_Panel"]
-layout_mode = 1
-anchors_preset = -1
-anchor_left = 0.321
-anchor_right = 0.482
-anchor_bottom = 1.0
+[node name="Brush_Radius" type="Panel" parent="UI/Brush_Panel/HBoxContainer"]
+layout_mode = 2
+size_flags_horizontal = 3
 mouse_filter = 2
 
-[node name="label" type="RichTextLabel" parent="UI/Brush_Panel/Brush_Radius"]
+[node name="label" type="RichTextLabel" parent="UI/Brush_Panel/HBoxContainer/Brush_Radius"]
 layout_mode = 1
 anchors_preset = 15
 anchor_right = 1.0
@@ -354,11 +385,11 @@ offset_bottom = -75.64
 grow_horizontal = 2
 grow_vertical = 2
 mouse_filter = 2
-theme_override_font_sizes/normal_font_size = 39
+theme_override_font_sizes/normal_font_size = 30
 bbcode_enabled = true
-text = "[center]Brush_Radius[/center]"
+text = "[center]Brush Radius[/center]"
 
-[node name="Slider" type="HSlider" parent="UI/Brush_Panel/Brush_Radius"]
+[node name="Slider" type="HSlider" parent="UI/Brush_Panel/HBoxContainer/Brush_Radius"]
 layout_mode = 1
 anchors_preset = 15
 anchor_right = 1.0
@@ -367,13 +398,11 @@ grow_horizontal = 2
 grow_vertical = 2
 mouse_filter = 1
 min_value = 10.0
-max_value = 50.0
 value = 50.0
 
-[node name="value" type="RichTextLabel" parent="UI/Brush_Panel/Brush_Radius"]
+[node name="value" type="RichTextLabel" parent="UI/Brush_Panel/HBoxContainer/Brush_Radius"]
 layout_mode = 1
 anchors_preset = -1
-anchor_left = 0.361
 anchor_top = 0.5
 anchor_right = 1.0
 anchor_bottom = 1.0
@@ -384,19 +413,17 @@ offset_bottom = -0.640015
 grow_horizontal = 2
 grow_vertical = 2
 mouse_filter = 2
-theme_override_font_sizes/normal_font_size = 41
-text = "50
+theme_override_font_sizes/normal_font_size = 30
+bbcode_enabled = true
+text = "[center]50[/center]
 "
 
-[node name="Brush_Falloff" type="Panel" parent="UI/Brush_Panel"]
-layout_mode = 1
-anchors_preset = -1
-anchor_left = 0.482
-anchor_right = 0.642
-anchor_bottom = 1.0
+[node name="Brush_Falloff" type="Panel" parent="UI/Brush_Panel/HBoxContainer"]
+layout_mode = 2
+size_flags_horizontal = 3
 mouse_filter = 2
 
-[node name="label" type="RichTextLabel" parent="UI/Brush_Panel/Brush_Falloff"]
+[node name="label" type="RichTextLabel" parent="UI/Brush_Panel/HBoxContainer/Brush_Falloff"]
 layout_mode = 1
 anchors_preset = 15
 anchor_right = 1.0
@@ -406,11 +433,11 @@ offset_bottom = -75.64
 grow_horizontal = 2
 grow_vertical = 2
 mouse_filter = 2
-theme_override_font_sizes/normal_font_size = 39
+theme_override_font_sizes/normal_font_size = 30
 bbcode_enabled = true
 text = "[center]Brush Falloff[/center]"
 
-[node name="Slider" type="HSlider" parent="UI/Brush_Panel/Brush_Falloff"]
+[node name="Slider" type="HSlider" parent="UI/Brush_Panel/HBoxContainer/Brush_Falloff"]
 layout_mode = 1
 anchors_preset = 15
 anchor_right = 1.0
@@ -421,10 +448,9 @@ mouse_filter = 1
 max_value = 99.0
 value = 50.0
 
-[node name="value" type="RichTextLabel" parent="UI/Brush_Panel/Brush_Falloff"]
+[node name="value" type="RichTextLabel" parent="UI/Brush_Panel/HBoxContainer/Brush_Falloff"]
 layout_mode = 1
 anchors_preset = -1
-anchor_left = 0.361
 anchor_top = 0.5
 anchor_right = 1.0
 anchor_bottom = 1.0
@@ -435,19 +461,16 @@ offset_bottom = -0.640015
 grow_horizontal = 2
 grow_vertical = 2
 mouse_filter = 2
-theme_override_font_sizes/normal_font_size = 41
-text = "50
-"
+theme_override_font_sizes/normal_font_size = 30
+bbcode_enabled = true
+text = "[center]50[/center]"
 
-[node name="World_Water_Level" type="Panel" parent="UI/Brush_Panel"]
-layout_mode = 1
-anchors_preset = -1
-anchor_left = 0.642
-anchor_right = 0.803
-anchor_bottom = 1.0
+[node name="World_Water_Level" type="Panel" parent="UI/Brush_Panel/HBoxContainer"]
+layout_mode = 2
+size_flags_horizontal = 3
 mouse_filter = 2
 
-[node name="label" type="RichTextLabel" parent="UI/Brush_Panel/World_Water_Level"]
+[node name="label" type="RichTextLabel" parent="UI/Brush_Panel/HBoxContainer/World_Water_Level"]
 layout_mode = 1
 anchors_preset = 15
 anchor_right = 1.0
@@ -457,11 +480,11 @@ offset_bottom = -75.64
 grow_horizontal = 2
 grow_vertical = 2
 mouse_filter = 2
-theme_override_font_sizes/normal_font_size = 39
+theme_override_font_sizes/normal_font_size = 30
 bbcode_enabled = true
 text = "[center]Water Level[/center]"
 
-[node name="Slider" type="HSlider" parent="UI/Brush_Panel/World_Water_Level"]
+[node name="Slider" type="HSlider" parent="UI/Brush_Panel/HBoxContainer/World_Water_Level"]
 layout_mode = 1
 anchors_preset = 15
 anchor_right = 1.0
@@ -471,10 +494,9 @@ grow_vertical = 2
 mouse_filter = 1
 value = 12.0
 
-[node name="value" type="RichTextLabel" parent="UI/Brush_Panel/World_Water_Level"]
+[node name="value" type="RichTextLabel" parent="UI/Brush_Panel/HBoxContainer/World_Water_Level"]
 layout_mode = 1
 anchors_preset = -1
-anchor_left = 0.361
 anchor_top = 0.5
 anchor_right = 1.0
 anchor_bottom = 1.0
@@ -485,8 +507,108 @@ offset_bottom = -0.640015
 grow_horizontal = 2
 grow_vertical = 2
 mouse_filter = 2
-theme_override_font_sizes/normal_font_size = 41
-text = "7"
+theme_override_font_sizes/normal_font_size = 30
+bbcode_enabled = true
+text = "[center]7[/center]"
+
+[node name="brush_Mode" type="Panel" parent="UI/Brush_Panel/HBoxContainer"]
+layout_mode = 2
+size_flags_horizontal = 3
+mouse_filter = 2
+
+[node name="Brush_Mode" type="RichTextLabel" parent="UI/Brush_Panel/HBoxContainer/brush_Mode"]
+layout_mode = 1
+anchors_preset = 15
+anchor_right = 1.0
+anchor_bottom = 1.0
+offset_right = -0.47998
+offset_bottom = -75.64
+grow_horizontal = 2
+grow_vertical = 2
+mouse_filter = 2
+theme_override_font_sizes/normal_font_size = 30
+bbcode_enabled = true
+text = "[center]Brush mode[/center]"
+
+[node name="MenuButton" type="MenuButton" parent="UI/Brush_Panel/HBoxContainer/brush_Mode"]
+layout_mode = 1
+anchors_preset = 15
+anchor_right = 1.0
+anchor_bottom = 1.0
+offset_top = 52.0
+grow_horizontal = 2
+grow_vertical = 2
+theme_override_font_sizes/font_size = 37
+text = "Draw"
+item_count = 2
+popup/item_0/text = "Draw"
+popup/item_0/id = 0
+popup/item_1/text = "Smooth"
+popup/item_1/id = 1
+
+[node name="Place_Obj_Panel" type="Panel" parent="UI"]
+layout_mode = 1
+anchors_preset = -1
+anchor_left = 0.767
+anchor_top = 0.9
+anchor_right = 1.0
+anchor_bottom = 1.011
+
+[node name="HBoxContainer" type="HBoxContainer" parent="UI/Place_Obj_Panel"]
+layout_mode = 1
+anchors_preset = -1
+anchor_right = 1.0
+anchor_bottom = 1.0
+grow_horizontal = 2
+grow_vertical = 2
+alignment = 1
+
+[node name="Item_Box2" type="Panel" parent="UI/Place_Obj_Panel/HBoxContainer"]
+layout_mode = 2
+size_flags_horizontal = 3
+mouse_filter = 2
+
+[node name="label" type="RichTextLabel" parent="UI/Place_Obj_Panel/HBoxContainer/Item_Box2"]
+layout_mode = 1
+anchors_preset = 15
+anchor_right = 1.0
+anchor_bottom = 1.0
+offset_right = -0.47998
+offset_bottom = -75.64
+grow_horizontal = 2
+grow_vertical = 2
+mouse_filter = 2
+theme_override_font_sizes/normal_font_size = 30
+bbcode_enabled = true
+text = "[center]Game Objects[/center]"
+
+[node name="MenuButton" type="MenuButton" parent="UI/Place_Obj_Panel/HBoxContainer/Item_Box2"]
+layout_mode = 1
+anchors_preset = 15
+anchor_right = 1.0
+anchor_bottom = 1.0
+grow_horizontal = 2
+grow_vertical = 2
+theme_override_font_sizes/font_size = 52
+
+[node name="World_Objects" type="Panel" parent="UI/Place_Obj_Panel/HBoxContainer"]
+layout_mode = 2
+size_flags_horizontal = 3
+mouse_filter = 2
+
+[node name="label" type="RichTextLabel" parent="UI/Place_Obj_Panel/HBoxContainer/World_Objects"]
+layout_mode = 1
+anchors_preset = 15
+anchor_right = 1.0
+anchor_bottom = 1.0
+offset_right = -0.47998
+offset_bottom = -75.64
+grow_horizontal = 2
+grow_vertical = 2
+mouse_filter = 2
+theme_override_font_sizes/normal_font_size = 30
+bbcode_enabled = true
+text = "[center]World Objects[/center]"
 
 [node name="editor_cursor" type="Node3D" parent="."]
 script = ExtResource("2_vq7n1")
@@ -539,6 +661,7 @@ skeleton = NodePath("")
 
 [node name="StaticBody3D" type="StaticBody3D" parent="chunk"]
 transform = Transform3D(10, 0, 0, 0, 10, 0, 0, 0, 10, 0, 0, 0)
+input_capture_on_drag = true
 
 [node name="CollisionShape3D" type="CollisionShape3D" parent="chunk/StaticBody3D"]
 shape = SubResource("HeightMapShape3D_87c6a")
@@ -550,10 +673,9 @@ script = ExtResource("6_f37vi")
 [node name="editor_preview" type="Camera3D" parent="Editor_Cam"]
 transform = Transform3D(1, 0, 0, 0, 0.707107, 0.707107, 0, -0.707107, 0.707107, 0, 0, 0)
 environment = SubResource("Environment_xl1fn")
-fov = 37.8493
 
 [node name="environment_prev" type="Camera3D" parent="Editor_Cam"]
-transform = Transform3D(1, 0, 0, 0, -4.37114e-08, 1, 0, -1, -4.37114e-08, 0, 0, 0)
+transform = Transform3D(1, 0, 0, 0, 0.422618, 0.906308, 0, -0.906308, 0.422618, 0, 0, 0)
 visible = false
 environment = SubResource("Environment_h4cl6")
 
@@ -561,10 +683,19 @@ environment = SubResource("Environment_h4cl6")
 
 [node name="level" type="Node3D" parent="."]
 
+[connection signal="brush_changed" from="UI" to="." method="brush_mode_changed"]
+[connection signal="mouse_entered" from="UI/edit_mode_panel" to="UI" method="_mouse_entered_toolbar"]
+[connection signal="mouse_exited" from="UI/edit_mode_panel" to="UI" method="_mouse_exited_toolbar"]
+[connection signal="pressed" from="UI/edit_mode_panel/edit_options/edit_terrain_button" to="UI" method="edit_terrain_pressed"]
+[connection signal="pressed" from="UI/edit_mode_panel/edit_options/edit_ground_button" to="UI" method="edit_terrain_pressed"]
+[connection signal="pressed" from="UI/edit_mode_panel/edit_options/place_objects_button" to="UI" method="place_objects_pressed"]
+[connection signal="pressed" from="UI/edit_mode_panel/edit_options/edit_atmosphere" to="UI" method="edit_atmosphere_pressed"]
 [connection signal="mouse_entered" from="UI/Brush_Panel" to="UI" method="_mouse_entered_toolbar"]
 [connection signal="mouse_exited" from="UI/Brush_Panel" to="UI" method="_mouse_exited_toolbar"]
-[connection signal="value_changed" from="UI/Brush_Panel/Brush_Strength/Slider" to="UI" method="strength_slider_used"]
-[connection signal="value_changed" from="UI/Brush_Panel/Brush_Elevation/Slider" to="UI" method="elevation_slider_used"]
-[connection signal="value_changed" from="UI/Brush_Panel/Brush_Radius/Slider" to="UI" method="radius_slider_used"]
-[connection signal="value_changed" from="UI/Brush_Panel/Brush_Falloff/Slider" to="UI" method="falloff_slider_used"]
-[connection signal="value_changed" from="UI/Brush_Panel/World_Water_Level/Slider" to="UI" method="water_level_slider_used"]
+[connection signal="value_changed" from="UI/Brush_Panel/HBoxContainer/Brush_Strength/Slider" to="UI" method="strength_slider_used"]
+[connection signal="value_changed" from="UI/Brush_Panel/HBoxContainer/Brush_Elevation/Slider" to="UI" method="elevation_slider_used"]
+[connection signal="value_changed" from="UI/Brush_Panel/HBoxContainer/Brush_Radius/Slider" to="UI" method="radius_slider_used"]
+[connection signal="value_changed" from="UI/Brush_Panel/HBoxContainer/Brush_Falloff/Slider" to="UI" method="falloff_slider_used"]
+[connection signal="value_changed" from="UI/Brush_Panel/HBoxContainer/World_Water_Level/Slider" to="UI" method="water_level_slider_used"]
+[connection signal="mouse_entered" from="UI/Place_Obj_Panel" to="UI" method="_mouse_entered_toolbar"]
+[connection signal="mouse_exited" from="UI/Place_Obj_Panel" to="UI" method="_mouse_exited_toolbar"]
