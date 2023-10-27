@@ -1,0 +1,6 @@
+[gd_scene load_steps=2 format=3 uid="uid://cg1lvxt4gkxmn"]
+
+[ext_resource type="Script" path="res://World_Objects/Editor_Objects/World_object_edtor_container.gd" id="1_ca4a6"]
+
+[node name="World_object_edtor_container" type="Node3D"]
+script = ExtResource("1_ca4a6")

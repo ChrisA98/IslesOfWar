@@ -2,9 +2,9 @@
 
 [ext_resource type="PackedScene" uid="uid://c4e7broeu0wn3" path="res://Parent_Scenes/World_Object.tscn" id="1_3227v"]
 [ext_resource type="Script" path="res://World_Objects/Forest.gd" id="2_1jgc7"]
-[ext_resource type="Shader" uid="uid://by7l15jf0ghxb" path="res://Models/Materials/wood.tres" id="3_7a1th"]
+[ext_resource type="Shader" uid="uid://by7l15jf0ghxb" path="res://Assets/Models/Materials/wood.tres" id="3_7a1th"]
 [ext_resource type="Texture2D" uid="uid://c4paktovtlui4" path="res://Test_Items/Map_data/master.exr" id="3_8wrjv"]
-[ext_resource type="Shader" uid="uid://bm6cl02a4ujx6" path="res://Models/Materials/leaves.tres" id="4_pbjwj"]
+[ext_resource type="Shader" uid="uid://bm6cl02a4ujx6" path="res://Assets/Models/Materials/leaves.tres" id="4_pbjwj"]
 
 [sub_resource type="ShaderMaterial" id="ShaderMaterial_vvtr5"]
 resource_name = "Wood"
@@ -73,11 +73,14 @@ buffer = PackedFloat32Array(0.947735, 0, 0, -0.876429, 0, 0.947735, 0, -1000, 0,
 script = ExtResource("2_1jgc7")
 random_seed = 1
 prev = false
-preview_forest = null
+preview_forest = false
 heightmap = ExtResource("3_8wrjv")
 tree_cnt = 500
 max_slope = 0.195
 metadata/res_building = "Lumber_mill"
+
+[node name="Editor_Mesh" parent="." index="0"]
+visible = false
 
 [node name="Parent_mesh" type="MeshInstance3D" parent="." index="1"]
 transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, 46.3296, 0)
