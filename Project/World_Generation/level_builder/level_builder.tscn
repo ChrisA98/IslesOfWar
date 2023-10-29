@@ -596,19 +596,24 @@ layout_mode = 2
 size_flags_horizontal = 3
 mouse_filter = 2
 
-[node name="label" type="RichTextLabel" parent="UI/Place_Obj_Panel/HBoxContainer/World_Objects"]
+[node name="world_objects_list" type="MenuButton" parent="UI/Place_Obj_Panel/HBoxContainer/World_Objects"]
 layout_mode = 1
 anchors_preset = 15
 anchor_right = 1.0
 anchor_bottom = 1.0
-offset_right = -0.47998
-offset_bottom = -75.64
+offset_top = -3.32001
+offset_bottom = -3.32001
 grow_horizontal = 2
 grow_vertical = 2
-mouse_filter = 2
-theme_override_font_sizes/normal_font_size = 30
-bbcode_enabled = true
-text = "[center]World Objects[/center]"
+theme_override_font_sizes/font_size = 30
+text = "World Objects"
+item_count = 3
+popup/item_0/text = "Forest"
+popup/item_0/id = 1
+popup/item_1/text = "Stone Deposit"
+popup/item_1/id = 2
+popup/item_2/text = "Crtystal Deposit"
+popup/item_2/id = 3
 
 [node name="editor_cursor" type="Node3D" parent="."]
 script = ExtResource("2_vq7n1")

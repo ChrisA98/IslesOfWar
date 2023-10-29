@@ -37,6 +37,7 @@ func _ready():
 	_populate_chunks()
 	@warning_ignore("integer_division")
 	$Editor_Cam.world_bounds = Vector2i(map_size/2,map_size/2)
+	_update_heightmap_master()
 
 
 func _process(_delta):
@@ -79,6 +80,8 @@ func _load_main_heightmap(_def = null):
 
 
 """ Interact functions"""
+
+
 
 ## changed brush mode
 func brush_mode_changed(id):
@@ -142,6 +145,8 @@ func _populate_chunks():
 
 func _update_heightmap_master():
 	var hm_tex = ImageTexture.create_from_image(heightmap)
+	Global_Vars.heightmap = hm_tex
+	Global_Vars.heightmap_size = map_size
 	RenderingServer.global_shader_parameter_set("heightmap_tex",hm_tex)
 	RenderingServer.global_shader_parameter_set("heightmap_tex_size",Vector2(map_size,map_size))
 

@@ -1,5 +1,7 @@
 extends Node
 
+signal updated_heightmap
+
 #Global Vars
 @onready var months = {
 	0: "Lidrasin Bor",
@@ -24,6 +26,12 @@ var navmesh_baking : NavigationRegion3D
 var queued_nav_bakes: Array
 
 var load_text = "Loading Something"
+
+var heightmap : Texture2D:
+	set(value):
+		heightmap = value
+		updated_heightmap.emit()
+var heightmap_size : int
 
 func month_to_string(yr_day: int, yr: int) -> String:
 	var out = ""

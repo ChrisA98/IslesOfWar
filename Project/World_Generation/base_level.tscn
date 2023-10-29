@@ -342,13 +342,11 @@ actor_id = 1
 [node name="Forest" parent="." instance=ExtResource("5_8idnn")]
 transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 249.093, 0, -328.466)
 random_seed = 491
-preview_forest = false
 tree_cnt = 150
 
 [node name="Forest2" parent="." instance=ExtResource("5_8idnn")]
 transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 114.56, 0, 102.392)
 random_seed = 821
-preview_forest = false
 tree_cnt = 150
 max_slope = 0.255
 

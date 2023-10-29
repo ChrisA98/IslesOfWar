@@ -1,6 +1,386 @@
-[gd_scene load_steps=2 format=3 uid="uid://cg1lvxt4gkxmn"]
+[gd_scene load_steps=8 format=3 uid="uid://cg1lvxt4gkxmn"]
 
 [ext_resource type="Script" path="res://World_Objects/Editor_Objects/World_object_edtor_container.gd" id="1_ca4a6"]
+[ext_resource type="Script" path="res://World_Objects/Editor_Objects/forest_menu.gd" id="2_nhvwy"]
+
+[sub_resource type="SphereShape3D" id="SphereShape3D_tq6po"]
+radius = 15.368
+
+[sub_resource type="StandardMaterial3D" id="StandardMaterial3D_bir7a"]
+transparency = 1
+shading_mode = 0
+albedo_color = Color(0, 0.443137, 0.941176, 0.552941)
+
+[sub_resource type="SphereMesh" id="SphereMesh_18w20"]
+material = SubResource("StandardMaterial3D_bir7a")
+radius = 5.0
+height = 10.0
+radial_segments = 6
+rings = 6
+
+[sub_resource type="StandardMaterial3D" id="StandardMaterial3D_e3qey"]
+transparency = 1
+shading_mode = 0
+albedo_color = Color(0, 0.443137, 0.941176, 0.552941)
+
+[sub_resource type="CapsuleMesh" id="CapsuleMesh_nej4x"]
+material = SubResource("StandardMaterial3D_e3qey")
+radius = 1.0
+height = 7.21
+radial_segments = 4
+rings = 1
 
 [node name="World_object_edtor_container" type="Node3D"]
 script = ExtResource("1_ca4a6")
+
+[node name="controller_Handle" type="StaticBody3D" parent="."]
+collision_layer = 0
+collision_mask = 0
+
+[node name="CollisionShape3D" type="CollisionShape3D" parent="controller_Handle"]
+shape = SubResource("SphereShape3D_tq6po")
+
+[node name="editor_mesh" type="MeshInstance3D" parent="controller_Handle"]
+mesh = SubResource("SphereMesh_18w20")
+skeleton = NodePath("../..")
+
+[node name="MeshInstance3D2" type="MeshInstance3D" parent="controller_Handle/editor_mesh"]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, -12.7553, 0)
+mesh = SubResource("CapsuleMesh_nej4x")
+skeleton = NodePath("../../..")
+
+[node name="MeshInstance3D7" type="MeshInstance3D" parent="controller_Handle/editor_mesh"]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, 12.755, 0)
+mesh = SubResource("CapsuleMesh_nej4x")
+skeleton = NodePath("../../..")
+
+[node name="MeshInstance3D3" type="MeshInstance3D" parent="controller_Handle/editor_mesh"]
+transform = Transform3D(1.91069e-15, 4.37114e-08, 1, 1, -4.37114e-08, 0, 4.37114e-08, 1, -4.37114e-08, 0, 0, -12.755)
+mesh = SubResource("CapsuleMesh_nej4x")
+skeleton = NodePath("../../..")
+
+[node name="MeshInstance3D4" type="MeshInstance3D" parent="controller_Handle/editor_mesh"]
+transform = Transform3D(1.91069e-15, 4.37114e-08, 1, 1, -4.37114e-08, 0, 4.37114e-08, 1, -4.37114e-08, 0, 0, 12.755)
+mesh = SubResource("CapsuleMesh_nej4x")
+skeleton = NodePath("../../..")
+
+[node name="MeshInstance3D5" type="MeshInstance3D" parent="controller_Handle/editor_mesh"]
+transform = Transform3D(-4.37114e-08, -1, 0, 1, -4.37114e-08, 0, 0, 0, 1, 12.755, 0, 0)
+mesh = SubResource("CapsuleMesh_nej4x")
+skeleton = NodePath("../../..")
+
+[node name="MeshInstance3D6" type="MeshInstance3D" parent="controller_Handle/editor_mesh"]
+transform = Transform3D(-4.37114e-08, -1, 0, 1, -4.37114e-08, 0, 0, 0, 1, -12.755, 0, 0)
+mesh = SubResource("CapsuleMesh_nej4x")
+skeleton = NodePath("../../..")
+
+[node name="forest_menu" type="Panel" parent="."]
+anchors_preset = -1
+anchor_left = 0.737
+anchor_right = 1.0
+anchor_bottom = 0.355
+grow_horizontal = 0
+script = ExtResource("2_nhvwy")
+
+[node name="VBoxContainer" type="VBoxContainer" parent="forest_menu"]
+layout_mode = 1
+anchors_preset = 15
+anchor_right = 1.0
+anchor_bottom = 1.0
+grow_horizontal = 2
+grow_vertical = 2
+
+[node name="node_type" type="HBoxContainer" parent="forest_menu/VBoxContainer"]
+layout_mode = 2
+size_flags_vertical = 3
+
+[node name="MenuButton" type="MenuButton" parent="forest_menu/VBoxContainer/node_type"]
+layout_mode = 2
+size_flags_horizontal = 3
+theme_override_font_sizes/font_size = 31
+text = "Forest"
+item_count = 3
+popup/item_0/text = "Forest"
+popup/item_0/id = 0
+popup/item_1/text = "Stone Deposit"
+popup/item_1/id = 1
+popup/item_2/text = "Crystal Deposit"
+popup/item_2/id = 2
+
+[node name="s1" type="HSeparator" parent="forest_menu/VBoxContainer"]
+layout_mode = 2
+
+[node name="seed_edit" type="HBoxContainer" parent="forest_menu/VBoxContainer"]
+layout_mode = 2
+size_flags_vertical = 3
+
+[node name="seed_label" type="RichTextLabel" parent="forest_menu/VBoxContainer/seed_edit"]
+layout_mode = 2
+size_flags_horizontal = 3
+theme_override_font_sizes/normal_font_size = 37
+bbcode_enabled = true
+text = "[right]Seed:[/right]"
+
+[node name="seed_input" type="Panel" parent="forest_menu/VBoxContainer/seed_edit"]
+layout_mode = 2
+size_flags_horizontal = 3
+
+[node name="TextEdit" type="TextEdit" parent="forest_menu/VBoxContainer/seed_edit/seed_input"]
+layout_mode = 1
+anchors_preset = 15
+anchor_right = 1.0
+anchor_bottom = 1.0
+grow_horizontal = 2
+grow_vertical = 2
+theme_override_font_sizes/font_size = 30
+text = "0"
+placeholder_text = "0"
+context_menu_enabled = false
+middle_mouse_paste_enabled = false
+caret_multiple = false
+
+[node name="Button" type="Button" parent="forest_menu/VBoxContainer/seed_edit"]
+layout_mode = 2
+size_flags_horizontal = 3
+theme_override_font_sizes/font_size = 34
+text = "Enter"
+
+[node name="s2" type="HSeparator" parent="forest_menu/VBoxContainer"]
+layout_mode = 2
+
+[node name="tree_count_edit" type="HBoxContainer" parent="forest_menu/VBoxContainer"]
+layout_mode = 2
+size_flags_vertical = 3
+
+[node name="density_label" type="RichTextLabel" parent="forest_menu/VBoxContainer/tree_count_edit"]
+layout_mode = 2
+size_flags_horizontal = 3
+theme_override_font_sizes/normal_font_size = 37
+bbcode_enabled = true
+text = "[right]Density:[/right]"
+
+[node name="density_input" type="Panel" parent="forest_menu/VBoxContainer/tree_count_edit"]
+layout_mode = 2
+size_flags_horizontal = 3
+
+[node name="HSlider" type="HSlider" parent="forest_menu/VBoxContainer/tree_count_edit/density_input"]
+layout_mode = 1
+anchors_preset = 15
+anchor_right = 1.0
+anchor_bottom = 1.0
+grow_horizontal = 2
+grow_vertical = 2
+min_value = 250.0
+max_value = 1000.0
+value = 250.0
+rounded = true
+
+[node name="s3" type="HSeparator" parent="forest_menu/VBoxContainer"]
+layout_mode = 2
+
+[node name="tree_slope" type="HBoxContainer" parent="forest_menu/VBoxContainer"]
+layout_mode = 2
+size_flags_vertical = 3
+
+[node name="slope_label" type="RichTextLabel" parent="forest_menu/VBoxContainer/tree_slope"]
+layout_mode = 2
+size_flags_horizontal = 3
+theme_override_font_sizes/normal_font_size = 37
+bbcode_enabled = true
+text = "[right]Max Slope:[/right]"
+
+[node name="slope_slider" type="Panel" parent="forest_menu/VBoxContainer/tree_slope"]
+layout_mode = 2
+size_flags_horizontal = 3
+
+[node name="HSlider" type="HSlider" parent="forest_menu/VBoxContainer/tree_slope/slope_slider"]
+layout_mode = 1
+anchors_preset = 15
+anchor_right = 1.0
+anchor_bottom = 1.0
+grow_horizontal = 2
+grow_vertical = 2
+max_value = 1.0
+step = 0.025
+
+[node name="s4" type="HSeparator" parent="forest_menu/VBoxContainer"]
+layout_mode = 2
+
+[node name="tree_type" type="HBoxContainer" parent="forest_menu/VBoxContainer"]
+layout_mode = 2
+size_flags_vertical = 3
+
+[node name="tree_type_label" type="RichTextLabel" parent="forest_menu/VBoxContainer/tree_type"]
+layout_mode = 2
+size_flags_horizontal = 3
+theme_override_font_sizes/normal_font_size = 37
+bbcode_enabled = true
+text = "[right]Tree Type:[/right]"
+
+[node name="MenuButton" type="MenuButton" parent="forest_menu/VBoxContainer/tree_type"]
+layout_mode = 2
+size_flags_horizontal = 3
+theme_override_font_sizes/font_size = 31
+text = "Pine"
+item_count = 1
+popup/item_0/text = "Pine"
+popup/item_0/id = 0
+
+[node name="stone_menu" type="Panel" parent="."]
+visible = false
+anchors_preset = -1
+anchor_left = 0.737
+anchor_right = 1.0
+anchor_bottom = 0.355
+grow_horizontal = 0
+
+[node name="VBoxContainer" type="VBoxContainer" parent="stone_menu"]
+layout_mode = 1
+anchors_preset = 15
+anchor_right = 1.0
+anchor_bottom = 1.0
+grow_horizontal = 2
+grow_vertical = 2
+
+[node name="node_type" type="HBoxContainer" parent="stone_menu/VBoxContainer"]
+layout_mode = 2
+size_flags_vertical = 3
+
+[node name="MenuButton" type="MenuButton" parent="stone_menu/VBoxContainer/node_type"]
+layout_mode = 2
+size_flags_horizontal = 3
+theme_override_font_sizes/font_size = 31
+text = "Forest"
+item_count = 3
+popup/item_0/text = "Forest"
+popup/item_0/id = 0
+popup/item_1/text = "Stone Deposit"
+popup/item_1/id = 1
+popup/item_2/text = "Crystal Deposit"
+popup/item_2/id = 2
+
+[node name="s1" type="HSeparator" parent="stone_menu/VBoxContainer"]
+layout_mode = 2
+
+[node name="seed_edit" type="HBoxContainer" parent="stone_menu/VBoxContainer"]
+layout_mode = 2
+size_flags_vertical = 3
+
+[node name="seed_label" type="RichTextLabel" parent="stone_menu/VBoxContainer/seed_edit"]
+layout_mode = 2
+size_flags_horizontal = 3
+theme_override_font_sizes/normal_font_size = 37
+bbcode_enabled = true
+text = "[right]Seed:[/right]"
+
+[node name="seed_input" type="Panel" parent="stone_menu/VBoxContainer/seed_edit"]
+layout_mode = 2
+size_flags_horizontal = 3
+
+[node name="TextEdit" type="TextEdit" parent="stone_menu/VBoxContainer/seed_edit/seed_input"]
+layout_mode = 1
+anchors_preset = 15
+anchor_right = 1.0
+anchor_bottom = 1.0
+grow_horizontal = 2
+grow_vertical = 2
+theme_override_font_sizes/font_size = 30
+text = "0"
+placeholder_text = "0"
+context_menu_enabled = false
+middle_mouse_paste_enabled = false
+caret_multiple = false
+
+[node name="Button" type="Button" parent="stone_menu/VBoxContainer/seed_edit"]
+layout_mode = 2
+size_flags_horizontal = 3
+theme_override_font_sizes/font_size = 34
+text = "Enter"
+
+[node name="s2" type="HSeparator" parent="stone_menu/VBoxContainer"]
+layout_mode = 2
+
+[node name="tree_count_edit" type="HBoxContainer" parent="stone_menu/VBoxContainer"]
+layout_mode = 2
+size_flags_vertical = 3
+
+[node name="density_label" type="RichTextLabel" parent="stone_menu/VBoxContainer/tree_count_edit"]
+layout_mode = 2
+size_flags_horizontal = 3
+theme_override_font_sizes/normal_font_size = 37
+bbcode_enabled = true
+text = "[right]Density:[/right]"
+
+[node name="density_input" type="Panel" parent="stone_menu/VBoxContainer/tree_count_edit"]
+layout_mode = 2
+size_flags_horizontal = 3
+
+[node name="HSlider" type="HSlider" parent="stone_menu/VBoxContainer/tree_count_edit/density_input"]
+layout_mode = 1
+anchors_preset = 15
+anchor_right = 1.0
+anchor_bottom = 1.0
+grow_horizontal = 2
+grow_vertical = 2
+min_value = 250.0
+max_value = 1000.0
+value = 250.0
+rounded = true
+
+[node name="s3" type="HSeparator" parent="stone_menu/VBoxContainer"]
+layout_mode = 2
+
+[node name="tree_slope" type="HBoxContainer" parent="stone_menu/VBoxContainer"]
+layout_mode = 2
+size_flags_vertical = 3
+
+[node name="slope_label" type="RichTextLabel" parent="stone_menu/VBoxContainer/tree_slope"]
+layout_mode = 2
+size_flags_horizontal = 3
+theme_override_font_sizes/normal_font_size = 37
+bbcode_enabled = true
+text = "[right]Max Slope:[/right]"
+
+[node name="slope_slider" type="Panel" parent="stone_menu/VBoxContainer/tree_slope"]
+layout_mode = 2
+size_flags_horizontal = 3
+
+[node name="HSlider" type="HSlider" parent="stone_menu/VBoxContainer/tree_slope/slope_slider"]
+layout_mode = 1
+anchors_preset = 15
+anchor_right = 1.0
+anchor_bottom = 1.0
+grow_horizontal = 2
+grow_vertical = 2
+max_value = 1.0
+step = 0.025
+
+[node name="s4" type="HSeparator" parent="stone_menu/VBoxContainer"]
+layout_mode = 2
+
+[node name="tree_type" type="HBoxContainer" parent="stone_menu/VBoxContainer"]
+layout_mode = 2
+size_flags_vertical = 3
+
+[node name="tree_type_label" type="RichTextLabel" parent="stone_menu/VBoxContainer/tree_type"]
+layout_mode = 2
+size_flags_horizontal = 3
+theme_override_font_sizes/normal_font_size = 37
+bbcode_enabled = true
+text = "[right]Tree Type:[/right]"
+
+[node name="MenuButton" type="MenuButton" parent="stone_menu/VBoxContainer/tree_type"]
+layout_mode = 2
+size_flags_horizontal = 3
+theme_override_font_sizes/font_size = 31
+text = "Pine"
+item_count = 1
+popup/item_0/text = "Pine"
+popup/item_0/id = 0
+
+[connection signal="text_changed" from="forest_menu/VBoxContainer/seed_edit/seed_input/TextEdit" to="forest_menu" method="seed_text_changed"]
+[connection signal="drag_ended" from="forest_menu/VBoxContainer/tree_count_edit/density_input/HSlider" to="forest_menu" method="density_changed"]
+[connection signal="value_changed" from="forest_menu/VBoxContainer/tree_slope/slope_slider/HSlider" to="forest_menu" method="slope_changed"]
+[connection signal="text_changed" from="stone_menu/VBoxContainer/seed_edit/seed_input/TextEdit" to="stone_menu" method="seed_text_changed"]
+[connection signal="drag_ended" from="stone_menu/VBoxContainer/tree_count_edit/density_input/HSlider" to="stone_menu" method="density_changed"]
+[connection signal="value_changed" from="stone_menu/VBoxContainer/tree_slope/slope_slider/HSlider" to="stone_menu" method="slope_changed"]
