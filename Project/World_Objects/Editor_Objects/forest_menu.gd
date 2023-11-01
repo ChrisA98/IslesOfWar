@@ -1,5 +1,6 @@
 extends Panel
 
+signal node_type_changed
 
 """ Seed Inputs"""
 
@@ -7,6 +8,8 @@ extends Panel
 func seed_text_changed():
 	var text = $VBoxContainer/seed_edit/seed_input/TextEdit.get_text()
 	$VBoxContainer/seed_edit/seed_input/TextEdit.set_text(str(text.to_int()))
+	$VBoxContainer/seed_edit/seed_input/TextEdit.set_caret_column(text.length())
+	
 
 
 ## Seed enter button pressed
@@ -26,3 +29,4 @@ func density_changed(value_changed):
 func slope_changed(value):
 	var max_slope = $VBoxContainer/tree_slope/slope_slider/HSlider.value
 	get_parent().preview_node.max_slope = max_slope
+

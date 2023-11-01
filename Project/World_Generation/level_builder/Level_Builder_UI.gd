@@ -12,15 +12,22 @@ var active_menu = terrain_menu:
 			terrain_menu:
 				terrain_menu.visible = true
 				obj_menu.visible = false
+				gnd_menu.visible = false
 			obj_menu:
 				obj_menu.visible = true
 				terrain_menu.visible = false
+				gnd_menu.visible = false
+			gnd_menu:
+				gnd_menu.visible = true
+				terrain_menu.visible = false
+				obj_menu.visible = false
 				
 
 @onready var terrain_menu = get_node("Brush_Panel")
-@onready var brush = get_node("../editor_cursor")
 @onready var obj_menu = get_node("Place_Obj_Panel")
-@onready var level_objects = get_node("../level")
+@onready var gnd_menu = get_node("Ground_Brush_Panel")
+@onready var brush = get_node("../editor_cursor")
+@onready var level = get_node("../level")
 
 
 """ built-in """
@@ -69,6 +76,7 @@ func falloff_slider_used(value):
 
 func water_level_slider_used(value):
 	RenderingServer.global_shader_parameter_set("water_depth",value)
+	Global_Vars.water_elevation = value
 	$Brush_Panel/HBoxContainer/World_Water_Level/value.text = "[center]"+str(value)+"[/center]"
 
 
@@ -80,8 +88,9 @@ func water_level_slider_used(value):
 ## Spawn World Objects
 func _spawn_world_object(id):
 	var new_node = load("res://World_Objects/Editor_Objects/world_object_edtor_container.tscn").instantiate()
-	level_objects.add_child(new_node)
+	level.add_child(new_node)
 	new_node.set_active_node(id)
+	
 	object_added.emit(new_node)
 	
 
@@ -123,3 +132,9 @@ func place_objects_pressed():
 ## change edit mode to edit atmosphere
 func edit_atmosphere_pressed():
 	edit_mode_changed.emit("atmos")
+	
+
+## change edit mode to edit atmosphere
+func edit_ground_pressed():
+	active_menu = gnd_menu
+	edit_mode_changed.emit("ground")

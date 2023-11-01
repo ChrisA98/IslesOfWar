@@ -1,12 +1,19 @@
-[gd_scene load_steps=38 format=3 uid="uid://hva1em7ponql"]
+[gd_scene load_steps=45 format=3 uid="uid://hva1em7ponql"]
 
 [ext_resource type="Script" path="res://World_Generation/level_builder/Level_Builder.gd" id="1_18iqu"]
 [ext_resource type="Script" path="res://World_Generation/level_builder/Level_Builder_UI.gd" id="2_efsya"]
 [ext_resource type="Shader" path="res://World_Generation/New_Terrain.gdshader" id="2_jxrs8"]
 [ext_resource type="Script" path="res://World_Generation/level_builder/brush.gd" id="2_vq7n1"]
+[ext_resource type="Texture2D" uid="uid://e0bv08ufelc4" path="res://Assets/Terrain_Textures/Default_grass.tres" id="3_g8f4s"]
 [ext_resource type="Script" path="res://World_Generation/level_builder/chunk_editor.gd" id="3_x81um"]
 [ext_resource type="Shader" path="res://World_Generation/Water.gdshader" id="4_76ggg"]
 [ext_resource type="Script" path="res://World_Generation/level_builder/Editor_Cam_controller.gd" id="6_f37vi"]
+
+[sub_resource type="Environment" id="Environment_xl1fn"]
+background_mode = 1
+background_color = Color(0, 0, 0, 0)
+ambient_light_source = 2
+ambient_light_color = Color(0.996078, 0.996078, 0.996078, 1)
 
 [sub_resource type="Gradient" id="Gradient_c7l3w"]
 interpolation_mode = 2
@@ -34,23 +41,60 @@ fill = 1
 fill_from = Vector2(0.5, 0.5)
 fill_to = Vector2(0.5, 0)
 
-[sub_resource type="Environment" id="Environment_xl1fn"]
-background_mode = 1
-ambient_light_source = 2
-ambient_light_color = Color(0.996078, 0.996078, 0.996078, 1)
+[sub_resource type="ProceduralSkyMaterial" id="ProceduralSkyMaterial_46wwo"]
+sky_horizon_color = Color(0.647059, 0.654902, 0.670588, 1)
+sun_curve = 0.310578
 
-[sub_resource type="Environment" id="Environment_ohbwb"]
+[sub_resource type="Sky" id="Sky_4kxja"]
+sky_material = SubResource("ProceduralSkyMaterial_46wwo")
+
+[sub_resource type="Environment" id="Environment_2nffg"]
+background_mode = 2
+sky = SubResource("Sky_4kxja")
+ambient_light_source = 3
+ambient_light_color = Color(0, 0.847059, 0.678431, 1)
+ambient_light_sky_contribution = 0.75
+ambient_light_energy = 0.4
+reflected_light_source = 2
+tonemap_mode = 2
+tonemap_exposure = 1.8
+tonemap_white = 2.0
+ssao_light_affect = 0.78
+ssil_radius = 8.03
+ssil_intensity = 0.08
+ssil_sharpness = 0.0
+sdfgi_use_occlusion = true
+glow_enabled = true
+glow_intensity = 0.7
+glow_strength = 0.59
+glow_bloom = 0.17
+glow_blend_mode = 1
+glow_hdr_threshold = 1.14
+glow_hdr_scale = 1.28
+fog_aerial_perspective = 1.0
+fog_height = 720.0
+fog_height_density = 0.029
+volumetric_fog_density = 0.1466
+volumetric_fog_albedo = Color(0.254902, 0.254902, 0.254902, 1)
+volumetric_fog_emission = Color(0.411765, 0.411765, 0.411765, 1)
+volumetric_fog_gi_inject = 0.0
+volumetric_fog_detail_spread = 0.933033
+volumetric_fog_sky_affect = 0.656
+volumetric_fog_temporal_reprojection_amount = 0.89
+adjustment_enabled = true
+adjustment_brightness = 1.2
+adjustment_saturation = 1.5
 
 [sub_resource type="Gradient" id="Gradient_1g27v"]
 interpolation_mode = 2
-colors = PackedColorArray(0.442911, 0.442911, 0.442909, 1, 0.929412, 0.945098, 1, 1)
+colors = PackedColorArray(0.442911, 0.442911, 0.442909, 1, 0.529308, 0.480394, 0.384391, 1)
 
 [sub_resource type="FastNoiseLite" id="FastNoiseLite_dlv7m"]
 noise_type = 4
-frequency = 0.015
+frequency = 0.0315
 fractal_type = 2
 fractal_octaves = 3
-fractal_lacunarity = 2.416
+fractal_lacunarity = 2.721
 fractal_gain = 0.239
 fractal_weighted_strength = 1.0
 fractal_ping_pong_strength = 2.037
@@ -61,8 +105,8 @@ domain_warp_fractal_octaves = 1
 domain_warp_fractal_lacunarity = 6.086
 
 [sub_resource type="NoiseTexture2D" id="NoiseTexture2D_auk8h"]
-width = 1000
-height = 1000
+width = 3000
+height = 3000
 seamless = true
 color_ramp = SubResource("Gradient_1g27v")
 noise = SubResource("FastNoiseLite_dlv7m")
@@ -75,12 +119,9 @@ as_normal_map = true
 bump_strength = 10.8
 noise = SubResource("FastNoiseLite_dlv7m")
 
-[sub_resource type="Gradient" id="Gradient_im8lq"]
-colors = PackedColorArray(0, 0.260467, 0, 1, 0.305169, 0.557647, 0.256383, 1)
-
 [sub_resource type="FastNoiseLite" id="FastNoiseLite_al3lm"]
 noise_type = 0
-frequency = 0.018
+frequency = 0.0475
 fractal_octaves = 10
 fractal_lacunarity = 2.123
 fractal_gain = 0.874
@@ -91,13 +132,6 @@ domain_warp_fractal_type = 2
 domain_warp_fractal_lacunarity = 6.062
 domain_warp_fractal_gain = 0.971
 
-[sub_resource type="NoiseTexture2D" id="NoiseTexture2D_su8x1"]
-width = 1000
-height = 1000
-seamless = true
-color_ramp = SubResource("Gradient_im8lq")
-noise = SubResource("FastNoiseLite_al3lm")
-
 [sub_resource type="NoiseTexture2D" id="NoiseTexture2D_lrj8h"]
 width = 1000
 height = 1000
@@ -107,14 +141,17 @@ as_normal_map = true
 bump_strength = 3.5
 noise = SubResource("FastNoiseLite_al3lm")
 
+[sub_resource type="Texture2DArray" id="Texture2DArray_0p1p0"]
+
 [sub_resource type="Gradient" id="Gradient_2i80b"]
 colors = PackedColorArray(0.859586, 0.873469, 0.643777, 1, 0.550264, 0.542165, 0.456681, 1)
 
 [sub_resource type="FastNoiseLite" id="FastNoiseLite_l7c1p"]
+frequency = 0.117
 
 [sub_resource type="NoiseTexture2D" id="NoiseTexture2D_xuw1p"]
-width = 1000
-height = 1000
+width = 3000
+height = 3000
 seamless = true
 color_ramp = SubResource("Gradient_2i80b")
 noise = SubResource("FastNoiseLite_l7c1p")
@@ -133,10 +170,10 @@ resource_local_to_scene = true
 render_priority = 0
 shader = ExtResource("2_jxrs8")
 shader_parameter/t_height = 100.0
-shader_parameter/universal_tex_scaling = 10.972
 shader_parameter/min_rock_slope = 0.156
 shader_parameter/max_grass_slope = 0.362
-shader_parameter/grass_alb_tex = SubResource("NoiseTexture2D_su8x1")
+shader_parameter/ground_textures = SubResource("Texture2DArray_0p1p0")
+shader_parameter/grass_alb_tex = ExtResource("3_g8f4s")
 shader_parameter/grass_norm_tex = SubResource("NoiseTexture2D_lrj8h")
 shader_parameter/cliff_alb_tex = SubResource("NoiseTexture2D_auk8h")
 shader_parameter/cliff_norm_tex = SubResource("NoiseTexture2D_ee0of")
@@ -144,6 +181,7 @@ shader_parameter/sand_alb_tex = SubResource("NoiseTexture2D_xuw1p")
 shader_parameter/sand_norm_tex = SubResource("NoiseTexture2D_8e7yg")
 
 [sub_resource type="PlaneMesh" id="PlaneMesh_rgect"]
+resource_local_to_scene = true
 material = SubResource("ShaderMaterial_rie7d")
 size = Vector2(500, 500)
 subdivide_width = 400
@@ -215,6 +253,33 @@ map_data = PackedFloat32Array(0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0,
 
 [sub_resource type="Environment" id="Environment_h4cl6"]
 
+[sub_resource type="StandardMaterial3D" id="StandardMaterial3D_ek57q"]
+shading_mode = 0
+albedo_color = Color(0, 0, 0, 1)
+
+[sub_resource type="PlaneMesh" id="PlaneMesh_yro6c"]
+material = SubResource("StandardMaterial3D_ek57q")
+size = Vector2(5000, 5000)
+
+[sub_resource type="Gradient" id="Gradient_bdb8r"]
+colors = PackedColorArray(0.65098, 0, 0, 1, 0.800712, 0.398503, 3.85046e-07, 1)
+
+[sub_resource type="FastNoiseLite" id="FastNoiseLite_vsduf"]
+frequency = 0.086
+fractal_type = 0
+domain_warp_enabled = true
+domain_warp_type = 1
+domain_warp_fractal_type = 2
+domain_warp_fractal_octaves = 2
+domain_warp_fractal_lacunarity = 5.63
+domain_warp_fractal_gain = -0.585
+
+[sub_resource type="NoiseTexture2D" id="NoiseTexture2D_hvmpb"]
+width = 3060
+height = 3060
+color_ramp = SubResource("Gradient_bdb8r")
+noise = SubResource("FastNoiseLite_vsduf")
+
 [node name="Level_Builder" type="Node3D"]
 script = ExtResource("1_18iqu")
 map_size = 2000
@@ -229,6 +294,29 @@ grow_horizontal = 2
 grow_vertical = 2
 mouse_filter = 2
 script = ExtResource("2_efsya")
+
+[node name="TextureRect" type="TextureRect" parent="UI"]
+visible = false
+layout_mode = 0
+offset_right = 1142.0
+offset_bottom = 1057.0
+texture = ExtResource("3_g8f4s")
+
+[node name="editor_overlay_viewport" type="SubViewportContainer" parent="UI"]
+layout_mode = 0
+offset_right = 1920.0
+offset_bottom = 1080.0
+
+[node name="SubViewport" type="SubViewport" parent="UI/editor_overlay_viewport"]
+transparent_bg = true
+handle_input_locally = false
+size = Vector2i(1920, 1080)
+render_target_update_mode = 4
+
+[node name="editor_overlay" type="Camera3D" parent="UI/editor_overlay_viewport/SubViewport"]
+transform = Transform3D(1, 0, 0, 0, 0.707107, 0.707107, 0, -0.707107, 0.707107, 0, 0, 0)
+cull_mask = 32
+environment = SubResource("Environment_xl1fn")
 
 [node name="edit_mode_panel" type="PanelContainer" parent="UI"]
 layout_mode = 1
@@ -259,10 +347,18 @@ text = "Place Objects"
 [node name="edit_atmosphere" type="Button" parent="UI/edit_mode_panel/edit_options"]
 layout_mode = 2
 mouse_filter = 1
-text = "Place Objects"
+text = "Environent"
+
+[node name="camera_view" type="OptionButton" parent="UI/edit_mode_panel/edit_options"]
+layout_mode = 2
+item_count = 2
+selected = 0
+popup/item_0/text = "Editor view"
+popup/item_0/id = 0
+popup/item_1/text = "Play view"
+popup/item_1/id = 1
 
 [node name="Brush_Panel" type="Panel" parent="UI"]
-visible = false
 layout_mode = 1
 anchors_preset = -1
 anchor_top = 0.9
@@ -538,6 +634,293 @@ anchor_bottom = 1.0
 offset_top = 52.0
 grow_horizontal = 2
 grow_vertical = 2
+mouse_filter = 1
+theme_override_font_sizes/font_size = 37
+text = "Draw"
+item_count = 2
+popup/item_0/text = "Draw"
+popup/item_0/id = 0
+popup/item_1/text = "Smooth"
+popup/item_1/id = 1
+
+[node name="Ground_Brush_Panel" type="Panel" parent="UI"]
+visible = false
+layout_mode = 1
+anchors_preset = -1
+anchor_top = 0.9
+anchor_right = 1.0
+anchor_bottom = 1.011
+
+[node name="HBoxContainer" type="HBoxContainer" parent="UI/Ground_Brush_Panel"]
+layout_mode = 1
+anchors_preset = 15
+anchor_right = 1.0
+anchor_bottom = 1.0
+grow_horizontal = 2
+grow_vertical = 2
+
+[node name="Brush_Strength" type="Panel" parent="UI/Ground_Brush_Panel/HBoxContainer"]
+layout_mode = 2
+size_flags_horizontal = 3
+mouse_filter = 2
+
+[node name="label" type="RichTextLabel" parent="UI/Ground_Brush_Panel/HBoxContainer/Brush_Strength"]
+layout_mode = 1
+anchors_preset = 15
+anchor_right = 1.0
+anchor_bottom = 1.0
+offset_right = -0.47998
+offset_bottom = -75.64
+grow_horizontal = 2
+grow_vertical = 2
+mouse_filter = 2
+theme_override_font_sizes/normal_font_size = 30
+bbcode_enabled = true
+text = "[center]Brush Strength[/center]"
+
+[node name="Slider" type="HSlider" parent="UI/Ground_Brush_Panel/HBoxContainer/Brush_Strength"]
+layout_mode = 1
+anchors_preset = 15
+anchor_right = 1.0
+anchor_bottom = 1.0
+grow_horizontal = 2
+grow_vertical = 2
+mouse_filter = 1
+value = 12.0
+
+[node name="value" type="RichTextLabel" parent="UI/Ground_Brush_Panel/HBoxContainer/Brush_Strength"]
+layout_mode = 1
+anchors_preset = -1
+anchor_top = 0.5
+anchor_right = 1.0
+anchor_bottom = 1.0
+offset_left = 0.1008
+offset_top = 0.179993
+offset_right = -0.199982
+offset_bottom = -0.640015
+grow_horizontal = 2
+grow_vertical = 2
+mouse_filter = 2
+theme_override_font_sizes/normal_font_size = 30
+bbcode_enabled = true
+text = "[center]12[/center]
+"
+
+[node name="Brush_Elevation" type="Panel" parent="UI/Ground_Brush_Panel/HBoxContainer"]
+layout_mode = 2
+size_flags_horizontal = 3
+mouse_filter = 2
+
+[node name="label" type="RichTextLabel" parent="UI/Ground_Brush_Panel/HBoxContainer/Brush_Elevation"]
+layout_mode = 1
+anchors_preset = 15
+anchor_right = 1.0
+anchor_bottom = 1.0
+offset_right = -0.47998
+offset_bottom = -75.64
+grow_horizontal = 2
+grow_vertical = 2
+mouse_filter = 2
+theme_override_font_sizes/normal_font_size = 30
+bbcode_enabled = true
+text = "[center]Elevation[/center]"
+
+[node name="Slider" type="HSlider" parent="UI/Ground_Brush_Panel/HBoxContainer/Brush_Elevation"]
+layout_mode = 1
+anchors_preset = 15
+anchor_right = 1.0
+anchor_bottom = 1.0
+grow_horizontal = 2
+grow_vertical = 2
+mouse_filter = 1
+value = 12.0
+
+[node name="value" type="RichTextLabel" parent="UI/Ground_Brush_Panel/HBoxContainer/Brush_Elevation"]
+layout_mode = 1
+anchors_preset = -1
+anchor_top = 0.5
+anchor_right = 1.0
+anchor_bottom = 1.0
+offset_left = 0.1008
+offset_top = 0.179993
+offset_right = -0.199982
+offset_bottom = -0.640015
+grow_horizontal = 2
+grow_vertical = 2
+mouse_filter = 2
+theme_override_font_sizes/normal_font_size = 30
+bbcode_enabled = true
+text = "[center]12[/center]"
+
+[node name="Brush_Radius" type="Panel" parent="UI/Ground_Brush_Panel/HBoxContainer"]
+layout_mode = 2
+size_flags_horizontal = 3
+mouse_filter = 2
+
+[node name="label" type="RichTextLabel" parent="UI/Ground_Brush_Panel/HBoxContainer/Brush_Radius"]
+layout_mode = 1
+anchors_preset = 15
+anchor_right = 1.0
+anchor_bottom = 1.0
+offset_right = -0.47998
+offset_bottom = -75.64
+grow_horizontal = 2
+grow_vertical = 2
+mouse_filter = 2
+theme_override_font_sizes/normal_font_size = 30
+bbcode_enabled = true
+text = "[center]Brush Radius[/center]"
+
+[node name="Slider" type="HSlider" parent="UI/Ground_Brush_Panel/HBoxContainer/Brush_Radius"]
+layout_mode = 1
+anchors_preset = 15
+anchor_right = 1.0
+anchor_bottom = 1.0
+grow_horizontal = 2
+grow_vertical = 2
+mouse_filter = 1
+min_value = 10.0
+value = 50.0
+
+[node name="value" type="RichTextLabel" parent="UI/Ground_Brush_Panel/HBoxContainer/Brush_Radius"]
+layout_mode = 1
+anchors_preset = -1
+anchor_top = 0.5
+anchor_right = 1.0
+anchor_bottom = 1.0
+offset_left = 0.1008
+offset_top = 0.179993
+offset_right = -0.199982
+offset_bottom = -0.640015
+grow_horizontal = 2
+grow_vertical = 2
+mouse_filter = 2
+theme_override_font_sizes/normal_font_size = 30
+bbcode_enabled = true
+text = "[center]50[/center]
+"
+
+[node name="Brush_Falloff" type="Panel" parent="UI/Ground_Brush_Panel/HBoxContainer"]
+layout_mode = 2
+size_flags_horizontal = 3
+mouse_filter = 2
+
+[node name="label" type="RichTextLabel" parent="UI/Ground_Brush_Panel/HBoxContainer/Brush_Falloff"]
+layout_mode = 1
+anchors_preset = 15
+anchor_right = 1.0
+anchor_bottom = 1.0
+offset_right = -0.47998
+offset_bottom = -75.64
+grow_horizontal = 2
+grow_vertical = 2
+mouse_filter = 2
+theme_override_font_sizes/normal_font_size = 30
+bbcode_enabled = true
+text = "[center]Brush Falloff[/center]"
+
+[node name="Slider" type="HSlider" parent="UI/Ground_Brush_Panel/HBoxContainer/Brush_Falloff"]
+layout_mode = 1
+anchors_preset = 15
+anchor_right = 1.0
+anchor_bottom = 1.0
+grow_horizontal = 2
+grow_vertical = 2
+mouse_filter = 1
+max_value = 99.0
+value = 50.0
+
+[node name="value" type="RichTextLabel" parent="UI/Ground_Brush_Panel/HBoxContainer/Brush_Falloff"]
+layout_mode = 1
+anchors_preset = -1
+anchor_top = 0.5
+anchor_right = 1.0
+anchor_bottom = 1.0
+offset_left = 0.1008
+offset_top = 0.179993
+offset_right = -0.199982
+offset_bottom = -0.640015
+grow_horizontal = 2
+grow_vertical = 2
+mouse_filter = 2
+theme_override_font_sizes/normal_font_size = 30
+bbcode_enabled = true
+text = "[center]50[/center]"
+
+[node name="World_Water_Level" type="Panel" parent="UI/Ground_Brush_Panel/HBoxContainer"]
+layout_mode = 2
+size_flags_horizontal = 3
+mouse_filter = 2
+
+[node name="label" type="RichTextLabel" parent="UI/Ground_Brush_Panel/HBoxContainer/World_Water_Level"]
+layout_mode = 1
+anchors_preset = 15
+anchor_right = 1.0
+anchor_bottom = 1.0
+offset_right = -0.47998
+offset_bottom = -75.64
+grow_horizontal = 2
+grow_vertical = 2
+mouse_filter = 2
+theme_override_font_sizes/normal_font_size = 30
+bbcode_enabled = true
+text = "[center]Water Level[/center]"
+
+[node name="Slider" type="HSlider" parent="UI/Ground_Brush_Panel/HBoxContainer/World_Water_Level"]
+layout_mode = 1
+anchors_preset = 15
+anchor_right = 1.0
+anchor_bottom = 1.0
+grow_horizontal = 2
+grow_vertical = 2
+mouse_filter = 1
+value = 12.0
+
+[node name="value" type="RichTextLabel" parent="UI/Ground_Brush_Panel/HBoxContainer/World_Water_Level"]
+layout_mode = 1
+anchors_preset = -1
+anchor_top = 0.5
+anchor_right = 1.0
+anchor_bottom = 1.0
+offset_left = 0.1008
+offset_top = 0.179993
+offset_right = -0.199982
+offset_bottom = -0.640015
+grow_horizontal = 2
+grow_vertical = 2
+mouse_filter = 2
+theme_override_font_sizes/normal_font_size = 30
+bbcode_enabled = true
+text = "[center]7[/center]"
+
+[node name="brush_Mode" type="Panel" parent="UI/Ground_Brush_Panel/HBoxContainer"]
+layout_mode = 2
+size_flags_horizontal = 3
+mouse_filter = 2
+
+[node name="Brush_Mode" type="RichTextLabel" parent="UI/Ground_Brush_Panel/HBoxContainer/brush_Mode"]
+layout_mode = 1
+anchors_preset = 15
+anchor_right = 1.0
+anchor_bottom = 1.0
+offset_right = -0.47998
+offset_bottom = -75.64
+grow_horizontal = 2
+grow_vertical = 2
+mouse_filter = 2
+theme_override_font_sizes/normal_font_size = 30
+bbcode_enabled = true
+text = "[center]Brush mode[/center]"
+
+[node name="MenuButton" type="MenuButton" parent="UI/Ground_Brush_Panel/HBoxContainer/brush_Mode"]
+layout_mode = 1
+anchors_preset = 15
+anchor_right = 1.0
+anchor_bottom = 1.0
+offset_top = 52.0
+grow_horizontal = 2
+grow_vertical = 2
+mouse_filter = 1
 theme_override_font_sizes/font_size = 37
 text = "Draw"
 item_count = 2
@@ -547,6 +930,7 @@ popup/item_1/text = "Smooth"
 popup/item_1/id = 1
 
 [node name="Place_Obj_Panel" type="Panel" parent="UI"]
+visible = false
 layout_mode = 1
 anchors_preset = -1
 anchor_left = 0.767
@@ -640,7 +1024,7 @@ cull_mask = 2
 environment = SubResource("Environment_xl1fn")
 
 [node name="play_environment" type="WorldEnvironment" parent="."]
-environment = SubResource("Environment_ohbwb")
+environment = SubResource("Environment_2nffg")
 
 [node name="Sun" type="DirectionalLight3D" parent="."]
 transform = Transform3D(2.21801e-08, 0.200172, 0.979761, -1.29113e-07, -0.979761, 0.200172, 1, -1.3094e-07, 4.11361e-09, 0, 0, 0)
@@ -652,7 +1036,7 @@ shadow_blur = 2.275
 directional_shadow_mode = 0
 
 [node name="chunk" type="MeshInstance3D" parent="."]
-transform = Transform3D(1, 0, -5.96046e-08, 0, 1, 0, 5.96046e-08, 0, 1, 250, 7.62939e-06, 250)
+transform = Transform3D(1, 0, -5.96046e-08, 0, 1, 0, 5.96046e-08, 0, 1, -2.40088, 7.62939e-06, 246.455)
 layers = 2
 mesh = SubResource("PlaneMesh_rgect")
 skeleton = NodePath("")
@@ -666,7 +1050,6 @@ skeleton = NodePath("")
 
 [node name="StaticBody3D" type="StaticBody3D" parent="chunk"]
 transform = Transform3D(10, 0, 0, 0, 10, 0, 0, 0, 10, 0, 0, 0)
-input_capture_on_drag = true
 
 [node name="CollisionShape3D" type="CollisionShape3D" parent="chunk/StaticBody3D"]
 shape = SubResource("HeightMapShape3D_87c6a")
@@ -680,7 +1063,7 @@ transform = Transform3D(1, 0, 0, 0, 0.707107, 0.707107, 0, -0.707107, 0.707107, 
 environment = SubResource("Environment_xl1fn")
 
 [node name="environment_prev" type="Camera3D" parent="Editor_Cam"]
-transform = Transform3D(1, 0, 0, 0, 0.422618, 0.906308, 0, -0.906308, 0.422618, 0, 0, 0)
+transform = Transform3D(1, 0, 0, 0, 0.707107, 0.707107, 0, -0.707107, 0.707107, 0, 0, 0)
 visible = false
 environment = SubResource("Environment_h4cl6")
 
@@ -688,13 +1071,25 @@ environment = SubResource("Environment_h4cl6")
 
 [node name="level" type="Node3D" parent="."]
 
+[node name="bottom_curtain" type="MeshInstance3D" parent="."]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, -50, 0)
+mesh = SubResource("PlaneMesh_yro6c")
+
+[node name="TextureRect" type="TextureRect" parent="."]
+visible = false
+offset_right = 40.0
+offset_bottom = 40.0
+texture = SubResource("NoiseTexture2D_hvmpb")
+
 [connection signal="brush_changed" from="UI" to="." method="brush_mode_changed"]
+[connection signal="object_added" from="UI" to="." method="add_world_object"]
 [connection signal="mouse_entered" from="UI/edit_mode_panel" to="UI" method="_mouse_entered_toolbar"]
 [connection signal="mouse_exited" from="UI/edit_mode_panel" to="UI" method="_mouse_exited_toolbar"]
 [connection signal="pressed" from="UI/edit_mode_panel/edit_options/edit_terrain_button" to="UI" method="edit_terrain_pressed"]
-[connection signal="pressed" from="UI/edit_mode_panel/edit_options/edit_ground_button" to="UI" method="edit_terrain_pressed"]
+[connection signal="pressed" from="UI/edit_mode_panel/edit_options/edit_ground_button" to="UI" method="edit_ground_pressed"]
 [connection signal="pressed" from="UI/edit_mode_panel/edit_options/place_objects_button" to="UI" method="place_objects_pressed"]
 [connection signal="pressed" from="UI/edit_mode_panel/edit_options/edit_atmosphere" to="UI" method="edit_atmosphere_pressed"]
+[connection signal="item_selected" from="UI/edit_mode_panel/edit_options/camera_view" to="." method="_change_view"]
 [connection signal="mouse_entered" from="UI/Brush_Panel" to="UI" method="_mouse_entered_toolbar"]
 [connection signal="mouse_exited" from="UI/Brush_Panel" to="UI" method="_mouse_exited_toolbar"]
 [connection signal="value_changed" from="UI/Brush_Panel/HBoxContainer/Brush_Strength/Slider" to="UI" method="strength_slider_used"]
@@ -702,5 +1097,12 @@ environment = SubResource("Environment_h4cl6")
 [connection signal="value_changed" from="UI/Brush_Panel/HBoxContainer/Brush_Radius/Slider" to="UI" method="radius_slider_used"]
 [connection signal="value_changed" from="UI/Brush_Panel/HBoxContainer/Brush_Falloff/Slider" to="UI" method="falloff_slider_used"]
 [connection signal="value_changed" from="UI/Brush_Panel/HBoxContainer/World_Water_Level/Slider" to="UI" method="water_level_slider_used"]
+[connection signal="mouse_entered" from="UI/Ground_Brush_Panel" to="UI" method="_mouse_entered_toolbar"]
+[connection signal="mouse_exited" from="UI/Ground_Brush_Panel" to="UI" method="_mouse_exited_toolbar"]
+[connection signal="value_changed" from="UI/Ground_Brush_Panel/HBoxContainer/Brush_Strength/Slider" to="UI" method="strength_slider_used"]
+[connection signal="value_changed" from="UI/Ground_Brush_Panel/HBoxContainer/Brush_Elevation/Slider" to="UI" method="elevation_slider_used"]
+[connection signal="value_changed" from="UI/Ground_Brush_Panel/HBoxContainer/Brush_Radius/Slider" to="UI" method="radius_slider_used"]
+[connection signal="value_changed" from="UI/Ground_Brush_Panel/HBoxContainer/Brush_Falloff/Slider" to="UI" method="falloff_slider_used"]
+[connection signal="value_changed" from="UI/Ground_Brush_Panel/HBoxContainer/World_Water_Level/Slider" to="UI" method="water_level_slider_used"]
 [connection signal="mouse_entered" from="UI/Place_Obj_Panel" to="UI" method="_mouse_entered_toolbar"]
 [connection signal="mouse_exited" from="UI/Place_Obj_Panel" to="UI" method="_mouse_exited_toolbar"]

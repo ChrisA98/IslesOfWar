@@ -120,13 +120,15 @@ editor_cam_rotate_r={
 }
 editor_cam_rotate_l={
 "deadzone": 0.5,
-"events": []
+"events": [Object(InputEventKey,"resource_local_to_scene":false,"resource_name":"","device":-1,"window_id":0,"alt_pressed":false,"shift_pressed":false,"ctrl_pressed":false,"meta_pressed":false,"pressed":false,"keycode":0,"physical_keycode":81,"key_label":0,"unicode":113,"echo":false,"script":null)
+]
 }
 
 [layer_names]
 
 3d_render/layer_2="Ground"
 3d_render/layer_5="Fog_of_War"
+3d_render/layer_6="L_E_preview"
 3d_render/layer_19="Terrain_Preview"
 3d_render/layer_20="Editor_Tools"
 3d_navigation/layer_1="Basic_Infantry"
@@ -174,4 +176,8 @@ water_depth={
 heightmap_tex={
 "type": "sampler2D",
 "value": "res://Test_Items/Map_data/master.exr"
+}
+ground_tex_main={
+"type": "sampler2D",
+"value": "res://Assets/Terrain_Textures/Default_grass.tres"
 }

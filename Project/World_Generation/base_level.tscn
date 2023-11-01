@@ -157,7 +157,6 @@ resource_local_to_scene = true
 render_priority = 0
 shader = ExtResource("2_ueirr")
 shader_parameter/t_height = 100.0
-shader_parameter/universal_tex_scaling = 10.972
 shader_parameter/min_rock_slope = 0.156
 shader_parameter/max_grass_slope = 0.362
 shader_parameter/grass_alb_tex = SubResource("NoiseTexture2D_p0d1b")
@@ -340,12 +339,10 @@ transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 231.711, 16.0589, -231.669)
 actor_id = 1
 
 [node name="Forest" parent="." instance=ExtResource("5_8idnn")]
-transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 249.093, 0, -328.466)
 random_seed = 491
 tree_cnt = 150
 
 [node name="Forest2" parent="." instance=ExtResource("5_8idnn")]
-transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 114.56, 0, 102.392)
 random_seed = 821
 tree_cnt = 150
 max_slope = 0.255

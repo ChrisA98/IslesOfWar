@@ -21,8 +21,6 @@ var radius: float = 50:
 func _ready():
 	editor_display_mesh.hide()
 	
-	Global_Vars.updated_heightmap.connect(update_heightmap)
-	
 	update_heightmap()
 	
 	if(target_meta == null):
@@ -47,12 +45,16 @@ func _area_entered(_area_rid, area, _area_shape_index, _local_shape_index):
 
 
 func update_heightmap():
-	heightmap = Global_Vars.heightmap.get_image()
+	heightmap = Global_Vars.heightmap
 
 
-## Testing generate height
+## get height on map height
 func get_loc_height(pos:Vector3):
-	var x = pos.x+500
-	var y = pos.z+500
+	@warning_ignore("integer_division")
+	var x = pos.x+Global_Vars.heightmap_size/2
+	@warning_ignore("integer_division")
+	var y = pos.z+Global_Vars.heightmap_size/2
+	if x > Global_Vars.heightmap_size or y > Global_Vars.heightmap_size:
+		return -10000
 	var t = heightmap.get_pixel(x,y).r * 100
-	return clamp(t,7,1000)
+	return clamp(t,0,1000)

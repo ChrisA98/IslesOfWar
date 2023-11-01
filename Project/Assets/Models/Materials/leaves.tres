@@ -43,7 +43,7 @@ void vertex() {
 		VERTEX.x += (wave+wave2 *0.4) *sway_intensity;
 		VERTEX.z -= (wave-wave2 *0.4)*sway_intensity;
 		UV=UV*uv1_scale.xy+uv1_offset.xy;
-		id = float(NODE_POSITION_WORLD.x + NODE_POSITION_WORLD.z);
+		id = float(INSTANCE_CUSTOM.x);
 	}
 }
 

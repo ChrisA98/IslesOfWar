@@ -5,9 +5,12 @@ global uniform sampler2D heightmap_tex : repeat_disable;
 global uniform sampler2D building_locs;
 
 uniform float t_height;
-uniform float universal_tex_scaling = 6;
+
+uniform sampler2DArray ground_textures: source_color;
+
+
 uniform sampler2D grass_alb_tex : source_color;
-uniform sampler2D grass_norm_tex : source_color;
+uniform sampler2D grass_norm_tex : source_color; 
 uniform sampler2D cliff_alb_tex : source_color;
 uniform sampler2D cliff_norm_tex : source_color;
 uniform sampler2D sand_alb_tex : source_color;
@@ -42,20 +45,21 @@ void vertex() {
 	vec2 e = vec2(0.01, 0.0);
 	normal = normalize(vec3(get_height(pos_uv - e) / t_height - get_height(pos_uv + e) / t_height, 2.0 * e.x, get_height(pos_uv - e.yx) / t_height - get_height(pos_uv + e.yx) / t_height));
 	NORMAL = normal;
+	pos_uv = UV*2.0;
 }
 
 void fragment(){
 	//Albedo Values
-	vec3 grass_albedo = texture(grass_alb_tex,pos_uv*universal_tex_scaling).xyz;
-	vec3 rock_albedo = texture(cliff_alb_tex,pos_uv*universal_tex_scaling).xyz;
-	vec3 sand_albedo = texture(sand_alb_tex,pos_uv*universal_tex_scaling).xyz;
+	vec3 grass_albedo = texture(grass_alb_tex,pos_uv).xyz;
+	vec3 rock_albedo = texture(cliff_alb_tex,pos_uv).xyz;
+	vec3 sand_albedo = texture(sand_alb_tex,pos_uv).xyz;
 	vec3 dirt_albedo = vec3(.35,.3,.1);
 	//Normal Values
-	vec3 grass_normal = texture(grass_norm_tex,pos_uv*universal_tex_scaling).xyz;
+	vec3 grass_normal = texture(grass_norm_tex,pos_uv).xyz;
 	grass_normal = normalize(grass_normal * 2.0 - 1.0);
-	vec3 rock_normal = texture(cliff_norm_tex,pos_uv*universal_tex_scaling).xyz;
+	vec3 rock_normal = texture(cliff_norm_tex,pos_uv).xyz;
 	rock_normal = normalize(rock_normal * 2.0 - 1.0);
-	vec3 sand_normal = texture(sand_norm_tex,pos_uv*universal_tex_scaling).xyz;
+	vec3 sand_normal = texture(sand_norm_tex,pos_uv).xyz;
 	sand_normal = normalize(sand_normal * 2.0 - 1.0);
 	//Weights
 	float rock_grass_weight = normal.y;
@@ -86,7 +90,6 @@ void fragment(){
 	SPECULAR = 0.02;
 	ROUGHNESS = .5;
 	NORMAL_MAP_DEPTH = normal.y*.1;
-	NORMAL_MAP = mix(rock_normal, grass_normal, rock_grass_weight);
 	
 	float buildings = texture(building_locs, pos_uv).g;
 	

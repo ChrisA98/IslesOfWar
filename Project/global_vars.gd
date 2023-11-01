@@ -27,11 +27,12 @@ var queued_nav_bakes: Array
 
 var load_text = "Loading Something"
 
-var heightmap : Texture2D:
+var heightmap : Image = Image.new():
 	set(value):
 		heightmap = value
 		updated_heightmap.emit()
-var heightmap_size : int
+var heightmap_size : int = 0
+var water_elevation : float = 0
 
 func month_to_string(yr_day: int, yr: int) -> String:
 	var out = ""
