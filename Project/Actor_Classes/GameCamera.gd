@@ -121,7 +121,7 @@ func _physics_process(delta):
 	
 	## Move ground render sqruare
 	var zoom_offset = position.direction_to($Player_view.global_position)*height*-5
-	$"../Visual_Ground".position = position+zoom_offset - Vector3(fmod(position.x+zoom_offset.x,4),0,fmod(position.z+zoom_offset.z,4))
+	$"../Visual_Ground".position = position+zoom_offset - Vector3(fmod(position.x+zoom_offset.x,5),0,fmod(position.z+zoom_offset.z,5))
 	
 	if(ground_check.is_colliding()):
 		velocity.y = clamp((position.y - trgt)*-1,-1,1)

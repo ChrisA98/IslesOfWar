@@ -1,4 +1,3 @@
-@tool
 extends world_object
 
 var rng = RandomNumberGenerator.new()
@@ -49,7 +48,6 @@ func _generate_forest():
 	if !is_node_ready():
 		return
 	
-	await get_tree().physics_frame
 	trees.set_instance_count(tree_cnt)
 	rng.seed = random_seed
 	

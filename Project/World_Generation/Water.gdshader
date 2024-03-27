@@ -54,7 +54,7 @@ void vertex() {
 	norm2 = texture(water_disp_tex_2,wtr_pos_uv + time_2).rgb;
 	vec3 normal_blend = mix(mix(norm1,norm2,0.5),vec3(0,0,0),1.2-depth);
 	
-	VERTEX.y = water_depth - NODE_POSITION_WORLD.y;
+	VERTEX.y = water_depth - NODE_POSITION_WORLD.y+.075;
 	NORMAL = normal_blend;
 }
 

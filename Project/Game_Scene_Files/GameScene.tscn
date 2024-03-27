@@ -1,4 +1,4 @@
-[gd_scene load_steps=102 format=3 uid="uid://iltms2ck0v33"]
+[gd_scene load_steps=103 format=3 uid="uid://iltms2ck0v33"]
 
 [ext_resource type="Script" path="res://Game_Scene_Files/GameScene.gd" id="1_7pjje"]
 [ext_resource type="Script" path="res://Game_Scene_Files/UI_Builder.gd" id="2_wj4ul"]
@@ -17,6 +17,7 @@
 [ext_resource type="Texture2D" uid="uid://dnrjlcvb1yulp" path="res://Assets/UI_Elements/Minimap_Viewport.png" id="9_odtsh"]
 [ext_resource type="Script" path="res://Actor_Classes/GameCamera.gd" id="10_jjfcj"]
 [ext_resource type="Shader" uid="uid://cmyeclhrvhn2o" path="res://World_Generation/Foliage_Shader.tres" id="10_l3sfk"]
+[ext_resource type="Shader" path="res://World_Generation/level_builder/EditorTerrain.gdshader" id="12_dyv5q"]
 
 [sub_resource type="Theme" id="Theme_8omj6"]
 default_font_size = 11
@@ -39,18 +40,17 @@ point_count = 2
 curve = SubResource("Curve_armqb")
 
 [sub_resource type="ParticleProcessMaterial" id="ParticleProcessMaterial_g3xjd"]
+particle_flag_disable_z = true
 emission_shape = 6
 emission_ring_axis = Vector3(0, 0, 1)
 emission_ring_height = 120.0
 emission_ring_radius = 120.0
 emission_ring_inner_radius = 0.0
-particle_flag_disable_z = true
 direction = Vector3(0, -2, 0)
-gravity = Vector3(0, -10, 0)
 initial_velocity_min = 1.0
 initial_velocity_max = 10.0
-orbit_velocity_min = 0.0
-orbit_velocity_max = 0.0
+gravity = Vector3(0, -10, 0)
+attractor_interaction_enabled = false
 scale_min = 0.1
 scale_max = 0.85
 scale_curve = SubResource("CurveTexture_7hefi")
@@ -58,7 +58,6 @@ color = Color(0.905882, 0.701961, 0.960784, 1)
 hue_variation_min = -0.05
 hue_variation_max = 0.05
 hue_variation_curve = SubResource("CurveTexture_n0c2i")
-attractor_interaction_enabled = false
 
 [sub_resource type="Gradient" id="Gradient_14su2"]
 colors = PackedColorArray(1, 1, 1, 1, 1, 1, 1, 0)
@@ -266,7 +265,7 @@ noise = SubResource("FastNoiseLite_l7c1p")
 [sub_resource type="ShaderMaterial" id="ShaderMaterial_rie7d"]
 resource_local_to_scene = true
 render_priority = 0
-shader = ExtResource("4_4qqhp")
+shader = ExtResource("12_dyv5q")
 shader_parameter/t_height = 100.0
 shader_parameter/min_rock_slope = 0.156
 shader_parameter/max_grass_slope = 0.362
@@ -304,15 +303,14 @@ default_font_size = 15
 RichTextLabel/colors/default_color = Color(0, 0, 0, 1)
 
 [sub_resource type="ParticleProcessMaterial" id="ParticleProcessMaterial_84dyp"]
+particle_flag_disable_z = true
 emission_shape = 3
 emission_box_extents = Vector3(364, 1, 1)
-particle_flag_disable_z = true
 direction = Vector3(0, -2, 0)
-gravity = Vector3(0, -10, 0)
 initial_velocity_min = 1.0
 initial_velocity_max = 10.0
-orbit_velocity_min = 0.0
-orbit_velocity_max = 0.0
+gravity = Vector3(0, -10, 0)
+attractor_interaction_enabled = false
 scale_min = 0.1
 scale_max = 0.85
 scale_curve = SubResource("CurveTexture_7hefi")
@@ -320,7 +318,6 @@ color = Color(0.905882, 0.701961, 0.960784, 1)
 hue_variation_min = -0.05
 hue_variation_max = 0.05
 hue_variation_curve = SubResource("CurveTexture_n0c2i")
-attractor_interaction_enabled = false
 
 [sub_resource type="Gradient" id="Gradient_ggo6d"]
 interpolation_mode = 2
@@ -426,8 +423,8 @@ shader_parameter/sand_norm_tex = SubResource("NoiseTexture2D_23uga")
 [sub_resource type="PlaneMesh" id="PlaneMesh_ssghn"]
 material = SubResource("ShaderMaterial_xt4tj")
 size = Vector2(500, 500)
-subdivide_width = 200
-subdivide_depth = 200
+subdivide_width = 500
+subdivide_depth = 500
 
 [sub_resource type="Gradient" id="Gradient_tmrdi"]
 interpolation_mode = 2
@@ -589,6 +586,8 @@ anchor_right = 1.0
 anchor_bottom = 1.0
 grow_horizontal = 2
 grow_vertical = 2
+size_flags_horizontal = 3
+size_flags_vertical = 3
 mouse_filter = 2
 script = ExtResource("2_wj4ul")
 
@@ -1186,7 +1185,7 @@ collision_mask = 32768
 hit_from_inside = true
 
 [node name="Visual_Ground" type="MeshInstance3D" parent="Player"]
-transform = Transform3D(1, 0, -2.98023e-08, 0, 1, 0, 2.98023e-08, 0, 1, 25.6111, 7.62939e-06, 79.2627)
+transform = Transform3D(1, 0, -2.98023e-08, 0, 1, 0, 2.98023e-08, 0, 1, 0, 0, 0)
 layers = 2
 mesh = SubResource("PlaneMesh_ssghn")
 skeleton = NodePath("")
@@ -1253,6 +1252,7 @@ max_results = 1028
 collision_mask = 4
 
 [node name="Curtain" type="TextureRect" parent="."]
+visible = false
 z_index = 500
 anchors_preset = 15
 anchor_right = 1.0

@@ -1,0 +1,75 @@
+[gd_resource type="Theme" load_steps=14 format=3 uid="uid://55r57hveyxd8"]
+
+[sub_resource type="Gradient" id="Gradient_n1l3t"]
+offsets = PackedFloat32Array(0, 0.3, 0.7, 1)
+colors = PackedColorArray(0.827451, 0.482353, 0.819608, 1, 0.364706, 0.12549, 0.364706, 1, 0.364706, 0.12549, 0.364706, 1, 0.827451, 0.482353, 0.819608, 1)
+
+[sub_resource type="GradientTexture2D" id="GradientTexture2D_hgduj"]
+gradient = SubResource("Gradient_n1l3t")
+fill_from = Vector2(0.5, 0)
+fill_to = Vector2(0.5, 1)
+
+[sub_resource type="StyleBoxTexture" id="StyleBoxTexture_prj5r"]
+texture = SubResource("GradientTexture2D_hgduj")
+
+[sub_resource type="Gradient" id="Gradient_wcysd"]
+offsets = PackedFloat32Array(0, 0.3, 0.7, 1)
+colors = PackedColorArray(0.905882, 0.701961, 0.960784, 1, 0.827451, 0.482353, 0.819608, 1, 0.827451, 0.482353, 0.819608, 1, 0.905882, 0.701961, 0.960784, 1)
+
+[sub_resource type="GradientTexture2D" id="GradientTexture2D_xf7er"]
+gradient = SubResource("Gradient_wcysd")
+fill_from = Vector2(0.5, 0)
+fill_to = Vector2(0.5, 1)
+
+[sub_resource type="StyleBoxTexture" id="StyleBoxTexture_0ij1j"]
+texture = SubResource("GradientTexture2D_xf7er")
+
+[sub_resource type="Gradient" id="Gradient_wcsj8"]
+offsets = PackedFloat32Array(0, 0.3, 0.7, 1)
+colors = PackedColorArray(0.827451, 0.482353, 0.819608, 1, 1, 1, 1, 1, 1, 1, 1, 1, 0.827451, 0.482353, 0.819608, 1)
+
+[sub_resource type="GradientTexture2D" id="GradientTexture2D_o82n2"]
+gradient = SubResource("Gradient_wcsj8")
+fill_from = Vector2(0.5, 0)
+fill_to = Vector2(0.5, 1)
+
+[sub_resource type="StyleBoxTexture" id="StyleBoxTexture_somie"]
+texture = SubResource("GradientTexture2D_o82n2")
+
+[sub_resource type="StyleBoxLine" id="StyleBoxLine_vexwy"]
+color = Color(1, 1, 1, 1)
+thickness = 11
+
+[sub_resource type="StyleBoxLine" id="StyleBoxLine_lhlxh"]
+color = Color(0.588235, 0.239216, 0.588235, 1)
+grow_end = 0.0
+thickness = 11
+
+[sub_resource type="GradientTexture2D" id="GradientTexture2D_iqgm3"]
+gradient = SubResource("Gradient_wcysd")
+fill_from = Vector2(0.5, 0)
+fill_to = Vector2(0.5, 1)
+
+[sub_resource type="StyleBoxTexture" id="StyleBoxTexture_h3ssu"]
+texture = SubResource("GradientTexture2D_iqgm3")
+
+[resource]
+default_font_size = 30
+Button/colors/font_color = Color(1, 1, 1, 1)
+Button/colors/font_hover_pressed_color = Color(0, 0, 0, 1)
+Button/colors/font_outline_color = Color(0.364706, 0.12549, 0.364706, 1)
+Button/constants/outline_size = 5
+Button/font_sizes/font_size = 25
+Button/styles/hover = SubResource("StyleBoxTexture_prj5r")
+Button/styles/normal = SubResource("StyleBoxTexture_0ij1j")
+Button/styles/pressed = SubResource("StyleBoxTexture_somie")
+HSlider/styles/grabber_area = SubResource("StyleBoxLine_vexwy")
+HSlider/styles/slider = SubResource("StyleBoxLine_lhlxh")
+Label/colors/font_outline_color = Color(0.364706, 0.12549, 0.364706, 1)
+Label/constants/outline_size = 3
+Label/font_sizes/font_size = 16
+Lower_bar_button/base_type = &"RichTextLabel"
+OptionButton/font_sizes/font_size = 25
+Panel/styles/panel = SubResource("StyleBoxTexture_h3ssu")
+RichTextLabel/colors/font_outline_color = Color(0.364706, 0.12549, 0.364706, 1)
+RichTextLabel/constants/outline_size = 6

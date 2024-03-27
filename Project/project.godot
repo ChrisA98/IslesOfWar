@@ -12,7 +12,7 @@ config_version=5
 
 config/name="Isles Of War"
 run/main_scene="res://World_Generation/level_builder/level_builder.tscn"
-config/features=PackedStringArray("4.1", "Forward Plus")
+config/features=PackedStringArray("4.2", "Forward Plus")
 boot_splash/bg_color=Color(0.67451, 0.870588, 0.988235, 1)
 boot_splash/image="res://Icon.png"
 config/icon="res://icon.svg"
@@ -24,12 +24,14 @@ Global_Vars="*res://global_vars.gd"
 [debug]
 
 settings/profiler/max_functions=32678
+shader_language/log_path="D:\\Holder\\GameDev\\IslesOfWar\\log"
 
 [display]
 
 window/size/viewport_width=1920
 window/size/viewport_height=1080
-window/size/initial_position_type=3
+window/size/initial_position_type=2
+window/size/initial_screen=1
 mouse_cursor/custom_image="res://Assets/UI_Elements/Cursor_Main.png"
 
 [filesystem]
@@ -171,11 +173,11 @@ building_locs={
 }
 water_depth={
 "type": "float",
-"value": 7.0
+"value": 28.0
 }
 heightmap_tex={
 "type": "sampler2D",
-"value": "res://Test_Items/Map_data/master.exr"
+"value": "res://Assets/Levels/test/master.exr"
 }
 ground_tex_main={
 "type": "sampler2D",

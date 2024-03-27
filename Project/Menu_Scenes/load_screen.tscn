@@ -84,3 +84,5 @@ texture = SubResource("GradientTexture1D_7351m")
 libraries = {
 "": SubResource("AnimationLibrary_htw8b")
 }
+
+[connection signal="animation_finished" from="fade/AnimationPlayer" to="." method="_animation_finished"]

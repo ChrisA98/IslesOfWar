@@ -12,7 +12,11 @@ var is_loading
 
 var gamescene_path = "res://Game_Scene_Files/GameScene.tscn"
 
-
+func _ready():	
+	var heightmap = load("res://Assets/Levels/default_map/master.exr").get_image()
+	Global_Vars.heightmap = heightmap
+	RenderingServer.global_shader_parameter_set("heightmap_tex",ImageTexture.create_from_image(heightmap))
+	$Load_Screen.faded_in.connect(_free_background)
 
 func _multiplayer_button():
 	call_deferred("_load_gamescene")
@@ -20,34 +24,28 @@ func _multiplayer_button():
 
 func _load_gamescene():
 	is_loading = true
-	mutex = Mutex.new()
-	load_thread = Thread.new()
 	for i in get_children():
 		i.visible = false
 	$Load_Screen.fade_in()
-	$Background.queue_free()
-	get_tree().set_pause(true)
-	load_thread.start(_load_gamescene_thread.bind(gamescene_path))
-	await gamescene_loaded
-	get_tree().set_pause(false)
-	queue_free()
-
-
-func _load_gamescene_thread(path):
-	print("loading")
-	var gamescene_load = load(path)
+	await get_tree().physics_frame
+	print("Loading")
+	var gamescene_load = load(gamescene_path)
+	print("Scene loaded")
 	var scene = gamescene_load.instantiate()
-	while !scene.ready_to_load:
-		pass
-	get_tree().root.call_deferred("add_child",scene)
-	await scene.ready
+	scene.loaded.connect(_exit_menu)
+	print("Scene instanced")
+	get_tree().root.add_child(scene)
+
+
+## Free background once other functionms
+func _free_background():
+	$Background.queue_free()
+
+## Free Main Menu once new scene is loaded
+func _exit_menu():
 	print("finished loading")
+	queue_free()
 	gamescene_loaded.emit()
-
-
-func _exit_tree():
-	if is_loading:
-		load_thread.wait_to_finish()
 
 
 func _maps():

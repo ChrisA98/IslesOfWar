@@ -62,29 +62,35 @@ preload("res://Faction_Resources/Amerulf_Resource.json")]
 @onready var selection_square = get_node("Player/Selection_square")
 
 
-'''### BUILT-IN METHODS ###'''
-#Called when the node enters the scene tree for the first time.
+#region Built-In Methods
+
+## Called when the node enters the scene tree for the first time.
 func _init():
 	Global_Vars.load_text = ("loading game")
 	# Load level
-	var lvl = load("res://World_Generation/base_level.tscn").instantiate()
+	var lvl_file = load("res://Assets/Levels/test/level.scn")
+	Global_Vars.load_text = ("Loaded game")
+	Global_Vars.load_text = ("Instancing level")
+	var lvl = lvl_file.instantiate()
+	lvl.init(self)
+	Global_Vars.load_text = ("Instanced level")
 	world = lvl
 	world.name = "level"
 	
 	lvl.loaded.connect(_loaded_signal)
 	
-	lvl.init(self)	
 	add_child(lvl)
 	
 	ready_to_load = true
-	Global_Vars.load_text = "loaded game"
 
 func _ready():	
 	## Transfer level material to visual ground
 	var world_material = world.find_child("Visual_Ground").mesh.get_material()	
 	player_controller.find_child("Visual_Ground").mesh.set_material(world_material)
 
+
 func _loaded_signal():
+	Global_Vars.load_text = "loaded game"
 	loaded.emit()
 	process_functions.push_back(_update_sky)
 
@@ -117,7 +123,11 @@ func _input(event):
 		player_controller.group_selected_units()
 
 
-'''### PUBLIC METHODS ###'''
+#endregion
+
+
+#region Public Methods
+
 func set_map_snap(snp):
 	building_snap = snp
 	if preview_building != null:
@@ -138,10 +148,10 @@ func spawn_unit(unit):
 	unit.unit_list = world_units
 	unit.selected.connect(unit_selected)
 	return true
+#endregion
 
 
-'''-------------------------------------------------------------------------------------'''
-''' Unit Selection Start '''
+#region Unit Selection Region
 ## Check what unit is being clicked and what to do with it
 func unit_selected(unit, event):
 	UI_controller.close_menus()
@@ -228,10 +238,10 @@ func select_from_list(units):
 	player_controller.clear_selection()
 	player_controller.select_group(units)
 
+#endregion
 
-''' Unit Selection End '''
-'''-------------------------------------------------------------------------------------'''
-''' Prep Game and world management Start '''
+
+#region Prep Game and World Management Region
 func _prepare_game():
 	await get_tree().physics_frame
 	# Connect ground signals
@@ -382,9 +392,10 @@ func _navmesh_updated():
 	travel_queue_units.clear()
 
 
-''' Prep Game  and world managementEnd '''
-'''-------------------------------------------------------------------------------------'''
-''' Building Placement Start '''
+#endregion
+
+
+#region Building Placement Region
 ##  Prepare new building for player
 func prep_player_building(id, menu):
 	# Clear existing preview buildings
@@ -416,11 +427,10 @@ func prep_other_building(actor, bldg_name):
 	return new_build
 
 
-''' Building Placement End '''
-'''-------------------------------------------------------------------------------------'''
-''' Player Input Start '''
+#endregion
 
 
+#region Player Input Region
 ## Activate buildings menu
 func building_pressed(building):
 	if Input.is_action_just_released("lmb"):
@@ -546,8 +556,9 @@ func _minimap_Clicked(command : String, pos : Vector2):
 					player_controller.command_unit_move(world_pos)
 
 
-''' Player Input End '''
-'''-------------------------------------------------------------------------------------'''
+#endregion
+
+
 ## Day/Night Cycle
 func _on_day_cycle_timer_timeout():
 	for f in game_actors:

@@ -51,6 +51,7 @@ func _update_drawers_pos():
 func _update_fog(tex):
 	RenderingServer.global_shader_parameter_set("fog_tex",tex)
 
+
 ## Update markers
 ## should be added always
 func _update_markers(tex):

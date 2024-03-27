@@ -8,13 +8,13 @@
 bg_color = Color(1, 0.278431, 0.576471, 1)
 
 [sub_resource type="Gradient" id="Gradient_wcysd"]
-offsets = PackedFloat32Array(0.00452489, 1)
-colors = PackedColorArray(0.827451, 0.482353, 0.819608, 1, 0.905882, 0.701961, 0.960784, 1)
+offsets = PackedFloat32Array(0, 0.3, 0.7, 1)
+colors = PackedColorArray(0.905882, 0.701961, 0.960784, 1, 0.827451, 0.482353, 0.819608, 1, 0.827451, 0.482353, 0.819608, 1, 0.905882, 0.701961, 0.960784, 1)
 
 [sub_resource type="GradientTexture2D" id="GradientTexture2D_iqgm3"]
 gradient = SubResource("Gradient_wcysd")
-fill_from = Vector2(0.884615, 0.0854701)
-fill_to = Vector2(0.594017, 1)
+fill_from = Vector2(0.5, 0)
+fill_to = Vector2(0.5, 1)
 
 [sub_resource type="StyleBoxTexture" id="StyleBoxTexture_nkk0c"]
 texture = SubResource("GradientTexture2D_iqgm3")

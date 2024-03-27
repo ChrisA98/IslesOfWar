@@ -56,5 +56,7 @@ func get_loc_height(pos:Vector3):
 	var y = pos.z+Global_Vars.heightmap_size/2
 	if x > Global_Vars.heightmap_size or y > Global_Vars.heightmap_size:
 		return -10000
+	if x < 0 or y < 0:
+		return -10000
 	var t = heightmap.get_pixel(x,y).r * 100
 	return clamp(t,0,1000)

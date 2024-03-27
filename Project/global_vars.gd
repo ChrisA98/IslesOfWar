@@ -25,7 +25,10 @@ const NIGHT_LENGTH : int = 46
 var navmesh_baking : NavigationRegion3D
 var queued_nav_bakes: Array
 
-var load_text = "Loading Something"
+var load_text = "Loading Something":
+	set(value):
+		load_text = value
+		print(load_text)
 
 var heightmap : Image = Image.new():
 	set(value):

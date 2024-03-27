@@ -41,6 +41,9 @@ var update_node_function: Callable
 var following_mouse : bool = true
 var mouse_pos
 
+## Can be selected and moved
+var active : bool = true
+
 
 @onready var level_builder_controller = get_parent().get_parent()
 @onready var menus = [null,get_node("forest_menu"),get_node("stone_menu"),get_node("crystal_menu")]
@@ -49,6 +52,8 @@ var mouse_pos
 func _ready():
 	update_heightmap()
 	set_pos(level_builder_controller.mouse_position)
+	
+	active = true
 	
 	##Connect node type menus
 	for m in menus:
@@ -110,6 +115,9 @@ func spawn_node():
 
 
 func _on_controller_handle_input_event(_camera, event, _pos, _normal, _shape_idx):
+	if !active:
+		## Player is not in edit mode
+		return
 	if event is InputEventMouseButton:
 		if event.is_action_pressed("lmb"):
 			selected = true

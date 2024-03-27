@@ -9,8 +9,8 @@
 [ext_resource type="PackedScene" uid="uid://crswchumae5b0" path="res://World_Objects/Forest.tscn" id="6_mr85e"]
 [ext_resource type="Shader" path="res://Materials/fog_of_war_overlay.gdshader" id="7_o463w"]
 [ext_resource type="PackedScene" uid="uid://cmbxjk6juw1e2" path="res://Assets/Models/Amerulf/scene_files/dock_am.tscn" id="8_4r4xb"]
-[ext_resource type="Shader" path="res://World_Generation/New_Terrain.gdshader" id="8_nw1va"]
 [ext_resource type="Shader" path="res://World_Generation/Water.gdshader" id="9_7kseo"]
+[ext_resource type="Shader" path="res://World_Generation/level_builder/EditorTerrain.gdshader" id="10_nja2l"]
 
 [sub_resource type="ProceduralSkyMaterial" id="ProceduralSkyMaterial_o7t8u"]
 sky_top_color = Color(0.427451, 0.756863, 0.92549, 1)
@@ -132,7 +132,7 @@ noise = SubResource("FastNoiseLite_l7c1p")
 [sub_resource type="ShaderMaterial" id="ShaderMaterial_rie7d"]
 resource_local_to_scene = true
 render_priority = 0
-shader = ExtResource("8_nw1va")
+shader = ExtResource("10_nja2l")
 shader_parameter/t_height = 100.0
 shader_parameter/min_rock_slope = 0.156
 shader_parameter/max_grass_slope = 0.362
@@ -297,7 +297,7 @@ grow_vertical = 2
 mouse_filter = 2
 theme = ExtResource("5_xww4n")
 bbcode_enabled = true
-text = "[center]Multiplayer
+text = "[center]Custom Games
 "
 
 [node name="Maps_Button" type="TextureButton" parent="Main/VBoxContainer"]
@@ -316,7 +316,7 @@ grow_vertical = 2
 mouse_filter = 2
 theme = ExtResource("5_xww4n")
 bbcode_enabled = true
-text = "[center]Maps
+text = "[center]Editor
 "
 
 [node name="Settings_Button" type="TextureButton" parent="Main/VBoxContainer"]

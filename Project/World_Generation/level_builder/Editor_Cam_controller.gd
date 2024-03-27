@@ -7,7 +7,7 @@ var max_speed = 5
 var accel = 8
 
 func _input(event):		
-	#close game, TESTING ONLY
+	# close game, TESTING ONLY
 	if event.is_action_pressed(("esc")):
 		get_tree().quit()
 

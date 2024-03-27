@@ -1,0 +1,14 @@
+[remap]
+
+importer="glsl"
+type="RDShaderFile"
+uid="uid://dbuparfua5ter"
+path="res://.godot/imported/test_compute.glsl-b63d139e184723dc31d6950f0d981b92.res"
+
+[deps]
+
+source_file="res://Test_Items/test_compute.glsl"
+dest_files=["res://.godot/imported/test_compute.glsl-b63d139e184723dc31d6950f0d981b92.res"]
+
+[params]
+

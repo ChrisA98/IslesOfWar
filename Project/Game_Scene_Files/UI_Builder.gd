@@ -199,6 +199,8 @@ func update_clock():
 
 ## Minimap input event
 func minimap_Input(event):
+	if (typeof(event) == typeof(InputEventJoypadMotion)):
+		return
 	var world_pos = (event.position * mtw_ratio)
 	world_pos.x -= world_width/2
 	world_pos.y -= world_width/2

@@ -436,6 +436,8 @@ func snap_to_ground():
 func get_ground_groups():
 	var corners = static_body.find_children("Corner*")
 	for c in corners:
+		if c.get_collider() == null:
+			continue
 		var t = (c.get_collider().get_parent().get_parent().get_groups())
 		if(t.size() == 0):
 			continue

@@ -1,15 +1,12 @@
 shader_type spatial;
 render_mode diffuse_lambert_wrap;
 
-global uniform sampler2D heightmap_tex : repeat_disable;
+global uniform sampler2D heightmap_tex : repeat_disable,filter_linear_mipmap_anisotropic;
 global uniform sampler2D building_locs;
 
 uniform float t_height;
 
-uniform sampler2DArray ground_textures: source_color;
-
-
-uniform sampler2D grass_alb_tex : source_color;
+uniform sampler2D grass_alb_tex : source_color,filter_nearest;
 uniform sampler2D grass_norm_tex : source_color; 
 uniform sampler2D cliff_alb_tex : source_color;
 uniform sampler2D cliff_norm_tex : source_color;
@@ -18,6 +15,7 @@ uniform sampler2D sand_norm_tex : source_color;
 
 uniform float min_rock_slope:hint_range(0.0,1.0) = 0.5;
 uniform float max_grass_slope:hint_range(0.0,1.0) = 0.9;
+
 
 //current fog
 global uniform sampler2D fog_tex;
@@ -38,6 +36,7 @@ float get_height(vec2 x){
 
 void vertex() {
 	pos_uv = vec2((NODE_POSITION_WORLD.x)/heightmap_tex_size.x,(NODE_POSITION_WORLD.z)/heightmap_tex_size.y)+((vec2(VERTEX.x,VERTEX.z)/heightmap_tex_size)) + vec2(.5);
+	
 	height = get_height(pos_uv);
 	vec4 buildings = texture(building_locs, pos_uv);
 	VERTEX.y = height - NODE_POSITION_WORLD.y - buildings.g;
@@ -45,7 +44,6 @@ void vertex() {
 	vec2 e = vec2(0.01, 0.0);
 	normal = normalize(vec3(get_height(pos_uv - e) / t_height - get_height(pos_uv + e) / t_height, 2.0 * e.x, get_height(pos_uv - e.yx) / t_height - get_height(pos_uv + e.yx) / t_height));
 	NORMAL = normal;
-	pos_uv = UV*2.0;
 }
 
 void fragment(){
@@ -94,7 +92,6 @@ void fragment(){
 	float buildings = texture(building_locs, pos_uv).g;
 	
 	ALBEDO = mix(sand_albedo, ALBEDO, 1.1-buildings);
-	
 	vec4 fog_color = texture(fog_tex, pos_uv);
 	if(fog_color.a < 0.1){
 		ALBEDO = mix(ALBEDO, vec3 (0,0,0), fog_darkness);

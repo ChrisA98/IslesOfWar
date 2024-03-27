@@ -21,36 +21,74 @@ var active_menu = terrain_menu:
 				gnd_menu.visible = true
 				terrain_menu.visible = false
 				obj_menu.visible = false
-				
+
+var active_terrain_brush
+var water_level: float = 7
 
 @onready var terrain_menu = get_node("Brush_Panel")
 @onready var obj_menu = get_node("Place_Obj_Panel")
 @onready var gnd_menu = get_node("Ground_Brush_Panel")
 @onready var brush = get_node("../editor_cursor")
 @onready var level = get_node("../level")
+@onready var terrain_brushes = get_parent().terrain_textures
 
 
 """ built-in """
 func _ready():
+	
+	## Connect brush type changeing button to update thise node
 	$Brush_Panel/HBoxContainer/brush_Mode/MenuButton.get_popup().id_pressed.connect(_brush_type_changed)
+	## Connect spawnable world objects to spawn world objects
 	$Place_Obj_Panel/HBoxContainer/World_Objects/world_objects_list.get_popup().id_pressed.connect(_spawn_world_object)
+	## Set editor viewport aspect ratio
+	$editor_overlay_viewport/SubViewport.size.x = ProjectSettings.get_setting("display/window/size/viewport_width")
+	$editor_overlay_viewport/SubViewport.size.y = ProjectSettings.get_setting("display/window/size/viewport_height")
+	
 	call_deferred("_set_brush_defaults")
 
 
+## Set default values for brush
 func _set_brush_defaults():
+	brush.strength = .5
+	brush.elevation = .5
+	brush.radius = 50
+	brush.falloff = 50
+
+
+## Load textures for the terain brush
+func load_textures():
+	for t in get_parent().terrain_textures:
+		$Ground_Brush_Panel/HBoxContainer/Texture/OptionButton.add_item(t)
+	$Ground_Brush_Panel/HBoxContainer/Texture/OptionButton.selected = 0
+	call_deferred("_initialize_tex_brush")
+
+## Set default texture for texture brush
+func _initialize_tex_brush():
 	await get_tree().physics_frame
-	$Brush_Panel/HBoxContainer/Brush_Strength/Slider.value = 12
-	strength_slider_used(12)
-	$Brush_Panel/HBoxContainer/Brush_Elevation/Slider.value =  12
-	elevation_slider_used(12)
-	$Brush_Panel/HBoxContainer/Brush_Radius/Slider.value = 50
-	radius_slider_used(50)
-	$Brush_Panel/HBoxContainer/Brush_Falloff/Slider.value = 50
-	falloff_slider_used(50)
+	var default_tex = $Ground_Brush_Panel/HBoxContainer/Texture/OptionButton.get_item_text(0)
+	_change_paint_image(terrain_brushes[default_tex].get_image())
 
 
 
-""" Brush Controls"""
+""" Terrain Paint Brush Controls"""
+
+
+## UI texture option button changed value
+func _texture_changed(id):
+	var tex_name = $Ground_Brush_Panel/HBoxContainer/Texture/OptionButton.get_item_text(id)
+	_change_paint_image(terrain_brushes[tex_name].get_image())
+
+
+## Set active paint image and snd it to the brush
+func _change_paint_image(image):
+	if image == null:
+		return
+	active_terrain_brush = image
+	brush.paint_tex = active_terrain_brush
+
+
+
+""" Terrain Brush Controls"""
 
 
 
@@ -77,6 +115,7 @@ func falloff_slider_used(value):
 func water_level_slider_used(value):
 	RenderingServer.global_shader_parameter_set("water_depth",value)
 	Global_Vars.water_elevation = value
+	water_level = value
 	$Brush_Panel/HBoxContainer/World_Water_Level/value.text = "[center]"+str(value)+"[/center]"
 
 

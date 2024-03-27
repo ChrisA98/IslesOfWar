@@ -69,6 +69,7 @@ func load_units():
 			##Load model master
 			var model
 			if(FileAccess.file_exists("res://Assets/Models/Units/modified_scenes/"+mod+"_va.tscn")):
+				@warning_ignore("assert_always_false")
 				model = load("res://Assets/Models/Units/modified_scenes/"+mod+"_va.tscn").instantiate()
 			else:
 				model = load("res://Assets/Models/Units/modified_scenes/knight_base_va.tscn").instantiate()

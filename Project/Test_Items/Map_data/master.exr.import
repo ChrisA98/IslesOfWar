@@ -3,26 +3,25 @@
 importer="texture"
 type="CompressedTexture2D"
 uid="uid://c4paktovtlui4"
-path.bptc="res://.godot/imported/master.exr-18318ff4636e44d97f6cf6140d299a75.bptc.ctex"
+path="res://.godot/imported/master.exr-18318ff4636e44d97f6cf6140d299a75.ctex"
 metadata={
-"imported_formats": ["s3tc_bptc"],
-"vram_texture": true
+"vram_texture": false
 }
 
 [deps]
 
 source_file="res://Test_Items/Map_data/master.exr"
-dest_files=["res://.godot/imported/master.exr-18318ff4636e44d97f6cf6140d299a75.bptc.ctex"]
+dest_files=["res://.godot/imported/master.exr-18318ff4636e44d97f6cf6140d299a75.ctex"]
 
 [params]
 
-compress/mode=2
+compress/mode=3
 compress/high_quality=false
 compress/lossy_quality=0.7
 compress/hdr_compression=1
 compress/normal_map=2
 compress/channel_pack=1
-mipmaps/generate=true
+mipmaps/generate=false
 mipmaps/limit=-1
 roughness/mode=0
 roughness/src_normal=""

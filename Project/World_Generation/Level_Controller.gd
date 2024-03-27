@@ -9,7 +9,7 @@ signal loaded
 @export var year = 603
 @export var day_cycle = true
 @export_group("Terrain")
-@export var meshres = 25
+@export var meshres = 5
 @export var terrain_amplitude = 100
 @export var water_table : float = 7
 @export var heightmap_dir: String = "res://Test_Items/Map_data/"
@@ -39,12 +39,15 @@ var noise_image: Image = Image.new()
 var chunk_size = 500
 var chunks
 var nav_manager
-@onready var ground = get_node("../Player/Visual_Ground")
+@onready var ground: MeshInstance3D = get_node("../Player/Visual_Ground")
 @onready var water = get_node("../Player/Visual_Ground/Water")
 var fog_material = ShaderMaterial.new()
 
+var editor_version = true
+
 
 func init(_gamescene):
+	editor_version = false
 	gamescene = _gamescene
 	Global_Vars.load_text = ("loading level")
 	fog_material.set_shader(load("res://Materials/fog_of_war_overlay.gdshader"))
@@ -52,14 +55,16 @@ func init(_gamescene):
 	Global_Vars.load_text = ("loaded shader")
 	chunks = sqrt(find_files())
 	heightmap = load(heightmap_dir+"master"+".exr").get_image()
-	print("loaded heightmap _ chunks = "+str(chunks))
+	Global_Vars.heightmap = heightmap
+	RenderingServer.global_shader_parameter_set("heightmap_tex",ImageTexture.create_from_image(heightmap))
+	Global_Vars.heightmap_size = chunks*500
+	Global_Vars.load_text = ("loaded heightmap _ chunks = "+str(chunks))
 	##Set up buildings tex
 	building_locations = Image.create(chunks*chunk_size,chunks*chunk_size,false,Image.FORMAT_RGBF)
-	for x in range(chunks*chunk_size):
-		for y in range(chunks*chunk_size):
-			building_locations.set_pixel(x,y,Color.BLACK)	
+	Global_Vars.load_text = "Loaded Buildings Texture"
+	building_locations.fill(Color.BLACK)
 	RenderingServer.global_shader_parameter_set("building_locs",ImageTexture.create_from_image(building_locations))
-	Global_Vars.load_text = ("loading map")
+	Global_Vars.load_text = ("Loading map")
 	nav_manager = load("res://World_Generation/NavMeshManager.gd")
 	map_offset = (chunk_size*chunks)/2
 	## Prepare chunks
@@ -92,6 +97,10 @@ func init(_gamescene):
 	call_deferred("_build_fog_war")
 
 func _ready():
+	if editor_version:
+		heightmap = load(heightmap_dir+"master"+".exr").get_image()
+		Global_Vars.heightmap = heightmap
+		return
 	$Water/StaticBody3D.input_event.connect(gamescene.ground_click.bind($Water/StaticBody3D)) 
 	Global_Vars.load_text = ("loading sun")
 	# Set Sun and moon in place
@@ -101,6 +110,7 @@ func _ready():
 	get_parent().call_deferred("_prepare_game")
 	_prepare_water()
 
+#region initializing Functions
 
 ## Prepare water navigation
 func _prepare_water():
@@ -124,16 +134,13 @@ func _prepare_water():
 	wtr_nav_region.set_navigation_layer_value(2, true)
 	
 	## Prepare Ground with level info
-	ground.mesh.surface_get_material(0).set_shader_parameter("water_table", water_table)
-	ground.mesh.surface_get_material(0).set_shader_parameter("max_sand_height", water_table+2)
 	ground.mesh.surface_get_material(0).set_shader_parameter("t_height", terrain_amplitude)
 	## Prepare Water with level info
-	water.position.y = water_table
-	water.mesh.surface_get_material(0).set_shader_parameter("water_level", water_table)
 	water.mesh.surface_get_material(0).set_shader_parameter("t_height", terrain_amplitude)
+	$Water.position.y = water_table
 
 
-func _build_fog_war(chunks):
+func _build_fog_war():
 	## Fog of war walls
 	var fog_wall_size = ((chunk_size*chunks)/65)+1	#gets length of walls
 	var base_fog_wall = $Great_Fog_Wall.find_children("Fog*","Node",false)[-1]
@@ -158,8 +165,6 @@ func _build_fog_war(chunks):
 		te.position.x = -((chunk_size*chunks/2)+65)
 		$Great_Fog_Wall.add_child(te)
 	
-	print("waiting ready")
-	await ready
 	
 	## Fog of war explorable
 	var fog_explor_range = (chunk_size*chunks)/25	#gets length of walls
@@ -219,6 +224,10 @@ func update_navigation_meshes(grp):
 		if i.name.contains(targ):
 			i.update_navigation_mesh()	
 
+#endregion
+
+
+#region Build map Functions
 
 func build_map(img, pos, adj):	
 	var grp = StringName("reg_"+str(adj.x) +"_"+ str(adj.y))
@@ -264,7 +273,7 @@ func create_mesh(img):
 			for y in range(height):
 				if y % meshres == 0:
 					height_data[Vector2(x,y)] = _heightmap.get_pixel(x,y).r * terrain_amplitude
-					if(height_data[Vector2(x,y)] < water_table):
+					if(height_data[Vector2(x,y)] < water_table-.15):
 						height_data[Vector2(x,y)] -= (100 + rng.randf_range(10,50))
 		
 	
@@ -325,6 +334,10 @@ func createQuad(x,y):
 	for i in range(0,3):
 		normals.push_back(normal)
 
+#endregion
+
+
+#region Ping Location Functions
 
 func get_region(pos : Vector3):
 	return StringName("reg_"+str(int(pos.x/chunk_size)) +"_"+ str(int(pos.z/chunk_size)))
@@ -336,16 +349,10 @@ func get_loc_height(pos:Vector3):
 	var t = heightmap.get_pixel(x,y).r * terrain_amplitude
 	return clamp(t,water_table,1000)
 
+#endregion
 
-## Get base spawn
-func get_base_spawn(trgt_player : int):
-	var bases = find_child("Base_Spawns").get_children()
-	if use_random_base_spawns:
-		return bases[rng.randi_range(0,bases.size()-1)]
-	for i in bases:
-		if i.actor_id == trgt_player:
-			return i
 
+#region Building Texture Interactions
 
 ## Update tree scatter avoidance texture
 func building_added(pos: Vector3, hide_grass: bool, bldg_radius: float, road_target: Vector3):
@@ -383,3 +390,25 @@ func _draw_circle_to_buildings_tex(circle_size, pos, hide_grass,lighten_offset:f
 				elif(p.distance_to(cntr) <= circle_size/4):
 					col.g = 0
 				building_locations.set_pixel(p.x,p.y,col)
+
+#endregion
+
+## Get base spawn for player
+func get_base_spawn(trgt_player : int):
+	var bases = find_child("Base_Spawns").get_children()
+	if use_random_base_spawns:
+		return bases[rng.randi_range(0,bases.size()-1)]
+	for i in bases:
+		if i.actor_id == trgt_player:
+			return i
+
+#region Change Data
+
+func get_ground_tex():
+	return $"Visual_Ground".mesh.surface_get_material(0).get_shader_parameter("grass_alb_tex")
+
+func set_ground_tex(new_tex: Texture2D):
+	$"Visual_Ground".mesh.surface_get_material(0).set_shader_parameter("grass_alb_tex",new_tex)
+	
+#endregion
+

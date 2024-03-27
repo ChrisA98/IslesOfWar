@@ -30,7 +30,7 @@ height = 7.21
 radial_segments = 4
 rings = 1
 
-[node name="World_object_edtor_container" type="Node3D"]
+[node name="World_object_edtor_container" type="Node3D" groups=["editor_object"]]
 script = ExtResource("1_ca4a6")
 
 [node name="controller_Handle" type="StaticBody3D" parent="."]
@@ -82,6 +82,7 @@ mesh = SubResource("CapsuleMesh_nej4x")
 skeleton = NodePath("../../..")
 
 [node name="forest_menu" type="Panel" parent="."]
+visible = false
 anchors_preset = -1
 anchor_left = 0.737
 anchor_right = 1.0

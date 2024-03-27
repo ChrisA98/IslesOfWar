@@ -1,12 +1,9 @@
-[gd_scene load_steps=45 format=3 uid="uid://hva1em7ponql"]
+[gd_scene load_steps=17 format=3 uid="uid://hva1em7ponql"]
 
 [ext_resource type="Script" path="res://World_Generation/level_builder/Level_Builder.gd" id="1_18iqu"]
 [ext_resource type="Script" path="res://World_Generation/level_builder/Level_Builder_UI.gd" id="2_efsya"]
-[ext_resource type="Shader" path="res://World_Generation/New_Terrain.gdshader" id="2_jxrs8"]
 [ext_resource type="Script" path="res://World_Generation/level_builder/brush.gd" id="2_vq7n1"]
-[ext_resource type="Texture2D" uid="uid://e0bv08ufelc4" path="res://Assets/Terrain_Textures/Default_grass.tres" id="3_g8f4s"]
-[ext_resource type="Script" path="res://World_Generation/level_builder/chunk_editor.gd" id="3_x81um"]
-[ext_resource type="Shader" path="res://World_Generation/Water.gdshader" id="4_76ggg"]
+[ext_resource type="Theme" uid="uid://55r57hveyxd8" path="res://Assets/Themes/editor_theme.tres" id="2_xkd2y"]
 [ext_resource type="Script" path="res://World_Generation/level_builder/Editor_Cam_controller.gd" id="6_f37vi"]
 
 [sub_resource type="Environment" id="Environment_xl1fn"]
@@ -26,7 +23,7 @@ width = 500
 height = 500
 fill = 1
 fill_from = Vector2(0.5, 0.5)
-fill_to = Vector2(0.5, 0)
+fill_to = Vector2(0.5, 0.1)
 
 [sub_resource type="Gradient" id="Gradient_8qlg3"]
 interpolation_mode = 2
@@ -39,7 +36,7 @@ width = 500
 height = 500
 fill = 1
 fill_from = Vector2(0.5, 0.5)
-fill_to = Vector2(0.5, 0)
+fill_to = Vector2(0.5, 0.1)
 
 [sub_resource type="ProceduralSkyMaterial" id="ProceduralSkyMaterial_46wwo"]
 sky_horizon_color = Color(0.647059, 0.654902, 0.670588, 1)
@@ -85,172 +82,6 @@ adjustment_enabled = true
 adjustment_brightness = 1.2
 adjustment_saturation = 1.5
 
-[sub_resource type="Gradient" id="Gradient_1g27v"]
-interpolation_mode = 2
-colors = PackedColorArray(0.442911, 0.442911, 0.442909, 1, 0.529308, 0.480394, 0.384391, 1)
-
-[sub_resource type="FastNoiseLite" id="FastNoiseLite_dlv7m"]
-noise_type = 4
-frequency = 0.0315
-fractal_type = 2
-fractal_octaves = 3
-fractal_lacunarity = 2.721
-fractal_gain = 0.239
-fractal_weighted_strength = 1.0
-fractal_ping_pong_strength = 2.037
-domain_warp_enabled = true
-domain_warp_amplitude = 30.168
-domain_warp_frequency = 0.032
-domain_warp_fractal_octaves = 1
-domain_warp_fractal_lacunarity = 6.086
-
-[sub_resource type="NoiseTexture2D" id="NoiseTexture2D_auk8h"]
-width = 3000
-height = 3000
-seamless = true
-color_ramp = SubResource("Gradient_1g27v")
-noise = SubResource("FastNoiseLite_dlv7m")
-
-[sub_resource type="NoiseTexture2D" id="NoiseTexture2D_ee0of"]
-width = 1000
-height = 1000
-seamless = true
-as_normal_map = true
-bump_strength = 10.8
-noise = SubResource("FastNoiseLite_dlv7m")
-
-[sub_resource type="FastNoiseLite" id="FastNoiseLite_al3lm"]
-noise_type = 0
-frequency = 0.0475
-fractal_octaves = 10
-fractal_lacunarity = 2.123
-fractal_gain = 0.874
-domain_warp_enabled = true
-domain_warp_amplitude = 30.164
-domain_warp_frequency = -0.03
-domain_warp_fractal_type = 2
-domain_warp_fractal_lacunarity = 6.062
-domain_warp_fractal_gain = 0.971
-
-[sub_resource type="NoiseTexture2D" id="NoiseTexture2D_lrj8h"]
-width = 1000
-height = 1000
-invert = true
-seamless = true
-as_normal_map = true
-bump_strength = 3.5
-noise = SubResource("FastNoiseLite_al3lm")
-
-[sub_resource type="Texture2DArray" id="Texture2DArray_0p1p0"]
-
-[sub_resource type="Gradient" id="Gradient_2i80b"]
-colors = PackedColorArray(0.859586, 0.873469, 0.643777, 1, 0.550264, 0.542165, 0.456681, 1)
-
-[sub_resource type="FastNoiseLite" id="FastNoiseLite_l7c1p"]
-frequency = 0.117
-
-[sub_resource type="NoiseTexture2D" id="NoiseTexture2D_xuw1p"]
-width = 3000
-height = 3000
-seamless = true
-color_ramp = SubResource("Gradient_2i80b")
-noise = SubResource("FastNoiseLite_l7c1p")
-
-[sub_resource type="NoiseTexture2D" id="NoiseTexture2D_8e7yg"]
-width = 1000
-height = 1000
-seamless = true
-as_normal_map = true
-normalize = false
-color_ramp = SubResource("Gradient_2i80b")
-noise = SubResource("FastNoiseLite_l7c1p")
-
-[sub_resource type="ShaderMaterial" id="ShaderMaterial_rie7d"]
-resource_local_to_scene = true
-render_priority = 0
-shader = ExtResource("2_jxrs8")
-shader_parameter/t_height = 100.0
-shader_parameter/min_rock_slope = 0.156
-shader_parameter/max_grass_slope = 0.362
-shader_parameter/ground_textures = SubResource("Texture2DArray_0p1p0")
-shader_parameter/grass_alb_tex = ExtResource("3_g8f4s")
-shader_parameter/grass_norm_tex = SubResource("NoiseTexture2D_lrj8h")
-shader_parameter/cliff_alb_tex = SubResource("NoiseTexture2D_auk8h")
-shader_parameter/cliff_norm_tex = SubResource("NoiseTexture2D_ee0of")
-shader_parameter/sand_alb_tex = SubResource("NoiseTexture2D_xuw1p")
-shader_parameter/sand_norm_tex = SubResource("NoiseTexture2D_8e7yg")
-
-[sub_resource type="PlaneMesh" id="PlaneMesh_rgect"]
-resource_local_to_scene = true
-material = SubResource("ShaderMaterial_rie7d")
-size = Vector2(500, 500)
-subdivide_width = 400
-subdivide_depth = 400
-
-[sub_resource type="Gradient" id="Gradient_kcurd"]
-interpolation_mode = 2
-colors = PackedColorArray(0.383293, 0.763558, 1, 1, 1.20327e-06, 0.337756, 0.401284, 1)
-
-[sub_resource type="GradientTexture1D" id="GradientTexture1D_7aoj2"]
-gradient = SubResource("Gradient_kcurd")
-
-[sub_resource type="FastNoiseLite" id="FastNoiseLite_rkjtp"]
-noise_type = 3
-fractal_type = 2
-fractal_octaves = 4
-fractal_lacunarity = 2.142
-fractal_gain = 1.916
-fractal_weighted_strength = 1.0
-fractal_ping_pong_strength = 7.072
-
-[sub_resource type="NoiseTexture2D" id="NoiseTexture2D_rv5b1"]
-width = 1000
-height = 1000
-seamless = true
-seamless_blend_skirt = 0.596
-as_normal_map = true
-noise = SubResource("FastNoiseLite_rkjtp")
-
-[sub_resource type="FastNoiseLite" id="FastNoiseLite_5bdcn"]
-noise_type = 3
-seed = 3
-fractal_type = 2
-
-[sub_resource type="NoiseTexture2D" id="NoiseTexture2D_57abc"]
-width = 1000
-height = 1000
-seamless = true
-as_normal_map = true
-bump_strength = 12.9
-noise = SubResource("FastNoiseLite_5bdcn")
-
-[sub_resource type="ShaderMaterial" id="ShaderMaterial_1nm3f"]
-render_priority = 0
-shader = ExtResource("4_76ggg")
-shader_parameter/t_height = 100.0
-shader_parameter/fresnel_intensity = null
-shader_parameter/tide = 2.871
-shader_parameter/water_turbulence = 6.652
-shader_parameter/water_alb = Color(0.392157, 0.831373, 0.898039, 1)
-shader_parameter/wave_direction_1 = Vector2(2, -2)
-shader_parameter/wave_direction_2 = Vector2(-2, 2)
-shader_parameter/time_scale = 0.01
-shader_parameter/wtr_tex_size = Vector2(1000, 1000)
-shader_parameter/water_alb_tex = SubResource("GradientTexture1D_7aoj2")
-shader_parameter/water_disp_tex_1 = SubResource("NoiseTexture2D_rv5b1")
-shader_parameter/water_disp_tex_2 = SubResource("NoiseTexture2D_57abc")
-
-[sub_resource type="PlaneMesh" id="PlaneMesh_djt1j"]
-material = SubResource("ShaderMaterial_1nm3f")
-size = Vector2(500, 500)
-subdivide_width = 200
-subdivide_depth = 200
-
-[sub_resource type="HeightMapShape3D" id="HeightMapShape3D_87c6a"]
-map_width = 52
-map_depth = 52
-map_data = PackedFloat32Array(0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0)
-
 [sub_resource type="Environment" id="Environment_h4cl6"]
 
 [sub_resource type="StandardMaterial3D" id="StandardMaterial3D_ek57q"]
@@ -261,28 +92,8 @@ albedo_color = Color(0, 0, 0, 1)
 material = SubResource("StandardMaterial3D_ek57q")
 size = Vector2(5000, 5000)
 
-[sub_resource type="Gradient" id="Gradient_bdb8r"]
-colors = PackedColorArray(0.65098, 0, 0, 1, 0.800712, 0.398503, 3.85046e-07, 1)
-
-[sub_resource type="FastNoiseLite" id="FastNoiseLite_vsduf"]
-frequency = 0.086
-fractal_type = 0
-domain_warp_enabled = true
-domain_warp_type = 1
-domain_warp_fractal_type = 2
-domain_warp_fractal_octaves = 2
-domain_warp_fractal_lacunarity = 5.63
-domain_warp_fractal_gain = -0.585
-
-[sub_resource type="NoiseTexture2D" id="NoiseTexture2D_hvmpb"]
-width = 3060
-height = 3060
-color_ramp = SubResource("Gradient_bdb8r")
-noise = SubResource("FastNoiseLite_vsduf")
-
 [node name="Level_Builder" type="Node3D"]
 script = ExtResource("1_18iqu")
-map_size = 2000
 default_map_path = "res://Assets/Levels/default_map"
 
 [node name="UI" type="Control" parent="."]
@@ -292,15 +103,11 @@ anchor_right = 1.0
 anchor_bottom = 1.0
 grow_horizontal = 2
 grow_vertical = 2
+size_flags_horizontal = 3
+size_flags_vertical = 3
 mouse_filter = 2
+theme = ExtResource("2_xkd2y")
 script = ExtResource("2_efsya")
-
-[node name="TextureRect" type="TextureRect" parent="UI"]
-visible = false
-layout_mode = 0
-offset_right = 1142.0
-offset_bottom = 1057.0
-texture = ExtResource("3_g8f4s")
 
 [node name="editor_overlay_viewport" type="SubViewportContainer" parent="UI"]
 layout_mode = 0
@@ -321,22 +128,25 @@ environment = SubResource("Environment_xl1fn")
 [node name="edit_mode_panel" type="PanelContainer" parent="UI"]
 layout_mode = 1
 anchors_preset = -1
-anchor_right = 0.058
-anchor_bottom = 0.293
-offset_right = 0.639999
-offset_bottom = -250.44
+anchor_right = 0.091
+anchor_bottom = 0.303
+offset_right = -62.72
+offset_bottom = -261.24
 
 [node name="edit_options" type="VBoxContainer" parent="UI/edit_mode_panel"]
 layout_mode = 2
+theme = ExtResource("2_xkd2y")
 
 [node name="edit_terrain_button" type="Button" parent="UI/edit_mode_panel/edit_options"]
 layout_mode = 2
 mouse_filter = 1
+theme = ExtResource("2_xkd2y")
 text = "Edit Terrain"
 
 [node name="edit_ground_button" type="Button" parent="UI/edit_mode_panel/edit_options"]
 layout_mode = 2
 mouse_filter = 1
+theme = ExtResource("2_xkd2y")
 text = "Edit Ground"
 
 [node name="place_objects_button" type="Button" parent="UI/edit_mode_panel/edit_options"]
@@ -351,6 +161,8 @@ text = "Environent"
 
 [node name="camera_view" type="OptionButton" parent="UI/edit_mode_panel/edit_options"]
 layout_mode = 2
+mouse_filter = 1
+theme = ExtResource("2_xkd2y")
 item_count = 2
 selected = 0
 popup/item_0/text = "Editor view"
@@ -364,6 +176,7 @@ anchors_preset = -1
 anchor_top = 0.9
 anchor_right = 1.0
 anchor_bottom = 1.011
+theme = ExtResource("2_xkd2y")
 
 [node name="HBoxContainer" type="HBoxContainer" parent="UI/Brush_Panel"]
 layout_mode = 1
@@ -383,12 +196,9 @@ layout_mode = 1
 anchors_preset = 15
 anchor_right = 1.0
 anchor_bottom = 1.0
-offset_right = -0.47998
-offset_bottom = -75.64
 grow_horizontal = 2
 grow_vertical = 2
 mouse_filter = 2
-theme_override_font_sizes/normal_font_size = 30
 bbcode_enabled = true
 text = "[center]Brush Strength[/center]"
 
@@ -400,7 +210,7 @@ anchor_bottom = 1.0
 grow_horizontal = 2
 grow_vertical = 2
 mouse_filter = 1
-value = 12.0
+value = 50.0
 
 [node name="value" type="RichTextLabel" parent="UI/Brush_Panel/HBoxContainer/Brush_Strength"]
 layout_mode = 1
@@ -415,10 +225,12 @@ offset_bottom = -0.640015
 grow_horizontal = 2
 grow_vertical = 2
 mouse_filter = 2
-theme_override_font_sizes/normal_font_size = 30
 bbcode_enabled = true
-text = "[center]12[/center]
+text = "[center]50[/center]
 "
+
+[node name="VSeparator" type="VSeparator" parent="UI/Brush_Panel/HBoxContainer"]
+layout_mode = 2
 
 [node name="Brush_Elevation" type="Panel" parent="UI/Brush_Panel/HBoxContainer"]
 layout_mode = 2
@@ -430,12 +242,9 @@ layout_mode = 1
 anchors_preset = 15
 anchor_right = 1.0
 anchor_bottom = 1.0
-offset_right = -0.47998
-offset_bottom = -75.64
 grow_horizontal = 2
 grow_vertical = 2
 mouse_filter = 2
-theme_override_font_sizes/normal_font_size = 30
 bbcode_enabled = true
 text = "[center]Elevation[/center]"
 
@@ -447,7 +256,7 @@ anchor_bottom = 1.0
 grow_horizontal = 2
 grow_vertical = 2
 mouse_filter = 1
-value = 12.0
+value = 50.0
 
 [node name="value" type="RichTextLabel" parent="UI/Brush_Panel/HBoxContainer/Brush_Elevation"]
 layout_mode = 1
@@ -462,9 +271,11 @@ offset_bottom = -0.640015
 grow_horizontal = 2
 grow_vertical = 2
 mouse_filter = 2
-theme_override_font_sizes/normal_font_size = 30
 bbcode_enabled = true
-text = "[center]12[/center]"
+text = "[center]50[/center]"
+
+[node name="VSeparator2" type="VSeparator" parent="UI/Brush_Panel/HBoxContainer"]
+layout_mode = 2
 
 [node name="Brush_Radius" type="Panel" parent="UI/Brush_Panel/HBoxContainer"]
 layout_mode = 2
@@ -476,12 +287,9 @@ layout_mode = 1
 anchors_preset = 15
 anchor_right = 1.0
 anchor_bottom = 1.0
-offset_right = -0.47998
-offset_bottom = -75.64
 grow_horizontal = 2
 grow_vertical = 2
 mouse_filter = 2
-theme_override_font_sizes/normal_font_size = 30
 bbcode_enabled = true
 text = "[center]Brush Radius[/center]"
 
@@ -509,10 +317,12 @@ offset_bottom = -0.640015
 grow_horizontal = 2
 grow_vertical = 2
 mouse_filter = 2
-theme_override_font_sizes/normal_font_size = 30
 bbcode_enabled = true
 text = "[center]50[/center]
 "
+
+[node name="VSeparator3" type="VSeparator" parent="UI/Brush_Panel/HBoxContainer"]
+layout_mode = 2
 
 [node name="Brush_Falloff" type="Panel" parent="UI/Brush_Panel/HBoxContainer"]
 layout_mode = 2
@@ -524,12 +334,9 @@ layout_mode = 1
 anchors_preset = 15
 anchor_right = 1.0
 anchor_bottom = 1.0
-offset_right = -0.47998
-offset_bottom = -75.64
 grow_horizontal = 2
 grow_vertical = 2
 mouse_filter = 2
-theme_override_font_sizes/normal_font_size = 30
 bbcode_enabled = true
 text = "[center]Brush Falloff[/center]"
 
@@ -557,9 +364,11 @@ offset_bottom = -0.640015
 grow_horizontal = 2
 grow_vertical = 2
 mouse_filter = 2
-theme_override_font_sizes/normal_font_size = 30
 bbcode_enabled = true
 text = "[center]50[/center]"
+
+[node name="VSeparator4" type="VSeparator" parent="UI/Brush_Panel/HBoxContainer"]
+layout_mode = 2
 
 [node name="World_Water_Level" type="Panel" parent="UI/Brush_Panel/HBoxContainer"]
 layout_mode = 2
@@ -571,12 +380,9 @@ layout_mode = 1
 anchors_preset = 15
 anchor_right = 1.0
 anchor_bottom = 1.0
-offset_right = -0.47998
-offset_bottom = -75.64
 grow_horizontal = 2
 grow_vertical = 2
 mouse_filter = 2
-theme_override_font_sizes/normal_font_size = 30
 bbcode_enabled = true
 text = "[center]Water Level[/center]"
 
@@ -603,9 +409,11 @@ offset_bottom = -0.640015
 grow_horizontal = 2
 grow_vertical = 2
 mouse_filter = 2
-theme_override_font_sizes/normal_font_size = 30
 bbcode_enabled = true
 text = "[center]7[/center]"
+
+[node name="VSeparator5" type="VSeparator" parent="UI/Brush_Panel/HBoxContainer"]
+layout_mode = 2
 
 [node name="brush_Mode" type="Panel" parent="UI/Brush_Panel/HBoxContainer"]
 layout_mode = 2
@@ -617,8 +425,6 @@ layout_mode = 1
 anchors_preset = 15
 anchor_right = 1.0
 anchor_bottom = 1.0
-offset_right = -0.47998
-offset_bottom = -75.64
 grow_horizontal = 2
 grow_vertical = 2
 mouse_filter = 2
@@ -635,7 +441,8 @@ offset_top = 52.0
 grow_horizontal = 2
 grow_vertical = 2
 mouse_filter = 1
-theme_override_font_sizes/font_size = 37
+theme = ExtResource("2_xkd2y")
+theme_type_variation = &"Lower_bar_button"
 text = "Draw"
 item_count = 2
 popup/item_0/text = "Draw"
@@ -650,6 +457,7 @@ anchors_preset = -1
 anchor_top = 0.9
 anchor_right = 1.0
 anchor_bottom = 1.011
+theme = ExtResource("2_xkd2y")
 
 [node name="HBoxContainer" type="HBoxContainer" parent="UI/Ground_Brush_Panel"]
 layout_mode = 1
@@ -669,12 +477,9 @@ layout_mode = 1
 anchors_preset = 15
 anchor_right = 1.0
 anchor_bottom = 1.0
-offset_right = -0.47998
-offset_bottom = -75.64
 grow_horizontal = 2
 grow_vertical = 2
 mouse_filter = 2
-theme_override_font_sizes/normal_font_size = 30
 bbcode_enabled = true
 text = "[center]Brush Strength[/center]"
 
@@ -686,7 +491,7 @@ anchor_bottom = 1.0
 grow_horizontal = 2
 grow_vertical = 2
 mouse_filter = 1
-value = 12.0
+value = 50.0
 
 [node name="value" type="RichTextLabel" parent="UI/Ground_Brush_Panel/HBoxContainer/Brush_Strength"]
 layout_mode = 1
@@ -701,56 +506,12 @@ offset_bottom = -0.640015
 grow_horizontal = 2
 grow_vertical = 2
 mouse_filter = 2
-theme_override_font_sizes/normal_font_size = 30
 bbcode_enabled = true
-text = "[center]12[/center]
+text = "[center]50[/center]
 "
 
-[node name="Brush_Elevation" type="Panel" parent="UI/Ground_Brush_Panel/HBoxContainer"]
+[node name="VSeparator2" type="VSeparator" parent="UI/Ground_Brush_Panel/HBoxContainer"]
 layout_mode = 2
-size_flags_horizontal = 3
-mouse_filter = 2
-
-[node name="label" type="RichTextLabel" parent="UI/Ground_Brush_Panel/HBoxContainer/Brush_Elevation"]
-layout_mode = 1
-anchors_preset = 15
-anchor_right = 1.0
-anchor_bottom = 1.0
-offset_right = -0.47998
-offset_bottom = -75.64
-grow_horizontal = 2
-grow_vertical = 2
-mouse_filter = 2
-theme_override_font_sizes/normal_font_size = 30
-bbcode_enabled = true
-text = "[center]Elevation[/center]"
-
-[node name="Slider" type="HSlider" parent="UI/Ground_Brush_Panel/HBoxContainer/Brush_Elevation"]
-layout_mode = 1
-anchors_preset = 15
-anchor_right = 1.0
-anchor_bottom = 1.0
-grow_horizontal = 2
-grow_vertical = 2
-mouse_filter = 1
-value = 12.0
-
-[node name="value" type="RichTextLabel" parent="UI/Ground_Brush_Panel/HBoxContainer/Brush_Elevation"]
-layout_mode = 1
-anchors_preset = -1
-anchor_top = 0.5
-anchor_right = 1.0
-anchor_bottom = 1.0
-offset_left = 0.1008
-offset_top = 0.179993
-offset_right = -0.199982
-offset_bottom = -0.640015
-grow_horizontal = 2
-grow_vertical = 2
-mouse_filter = 2
-theme_override_font_sizes/normal_font_size = 30
-bbcode_enabled = true
-text = "[center]12[/center]"
 
 [node name="Brush_Radius" type="Panel" parent="UI/Ground_Brush_Panel/HBoxContainer"]
 layout_mode = 2
@@ -762,12 +523,9 @@ layout_mode = 1
 anchors_preset = 15
 anchor_right = 1.0
 anchor_bottom = 1.0
-offset_right = -0.47998
-offset_bottom = -75.64
 grow_horizontal = 2
 grow_vertical = 2
 mouse_filter = 2
-theme_override_font_sizes/normal_font_size = 30
 bbcode_enabled = true
 text = "[center]Brush Radius[/center]"
 
@@ -795,10 +553,12 @@ offset_bottom = -0.640015
 grow_horizontal = 2
 grow_vertical = 2
 mouse_filter = 2
-theme_override_font_sizes/normal_font_size = 30
 bbcode_enabled = true
 text = "[center]50[/center]
 "
+
+[node name="VSeparator3" type="VSeparator" parent="UI/Ground_Brush_Panel/HBoxContainer"]
+layout_mode = 2
 
 [node name="Brush_Falloff" type="Panel" parent="UI/Ground_Brush_Panel/HBoxContainer"]
 layout_mode = 2
@@ -810,12 +570,9 @@ layout_mode = 1
 anchors_preset = 15
 anchor_right = 1.0
 anchor_bottom = 1.0
-offset_right = -0.47998
-offset_bottom = -75.64
 grow_horizontal = 2
 grow_vertical = 2
 mouse_filter = 2
-theme_override_font_sizes/normal_font_size = 30
 bbcode_enabled = true
 text = "[center]Brush Falloff[/center]"
 
@@ -843,91 +600,41 @@ offset_bottom = -0.640015
 grow_horizontal = 2
 grow_vertical = 2
 mouse_filter = 2
-theme_override_font_sizes/normal_font_size = 30
 bbcode_enabled = true
 text = "[center]50[/center]"
 
-[node name="World_Water_Level" type="Panel" parent="UI/Ground_Brush_Panel/HBoxContainer"]
+[node name="VSeparator4" type="VSeparator" parent="UI/Ground_Brush_Panel/HBoxContainer"]
+layout_mode = 2
+
+[node name="VSeparator5" type="VSeparator" parent="UI/Ground_Brush_Panel/HBoxContainer"]
+layout_mode = 2
+
+[node name="Texture" type="Panel" parent="UI/Ground_Brush_Panel/HBoxContainer"]
 layout_mode = 2
 size_flags_horizontal = 3
 mouse_filter = 2
 
-[node name="label" type="RichTextLabel" parent="UI/Ground_Brush_Panel/HBoxContainer/World_Water_Level"]
+[node name="Brush_Mode" type="RichTextLabel" parent="UI/Ground_Brush_Panel/HBoxContainer/Texture"]
 layout_mode = 1
 anchors_preset = 15
 anchor_right = 1.0
 anchor_bottom = 1.0
-offset_right = -0.47998
-offset_bottom = -75.64
 grow_horizontal = 2
 grow_vertical = 2
 mouse_filter = 2
 theme_override_font_sizes/normal_font_size = 30
 bbcode_enabled = true
-text = "[center]Water Level[/center]"
+text = "[center]Draw Texture[/center]"
 
-[node name="Slider" type="HSlider" parent="UI/Ground_Brush_Panel/HBoxContainer/World_Water_Level"]
-layout_mode = 1
-anchors_preset = 15
-anchor_right = 1.0
-anchor_bottom = 1.0
-grow_horizontal = 2
-grow_vertical = 2
-mouse_filter = 1
-value = 12.0
-
-[node name="value" type="RichTextLabel" parent="UI/Ground_Brush_Panel/HBoxContainer/World_Water_Level"]
+[node name="OptionButton" type="OptionButton" parent="UI/Ground_Brush_Panel/HBoxContainer/Texture"]
 layout_mode = 1
 anchors_preset = -1
-anchor_top = 0.5
+anchor_top = 0.34
 anchor_right = 1.0
 anchor_bottom = 1.0
-offset_left = 0.1008
-offset_top = 0.179993
-offset_right = -0.199982
-offset_bottom = -0.640015
 grow_horizontal = 2
 grow_vertical = 2
-mouse_filter = 2
-theme_override_font_sizes/normal_font_size = 30
-bbcode_enabled = true
-text = "[center]7[/center]"
-
-[node name="brush_Mode" type="Panel" parent="UI/Ground_Brush_Panel/HBoxContainer"]
-layout_mode = 2
-size_flags_horizontal = 3
-mouse_filter = 2
-
-[node name="Brush_Mode" type="RichTextLabel" parent="UI/Ground_Brush_Panel/HBoxContainer/brush_Mode"]
-layout_mode = 1
-anchors_preset = 15
-anchor_right = 1.0
-anchor_bottom = 1.0
-offset_right = -0.47998
-offset_bottom = -75.64
-grow_horizontal = 2
-grow_vertical = 2
-mouse_filter = 2
-theme_override_font_sizes/normal_font_size = 30
-bbcode_enabled = true
-text = "[center]Brush mode[/center]"
-
-[node name="MenuButton" type="MenuButton" parent="UI/Ground_Brush_Panel/HBoxContainer/brush_Mode"]
-layout_mode = 1
-anchors_preset = 15
-anchor_right = 1.0
-anchor_bottom = 1.0
-offset_top = 52.0
-grow_horizontal = 2
-grow_vertical = 2
-mouse_filter = 1
-theme_override_font_sizes/font_size = 37
-text = "Draw"
-item_count = 2
-popup/item_0/text = "Draw"
-popup/item_0/id = 0
-popup/item_1/text = "Smooth"
-popup/item_1/id = 1
+alignment = 1
 
 [node name="Place_Obj_Panel" type="Panel" parent="UI"]
 visible = false
@@ -957,8 +664,9 @@ layout_mode = 1
 anchors_preset = 15
 anchor_right = 1.0
 anchor_bottom = 1.0
+offset_top = 33.155
 offset_right = -0.47998
-offset_bottom = -75.64
+offset_bottom = -42.485
 grow_horizontal = 2
 grow_vertical = 2
 mouse_filter = 2
@@ -1035,25 +743,6 @@ shadow_reverse_cull_face = true
 shadow_blur = 2.275
 directional_shadow_mode = 0
 
-[node name="chunk" type="MeshInstance3D" parent="."]
-transform = Transform3D(1, 0, -5.96046e-08, 0, 1, 0, 5.96046e-08, 0, 1, -2.40088, 7.62939e-06, 246.455)
-layers = 2
-mesh = SubResource("PlaneMesh_rgect")
-skeleton = NodePath("")
-script = ExtResource("3_x81um")
-
-[node name="Water" type="MeshInstance3D" parent="chunk"]
-transform = Transform3D(1, 0, 5.96046e-08, 0, 1, 0, -5.96046e-08, 0, 1, 0, 7, 0)
-layers = 262144
-mesh = SubResource("PlaneMesh_djt1j")
-skeleton = NodePath("")
-
-[node name="StaticBody3D" type="StaticBody3D" parent="chunk"]
-transform = Transform3D(10, 0, 0, 0, 10, 0, 0, 0, 10, 0, 0, 0)
-
-[node name="CollisionShape3D" type="CollisionShape3D" parent="chunk/StaticBody3D"]
-shape = SubResource("HeightMapShape3D_87c6a")
-
 [node name="Editor_Cam" type="Node3D" parent="."]
 transform = Transform3D(0.999536, -0.0304687, 0, 0.0304687, 0.999536, 0, 0, 0, 1, 194.238, 68.3703, 116.083)
 script = ExtResource("6_f37vi")
@@ -1075,12 +764,6 @@ environment = SubResource("Environment_h4cl6")
 transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, -50, 0)
 mesh = SubResource("PlaneMesh_yro6c")
 
-[node name="TextureRect" type="TextureRect" parent="."]
-visible = false
-offset_right = 40.0
-offset_bottom = 40.0
-texture = SubResource("NoiseTexture2D_hvmpb")
-
 [connection signal="brush_changed" from="UI" to="." method="brush_mode_changed"]
 [connection signal="object_added" from="UI" to="." method="add_world_object"]
 [connection signal="mouse_entered" from="UI/edit_mode_panel" to="UI" method="_mouse_entered_toolbar"]
@@ -1100,9 +783,8 @@ texture = SubResource("NoiseTexture2D_hvmpb")
 [connection signal="mouse_entered" from="UI/Ground_Brush_Panel" to="UI" method="_mouse_entered_toolbar"]
 [connection signal="mouse_exited" from="UI/Ground_Brush_Panel" to="UI" method="_mouse_exited_toolbar"]
 [connection signal="value_changed" from="UI/Ground_Brush_Panel/HBoxContainer/Brush_Strength/Slider" to="UI" method="strength_slider_used"]
-[connection signal="value_changed" from="UI/Ground_Brush_Panel/HBoxContainer/Brush_Elevation/Slider" to="UI" method="elevation_slider_used"]
 [connection signal="value_changed" from="UI/Ground_Brush_Panel/HBoxContainer/Brush_Radius/Slider" to="UI" method="radius_slider_used"]
 [connection signal="value_changed" from="UI/Ground_Brush_Panel/HBoxContainer/Brush_Falloff/Slider" to="UI" method="falloff_slider_used"]
-[connection signal="value_changed" from="UI/Ground_Brush_Panel/HBoxContainer/World_Water_Level/Slider" to="UI" method="water_level_slider_used"]
+[connection signal="item_selected" from="UI/Ground_Brush_Panel/HBoxContainer/Texture/OptionButton" to="UI" method="_texture_changed"]
 [connection signal="mouse_entered" from="UI/Place_Obj_Panel" to="UI" method="_mouse_entered_toolbar"]
 [connection signal="mouse_exited" from="UI/Place_Obj_Panel" to="UI" method="_mouse_exited_toolbar"]

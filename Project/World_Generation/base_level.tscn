@@ -1,4 +1,4 @@
-[gd_scene load_steps=46 format=3 uid="uid://1gj112g47vqj"]
+[gd_scene load_steps=45 format=3 uid="uid://1gj112g47vqj"]
 
 [ext_resource type="Script" path="res://World_Generation/Level_Controller.gd" id="1_ql81r"]
 [ext_resource type="Shader" path="res://Materials/fog_of_war_overlay.gdshader" id="2_ec6ww"]
@@ -98,8 +98,7 @@ as_normal_map = true
 bump_strength = 10.8
 noise = SubResource("FastNoiseLite_6cq6q")
 
-[sub_resource type="Gradient" id="Gradient_j77kg"]
-colors = PackedColorArray(0, 0.260467, 0, 1, 0.571765, 0.594111, 0.191985, 1)
+[sub_resource type="CompressedTexture2D" id="CompressedTexture2D_ttn8o"]
 
 [sub_resource type="FastNoiseLite" id="FastNoiseLite_6kou8"]
 noise_type = 0
@@ -113,13 +112,6 @@ domain_warp_frequency = -0.03
 domain_warp_fractal_type = 2
 domain_warp_fractal_lacunarity = 6.062
 domain_warp_fractal_gain = 0.971
-
-[sub_resource type="NoiseTexture2D" id="NoiseTexture2D_p0d1b"]
-width = 1000
-height = 1000
-seamless = true
-color_ramp = SubResource("Gradient_j77kg")
-noise = SubResource("FastNoiseLite_6kou8")
 
 [sub_resource type="NoiseTexture2D" id="NoiseTexture2D_e22tc"]
 width = 1000
@@ -159,7 +151,7 @@ shader = ExtResource("2_ueirr")
 shader_parameter/t_height = 100.0
 shader_parameter/min_rock_slope = 0.156
 shader_parameter/max_grass_slope = 0.362
-shader_parameter/grass_alb_tex = SubResource("NoiseTexture2D_p0d1b")
+shader_parameter/grass_alb_tex = SubResource("CompressedTexture2D_ttn8o")
 shader_parameter/grass_norm_tex = SubResource("NoiseTexture2D_e22tc")
 shader_parameter/cliff_alb_tex = SubResource("NoiseTexture2D_hn25n")
 shader_parameter/cliff_norm_tex = SubResource("NoiseTexture2D_fcitg")
@@ -247,19 +239,19 @@ lifetime_randomness = 0.16
 emission_shape = 3
 emission_box_extents = Vector3(65, 10, 65)
 direction = Vector3(0, 1, 0)
-gravity = Vector3(0, 0, 0)
 initial_velocity_min = 1.0
 initial_velocity_max = 1.0
+gravity = Vector3(0, 0, 0)
 linear_accel_min = 1.0
 linear_accel_max = 1.0
 scale_min = 14.83
 scale_max = 17.73
 color = Color(0.835294, 0.835294, 0.835294, 1)
 color_ramp = SubResource("GradientTexture1D_wy17f")
-sub_emitter_mode = 2
-sub_emitter_amount_at_end = 1
 collision_mode = 2
 collision_use_scale = true
+sub_emitter_mode = 2
+sub_emitter_amount_at_end = 1
 
 [sub_resource type="Gradient" id="Gradient_xpn55"]
 colors = PackedColorArray(0.74558, 0.74558, 0.74558, 1, 1, 1, 1, 1)
@@ -339,10 +331,13 @@ transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 231.711, 16.0589, -231.669)
 actor_id = 1
 
 [node name="Forest" parent="." instance=ExtResource("5_8idnn")]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 132.102, 17.6328, 102.57)
+prev = true
 random_seed = 491
 tree_cnt = 150
 
 [node name="Forest2" parent="." instance=ExtResource("5_8idnn")]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 240.171, 0, -334.602)
 random_seed = 821
 tree_cnt = 150
 max_slope = 0.255
