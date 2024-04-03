@@ -1,0 +1,184 @@
+[gd_resource type="Shader" format=3 uid="uid://bpmxbv81o0185"]
+
+[resource]
+code = "shader_type particles;
+
+uniform float radius : hint_range(0.0, 1000.0,1.0);
+uniform float instance_rot_randomize = 2.5;
+uniform float instance_spacing = 1.0;
+uniform float instance_scale_x = 1.0;
+uniform	float instance_scale_y = 1.0;
+uniform float instance_scale_z = 1.0;
+uniform float instance_scale_randomize = 1.0;
+uniform float instance_pos_randomize : hint_range(0.0, 50.0) =  2.0;
+uniform float instance_scale_min = 0.2;
+uniform float instance_scale_max = 1.2;
+uniform float _coverage_altitude = 10.0;
+uniform float _coverage_range = 100.0;
+uniform float _slope_coverage = 0.5;
+uniform float clumping_strength : hint_range(0.0, 100.0) = 20.0;
+uniform mat3 terrain_normal_basis;
+
+global uniform sampler2D heightmap_tex;
+
+uniform bool instance_orient_to_normal = false;
+uniform float instance_orientation_influence : hint_range(0.0, 10.0) = 1.0;
+uniform float __terrain_amplitude;
+uniform vec2 map_heightmap_size = vec2(1000.0, 1000.0);
+uniform sampler2D map_clumpmap;
+
+float get_height(vec2 pos) {
+	pos -= 0.5 * map_heightmap_size;
+	pos /= map_heightmap_size;	
+	return __terrain_amplitude * texture(heightmap_tex, pos).r;
+}
+
+float get_value(vec2 pos, vec2 off){
+	pos -= 0.5 * map_heightmap_size;
+	pos /= map_heightmap_size;	
+	return texture(heightmap_tex, pos+off).r;
+}
+
+float random(vec2 st){
+	return fract(sin(dot(st.xy,
+	vec2(12.9898,78.233))) * 43758.5453123);
+}
+
+vec3 unpack_normalmap(vec3 rgb) {
+vec3 n = rgb.xzy * 2.0 - vec3(1.0);
+n.z *= -1.0;
+return n;
+}	
+
+vec3 get_normal(vec2 UV) {
+	// read neightbor heights using an arbitrary small offset
+	vec3 off = vec3(1.0/map_heightmap_size.x, 1.0/map_heightmap_size.y, 0.0);
+	float hR = get_value(UV.xy , -off.xz);
+	float hL = get_value(UV.xy , off.xz);
+	float hD = get_value(UV.xy , -off.zy);
+	float hU = get_value(UV.xy , off.zy);
+	// deduce terrain normal
+	vec3 normal;
+	normal.x = hR - hL;
+	normal.y = hD - hU;
+	normal.z = 1.0;
+	normal = normalize(normal);
+	return normal;
+}
+
+float get_clumps(vec2 pos) {
+	pos -= 0.5 * map_heightmap_size;
+	pos /= map_heightmap_size;	
+	return 100.0 * texture(map_clumpmap, pos).r;
+}
+
+void start() {
+	// get position
+	vec3 pos = vec3(0.0, 0.0, 0.0);
+	pos.z = float(INDEX);
+	float alpha = 2.0 * PI * random (vec2(float(INDEX)/7.0));
+	float r = 2.0 * PI * random (vec2(alpha+float(INDEX)/7.0));
+	pos.x = r * cos(alpha);
+	pos.z = r * sin(alpha);;
+	
+	// center the emitter
+	pos.x -= radius * 0.5;
+	pos.z -= radius * 0.5;
+	
+	// apply instance spacing
+	pos *= instance_spacing;
+	
+	// center on position of emitter
+	pos.x += EMISSION_TRANSFORM[3][0] - mod(EMISSION_TRANSFORM[3][0], instance_spacing);
+	pos.z += EMISSION_TRANSFORM[3][2] - mod(EMISSION_TRANSFORM[3][2], instance_spacing);
+	
+	// add noise 
+	vec3 noise = texture(heightmap_tex, pos.xz*0.1).rgb;
+	
+	// apply height
+	pos.y = get_height(pos.xz);	
+	float y2 = get_height(pos.xz + vec2(1.0, 0.0));
+	float y3 = get_height(pos.xz + vec2(0.0, 1.0));
+	
+	
+	
+	if (abs(pos.y) < _coverage_altitude*5.0-_coverage_range) {
+		pos.y = -10000.0;
+	} 	
+	if (abs(pos.y) > _coverage_altitude*5.0+_coverage_range) {
+		pos.y = -10000.0;
+	} 	
+	
+	//Hide parts outside map
+	if(abs(pos.x) > map_heightmap_size.x/2.0){
+		pos.y = -10000.0;		
+	}
+	if(abs(pos.z) > map_heightmap_size.y/2.0){
+		pos.y = -10000.0;		
+	}
+	
+	// clumping
+	float y4 = get_clumps(pos.xz);
+	vec3 clumps = texture(map_clumpmap, pos.zx).rgb;
+	if (abs(y4) < clumping_strength) {
+		pos.y -= -10000.0;
+	}
+	
+	// rotate transform
+	vec3 tex_scale = vec3(1.0) ;
+
+	vec3 base_scale = vec3(
+		mix(instance_scale_min, instance_scale_max, noise.z)*instance_scale_x,
+		mix(instance_scale_min, instance_scale_max, noise.z)*instance_scale_y,
+		mix(instance_scale_min, instance_scale_max, noise.z)*instance_scale_z );
+	base_scale *= base_scale*instance_scale_randomize;
+	base_scale = sign(base_scale) * max(abs(base_scale), 0.1);
+	
+	// update transform
+	pos.x += cos( noise.x * instance_pos_randomize) * base_scale.x  ;
+	pos.z += sin( noise.z * instance_pos_randomize) * base_scale.z ; 
+	
+	vec3 normal = get_normal(pos.xz)*100.0;
+	// hide parts from steep areas
+	if (abs(dot(normal,vec3(0,1,0))) >= _slope_coverage){
+		pos.y -= 10000.0;
+	}
+	// re-transform to orient to normal if the setting is on	
+	if (instance_orient_to_normal == true){
+		normal /= 10.0;
+		normal*= instance_orientation_influence;
+		vec3 r = cross(vec3(0,1,0),normal);
+		vec3 t = cross(r,normal);
+	
+		mat4 align_rot_mat;
+		align_rot_mat[0].xyz = r;
+		align_rot_mat[1].xyz = t;
+		align_rot_mat[2].xyz = normal;
+		align_rot_mat[3].w = 1.0;
+		
+		TRANSFORM = align_rot_mat;
+	}
+	else {
+		TRANSFORM[0].xyz = vec3(0.0);
+		TRANSFORM[1].xyz = vec3(0.0);
+		TRANSFORM[2].xyz = vec3(0.0);}
+	
+	
+	
+	// finalize transform positioning and scaling including randomizations	
+	TRANSFORM[3][0] = pos.x;
+	TRANSFORM[3][1] = pos.y;
+	TRANSFORM[3][2] = pos.z;
+	
+	TRANSFORM[0][0] = cos(noise.x * instance_rot_randomize) * base_scale.x;
+	TRANSFORM[0][2] = -sin(noise.x * instance_rot_randomize) * base_scale.x;
+	TRANSFORM[2][0] = sin(noise.z * instance_rot_randomize) * base_scale.z;
+	TRANSFORM[2][2] = cos(noise.z * instance_rot_randomize) * base_scale.z;
+	
+	TRANSFORM[0][0]  = base_scale.x;
+	TRANSFORM[1][1]  = base_scale.y;
+	TRANSFORM[2][2]  = base_scale.z;
+	
+	
+}	
+"

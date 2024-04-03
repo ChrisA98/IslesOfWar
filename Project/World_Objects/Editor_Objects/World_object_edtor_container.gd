@@ -38,7 +38,18 @@ var world_object_path: String
 var preview_node
 var update_node_function: Callable
 
-var following_mouse : bool = true
+var following_mouse : bool = true:
+	set(value):
+		if value:
+			for obj in get_tree().get_nodes_in_group("editor_object"):
+				if obj != self:
+					obj.active = false
+		else:
+			for obj in get_tree().get_nodes_in_group("editor_object"):
+				if obj != self:
+					obj.active = true
+		following_mouse = value
+		
 var mouse_pos
 
 ## Can be selected and moved
@@ -175,7 +186,8 @@ func _update_forest():
 
 ## Update forest node for global changes or position changes
 func _update_stone():
-	pass
+	update_heightmap()
+	preview_node.update_heightmap()
 
 
 ## Update forest node for global changes or position changes

@@ -3,6 +3,7 @@
 [ext_resource type="Script" path="res://World_Generation/Level_Controller.gd" id="1_ql81r"]
 [ext_resource type="Shader" path="res://Materials/fog_of_war_overlay.gdshader" id="2_ec6ww"]
 [ext_resource type="Shader" path="res://World_Generation/New_Terrain.gdshader" id="2_ueirr"]
+[ext_resource type="Texture2D" uid="uid://e0bv08ufelc4" path="res://Assets/Terrain_Textures/grass_01.tres" id="4_4moqj"]
 [ext_resource type="Shader" path="res://World_Generation/Water.gdshader" id="4_h7krx"]
 [ext_resource type="PackedScene" uid="uid://crswchumae5b0" path="res://World_Objects/Forest.tscn" id="5_8idnn"]
 [ext_resource type="PackedScene" uid="uid://dcah4free3fs2" path="res://Actor_Classes/base_spawn.tscn" id="6_aid2n"]
@@ -98,8 +99,6 @@ as_normal_map = true
 bump_strength = 10.8
 noise = SubResource("FastNoiseLite_6cq6q")
 
-[sub_resource type="CompressedTexture2D" id="CompressedTexture2D_ttn8o"]
-
 [sub_resource type="FastNoiseLite" id="FastNoiseLite_6kou8"]
 noise_type = 0
 frequency = 0.1316
@@ -151,7 +150,7 @@ shader = ExtResource("2_ueirr")
 shader_parameter/t_height = 100.0
 shader_parameter/min_rock_slope = 0.156
 shader_parameter/max_grass_slope = 0.362
-shader_parameter/grass_alb_tex = SubResource("CompressedTexture2D_ttn8o")
+shader_parameter/grass_alb_tex = ExtResource("4_4moqj")
 shader_parameter/grass_norm_tex = SubResource("NoiseTexture2D_e22tc")
 shader_parameter/cliff_alb_tex = SubResource("NoiseTexture2D_hn25n")
 shader_parameter/cliff_norm_tex = SubResource("NoiseTexture2D_fcitg")
@@ -294,7 +293,6 @@ rings = 2
 
 [node name="Level" type="Node3D"]
 script = ExtResource("1_ql81r")
-meshres = 1
 
 [node name="WorldEnvironment" type="WorldEnvironment" parent="."]
 environment = SubResource("Environment_0xqwl")
@@ -357,7 +355,7 @@ collision_layer = 3
 collision_mask = 3
 
 [node name="Crystal_deposit" parent="." instance=ExtResource("8_wyj8d")]
-transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, -48.7732, 26.549, -364.716)
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, -48.7732, 64.8831, -364.716)
 
 [node name="Crystal_deposit2" parent="." instance=ExtResource("8_wyj8d")]
 transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 344.551, 11.4199, 6.41168)

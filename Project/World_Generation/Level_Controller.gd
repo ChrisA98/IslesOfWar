@@ -101,6 +101,9 @@ func _ready():
 		heightmap = load(heightmap_dir+"master"+".exr").get_image()
 		Global_Vars.heightmap = heightmap
 		return
+		
+	RenderingServer.global_shader_parameter_set("ground_tex_main",$Visual_Ground.mesh.surface_get_material(0).get_shader_parameter("grass_alb_tex"))
+	
 	$Water/StaticBody3D.input_event.connect(gamescene.ground_click.bind($Water/StaticBody3D)) 
 	Global_Vars.load_text = ("loading sun")
 	# Set Sun and moon in place
@@ -366,7 +369,7 @@ func building_added(pos: Vector3, hide_grass: bool, bldg_radius: float, road_tar
 	if road_target != Vector3.ZERO:
 		for i in range(circle_size/2.8, cntr.distance_to(Vector2(road_target.x,road_target.z))):
 			var p = cntr + (i * cntr.direction_to(Vector2(road_target.x,road_target.z)))
-			_draw_circle_to_buildings_tex(9, Vector2(p.x,p.y), true, .45)
+			_draw_circle_to_buildings_tex(14, Vector2(p.x,p.y), true, .45)
 	
 	## Write to global dsharer parameter
 	RenderingServer.global_shader_parameter_set("building_locs",ImageTexture.create_from_image(building_locations))
@@ -382,10 +385,13 @@ func _draw_circle_to_buildings_tex(circle_size, pos, hide_grass,lighten_offset:f
 				var col = building_locations.get_pixel(p.x,p.y)
 				var n_col = Color.BLACK
 				n_col.r += 1-(p.distance_to(cntr)/(circle_size/2)) - lighten_offset
+				#n_col.r += n_col.r * randf_range(-0.5,0.5)
 				col.r = clamp(n_col.r,col.r,1)
 				col.b = clamp(n_col.b,col.b,1)
 				if(hide_grass):
 					n_col.g += 1 - (p.distance_to(cntr)/(circle_size/2)) - lighten_offset
+					if (n_col.g < 0.25):
+						n_col.g *= randf_range(0.25,1.25)
 					col.g = clamp(n_col.g,col.g,1)
 				elif(p.distance_to(cntr) <= circle_size/4):
 					col.g = 0

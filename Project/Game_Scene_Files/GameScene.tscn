@@ -1,4 +1,4 @@
-[gd_scene load_steps=103 format=3 uid="uid://iltms2ck0v33"]
+[gd_scene load_steps=108 format=3 uid="uid://iltms2ck0v33"]
 
 [ext_resource type="Script" path="res://Game_Scene_Files/GameScene.gd" id="1_7pjje"]
 [ext_resource type="Script" path="res://Game_Scene_Files/UI_Builder.gd" id="2_wj4ul"]
@@ -11,13 +11,13 @@
 [ext_resource type="Texture2D" uid="uid://dre5gradwfado" path="res://Assets/UI_Elements/Minimap_Frame_Cover.png" id="5_0upqb"]
 [ext_resource type="Texture2D" uid="uid://cbgjewgpajluw" path="res://Assets/UI_Elements/Clock_Back.png" id="6_mffx0"]
 [ext_resource type="Texture2D" uid="uid://b3sq1bgs0ow0o" path="res://Assets/UI_Elements/Clock_Front.png" id="7_rkqbs"]
-[ext_resource type="Texture2D" uid="uid://drbfk3h3s6x1b" path="res://Test_Items/HeightMap.exr" id="7_ubyyn"]
 [ext_resource type="Shader" path="res://Materials/Minimap_Markers.gdshader" id="8_ka2n4"]
 [ext_resource type="Script" path="res://Actor_Classes/Player.gd" id="9_3h23t"]
 [ext_resource type="Texture2D" uid="uid://dnrjlcvb1yulp" path="res://Assets/UI_Elements/Minimap_Viewport.png" id="9_odtsh"]
 [ext_resource type="Script" path="res://Actor_Classes/GameCamera.gd" id="10_jjfcj"]
 [ext_resource type="Shader" uid="uid://cmyeclhrvhn2o" path="res://World_Generation/Foliage_Shader.tres" id="10_l3sfk"]
 [ext_resource type="Shader" path="res://World_Generation/level_builder/EditorTerrain.gdshader" id="12_dyv5q"]
+[ext_resource type="Shader" uid="uid://c7cshf4c8prbl" path="res://Assets/Models/Materials/grass.tres" id="18_6wvy4"]
 
 [sub_resource type="Theme" id="Theme_8omj6"]
 default_font_size = 11
@@ -488,67 +488,136 @@ size = Vector2(500, 500)
 subdivide_width = 200
 subdivide_depth = 200
 
-[sub_resource type="FastNoiseLite" id="FastNoiseLite_oe4h0"]
-seed = 2
-frequency = 0.041
+[sub_resource type="FastNoiseLite" id="FastNoiseLite_3s8wm"]
 
-[sub_resource type="NoiseTexture2D" id="NoiseTexture2D_tx7g1"]
-noise = SubResource("FastNoiseLite_oe4h0")
+[sub_resource type="NoiseTexture2D" id="NoiseTexture2D_b82qj"]
+noise = SubResource("FastNoiseLite_3s8wm")
 
 [sub_resource type="ShaderMaterial" id="ShaderMaterial_qfdoi"]
 shader = ExtResource("10_l3sfk")
-shader_parameter/instance_rows = 140.0
-shader_parameter/instance_rot_randomize = 2.423
-shader_parameter/instance_spacing = 2.641
-shader_parameter/instance_scale_x = 1.0
-shader_parameter/instance_scale_y = 0.567
-shader_parameter/instance_scale_z = 1.0
-shader_parameter/instance_scale_randomize = 1.303
-shader_parameter/instance_pos_randomize = 2.0
-shader_parameter/instance_scale_min = 1.027
-shader_parameter/instance_scale_max = 1.129
-shader_parameter/_coverage_altitude = 21.666
+shader_parameter/instance_rows = 275.0
+shader_parameter/instance_rot_randomize = 64.325
+shader_parameter/instance_spacing = 0.416
+shader_parameter/instance_scale_x = 0.5
+shader_parameter/instance_scale_y = 1.095
+shader_parameter/instance_scale_z = 0.5
+shader_parameter/instance_scale_randomize = 1.0
+shader_parameter/instance_pos_randomize = 33.031
+shader_parameter/instance_scale_min = 0.95
+shader_parameter/instance_scale_max = 1.05
+shader_parameter/_coverage_altitude = 10.0
 shader_parameter/_coverage_range = 100.0
-shader_parameter/_slope_coverage = 0.5
-shader_parameter/clumping_strength = 33.19
+shader_parameter/_slope_coverage = 0.404
+shader_parameter/clumping_strength = 0.0
 shader_parameter/terrain_normal_basis = null
-shader_parameter/instance_orient_to_normal = false
+shader_parameter/instance_orient_to_normal = true
 shader_parameter/instance_orientation_influence = 1.0
 shader_parameter/__terrain_amplitude = 100.0
 shader_parameter/map_heightmap_size = Vector2(1000, 1000)
-shader_parameter/map_heightmap = ExtResource("7_ubyyn")
+shader_parameter/map_clumpmap = SubResource("NoiseTexture2D_b82qj")
+
+[sub_resource type="ShaderMaterial" id="ShaderMaterial_yl7q8"]
+render_priority = 0
+shader = ExtResource("18_6wvy4")
+shader_parameter/sway_intensity = 0.098
+shader_parameter/red_variance = 5.032
+shader_parameter/green_variance = 25.0
+shader_parameter/blue_variance = 25.0
+shader_parameter/albedo = Color(0.32549, 0.698039, 0, 1)
+shader_parameter/roughness = 0.29
+shader_parameter/metallic_texture_channel = null
+shader_parameter/specular = null
+shader_parameter/metallic = null
+shader_parameter/uv1_scale = null
+shader_parameter/uv1_offset = null
+shader_parameter/height_scaling = 0.39
+
+[sub_resource type="ArrayMesh" id="ArrayMesh_m204w"]
+_surfaces = [{
+"aabb": AABB(0, 0, -0.103293, 1e-05, 1.01437, 0.206596),
+"attribute_data": PackedByteArray(255, 255, 255, 255, 255, 191, 255, 255, 255, 255, 0, 0, 255, 191, 0, 0, 255, 63, 255, 255, 0, 0, 255, 255, 255, 63, 0, 0, 255, 127, 255, 255, 255, 127, 0, 0),
+"format": 34896613399,
+"index_count": 21,
+"index_data": PackedByteArray(0, 0, 1, 0, 2, 0, 2, 0, 1, 0, 3, 0, 4, 0, 5, 0, 6, 0, 7, 0, 4, 0, 8, 0, 8, 0, 4, 0, 6, 0, 1, 0, 7, 0, 3, 0, 3, 0, 7, 0, 8, 0),
+"material": SubResource("ShaderMaterial_yl7q8"),
+"primitive": 3,
+"uv_scale": Vector4(0, 0, 0, 0),
+"vertex_count": 9,
+"vertex_data": PackedByteArray(0, 0, 0, 0, 251, 255, 177, 214, 0, 0, 255, 63, 231, 237, 243, 213, 0, 0, 0, 0, 0, 0, 160, 213, 0, 0, 255, 63, 20, 18, 221, 212, 0, 0, 255, 191, 194, 199, 126, 215, 0, 0, 255, 255, 253, 127, 203, 218, 0, 0, 255, 191, 56, 56, 252, 214, 0, 0, 255, 127, 30, 218, 208, 213, 0, 0, 255, 127, 221, 37, 219, 212, 121, 171, 243, 86, 9, 171, 19, 86, 215, 170, 176, 85, 97, 170, 196, 84, 239, 171, 223, 87, 193, 173, 131, 91, 164, 171, 73, 87, 244, 170, 234, 85, 96, 170, 194, 84)
+}]
+
+[sub_resource type="FastNoiseLite" id="FastNoiseLite_oe4h0"]
+noise_type = 2
+frequency = 0.0902
+fractal_octaves = 10
+fractal_lacunarity = 3.615
+fractal_gain = 0.955
+fractal_weighted_strength = 0.81
+
+[sub_resource type="NoiseTexture2D" id="NoiseTexture2D_tx7g1"]
+generate_mipmaps = false
+noise = SubResource("FastNoiseLite_oe4h0")
+
+[sub_resource type="ShaderMaterial" id="ShaderMaterial_nyfku"]
+shader = ExtResource("10_l3sfk")
+shader_parameter/instance_rows = 50.0
+shader_parameter/instance_rot_randomize = 2.5
+shader_parameter/instance_spacing = 3.391
+shader_parameter/instance_scale_x = 1.0
+shader_parameter/instance_scale_y = 0.567
+shader_parameter/instance_scale_z = 1.0
+shader_parameter/instance_scale_randomize = 0.878
+shader_parameter/instance_pos_randomize = 2.0
+shader_parameter/instance_scale_min = 0.407
+shader_parameter/instance_scale_max = 1.374
+shader_parameter/_coverage_altitude = 21.666
+shader_parameter/_coverage_range = 100.0
+shader_parameter/_slope_coverage = 0.645
+shader_parameter/clumping_strength = 66.341
+shader_parameter/terrain_normal_basis = null
+shader_parameter/instance_orient_to_normal = true
+shader_parameter/instance_orientation_influence = 0.45
+shader_parameter/__terrain_amplitude = 100.0
+shader_parameter/map_heightmap_size = Vector2(1000, 1000)
 shader_parameter/map_clumpmap = SubResource("NoiseTexture2D_tx7g1")
 
-[sub_resource type="StandardMaterial3D" id="StandardMaterial3D_vrrp7"]
-cull_mode = 2
-shading_mode = 2
+[sub_resource type="FastNoiseLite" id="FastNoiseLite_0o6lj"]
+frequency = 0.0032
+
+[sub_resource type="NoiseTexture2D" id="NoiseTexture2D_h43gd"]
+seamless = true
+as_normal_map = true
+noise = SubResource("FastNoiseLite_0o6lj")
+
+[sub_resource type="StandardMaterial3D" id="StandardMaterial3D_imlts"]
 vertex_color_use_as_albedo = true
-albedo_color = Color(0, 0.831373, 0.184314, 1)
-billboard_mode = 3
-billboard_keep_scale = true
-particles_anim_h_frames = 1
-particles_anim_v_frames = 1
-particles_anim_loop = false
+albedo_color = Color(0.635294, 0.635294, 0.635294, 1)
+metallic = 0.49
+metallic_specular = 0.45
+roughness = 0.87
+emission = Color(0.913725, 0.913725, 0.913725, 1)
+emission_energy_multiplier = 14.91
+normal_enabled = true
+normal_scale = 16.0
+normal_texture = SubResource("NoiseTexture2D_h43gd")
+rim_enabled = true
+clearcoat = 0.28
+clearcoat_roughness = 0.59
+heightmap_enabled = true
+heightmap_scale = 3.414
+heightmap_texture = SubResource("NoiseTexture2D_h43gd")
+proximity_fade_distance = 0.0
+distance_fade_mode = 1
+distance_fade_min_distance = 150.0
+distance_fade_max_distance = 140.0
 
-[sub_resource type="PlaneMesh" id="PlaneMesh_nq15t"]
-material = SubResource("StandardMaterial3D_vrrp7")
-size = Vector2(0.071, 4.458)
-subdivide_width = 6
-orientation = 2
-
-[sub_resource type="PlaneMesh" id="PlaneMesh_nulpy"]
-material = SubResource("StandardMaterial3D_vrrp7")
-size = Vector2(0.071, 0.663)
-subdivide_width = 6
-center_offset = Vector3(0.32, 1.086, -0.071)
-orientation = 2
-
-[sub_resource type="PlaneMesh" id="PlaneMesh_wopk1"]
-material = SubResource("StandardMaterial3D_vrrp7")
-size = Vector2(0.087, 4.737)
-subdivide_width = 6
-center_offset = Vector3(-0.358, -0.104, 0.019)
-orientation = 2
+[sub_resource type="SphereMesh" id="SphereMesh_e6pgl"]
+material = SubResource("StandardMaterial3D_imlts")
+radius = 0.529
+height = 1.057
+radial_segments = 10
+rings = 4
+is_hemisphere = true
 
 [sub_resource type="Gradient" id="Gradient_eofwo"]
 offsets = PackedFloat32Array(0)
@@ -1175,6 +1244,15 @@ speed_scale = 0.5
 randomness = 0.5
 visibility_rect = Rect2(-100, -100, 200, 400)
 
+[node name="Sun" type="DirectionalLight3D" parent="."]
+transform = Transform3D(2.21801e-08, 0.200172, 0.979761, -1.29113e-07, -0.979761, 0.200172, 1, -1.3094e-07, 4.11361e-09, 152.776, 73.2984, 103.079)
+light_cull_mask = 4294967279
+shadow_enabled = true
+shadow_bias = 0.04
+shadow_reverse_cull_face = true
+shadow_blur = 2.275
+directional_shadow_mode = 0
+
 [node name="Player" type="Node" parent="."]
 script = ExtResource("9_3h23t")
 
@@ -1196,7 +1274,7 @@ layers = 32771
 mesh = SubResource("PlaneMesh_pqxku")
 
 [node name="Player_camera" type="Node3D" parent="Player"]
-transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 172.335, -1.52588e-05, 142.068)
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 172.335, 73.2984, 142.068)
 script = ExtResource("10_jjfcj")
 
 [node name="Player_view" type="Camera3D" parent="Player/Player_camera"]
@@ -1207,17 +1285,22 @@ current = true
 fov = 37.8493
 
 [node name="Grass Scatter" type="GPUParticles3D" parent="Player/Player_camera"]
-transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, 0, 16.457)
-visible = false
-amount = 10000
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, 0, -15)
+amount = 60000
 lifetime = 0.09
 explosiveness = 1.0
 visibility_aabb = AABB(-62.3046, -32.3354, -55.5563, 124.609, 64.6707, 111.113)
 process_material = SubResource("ShaderMaterial_qfdoi")
-draw_passes = 3
-draw_pass_1 = SubResource("PlaneMesh_nq15t")
-draw_pass_2 = SubResource("PlaneMesh_nulpy")
-draw_pass_3 = SubResource("PlaneMesh_wopk1")
+draw_pass_1 = SubResource("ArrayMesh_m204w")
+
+[node name="StoneScater" type="GPUParticles3D" parent="Player/Player_camera"]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, 0, -15)
+amount = 2500
+lifetime = 0.01
+explosiveness = 1.0
+visibility_aabb = AABB(-62.3046, -32.3354, -55.5563, 124.609, 64.6707, 111.113)
+process_material = SubResource("ShaderMaterial_nyfku")
+draw_pass_1 = SubResource("SphereMesh_e6pgl")
 
 [node name="Fog_drawer" type="SubViewport" parent="Player"]
 world_3d = SubResource("World3D_s03bo")

@@ -74,9 +74,7 @@ var terrain_textures : Dictionary
 func _ready():
 	#RenderingServer.global_shader_parameter_set("ground_tex_main",ImageTexture.create_from_image($UI/TextureRect.texture))
 	_load_main_heightmap()
-	print("TEST_1")
 	call_deferred("_populate_chunks")
-	print("TEST_2")
 	_update_heightmap_master()
 	
 	ui_node.edit_mode_changed.connect(_change_edit_mode)
@@ -387,7 +385,7 @@ func save_map(level_name):
 	var packed_scene: PackedScene = PackedScene.new()
 	packed_scene.pack(level_out_scene)
 	## NOTE: temporary save path
-	ResourceSaver.save(packed_scene,"res://Assets/Levels/"+level_name+"/level.tscn",ResourceSaver.FLAG_COMPRESS)
+	ResourceSaver.save(packed_scene,"res://Assets/Levels/"+level_name+"/level.scn",ResourceSaver.FLAG_COMPRESS)
 	
 
 ## Bake ground textures to a master texture file
@@ -412,7 +410,6 @@ func _store_heightmap(filepath:String):
 	heightmap.save_exr(filepath+"/master.exr")
 	
 	var chunk_image: Image
-	var chunk_tex : Texture2D
 	## Split heightmap textures
 	for x in range(chunk_map.size()):
 		for y in range(chunk_map.size()):

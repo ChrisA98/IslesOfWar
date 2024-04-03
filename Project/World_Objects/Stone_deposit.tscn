@@ -1,8 +1,12 @@
-[gd_scene load_steps=6 format=3 uid="uid://76wslx0hq568"]
+[gd_scene load_steps=7 format=3 uid="uid://76wslx0hq568"]
 
 [ext_resource type="PackedScene" uid="uid://c4e7broeu0wn3" path="res://Parent_Scenes/World_Object.tscn" id="1_a36sy"]
 [ext_resource type="Shader" uid="uid://cmyeclhrvhn2o" path="res://World_Generation/Foliage_Shader.tres" id="2_ahq8c"]
-[ext_resource type="Texture2D" uid="uid://drbfk3h3s6x1b" path="res://Test_Items/HeightMap.exr" id="3_7ewqd"]
+
+[sub_resource type="FastNoiseLite" id="FastNoiseLite_kd7os"]
+
+[sub_resource type="NoiseTexture2D" id="NoiseTexture2D_k8iey"]
+noise = SubResource("FastNoiseLite_kd7os")
 
 [sub_resource type="ShaderMaterial" id="ShaderMaterial_ty7ey"]
 shader = ExtResource("2_ahq8c")
@@ -25,7 +29,7 @@ shader_parameter/instance_orient_to_normal = true
 shader_parameter/instance_orientation_influence = 1.0
 shader_parameter/__terrain_amplitude = 100.0
 shader_parameter/map_heightmap_size = Vector2(1000, 1000)
-shader_parameter/map_heightmap = ExtResource("3_7ewqd")
+shader_parameter/map_clumpmap = SubResource("NoiseTexture2D_k8iey")
 
 [sub_resource type="SphereMesh" id="SphereMesh_wfmrl"]
 

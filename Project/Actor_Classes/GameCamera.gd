@@ -2,8 +2,8 @@ extends Node3D
 
 var rng = RandomNumberGenerator.new()
 
-const MIN_ZOOM = -25
-const MAX_ZOOM = 50
+const MIN_ZOOM = -15
+const MAX_ZOOM = 45
 
 #Camera stats
 var zoom = 20
@@ -59,7 +59,7 @@ func _input(event):
 	
 	#only read mouse position on screen while in game window
 	#scroll wheel input
-	if Input.is_action_just_released("scroll_up") and zoom > -45:
+	if Input.is_action_just_released("scroll_up") and zoom > MIN_ZOOM:
 		for m in get_tree().get_nodes_in_group("uses_scroll"):
 			if m.has_mouse:
 				return

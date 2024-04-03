@@ -181,5 +181,5 @@ heightmap_tex={
 }
 ground_tex_main={
 "type": "sampler2D",
-"value": "res://Assets/Terrain_Textures/Default_grass.tres"
+"value": "res://Assets/Terrain_Textures/grass_01.tres"
 }

@@ -6,7 +6,7 @@ global uniform sampler2D building_locs;
 
 uniform float t_height;
 
-uniform sampler2D grass_alb_tex : source_color,filter_nearest;
+uniform sampler2D grass_alb_tex : source_color,filter_linear_mipmap_anisotropic;
 uniform sampler2D grass_norm_tex : source_color; 
 uniform sampler2D cliff_alb_tex : source_color;
 uniform sampler2D cliff_norm_tex : source_color;
@@ -48,7 +48,9 @@ void vertex() {
 
 void fragment(){
 	//Albedo Values
-	vec3 grass_albedo = texture(grass_alb_tex,pos_uv).xyz;
+	vec3 grass_albedo_l = textureLod(grass_alb_tex,pos_uv,1.5).xyz;
+	vec3 grass_albedo = textureLod(grass_alb_tex,pos_uv,0.0).xyz;
+	grass_albedo = mix(grass_albedo,grass_albedo_l,0.75);
 	vec3 rock_albedo = texture(cliff_alb_tex,pos_uv).xyz;
 	vec3 sand_albedo = texture(sand_alb_tex,pos_uv).xyz;
 	vec3 dirt_albedo = vec3(.35,.3,.1);

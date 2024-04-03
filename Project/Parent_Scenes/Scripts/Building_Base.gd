@@ -56,12 +56,12 @@ var discovered : bool:
 				$GPUParticles3D.visible = true
 			return
 		health.hide_override = true
-var is_visible : bool:
+var _is_visible : bool:
 	set(value):
 		if actor_owner.actor_ID == 0:
-			is_visible = true
+			_is_visible = true
 			return
-		is_visible = value
+		_is_visible = value
 		if value:
 			revealed.emit()
 
@@ -200,7 +200,7 @@ func init(_pos, snap: int, actor: Node):
 	load_data(actor_owner.faction_data)
 	
 	if actor_owner.actor_ID == 0:
-		is_visible = true
+		_is_visible = true
 	
 	building_model.init(actor_owner.actor_color)
 	
@@ -328,7 +328,7 @@ func place():
 	if(actor_owner.actor_ID == 0):
 		fog_reg.active = true
 	await get_tree().physics_frame
-	update_fog.emit(self, is_visible)
+	update_fog.emit(self, _is_visible)
 	fog_radius_changed.emit(self)
 	
 	get_ground_groups()
@@ -468,13 +468,13 @@ func _detection_area_entered(area):
 	if(area.has_meta("fog_owner_id")):
 		if (area.get_meta("fog_owner_id") == 0):
 			discovered = true
-			is_visible = true
+			_is_visible = true
 
 
 func _detection_area_exited(area):
 	if(area.has_meta("fog_owner_id")):
 		if (area.get_meta("fog_owner_id") == 0):
-			is_visible = false
+			_is_visible = false
 
 
 ''' Building logic End '''

@@ -66,7 +66,7 @@ var ai_mode :StringName = "idle_basic":
 			unit_models.attacking = false
 		if !value.contains("idle"):
 			nav_agent.avoidance_enabled = true
-		update_fog.emit(self, (!value.contains("idle") and is_visible))
+		update_fog.emit(self, (!value.contains("idle") and _is_visible))
 
 var ai_methods : Dictionary = {
 	"idle_basic" : Callable(_idling_basic),
@@ -103,11 +103,11 @@ var is_selected: bool:
 		if !value and health.is_damaged:
 			return
 		health.health_bar_visible = value
-var is_visible: bool:
-	set(value):
-		is_visible = true
+var _is_visible : bool:
+	set(value) :
+		_is_visible = true
 		$Selection.visible = is_selected
-		update_fog.emit(self, is_visible)
+		update_fog.emit(self, _is_visible)
 		_make_visible()
 var current_squad = null:
 	set(value):
@@ -241,7 +241,7 @@ func load_data(data, model_masters, id):
 	fog_reg.activate_area()
 	
 	if (actor_owner.actor_ID == 0):
-		is_visible = true
+		_is_visible = true
 		for m in $UnitModels.get_children():
 			if(m.name.contains("Mesh")):
 				if m.mesh.material != null:
@@ -252,7 +252,7 @@ func load_data(data, model_masters, id):
 		fog_reg.detect_area.set_collision_mask_value(20,false)
 		## Non_player units need see world objects
 		det_area.set_collision_mask_value(6,true)
-		is_visible = false
+		_is_visible = false
 		det_area.area_entered.connect(_det_area_entered)
 		det_area.area_exited.connect(_det_area_exited)
 		fog_reg.detect_area.area_entered.connect(_vision_area_entered)
@@ -323,7 +323,7 @@ func get_ground_depth(pos = null):
 	grnd_ping.force_raycast_update()
 	var out =  grnd_ping.get_collision_point().y
 	grnd_ping.position = Vector3(0,250,0)	## Reset to on unit
-	update_fog.emit(self, is_visible)
+	update_fog.emit(self, _is_visible)
 	grnd_ping.enabled = false
 	return out
 
@@ -449,19 +449,19 @@ func _det_area_entered(area):
 	uncovered_area.emit(self, area)
 	if(area.has_meta("fog_owner_id") and area.get_meta("fog_owner_id") == 0):
 		## Area is player fog breaker
-		is_visible = true
+		_is_visible = true
 
 
 func _det_area_exited(area):
 	if(area.has_meta("fog_owner_id") and area.get_meta("fog_owner_id") != 0):
 		return
 	## Area is player fog breaker
-	is_visible = false
+	_is_visible = false
 	await get_tree().physics_frame
 	for ar in det_area.get_overlapping_areas():
 		if(ar.has_meta("fog_owner_id") and ar.get_meta("fog_owner_id") == 0):
 			## Still in player fog breaker
-			is_visible = true
+			_is_visible = true
 
 
 ## Add enemies to sight array
@@ -492,8 +492,8 @@ func _vision_area_exited(area):
 
 func _make_visible(state = null):
 	if state != null:
-		is_visible = state
-	unit_models.rendered = is_visible
+		_is_visible = state
+	unit_models.rendered = _is_visible
 
 ''' Movement Methods end '''
 '''-------------------------------------------------------------------------------------'''
@@ -618,7 +618,7 @@ func _travel(delta):
 
 ## Locked targeted attack
 ## Update navigation target to target enemy
-func __find_target(trgt, pos:Vector3, _is_visible:bool):
+func __find_target(trgt, pos:Vector3, __is_visible:bool):
 	if(target_enemy != trgt):
 		return
 	if(nav_agent.get_target_position().distance_to(pos) > target_atk_rng):
