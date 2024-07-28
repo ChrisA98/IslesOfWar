@@ -1,0 +1,22 @@
+[remap]
+
+importer="wavefront_obj"
+importer_version=1
+type="Mesh"
+uid="uid://p2pbtklo0qvr"
+path="res://.godot/imported/minecart.obj-0d92a0aba6cbcec4b418693cd61b7775.mesh"
+
+[deps]
+
+files=["res://.godot/imported/minecart.obj-0d92a0aba6cbcec4b418693cd61b7775.mesh"]
+
+source_file="res://Assets/Models/misc/minecart.obj"
+dest_files=["res://.godot/imported/minecart.obj-0d92a0aba6cbcec4b418693cd61b7775.mesh", "res://.godot/imported/minecart.obj-0d92a0aba6cbcec4b418693cd61b7775.mesh"]
+
+[params]
+
+generate_tangents=true
+scale_mesh=Vector3(1, 1, 1)
+offset_mesh=Vector3(0, 0, 0)
+optimize_mesh=true
+force_disable_mesh_compression=false

@@ -10,10 +10,6 @@ var unit_buttons := {}
 var active_train
 var active_res
 var has_mouse: bool
-var show: bool:
-	set(value):
-		show = value
-		visible = value
 
 func _ready():
 	# bind page buttons

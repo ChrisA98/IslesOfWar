@@ -1,0 +1,46 @@
+[gd_scene load_steps=7 format=3 uid="uid://clibifjykfro"]
+
+[ext_resource type="Shader" uid="uid://b5n24spudc4co" path="res://Assets/Models/Materials/Flag.tres" id="1_560ra"]
+[ext_resource type="Texture2D" uid="uid://dwxfb3jgbc0yo" path="res://Assets/Models/Units/textures/Amerulfian_flag.png" id="1_v3ur2"]
+
+[sub_resource type="ShaderMaterial" id="ShaderMaterial_legvs"]
+render_priority = 0
+shader = ExtResource("1_560ra")
+shader_parameter/albedo = Color(0.847474, 0.847474, 0.847474, 1)
+shader_parameter/point_size = 1.0
+shader_parameter/roughness = 1.0
+shader_parameter/specular = -0.215
+shader_parameter/metallic = 0.445
+shader_parameter/sway_intensity = 1.308
+shader_parameter/swat_max = 0.297
+shader_parameter/speed = 4.656
+shader_parameter/texture_albedo = ExtResource("1_v3ur2")
+
+[sub_resource type="PlaneMesh" id="PlaneMesh_hahv6"]
+material = SubResource("ShaderMaterial_legvs")
+size = Vector2(1.625, 1)
+subdivide_width = 8
+center_offset = Vector3(0.85, 0, -3.435)
+
+[sub_resource type="StandardMaterial3D" id="StandardMaterial3D_xxv0h"]
+vertex_color_use_as_albedo = true
+albedo_color = Color(0.324079, 0.193469, 0.0139934, 1)
+metallic_specular = 0.0
+
+[sub_resource type="CylinderMesh" id="CylinderMesh_w2g0g"]
+material = SubResource("StandardMaterial3D_xxv0h")
+top_radius = 0.05
+bottom_radius = 0.05
+height = 4.0
+radial_segments = 4
+cap_top = false
+
+[node name="MeshInstance3D2" type="MeshInstance3D"]
+transform = Transform3D(1, 0, 0, 0, -4.37114e-08, -1, 0, 1, -4.37114e-08, 0, 0, 0)
+mesh = SubResource("PlaneMesh_hahv6")
+skeleton = NodePath("../MeshInstance3D")
+
+[node name="MeshInstance3D" type="MeshInstance3D" parent="."]
+transform = Transform3D(1, 0, 0, 0, -4.37114e-08, -1, 0, 1, -4.37114e-08, 0, 0, -2)
+mesh = SubResource("CylinderMesh_w2g0g")
+metadata/hide = false

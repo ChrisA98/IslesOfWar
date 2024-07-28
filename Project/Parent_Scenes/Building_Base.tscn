@@ -1,4 +1,4 @@
-[gd_scene load_steps=41 format=3 uid="uid://ccoruw5j562l7"]
+[gd_scene load_steps=42 format=3 uid="uid://ccoruw5j562l7"]
 
 [ext_resource type="Script" path="res://Parent_Scenes/Scripts/Building_Base.gd" id="1_y54u3"]
 [ext_resource type="Script" path="res://Parent_Scenes/Attack_Manager.gd" id="2_ldwq8"]
@@ -113,7 +113,13 @@ shader = ExtResource("3_6iqix")
 [sub_resource type="BoxMesh" id="BoxMesh_1iip8"]
 material = SubResource("StandardMaterial3D_eebkm")
 
+[sub_resource type="BoxShape3D" id="BoxShape3D_px18c"]
+resource_local_to_scene = true
+size = Vector3(1.5, 1, 1.5)
+
 [sub_resource type="BoxShape3D" id="BoxShape3D_ibp2k"]
+resource_local_to_scene = true
+size = Vector3(2.74634, 1, 1.6582)
 
 [sub_resource type="CylinderMesh" id="CylinderMesh_ar7to"]
 top_radius = 0.25
@@ -136,9 +142,9 @@ emission_ring_radius = 0.8
 emission_ring_inner_radius = 0.0
 direction = Vector3(0, 10, 0)
 spread = 107.86
-gravity = Vector3(0, -10, 0)
 initial_velocity_min = 0.54
 initial_velocity_max = 0.54
+gravity = Vector3(0, -10, 0)
 linear_accel_min = 6.35
 linear_accel_max = 33.33
 radial_accel_min = 3.17
@@ -158,6 +164,7 @@ rings = 4
 [node name="Building_Base" type="Node3D"]
 transform = Transform3D(5, 0, 0, 0, 5, 0, 0, 0, 5, 0, 0, 0)
 script = ExtResource("1_y54u3")
+ground_drawing = 3
 garrison_unit_type = 1
 base_armor = 0.3
 metadata/show_base_radius = true
@@ -195,10 +202,11 @@ mesh = SubResource("BoxMesh_1iip8")
 transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, 0.507441, 0)
 collision_layer = 10
 input_ray_pickable = false
+metadata/owner_id = 0
 
 [node name="CollisionShape3D" type="CollisionShape3D" parent="StaticBody3D"]
 transform = Transform3D(0.8, 0, 0, 0, 0.8, 0, 0, 0, 0.8, 0, 0, 0)
-shape = SubResource("BoxShape3D_ibp2k")
+shape = SubResource("BoxShape3D_px18c")
 
 [node name="CollisionShape3D2" type="CollisionShape3D" parent="StaticBody3D"]
 transform = Transform3D(0.2, 0, 0, 0, 0.2, 0, 0, 0, 0.2, 0, 0, 0.919428)
@@ -252,8 +260,8 @@ transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, -0.0803504, 0.404653)
 shape = SubResource("BoxShape3D_llyv1")
 
 [node name="GPUParticles3D" type="GPUParticles3D" parent="."]
-amount = 300
-lifetime = 0.22
+amount = 400
+lifetime = 0.44
 randomness = 0.48
 visibility_aabb = AABB(-1.16615, -4, -1.13586, 2.33229, 8, 2.27171)
 process_material = SubResource("ParticleProcessMaterial_x0ttp")

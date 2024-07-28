@@ -1,4 +1,4 @@
-[gd_scene load_steps=32 format=3 uid="uid://cn20fep4dp4sw"]
+[gd_scene load_steps=34 format=3 uid="uid://cn20fep4dp4sw"]
 
 [ext_resource type="PackedScene" uid="uid://dvsgehqxy6lav" path="res://Buildings/Resource_building.tscn" id="1_yenkp"]
 [ext_resource type="Script" path="res://Buildings/scripts/Mine.gd" id="2_p5h62"]
@@ -142,6 +142,14 @@ material = SubResource("ShaderMaterial_7lfjn")
 size = Vector2(0.235, 4)
 orientation = 2
 
+[sub_resource type="BoxShape3D" id="BoxShape3D_65bwx"]
+resource_local_to_scene = true
+size = Vector3(1.5, 1, 1.5)
+
+[sub_resource type="BoxShape3D" id="BoxShape3D_qkfyc"]
+resource_local_to_scene = true
+size = Vector3(2.74634, 1, 1.6582)
+
 [node name="Mine_Crystal" instance=ExtResource("1_yenkp")]
 script = ExtResource("2_p5h62")
 targ_zone = "Crystal_deposit"
@@ -154,6 +162,12 @@ beam_data = SubResource("Resource_w53je")
 
 [node name="Health_Bar" parent="." index="2"]
 mesh = SubResource("PlaneMesh_xr6nd")
+
+[node name="CollisionShape3D" parent="StaticBody3D" index="0"]
+shape = SubResource("BoxShape3D_65bwx")
+
+[node name="CollisionShape3D2" parent="StaticBody3D" index="1"]
+shape = SubResource("BoxShape3D_qkfyc")
 
 [node name="CollisionShape3D" parent="Detection_Area" index="0"]
 transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, -0.0803504, -0.0157573)

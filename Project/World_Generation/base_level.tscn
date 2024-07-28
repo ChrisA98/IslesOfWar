@@ -1,14 +1,12 @@
-[gd_scene load_steps=45 format=3 uid="uid://1gj112g47vqj"]
+[gd_scene load_steps=39 format=3 uid="uid://1gj112g47vqj"]
 
 [ext_resource type="Script" path="res://World_Generation/Level_Controller.gd" id="1_ql81r"]
 [ext_resource type="Shader" path="res://Materials/fog_of_war_overlay.gdshader" id="2_ec6ww"]
 [ext_resource type="Shader" path="res://World_Generation/New_Terrain.gdshader" id="2_ueirr"]
 [ext_resource type="Texture2D" uid="uid://e0bv08ufelc4" path="res://Assets/Terrain_Textures/grass_01.tres" id="4_4moqj"]
+[ext_resource type="Texture2D" uid="uid://cr22jyi6v64cy" path="res://Assets/Import_Textures/Stone_02.png" id="4_530ak"]
 [ext_resource type="Shader" path="res://World_Generation/Water.gdshader" id="4_h7krx"]
-[ext_resource type="PackedScene" uid="uid://crswchumae5b0" path="res://World_Objects/Forest.tscn" id="5_8idnn"]
-[ext_resource type="PackedScene" uid="uid://dcah4free3fs2" path="res://Actor_Classes/base_spawn.tscn" id="6_aid2n"]
-[ext_resource type="PackedScene" uid="uid://76wslx0hq568" path="res://World_Objects/Stone_deposit.tscn" id="7_7rj6j"]
-[ext_resource type="PackedScene" uid="uid://dire4xft8ffrx" path="res://World_Objects/Crystal_deposit.tscn" id="8_wyj8d"]
+[ext_resource type="Texture2D" uid="uid://bkvdw014cibfd" path="res://Assets/Terrain_Texture_Maps/Stone_02_Normal.png" id="5_424fq"]
 [ext_resource type="PackedScene" uid="uid://dbdak3gjtpx88" path="res://World_Generation/Explorable_Fog.tscn" id="9_ac8rt"]
 
 [sub_resource type="ProceduralSkyMaterial" id="ProceduralSkyMaterial_46wwo"]
@@ -65,40 +63,6 @@ dof_blur_far_distance = 1000.0
 render_priority = 0
 shader = ExtResource("2_ec6ww")
 
-[sub_resource type="Gradient" id="Gradient_ex53g"]
-interpolation_mode = 2
-colors = PackedColorArray(0.412566, 0.404807, 0.379296, 1, 0.66, 0.63976, 0.5082, 1)
-
-[sub_resource type="FastNoiseLite" id="FastNoiseLite_6cq6q"]
-noise_type = 5
-frequency = 0.0161
-fractal_octaves = 3
-fractal_lacunarity = 2.811
-fractal_gain = 0.109
-fractal_weighted_strength = 1.0
-fractal_ping_pong_strength = 2.037
-domain_warp_enabled = true
-domain_warp_amplitude = 30.168
-domain_warp_frequency = 0.032
-domain_warp_fractal_octaves = 1
-domain_warp_fractal_lacunarity = 6.086
-domain_warp_fractal_gain = 4.88
-
-[sub_resource type="NoiseTexture2D" id="NoiseTexture2D_hn25n"]
-width = 1000
-height = 1000
-seamless = true
-color_ramp = SubResource("Gradient_ex53g")
-noise = SubResource("FastNoiseLite_6cq6q")
-
-[sub_resource type="NoiseTexture2D" id="NoiseTexture2D_fcitg"]
-width = 1000
-height = 1000
-seamless = true
-as_normal_map = true
-bump_strength = 10.8
-noise = SubResource("FastNoiseLite_6cq6q")
-
 [sub_resource type="FastNoiseLite" id="FastNoiseLite_6kou8"]
 noise_type = 0
 frequency = 0.1316
@@ -152,8 +116,8 @@ shader_parameter/min_rock_slope = 0.156
 shader_parameter/max_grass_slope = 0.362
 shader_parameter/grass_alb_tex = ExtResource("4_4moqj")
 shader_parameter/grass_norm_tex = SubResource("NoiseTexture2D_e22tc")
-shader_parameter/cliff_alb_tex = SubResource("NoiseTexture2D_hn25n")
-shader_parameter/cliff_norm_tex = SubResource("NoiseTexture2D_fcitg")
+shader_parameter/cliff_alb_tex = ExtResource("4_530ak")
+shader_parameter/cliff_norm_tex = ExtResource("5_424fq")
 shader_parameter/sand_alb_tex = SubResource("NoiseTexture2D_x1bul")
 shader_parameter/sand_norm_tex = SubResource("NoiseTexture2D_23uga")
 
@@ -172,6 +136,7 @@ gradient = SubResource("Gradient_eosol")
 
 [sub_resource type="FastNoiseLite" id="FastNoiseLite_8vken"]
 noise_type = 3
+frequency = 0.0057
 fractal_type = 2
 fractal_octaves = 4
 fractal_lacunarity = 2.142
@@ -321,45 +286,6 @@ shape = SubResource("BoxShape3D_gubrw")
 
 [node name="Base_Spawns" type="Node" parent="."]
 
-[node name="Base_Spawn" parent="Base_Spawns" instance=ExtResource("6_aid2n")]
-transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 262, 9.26421, 35.5066)
-
-[node name="Base_Spawn2" parent="Base_Spawns" instance=ExtResource("6_aid2n")]
-transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 231.711, 16.0589, -231.669)
-actor_id = 1
-
-[node name="Forest" parent="." instance=ExtResource("5_8idnn")]
-transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 132.102, 17.6328, 102.57)
-prev = true
-random_seed = 491
-tree_cnt = 150
-
-[node name="Forest2" parent="." instance=ExtResource("5_8idnn")]
-transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 240.171, 0, -334.602)
-random_seed = 821
-tree_cnt = 150
-max_slope = 0.255
-
-[node name="Stone_deposit" parent="." instance=ExtResource("7_7rj6j")]
-transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 118.343, 17.8461, -203.279)
-
-[node name="Affected_Area" parent="Stone_deposit" index="1"]
-collision_layer = 3
-collision_mask = 3
-
-[node name="Stone_deposit2" parent="." instance=ExtResource("7_7rj6j")]
-transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, -172.08, 17.8461, 33.6186)
-
-[node name="Affected_Area" parent="Stone_deposit2" index="1"]
-collision_layer = 3
-collision_mask = 3
-
-[node name="Crystal_deposit" parent="." instance=ExtResource("8_wyj8d")]
-transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, -48.7732, 64.8831, -364.716)
-
-[node name="Crystal_deposit2" parent="." instance=ExtResource("8_wyj8d")]
-transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 344.551, 11.4199, 6.41168)
-
 [node name="Explorable_Fog" type="Node3D" parent="."]
 visible = false
 
@@ -409,6 +335,4 @@ directional_shadow_blend_splits = true
 directional_shadow_max_distance = 800.0
 directional_shadow_pancake_size = 76.6
 
-[editable path="Stone_deposit"]
-[editable path="Stone_deposit2"]
 [editable path="Explorable_Fog/Fog_Of_War"]

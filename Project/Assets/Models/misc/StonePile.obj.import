@@ -1,0 +1,22 @@
+[remap]
+
+importer="wavefront_obj"
+importer_version=1
+type="Mesh"
+uid="uid://qm66tuuqck5p"
+path="res://.godot/imported/StonePile.obj-2d62b04c2f54d27a5451f33eb729b128.mesh"
+
+[deps]
+
+files=["res://.godot/imported/StonePile.obj-2d62b04c2f54d27a5451f33eb729b128.mesh"]
+
+source_file="res://Assets/Models/misc/StonePile.obj"
+dest_files=["res://.godot/imported/StonePile.obj-2d62b04c2f54d27a5451f33eb729b128.mesh", "res://.godot/imported/StonePile.obj-2d62b04c2f54d27a5451f33eb729b128.mesh"]
+
+[params]
+
+generate_tangents=true
+scale_mesh=Vector3(0.33, 0.33, 0.33)
+offset_mesh=Vector3(0, 0, 0)
+optimize_mesh=true
+force_disable_mesh_compression=false

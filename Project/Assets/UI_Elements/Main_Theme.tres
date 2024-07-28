@@ -1,4 +1,4 @@
-[gd_resource type="Theme" load_steps=7 format=3 uid="uid://deh567puimw8u"]
+[gd_resource type="Theme" load_steps=9 format=3 uid="uid://deh567puimw8u"]
 
 [sub_resource type="StyleBoxEmpty" id="StyleBoxEmpty_0yino"]
 
@@ -18,6 +18,12 @@ fill_to = Vector2(0.5, 1)
 
 [sub_resource type="StyleBoxTexture" id="StyleBoxTexture_nkk0c"]
 texture = SubResource("GradientTexture2D_iqgm3")
+
+[sub_resource type="StyleBoxFlat" id="StyleBoxFlat_tuscs"]
+bg_color = Color(0.726049, 0.341798, 0.721735, 1)
+
+[sub_resource type="StyleBoxFlat" id="StyleBoxFlat_bqg8w"]
+bg_color = Color(0.54388, 0.212358, 0.542125, 1)
 
 [resource]
 AcceptDialog/styles/panel = null
@@ -104,10 +110,10 @@ OptionButton/styles/pressed_mirrored = null
 Panel/styles/panel = SubResource("StyleBoxTexture_nkk0c")
 PanelContainer/styles/panel = null
 PopupDialog/styles/panel = null
-PopupMenu/styles/hover = null
+PopupMenu/styles/hover = SubResource("StyleBoxFlat_tuscs")
 PopupMenu/styles/labeled_separator_left = null
 PopupMenu/styles/labeled_separator_right = null
-PopupMenu/styles/panel = null
+PopupMenu/styles/panel = SubResource("StyleBoxFlat_bqg8w")
 PopupMenu/styles/panel_disabled = null
 PopupMenu/styles/separator = null
 PopupPanel/styles/panel = null

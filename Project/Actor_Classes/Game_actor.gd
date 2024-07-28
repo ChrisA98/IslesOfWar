@@ -5,7 +5,7 @@ class_name game_actor
 ''' Signals '''
 signal res_changed(res: int, new_amt: int)
 signal pop_changed(curr_pop: int, max_pop: int)
-signal building_added(building_pos: Vector3, hide_grass: bool)
+signal building_added(building_pos: Vector3, building : Building)
 
 '''Actor structure and units'''
 var bases := []
@@ -58,21 +58,28 @@ func _process(_delta):
 '''Prepare Start'''
 
 func load_units():
+	var ext : String	
+	## Account for remap extension
+	if OS.has_feature("editor"):
+		ext = ".tscn"
+	else:
+		ext = ".tscn.remap"
+		
 	for un in faction_data["unit_list"]:
-		var _unit = un.replace(" ","_").to_lower()		
-		if(FileAccess.file_exists("res://Units/"+_unit+".tscn")):
+		var _unit = un.replace(" ","_").to_lower()
+		if(FileAccess.file_exists("res://Units/"+_unit+ext)):
 			loaded_units[un] = load("res://Units/"+_unit+".tscn")
 		else:
 			loaded_units[un] = load("res://Units/"+"infantry"+".tscn")
+			print(" Could not find unit"+un)
 		unit_model_master[un] = []
 		for mod in faction_data["unit_list"][un]["models"]:
 			##Load model master
 			var model
-			if(FileAccess.file_exists("res://Assets/Models/Units/modified_scenes/"+mod+"_va.tscn")):
-				@warning_ignore("assert_always_false")
-				model = load("res://Assets/Models/Units/modified_scenes/"+mod+"_va.tscn").instantiate()
+			if(FileAccess.file_exists("res://Assets/Models/Units/modified_scenes/"+mod+"_va"+ext)):
+				@warning_ignore("assert_always_false") model = load("res://Assets/Models/Units/modified_scenes/"+mod+"_va.tscn").instantiate()
 			else:
-				model = load("res://Assets/Models/Units/modified_scenes/knight_base_va.tscn").instantiate()
+				@warning_ignore("assert_always_false") model = load("res://Assets/Models/Units/modified_scenes/knight_base_va.tscn").instantiate()
 			model.name = mod+"_models_master"
 			add_child(model)
 			unit_model_master[un].push_back(model)
@@ -173,9 +180,9 @@ func update_grass_tex(bld):
 		await bld.revealed
 	## Do Grass Modification
 	if(bld.parent_building == null or bld.parent_building == self):
-		building_added.emit(bld.position,bld.hide_grass,bld.bldg_radius, Vector3.ZERO)
+		building_added.emit(bld.position,bld,bld.bldg_radius, Vector3.ZERO)
 	else:
-		building_added.emit(bld.position,bld.hide_grass,bld.bldg_radius,bld.parent_building.position)
+		building_added.emit(bld.position,bld,bld.bldg_radius,bld.parent_building.position)
 
 ''' Building Management End '''
 '''-------------------------------------------------------------------------------------'''
@@ -294,18 +301,18 @@ func command_unit_garrison(trgt):
 
 ## Add unit to queue to set move target when tracking
 func add_unit_tracking(unit:Unit_Base, track_function: Callable):
-	for u in range(unit_tracking_queue.size()):
-		if unit_tracking_queue[u][0] == unit:
-			var _call = unit_tracking_queue.pop_at(u)
-			_call[1] = track_function
-			unit_tracking_queue.push_front(_call)
-			return
-	unit_tracking_queue.push_front([unit,track_function])
+	#for u in range(unit_tracking_queue.size()):
+	#	if unit_tracking_queue[u][0] == unit:
+	#		var _call = unit_tracking_queue.pop_at(u)
+	#		_call[1] = track_function
+	#		unit_tracking_queue.push_back(_call)
+	#		return
+	unit_tracking_queue.push_back([unit,track_function])
 
 
 ## Call set target function from tracking queue
 func pop_front_unit_tracking_queue():
-	var _call = unit_tracking_queue.pop_back()
+	var _call = unit_tracking_queue.pop_front()
 	if is_instance_valid(_call[0]):
 		_call[1].call()
 		return

@@ -1,4 +1,4 @@
-[gd_scene load_steps=5 format=3 uid="uid://bnmi8gc8nnhqt"]
+[gd_scene load_steps=18 format=3 uid="uid://bnmi8gc8nnhqt"]
 
 [ext_resource type="Script" path="res://Parent_Scenes/Building_Model_Controller.gd" id="1_h7k3n"]
 [ext_resource type="Shader" uid="uid://cihsj0qbnmaw3" path="res://Assets/Models/Materials/building_shader.tres" id="2_e6moq"]
@@ -28,9 +28,109 @@ height = 1.0
 radial_segments = 10
 rings = 1
 
+[sub_resource type="Curve" id="Curve_kcl4o"]
+_data = [Vector2(0, 1), 0.0, 0.0, 0, 0, Vector2(0.119403, 0.692308), -0.644231, -0.644231, 0, 0, Vector2(0.442786, 0.186813), 0.0, 0.0, 0, 0, Vector2(0.99999, 0), 0.0, 0.0, 0, 0, Vector2(1, 1), 0.0, 0.0, 0, 0]
+point_count = 5
+
+[sub_resource type="CurveTexture" id="CurveTexture_dvp41"]
+curve = SubResource("Curve_kcl4o")
+
+[sub_resource type="Gradient" id="Gradient_yb5l4"]
+offsets = PackedFloat32Array(0, 0.0982659, 0.473988, 1)
+colors = PackedColorArray(0.615697, 0.200959, 0, 1, 0.275991, 0.140769, 0.0228143, 1, 0.183591, 0.18359, 0.18359, 1, 0, 0, 0, 1)
+
+[sub_resource type="GradientTexture1D" id="GradientTexture1D_lgeya"]
+gradient = SubResource("Gradient_yb5l4")
+
+[sub_resource type="Curve" id="Curve_72a8c"]
+max_value = 100.0
+_data = [Vector2(0, 1), 0.0, 0.0, 0, 0, Vector2(1, 94.5055), 0.0, 0.0, 0, 0]
+point_count = 2
+
+[sub_resource type="CurveTexture" id="CurveTexture_gmvq4"]
+curve = SubResource("Curve_72a8c")
+
+[sub_resource type="Curve" id="Curve_c14lc"]
+_data = [Vector2(0, 1), 0.0, 0.0, 0, 0, Vector2(0.537313, 0), 0.0, 0.0, 0, 0]
+point_count = 2
+
+[sub_resource type="CurveTexture" id="CurveTexture_hs3kv"]
+curve = SubResource("Curve_c14lc")
+
+[sub_resource type="Curve" id="Curve_d41of"]
+_data = [Vector2(0, 0.318681), 0.0, 0.0, 0, 0, Vector2(0.358209, 0.813187), 0.0, 0.0, 0, 0, Vector2(0.900498, 1), 0.0, 0.0, 0, 0, Vector2(1, 0.032967), 0.215492, 0.0, 0, 0]
+point_count = 4
+
+[sub_resource type="CurveTexture" id="CurveTexture_jnvhy"]
+curve = SubResource("Curve_d41of")
+
+[sub_resource type="ParticleProcessMaterial" id="ParticleProcessMaterial_51hex"]
+emission_shape = 2
+emission_sphere_radius = 0.05
+direction = Vector3(0, 10, 0)
+initial_velocity_max = 0.15
+radial_velocity_min = 0.97
+radial_velocity_max = 0.97
+gravity = Vector3(0, -0.2, 0)
+linear_accel_min = -4.0
+linear_accel_max = 4.0
+damping_max = 18.024
+damping_curve = SubResource("CurveTexture_gmvq4")
+attractor_interaction_enabled = false
+scale_min = 0.0
+scale_max = 2.5
+scale_curve = SubResource("CurveTexture_jnvhy")
+color_ramp = SubResource("GradientTexture1D_lgeya")
+alpha_curve = SubResource("CurveTexture_dvp41")
+emission_curve = SubResource("CurveTexture_hs3kv")
+turbulence_noise_scale = 1.5
+turbulence_noise_speed = Vector3(0.1, 0, 0.1)
+turbulence_noise_speed_random = 1.96
+turbulence_influence_min = 0.0
+turbulence_influence_max = 1.0
+
+[sub_resource type="StandardMaterial3D" id="StandardMaterial3D_53tow"]
+transparency = 1
+vertex_color_use_as_albedo = true
+
+[sub_resource type="SphereMesh" id="SphereMesh_8xsek"]
+material = SubResource("StandardMaterial3D_53tow")
+radius = 0.25
+height = 0.5
+radial_segments = 6
+rings = 3
+
 [node name="Building_Model" type="Node3D"]
 script = ExtResource("1_h7k3n")
 
 [node name="MeshInstance3D" type="MeshInstance3D" parent="."]
 transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, 0.450854, 0)
 mesh = SubResource("CylinderMesh_bhhwi")
+
+[node name="Damage" type="Node3D" parent="."]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, 0.5, 0)
+
+[node name="Damage" type="GPUParticles3D" parent="Damage"]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, -0.860424, 0.618013, 1.02382)
+visible = false
+amount = 325
+lifetime = 4.97
+process_material = SubResource("ParticleProcessMaterial_51hex")
+draw_pass_1 = SubResource("SphereMesh_8xsek")
+
+[node name="Damage2" type="GPUParticles3D" parent="Damage"]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, -0.310393, 0.0139976, -1.33906)
+visible = false
+amount = 325
+lifetime = 4.97
+visibility_aabb = AABB(-4, -3.37659, -4, 8, 8, 8)
+process_material = SubResource("ParticleProcessMaterial_51hex")
+draw_pass_1 = SubResource("SphereMesh_8xsek")
+
+[node name="Damage3" type="GPUParticles3D" parent="Damage"]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0.0380761, 1.82932, 0.000391769)
+visible = false
+amount = 325
+lifetime = 4.97
+process_material = SubResource("ParticleProcessMaterial_51hex")
+draw_pass_1 = SubResource("SphereMesh_8xsek")

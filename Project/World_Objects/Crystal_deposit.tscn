@@ -1,14 +1,15 @@
-[gd_scene load_steps=11 format=3 uid="uid://dire4xft8ffrx"]
+[gd_scene load_steps=12 format=3 uid="uid://dire4xft8ffrx"]
 
 [ext_resource type="PackedScene" uid="uid://c4e7broeu0wn3" path="res://Parent_Scenes/World_Object.tscn" id="1_rj2sw"]
 [ext_resource type="Shader" uid="uid://bpmxbv81o0185" path="res://World_Generation/Round_scatter_shader.tres" id="2_ho0rx"]
+[ext_resource type="Script" path="res://World_Objects/Crystal_deposit.gd" id="2_rbet4"]
 [ext_resource type="Shader" path="res://Materials/fog_of_war_overlay.gdshader" id="5_p8owr"]
 
 [sub_resource type="ShaderMaterial" id="ShaderMaterial_rhl1w"]
 shader = ExtResource("2_ho0rx")
 shader_parameter/radius = 0.0
 shader_parameter/instance_rot_randomize = 17.975
-shader_parameter/instance_spacing = 3.334
+shader_parameter/instance_spacing = 50.0
 shader_parameter/instance_scale_x = 0.5
 shader_parameter/instance_scale_y = 0.5
 shader_parameter/instance_scale_z = 0.5
@@ -16,9 +17,9 @@ shader_parameter/instance_scale_randomize = 1.915
 shader_parameter/instance_pos_randomize = 11.47
 shader_parameter/instance_scale_min = 1.045
 shader_parameter/instance_scale_max = 1.2
-shader_parameter/_coverage_altitude = 21.07
-shader_parameter/_coverage_range = 99.705
-shader_parameter/_slope_coverage = 0.22
+shader_parameter/_coverage_altitude = 25.775
+shader_parameter/_coverage_range = 109.53
+shader_parameter/_slope_coverage = 1.0
 shader_parameter/clumping_strength = 20.0
 shader_parameter/terrain_normal_basis = null
 shader_parameter/instance_orient_to_normal = false
@@ -98,6 +99,7 @@ _surfaces = [{
 }]
 
 [node name="Crystal_deposit" instance=ExtResource("1_rj2sw")]
+script = ExtResource("2_rbet4")
 metadata/res_building = "Mine_crystal"
 
 [node name="Editor_Mesh" parent="." index="0"]

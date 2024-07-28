@@ -158,9 +158,9 @@ emission_ring_radius = 1.495
 emission_ring_inner_radius = 0.0
 direction = Vector3(0, 10, 0)
 spread = 107.86
-gravity = Vector3(0, -10, 0)
 initial_velocity_min = 0.54
 initial_velocity_max = 0.54
+gravity = Vector3(0, -10, 0)
 linear_accel_min = 6.35
 linear_accel_max = 33.33
 radial_accel_min = 3.17
@@ -190,7 +190,7 @@ transform = Transform3D(0.8, 0, 0, 0, 0.8, 0, 0, 0, 0.8, 0.31446, 0.402624, -0.0
 shape = SubResource("BoxShape3D_vf3xi")
 
 [node name="CollisionShape3D2" parent="StaticBody3D" index="1"]
-transform = Transform3D(0.2, 0, 0, 0, 0.2, 0, 0, 0, 0.2, 0, 0, 0.898475)
+transform = Transform3D(0.2, 0, 0, 0, 0.2, 0, 0, 0, 0.2, 0, 0, 3.44085)
 
 [node name="Water_Check" type="RayCast3D" parent="StaticBody3D" index="7"]
 transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, 1, 0.910313)
@@ -198,10 +198,10 @@ target_position = Vector3(0, -5, 0)
 collision_mask = 65535
 
 [node name="RallyPoint" parent="." index="7"]
-transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, 0.0733881, 1.92666)
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, 0.0733881, 3.57584)
 
 [node name="SpawnPoint" parent="." index="8"]
-transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, -0.0474244, 0.886082)
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, -0.0474244, 2.15441)
 
 [node name="GPUParticles3D" parent="." index="10"]
 transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0.412421, 0, 0)

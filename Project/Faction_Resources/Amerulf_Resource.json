@@ -3,12 +3,12 @@
 	"short_name": "Amerulf",
 	"magic_color": "39b8ff",
 	"primary_color_options" : 
-		["39b8ff",
-		"d639ff",
-		"ff399a",
-		"ff6639",
-		"fff439",
-		"7cff39"],
+		["517e81",
+		"775181",
+		"815163",
+		"7f5b50",
+		"7f7c50",
+		"607f50"],
 	"buildings":{
 		"Base": {
 			"base_cost": {
@@ -376,5 +376,5 @@
 			"pop_cost": 1
 		}
 	},
-	"starting_unit": "Knight",
+	"starting_unit": "Bowman",
 }

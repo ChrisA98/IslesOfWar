@@ -1,4 +1,4 @@
-[gd_scene load_steps=32 format=3 uid="uid://dpxo3tf8ag3t5"]
+[gd_scene load_steps=34 format=3 uid="uid://dpxo3tf8ag3t5"]
 
 [ext_resource type="PackedScene" uid="uid://dvsgehqxy6lav" path="res://Buildings/Resource_building.tscn" id="1_xr0qo"]
 [ext_resource type="Script" path="res://Buildings/scripts/Mine.gd" id="2_y42qu"]
@@ -142,6 +142,14 @@ material = SubResource("ShaderMaterial_mj77r")
 size = Vector2(0.235, 4)
 orientation = 2
 
+[sub_resource type="BoxShape3D" id="BoxShape3D_hg54c"]
+resource_local_to_scene = true
+size = Vector3(1.5, 1, 1.5)
+
+[sub_resource type="BoxShape3D" id="BoxShape3D_5y216"]
+resource_local_to_scene = true
+size = Vector3(2.74634, 1, 1.6582)
+
 [node name="Mine_Stone" instance=ExtResource("1_xr0qo")]
 script = ExtResource("2_y42qu")
 targ_zone = "Stone_deposit"
@@ -154,6 +162,15 @@ beam_data = SubResource("Resource_qgx2p")
 
 [node name="Health_Bar" parent="." index="2"]
 mesh = SubResource("PlaneMesh_kdvsl")
+
+[node name="CollisionShape3D" parent="StaticBody3D" index="0"]
+shape = SubResource("BoxShape3D_hg54c")
+
+[node name="CollisionShape3D2" parent="StaticBody3D" index="1"]
+shape = SubResource("BoxShape3D_5y216")
+
+[node name="RallyPoint" parent="." index="8"]
+visible = true
 
 [node name="CollisionShape3D" parent="Detection_Area" index="0"]
 transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, -0.0803504, -0.0157573)

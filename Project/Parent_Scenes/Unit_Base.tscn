@@ -87,12 +87,16 @@ path_max_distance = 5.01
 avoidance_enabled = true
 neighbor_distance = 4.0
 max_neighbors = 5
-avoidance_mask = 2
+time_horizon_obstacles = 3.0
+max_speed = 1.0
+use_3d_avoidance = true
+avoidance_mask = 3
 debug_path_custom_point_size = 10.82
 
 [node name="Health_Bar" type="MeshInstance3D" parent="."]
 transform = Transform3D(-4.37114e-08, -1, 0, 1, -4.37114e-08, 0, 0, 0, 1, 0, 3.7873, 0)
 visible = false
+layers = 5
 mesh = SubResource("PlaneMesh_v8k67")
 script = ExtResource("5_4o0hm")
 
@@ -100,6 +104,7 @@ script = ExtResource("5_4o0hm")
 
 [node name="MeshInstance3D" type="MeshInstance3D" parent="Selection"]
 transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, 1.42964, 0)
+layers = 5
 sorting_offset = 100.0
 sorting_use_aabb_center = false
 mesh = SubResource("PlaneMesh_5tc6o")

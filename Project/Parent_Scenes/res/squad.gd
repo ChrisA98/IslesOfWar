@@ -59,7 +59,9 @@ func push_back(unit):
 	unit.current_squad = self
 	units.push_back(unit)
 	units.sort_custom(_sort_by_id)
-	unit.died.connect(erase.bind(unit))
+	## Check if signal alredy is connected and dont do again if it is
+	if !unit.died.is_connected(erase.bind(unit)):
+		unit.died.connect(erase.bind(unit))
 
 
 ## Sort units by id

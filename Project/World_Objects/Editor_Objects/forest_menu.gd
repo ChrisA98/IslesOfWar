@@ -9,14 +9,13 @@ func seed_text_changed():
 	var text = $VBoxContainer/seed_edit/seed_input/TextEdit.get_text()
 	$VBoxContainer/seed_edit/seed_input/TextEdit.set_text(str(text.to_int()))
 	$VBoxContainer/seed_edit/seed_input/TextEdit.set_caret_column(text.length())
-	
 
 
 ## Seed enter button pressed
 func seed_changed():
 	var t = $VBoxContainer/seed_edit/seed_input/TextEdit.get_text()
 	get_parent().preview_node.random_seed = t.to_int()
-	
+
 
 ## Density changed
 func density_changed(value_changed):
@@ -25,8 +24,20 @@ func density_changed(value_changed):
 		get_parent().preview_node.tree_cnt = density
 	
 
+## Size changed
+func size_changed(value_changed):
+	if value_changed:
+		var _size = $VBoxContainer/forest_size_edit/density_input/HSlider.value
+		get_parent().preview_node.radius = _size
+
+
 ## Slope Changed
 func slope_changed(value):
 	var max_slope = $VBoxContainer/tree_slope/slope_slider/HSlider.value
 	get_parent().preview_node.max_slope = max_slope
 
+
+
+func _tree_typed_chaned(index):
+	var tree_type = $VBoxContainer/tree_type/OptionButton.get_item_text(index)
+	get_parent().preview_node.set_tree_type(tree_type)

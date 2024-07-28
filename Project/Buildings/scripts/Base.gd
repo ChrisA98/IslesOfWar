@@ -33,6 +33,7 @@ func set_pos(pos, _wait = false):
 	get_node("Valid_Region/GPUParticles3D").restart()
 	if near_base(actor_owner.bases):
 		make_invalid()
+		
 
 
 func place():

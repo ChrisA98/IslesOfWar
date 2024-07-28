@@ -20,7 +20,7 @@ uniform float max_grass_slope:hint_range(0.0,1.0) = 0.9;
 //current fog
 global uniform sampler2D fog_tex;
 //mesh displacement
-global uniform vec2 heightmap_tex_size = vec2(1000.0,1000.0);
+global uniform vec2 heightmap_tex_size;
 global uniform float fog_darkness;
 global uniform float water_depth;
 
@@ -44,6 +44,10 @@ void vertex() {
 	vec2 e = vec2(0.01, 0.0);
 	normal = normalize(vec3(get_height(pos_uv - e) / t_height - get_height(pos_uv + e) / t_height, 2.0 * e.x, get_height(pos_uv - e.yx) / t_height - get_height(pos_uv + e.yx) / t_height));
 	NORMAL = normal;
+	if (pos_uv.x < 0.0 || pos_uv.x > 1.0 || pos_uv.y < 0.0 || pos_uv.y > 1.0){
+		VERTEX.y = -100.0;
+		NORMAL = vec3(1.0);
+	}
 }
 
 void fragment(){
@@ -88,14 +92,22 @@ void fragment(){
 	vec3 rockgrass_albedo = mix(rock_albedo, grass_albedo, rock_grass_weight);
 	ALBEDO = mix(sand_albedo, rockgrass_albedo, sand_rockgrass_weight);
 	SPECULAR = 0.02;
-	ROUGHNESS = .5;
+	ROUGHNESS = .75;
 	NORMAL_MAP_DEPTH = normal.y*.1;
 	
 	float buildings = texture(building_locs, pos_uv).g;
 	
-	ALBEDO = mix(sand_albedo, ALBEDO, 1.1-buildings);
+	ALBEDO = mix(ALBEDO, sand_albedo, clamp(buildings,0.0,1.0));
+	ALBEDO = mix(ALBEDO, rock_albedo, clamp(buildings-3.0,0.0,1.0));
+	
 	vec4 fog_color = texture(fog_tex, pos_uv);
 	if(fog_color.a < 0.1){
 		ALBEDO = mix(ALBEDO, vec3 (0,0,0), fog_darkness);
+	}
+	if (pos_uv.x <= 0.001 || pos_uv.x >= 0.999 || pos_uv.y <= 0.001 || pos_uv.y >= 0.999){
+		ALBEDO = vec3(0.025,0.025,0.0375);
+		NORMAL_MAP_DEPTH = 0.0;
+		NORMAL = vec3(0.0);
+		SPECULAR = 0.0;
 	}
 }

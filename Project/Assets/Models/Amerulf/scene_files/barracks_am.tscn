@@ -1,10 +1,11 @@
-[gd_scene load_steps=11 format=3 uid="uid://c648k7ol7idwu"]
+[gd_scene load_steps=12 format=3 uid="uid://c648k7ol7idwu"]
 
 [ext_resource type="PackedScene" uid="uid://bnmi8gc8nnhqt" path="res://Parent_Scenes/Building_Model.tscn" id="1_l406y"]
 [ext_resource type="Shader" uid="uid://cihsj0qbnmaw3" path="res://Assets/Models/Materials/building_shader.tres" id="2_b64lx"]
 [ext_resource type="Texture2D" uid="uid://dwejmjvt754e" path="res://Assets/Models/Amerulf/Tex/Stone_01.png" id="3_tfmst"]
 [ext_resource type="Texture2D" uid="uid://berexigqyo63g" path="res://Assets/Models/Amerulf/Tex/Stone_01_Normal_Map.png" id="4_gxvgf"]
 [ext_resource type="Texture2D" uid="uid://dbra2yq8gpykc" path="res://Assets/Models/Units/textures/wood_tex_2.png" id="5_ud1rx"]
+[ext_resource type="PackedScene" uid="uid://clibifjykfro" path="res://Assets/Models/misc/Amerulfian_Flag.tscn" id="6_36ogn"]
 
 [sub_resource type="ShaderMaterial" id="ShaderMaterial_2vsc2"]
 render_priority = 0
@@ -170,5 +171,17 @@ blend_shape_mode = 0
 [node name="Building_Model" instance=ExtResource("1_l406y")]
 
 [node name="MeshInstance3D" parent="." index="0"]
-transform = Transform3D(-4.37114e-08, 0, -1, 0, 1, 0, 1, 0, -4.37114e-08, 0, 0, 0)
+transform = Transform3D(-6.55671e-08, 0, -1.5, 0, 1.5, 0, 1.5, 0, -6.55671e-08, 0, 0, 0)
 mesh = SubResource("ArrayMesh_wuevu")
+
+[node name="Damage" parent="Damage" index="0"]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, -0.22009, -0.767373, 0.15942)
+
+[node name="Damage2" parent="Damage" index="1"]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0.280752, 0.0139976, -0.399046)
+
+[node name="Damage3" parent="Damage" index="2"]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, -0.555978, -0.368707, -0.431828)
+
+[node name="MeshInstance3D2" parent="." index="2" instance=ExtResource("6_36ogn")]
+transform = Transform3D(0.198, 0, 0, 0, -8.65485e-09, -0.198, 0, 0.198, -8.65485e-09, 0.603105, 0.94643, -0.588705)

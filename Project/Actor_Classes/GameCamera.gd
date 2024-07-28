@@ -35,6 +35,8 @@ func _ready():
 	ground_check.position.x = position.x
 	ground_check.position.z = position.z
 	Input.set_mouse_mode(Input.MOUSE_MODE_CONFINED) 
+	
+	@warning_ignore("integer_division") world_bounds = Vector2i((Global_Vars.heightmap_size/2)-5,(Global_Vars.heightmap_size/2)-5)
 
 
 ## Handles mouse motion on screen
@@ -64,7 +66,7 @@ func _input(event):
 			if m.has_mouse:
 				return
 		zoom -= 5
-	if event.is_action("scroll_down") and zoom < MAX_ZOOM:
+	if event.is_action("scroll_down") and zoom < 1000:
 		for m in get_tree().get_nodes_in_group("uses_scroll"):
 			if m.has_mouse:
 				return
@@ -80,7 +82,15 @@ func _input(event):
 		if(check_menus()):
 			$"../../UI_Node".close_menus()
 		else:
-			get_tree().quit()
+			Input.set_mouse_mode(Input.MOUSE_MODE_CONFINED_HIDDEN) 
+			await  get_tree().physics_frame
+			var menu_load = load("res://Menu_Scenes/main_menu.tscn")
+			var scene = menu_load.instantiate()
+			get_tree().root.add_child(scene)
+			Input.set_mouse_mode(Input.MOUSE_MODE_CONFINED) 
+			if scene.is_node_ready() == false:
+				await scene.ready	
+			get_parent().get_parent().free()
 	
 	if event.is_action_pressed(("sprint")):
 		maxSpeed = maxSpeed_run
@@ -96,6 +106,7 @@ func check_menus():
 
 
 func _physics_process(delta):
+	
 	
 	if Input.is_action_pressed(("cam_move_forward")):
 		key_direct -= transform.basis.z
@@ -128,7 +139,7 @@ func _physics_process(delta):
 	elif(distance_to_trgt or !ground_check.is_colliding()):
 		velocity.y = 1
 	
-	velocity = velocity.lerp(tot_direct * maxSpeed, accel * delta)
+	velocity = velocity.lerp(tot_direct * (clamp(maxSpeed*zoom/22,maxSpeed,1000)), accel * delta)
 	speed.z = velocity.z
 	speed.x = velocity.x
 	speed = speed.rotated(Vector3.UP,deg_to_rad(-get_rotation_degrees().y))
@@ -140,6 +151,9 @@ func _physics_process(delta):
 	if abs(position.x) > world_bounds.x or abs(position.z) > world_bounds.y:
 		translate(-speed)
 		velocity = Vector3.ZERO
+	
+	## Align Unit Overlay viewport with primary camera
+	$"../../unitViewport/unitsCam/units_cam".global_transform = $Player_view.global_transform
 	
 	key_direct = Vector3()
 	tot_direct = Vector3()

@@ -1,0 +1,116 @@
+[gd_scene load_steps=4 format=3 uid="uid://ch7t4yglosx3f"]
+
+[ext_resource type="PackedScene" uid="uid://bkct877jtmifh" path="res://World_Objects/Editor_Objects/object_edtor_container.tscn" id="1_6oyv0"]
+[ext_resource type="Theme" uid="uid://55r57hveyxd8" path="res://Assets/Themes/editor_theme.tres" id="2_kwxli"]
+[ext_resource type="Script" path="res://World_Objects/Editor_Objects/decor_menu.gd" id="3_8pmkp"]
+
+[node name="Decor" node_paths=PackedStringArray("menu") instance=ExtResource("1_6oyv0")]
+menu = NodePath("decor_menu")
+node_to_save = "Decor"
+
+[node name="decor_menu" type="Panel" parent="." index="1"]
+anchors_preset = -1
+anchor_left = 0.736
+anchor_right = 1.0
+anchor_bottom = 0.255
+grow_horizontal = 0
+theme = ExtResource("2_kwxli")
+script = ExtResource("3_8pmkp")
+
+[node name="VBoxContainer" type="VBoxContainer" parent="decor_menu" index="0"]
+layout_mode = 1
+anchors_preset = 15
+anchor_right = 1.0
+anchor_bottom = 1.0
+grow_horizontal = 2
+grow_vertical = 2
+mouse_filter = 2
+
+[node name="Label" type="HBoxContainer" parent="decor_menu/VBoxContainer" index="0"]
+layout_mode = 2
+size_flags_vertical = 3
+mouse_filter = 2
+
+[node name="RichTextLabel" type="RichTextLabel" parent="decor_menu/VBoxContainer/Label" index="0"]
+layout_mode = 2
+size_flags_horizontal = 3
+theme_override_font_sizes/normal_font_size = 41
+bbcode_enabled = true
+text = "[center]Object[/center]"
+
+[node name="HSeparator" type="HSeparator" parent="decor_menu/VBoxContainer" index="1"]
+layout_mode = 2
+
+[node name="scale_container" type="HBoxContainer" parent="decor_menu/VBoxContainer" index="2"]
+layout_mode = 2
+size_flags_vertical = 3
+mouse_filter = 2
+
+[node name="label" type="RichTextLabel" parent="decor_menu/VBoxContainer/scale_container" index="0"]
+layout_mode = 2
+size_flags_horizontal = 3
+mouse_filter = 2
+theme_override_font_sizes/normal_font_size = 37
+bbcode_enabled = true
+text = "[right]Scale:[/right]"
+
+[node name="HSlider" type="HSlider" parent="decor_menu/VBoxContainer/scale_container" index="1"]
+layout_mode = 2
+size_flags_horizontal = 3
+size_flags_vertical = 1
+size_flags_stretch_ratio = 0.85
+min_value = 0.25
+max_value = 25.0
+value = 0.25
+
+[node name="HSeparator2" type="HSeparator" parent="decor_menu/VBoxContainer" index="3"]
+layout_mode = 2
+
+[node name="Vertical_offset" type="HBoxContainer" parent="decor_menu/VBoxContainer" index="4"]
+layout_mode = 2
+size_flags_vertical = 3
+mouse_filter = 2
+
+[node name="label" type="RichTextLabel" parent="decor_menu/VBoxContainer/Vertical_offset" index="0"]
+layout_mode = 2
+size_flags_horizontal = 3
+mouse_filter = 2
+theme_override_font_sizes/normal_font_size = 37
+bbcode_enabled = true
+text = "[right]Vertical Offset:[/right]"
+
+[node name="HSlider" type="HSlider" parent="decor_menu/VBoxContainer/Vertical_offset" index="1"]
+layout_mode = 2
+size_flags_horizontal = 3
+size_flags_vertical = 1
+size_flags_stretch_ratio = 0.85
+min_value = -50.0
+max_value = 50.0
+
+[node name="HSeparator3" type="HSeparator" parent="decor_menu/VBoxContainer" index="5"]
+layout_mode = 2
+
+[node name="Rotation" type="HBoxContainer" parent="decor_menu/VBoxContainer" index="6"]
+layout_mode = 2
+size_flags_vertical = 3
+mouse_filter = 2
+
+[node name="label" type="RichTextLabel" parent="decor_menu/VBoxContainer/Rotation" index="0"]
+layout_mode = 2
+size_flags_horizontal = 3
+mouse_filter = 2
+theme_override_font_sizes/normal_font_size = 37
+bbcode_enabled = true
+text = "[right]Rotation:[/right]"
+
+[node name="HSlider" type="HSlider" parent="decor_menu/VBoxContainer/Rotation" index="1"]
+layout_mode = 2
+size_flags_horizontal = 3
+size_flags_vertical = 1
+size_flags_stretch_ratio = 0.85
+min_value = -360.0
+max_value = 360.0
+
+[connection signal="value_changed" from="decor_menu/VBoxContainer/scale_container/HSlider" to="decor_menu" method="_update_scale"]
+[connection signal="value_changed" from="decor_menu/VBoxContainer/Vertical_offset/HSlider" to="decor_menu" method="_update_v_offset"]
+[connection signal="value_changed" from="decor_menu/VBoxContainer/Rotation/HSlider" to="decor_menu" method="_update_rot"]

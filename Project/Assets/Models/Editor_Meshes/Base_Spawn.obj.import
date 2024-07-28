@@ -1,0 +1,22 @@
+[remap]
+
+importer="wavefront_obj"
+importer_version=1
+type="Mesh"
+uid="uid://bftgas8n5fpag"
+path="res://.godot/imported/Base_Spawn.obj-4261df671b7cde712159848d39ed7319.mesh"
+
+[deps]
+
+files=["res://.godot/imported/Base_Spawn.obj-4261df671b7cde712159848d39ed7319.mesh"]
+
+source_file="res://Assets/Models/Editor_Meshes/Base_Spawn.obj"
+dest_files=["res://.godot/imported/Base_Spawn.obj-4261df671b7cde712159848d39ed7319.mesh", "res://.godot/imported/Base_Spawn.obj-4261df671b7cde712159848d39ed7319.mesh"]
+
+[params]
+
+generate_tangents=true
+scale_mesh=Vector3(1, 1, 1)
+offset_mesh=Vector3(0, 0, 0)
+optimize_mesh=true
+force_disable_mesh_compression=false

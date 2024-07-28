@@ -1,5 +1,7 @@
 extends Node3D
 
+class_name WorldObjectEditor
+
 signal delete
 signal preparing_to_select
 
@@ -23,10 +25,13 @@ var current_node : Node_type = Node_type.NONE:
 				world_object_path = "res://World_Objects/Crystal_deposit.tscn"
 				update_node_function = Callable(_update_crystal)
 		spawn_node()
-var selected : bool:
+var selected : bool = true:
 	set(value):
 		if value:
 			preparing_to_select.emit()
+			for obj in get_tree().get_nodes_in_group("editor_object"):
+				if obj != self:
+					obj.selected = false
 		else:
 			for i in range(1,menus.size()):
 				hide_menu(menus[i])
@@ -44,10 +49,12 @@ var following_mouse : bool = true:
 			for obj in get_tree().get_nodes_in_group("editor_object"):
 				if obj != self:
 					obj.active = false
+			$controller_Handle/editor_mesh.transparency = .2
 		else:
 			for obj in get_tree().get_nodes_in_group("editor_object"):
 				if obj != self:
 					obj.active = true
+			$controller_Handle/editor_mesh.transparency = .75
 		following_mouse = value
 		
 var mouse_pos
@@ -55,22 +62,30 @@ var mouse_pos
 ## Can be selected and moved
 var active : bool = true
 
+## item was loaded in, not placed
+var loaded_in : bool = false
+
 
 @onready var level_builder_controller = get_parent().get_parent()
 @onready var menus = [null,get_node("forest_menu"),get_node("stone_menu"),get_node("crystal_menu")]
 
 
 func _ready():
-	update_heightmap()
-	set_pos(level_builder_controller.mouse_position)
+	## Get Initial heightmap image
+	heightmap = Global_Vars.heightmap
 	
-	active = true
-	
+	## Deselect other editor objects
+	for obj in get_tree().get_nodes_in_group("editor_object"):
+		if obj != self:
+			obj.selected = false
+			
 	##Connect node type menus
 	for m in menus:
 		if m == null:
 			continue
 		m.get_node("VBoxContainer/node_type/MenuButton").get_popup().id_pressed.connect(set_active_node)
+	
+	call_deferred("delayed_initialize")
 
 
 func _process(_d):
@@ -81,6 +96,14 @@ func _process(_d):
 		mouse_pos = level_builder_controller.mouse_position
 		set_pos(mouse_pos)
 
+
+func delayed_initialize():
+	await get_tree().physics_frame
+	if loaded_in == true:
+		update_node_function.call()
+		return
+	set_pos(level_builder_controller.mouse_position)
+	
 
 """ Menu functions"""
 
@@ -95,6 +118,35 @@ func set_active_node(id: int):
 	current_node = id
 	spawn_node()
 	hide_menu(menus[current_node],false)
+	
+
+## Assign node externally (primarily for loading maps purposes)
+func load_node(node: world_object):	
+	if node is forest:
+		set_active_node(WorldObjectEditor.Node_type.FOREST)
+		$forest_menu/VBoxContainer/seed_edit/seed_input/TextEdit.text = str(node.random_seed)
+		$forest_menu/VBoxContainer/seed_edit/seed_input/TextEdit.text_changed.emit()
+		$forest_menu/VBoxContainer/tree_count_edit/density_input/HSlider.value = node.tree_cnt
+		$forest_menu/VBoxContainer/tree_count_edit/density_input/HSlider.drag_ended.emit(true)
+		$forest_menu/VBoxContainer/forest_size_edit/density_input/HSlider.value = node.radius
+		$forest_menu/VBoxContainer/forest_size_edit/density_input/HSlider.drag_ended.emit(true)
+		$forest_menu/VBoxContainer/tree_slope/slope_slider/HSlider.value = node.max_slope
+		$forest_menu/VBoxContainer/tree_slope/slope_slider/HSlider.value_changed.emit(node.max_slope)
+		## Go through tree options and assign id value
+		for i in range($forest_menu/VBoxContainer/tree_type/OptionButton.item_count):
+			if ($forest_menu/VBoxContainer/tree_type/OptionButton.get_item_text(i) == node.tree_type):
+				$forest_menu/VBoxContainer/tree_type/OptionButton.selected = i
+				$forest_menu/VBoxContainer/tree_type/OptionButton.item_selected.emit(i)
+	else:
+		set_active_node(WorldObjectEditor.Node_type.CRYSTAL)
+		$crystal_menu/VBoxContainer/crystal_count_edit/density_input/HSlider.value = node.amount
+		$crystal_menu/VBoxContainer/crystal_count_edit/density_input/HSlider.drag_ended.emit(true)
+		$crystal_menu/VBoxContainer/radius_slider/slider/HSlider.value = node.radius
+		$crystal_menu/VBoxContainer/radius_slider/slider/HSlider.value_changed.emit(node.radius)
+	following_mouse = false
+	selected = false
+	loaded_in = true
+	update_node_function.call()
 
 
 func hide_menu(menu,state := true):
@@ -122,6 +174,8 @@ func spawn_node():
 		return
 	preview_node = load(world_object_path).instantiate()
 	add_child(preview_node)
+	if current_node == Node_type.CRYSTAL:
+		preview_node.top_level = true
 
 
 
@@ -144,16 +198,12 @@ func _on_controller_handle_input_event(_camera, event, _pos, _normal, _shape_idx
 """ Node Placement Functions"""
 
 
-
-func update_heightmap():
-	heightmap = Global_Vars.heightmap
-	set_pos(position)
-
-
 ## Set location
 func set_pos(pos: Vector3):
+	heightmap = Global_Vars.heightmap
 	pos.y = get_loc_height(pos)
 	position = pos
+	update_node_function.call()
 
 
 ## get height on map height
@@ -173,23 +223,31 @@ func get_loc_height(pos:Vector3):
 
 
 
+##Delete node if active
+func delete_node():
+	if selected:
+		queue_free()
+		get_parent().get_parent().world_objects.erase(self)
+
+
 ## Update node caller
 func update_node():
+	heightmap = Global_Vars.heightmap
 	update_node_function.call()
 
 
 ## Update forest node for global changes or position changes
 func _update_forest():
-	update_heightmap()
 	preview_node.update_heightmap()
 
 
 ## Update forest node for global changes or position changes
 func _update_stone():
-	update_heightmap()
 	preview_node.update_heightmap()
 
 
-## Update forest node for global changes or position changes
+## Update crystal node for global changes or position changes
 func _update_crystal():
-	pass
+	preview_node.position.x = position.x
+	preview_node.position.z = position.z
+	preview_node.update_heightmap()

@@ -20,11 +20,13 @@ var drawers = {}
 
 # Called when the node enters the scene tree for the first time.
 func _ready():
+	size = Vector2i(Global_Vars.heightmap_size,Global_Vars.heightmap_size)
 	if(draws_fog):
 		visual_ground = get_node("../Visual_Ground")
 		updates.push_back(_update_fog)
 		marker_colors = Color.BLUE
-	else:		
+	else:
+		$Camera3D.size = Global_Vars.heightmap_size
 		marker_colors = Color.RED
 	updates.push_back(_update_markers)
 

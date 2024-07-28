@@ -7,7 +7,7 @@ shader_type spatial;
 render_mode blend_mix,depth_draw_opaque,cull_disabled,diffuse_burley,specular_schlick_ggx,world_vertex_coords;
 
 global uniform sampler2D fog_tex;
-global uniform vec2 heightmap_tex_size = vec2(1000.0,1000.0);
+global uniform vec2 heightmap_tex_size;
 global uniform float fog_darkness;
 global uniform sampler2D building_locs;
 global uniform sampler2D ground_tex_main;
@@ -46,10 +46,11 @@ void vertex() {
 	vec4 buildings = texture(building_locs, pos_uv);
 	// *8 modifies for a standardized 
 	vec3 grnd_color = texture(ground_tex_main,pos_uv).rgb;
-	COLOR.rgb = grnd_color;
+	COLOR.rgb = mix(grnd_color,albedo.rgb,0.25);
+	float rgb_tot = grnd_color.r + grnd_color.g + grnd_color.b;
 	// Either Hide tree or place it in with waving model
-	if(buildings.r > 0.0 || max(max(grnd_color.r,grnd_color.g),grnd_color.b) != grnd_color.g){
-		VERTEX.y = -10000.0;
+	if(false){
+		VERTEX.y = -1000.0;
 	}else{
 		float v_height = VERTEX.y - inst_pos.y; // vertex world height
 		if(v_height > 0.0){

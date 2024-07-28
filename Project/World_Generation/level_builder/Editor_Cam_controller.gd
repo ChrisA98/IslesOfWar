@@ -6,14 +6,8 @@ var speed := Vector3()
 var max_speed = 5
 var accel = 8
 
-func _input(event):		
-	# close game, TESTING ONLY
-	if event.is_action_pressed(("esc")):
-		get_tree().quit()
-
 
 func _physics_process(delta):
-	$"../UI/editor_overlay_viewport/SubViewport/editor_overlay".transform = $editor_preview.global_transform
 	
 	
 	if Input.is_action_pressed("editor_cam_rotate_r"):
@@ -44,6 +38,9 @@ func _physics_process(delta):
 	speed.y = velocity.y
 	
 	translate(speed)
+	
+	## align editor overlay viewport with main camera
+	$"../UI/editor_overlay_viewport/SubViewport/editor_overlay".transform = $editor_preview.global_transform
 	
 	## Arrest motion at map edge
 	if abs(position.x) > Global_Vars.heightmap_size*.75 or abs(position.z) > Global_Vars.heightmap_size*.75:

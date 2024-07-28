@@ -1,4 +1,4 @@
-[gd_scene load_steps=34 format=3 uid="uid://d2g2l3v0l8ddr"]
+[gd_scene load_steps=36 format=3 uid="uid://d2g2l3v0l8ddr"]
 
 [ext_resource type="PackedScene" uid="uid://dvsgehqxy6lav" path="res://Buildings/Resource_building.tscn" id="1_8w74i"]
 [ext_resource type="Script" path="res://Buildings/scripts/Farm.gd" id="1_rw74g"]
@@ -147,11 +147,20 @@ orientation = 2
 [sub_resource type="StandardMaterial3D" id="StandardMaterial3D_xyfiq"]
 albedo_color = Color(0.384314, 0.541176, 0.996078, 1)
 
+[sub_resource type="BoxShape3D" id="BoxShape3D_fciee"]
+resource_local_to_scene = true
+size = Vector3(1.5, 1, 1.5)
+
+[sub_resource type="BoxShape3D" id="BoxShape3D_o0xdw"]
+resource_local_to_scene = true
+size = Vector3(2.74634, 1, 1.6582)
+
 [node name="Farm" instance=ExtResource("1_8w74i")]
 script = ExtResource("1_rw74g")
 resource = "food"
 type = "farm"
-hide_grass = false
+building_height = 1.5
+ground_drawing = 0
 metadata/needs_base = true
 
 [node name="Attack_Manager" parent="." index="0"]
@@ -159,6 +168,7 @@ projectile_data = SubResource("Resource_xe3h7")
 beam_data = SubResource("Resource_yl3gn")
 
 [node name="Health_Bar" parent="." index="2"]
+transform = Transform3D(-8.74228e-09, -0.2, 0, 0.2, -8.74228e-09, 0, 0, 0, 0.2, 0, 1.88372, 0)
 mesh = SubResource("PlaneMesh_klmgb")
 
 [node name="MeshInstance3D" parent="." index="6"]
@@ -166,5 +176,15 @@ transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, 0.512184, 0)
 mesh = SubResource("BoxMesh_8pvv5")
 surface_material_override/0 = SubResource("StandardMaterial3D_xyfiq")
 
+[node name="CollisionShape3D" parent="StaticBody3D" index="0"]
+shape = SubResource("BoxShape3D_fciee")
+
+[node name="CollisionShape3D2" parent="StaticBody3D" index="1"]
+shape = SubResource("BoxShape3D_o0xdw")
+
 [node name="CollisionShape3D" parent="Detection_Area" index="0"]
-transform = Transform3D(1, 0, 0, 0, 0.99981, 0.0195115, 0, -0.0195115, 0.99981, 0, -0.0803504, -0.00312893)
+transform = Transform3D(1, 0, 0, 0, 0.99981, 0.0195115, 0, -0.0195115, 0.99981, -0.0673824, -0.155447, -0.0498715)
+
+[node name="GPUParticles3D" parent="." index="11"]
+amount = 300
+lifetime = 0.22

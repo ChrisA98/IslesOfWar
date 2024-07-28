@@ -1,4 +1,4 @@
-[gd_scene load_steps=30 format=3 uid="uid://bc45qc504x7u6"]
+[gd_scene load_steps=34 format=3 uid="uid://bc45qc504x7u6"]
 
 [ext_resource type="PackedScene" uid="uid://bnmi8gc8nnhqt" path="res://Parent_Scenes/Building_Model.tscn" id="1_phuye"]
 [ext_resource type="Shader" uid="uid://cihsj0qbnmaw3" path="res://Assets/Models/Materials/building_shader.tres" id="2_6rfqx"]
@@ -110,6 +110,13 @@ shader_parameter/color_albedo = Color(1, 1, 1, 1)
 shader_parameter/texture_albedo = ExtResource("7_8i71h")
 shader_parameter/texture_normal = ExtResource("8_1ebok")
 
+[sub_resource type="FastNoiseLite" id="FastNoiseLite_2rjly"]
+frequency = 0.0115
+
+[sub_resource type="NoiseTexture2D" id="NoiseTexture2D_jia30"]
+as_normal_map = true
+noise = SubResource("FastNoiseLite_2rjly")
+
 [sub_resource type="ShaderMaterial" id="ShaderMaterial_xo32w"]
 resource_local_to_scene = true
 render_priority = 0
@@ -121,12 +128,23 @@ shader_parameter/roughness = 0.133
 shader_parameter/metallic_texture_channel = null
 shader_parameter/specular = 0.626
 shader_parameter/metallic = 0.802
-shader_parameter/normal_scale = 7.6e-07
+shader_parameter/normal_scale = -0.827999
 shader_parameter/uv1_scale = Vector3(1, 1, 1)
 shader_parameter/uv2_scale = Vector3(1, 1, 1)
 shader_parameter/use_player_albedo = false
 shader_parameter/player_albedo = Color(0, 0, 0, 1)
 shader_parameter/color_albedo = Color(0.27451, 0.14902, 0.121569, 1)
+shader_parameter/texture_normal = SubResource("NoiseTexture2D_jia30")
+
+[sub_resource type="FastNoiseLite" id="FastNoiseLite_m3pgr"]
+noise_type = 5
+
+[sub_resource type="NoiseTexture2D" id="NoiseTexture2D_rvmdw"]
+width = 128
+height = 96
+as_normal_map = true
+bump_strength = 40.0
+noise = SubResource("FastNoiseLite_m3pgr")
 
 [sub_resource type="ShaderMaterial" id="ShaderMaterial_fkea2"]
 resource_local_to_scene = true
@@ -135,16 +153,17 @@ shader = ExtResource("2_6rfqx")
 shader_parameter/t_height = 100.0
 shader_parameter/heightmap_lock = null
 shader_parameter/point_size = 1.0
-shader_parameter/roughness = 0.133
+shader_parameter/roughness = 0.0
 shader_parameter/metallic_texture_channel = null
-shader_parameter/specular = 1.0
+shader_parameter/specular = 0.405
 shader_parameter/metallic = 1.0
-shader_parameter/normal_scale = 7.6e-07
-shader_parameter/uv1_scale = Vector3(1, 1, 1)
+shader_parameter/normal_scale = 13.517
+shader_parameter/uv1_scale = Vector3(8.5, 0.86, 1)
 shader_parameter/uv2_scale = Vector3(1, 1, 1)
 shader_parameter/use_player_albedo = false
 shader_parameter/player_albedo = Color(0, 0, 0, 1)
-shader_parameter/color_albedo = Color(0.164706, 0.25098, 0.368627, 1)
+shader_parameter/color_albedo = Color(0.343282, 0.477272, 0.660375, 1)
+shader_parameter/texture_normal = SubResource("NoiseTexture2D_rvmdw")
 
 [sub_resource type="ShaderMaterial" id="ShaderMaterial_mby2o"]
 resource_local_to_scene = true
@@ -386,7 +405,7 @@ _data = {
 [node name="Building_Model" instance=ExtResource("1_phuye")]
 
 [node name="MeshInstance3D" parent="." index="0"]
-transform = Transform3D(-4.37114e-08, 0, -1, 0, 1, 0, 1, 0, -4.37114e-08, 0, 0.000498384, 0)
+transform = Transform3D(-6.55671e-08, 0, -1.5, 0, 1.5, 0, 1.5, 0, -6.55671e-08, 0, 0.000498384, 0)
 mesh = SubResource("ArrayMesh_44ead")
 
 [node name="GPUParticles3D" type="GPUParticles3D" parent="MeshInstance3D" index="0"]
@@ -406,3 +425,12 @@ libraries = {
 "": SubResource("AnimationLibrary_pkxrc")
 }
 script = ExtResource("10_ffa06")
+
+[node name="Damage" parent="Damage" index="0"]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, -0.860424, -1.10043, 0.366532)
+
+[node name="Damage2" parent="Damage" index="1"]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0.92663, 0.216741, -0.156441)
+
+[node name="Damage3" parent="Damage" index="2"]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, -0.770285, -0.410339, -0.681904)

@@ -55,6 +55,10 @@ void vertex() {
 	vec3 normal_blend = mix(mix(norm1,norm2,0.5),vec3(0,0,0),1.2-depth);
 	
 	VERTEX.y = water_depth - NODE_POSITION_WORLD.y+.075;
+	if (pos_uv.x <= 0.001 || pos_uv.x >= 0.999 || pos_uv.y <= 0.001 || pos_uv.y >= 0.999){
+		VERTEX.y = -10000.0;
+		NORMAL = vec3(1.0);
+	}
 	NORMAL = normal_blend;
 }
 
@@ -72,7 +76,7 @@ void fragment() {
 	float fresnel = fresnel(5.0, NORMAL,VIEW);
 	vec3 surface_color = mix(albedo1, water_alb, fresnel*fresnel_intensity);
 	
-	if(height >= water_depth-.005){
+	if(height >= water_depth-.005 || pos_uv.y > 1.0 || pos_uv.x > 1.0 || pos_uv.y < 0.0 || pos_uv.x < 0.0){
 		ALPHA = 0.0;
 	}else{
 		ALPHA = clamp(depth*2.3,0.3,1.0);

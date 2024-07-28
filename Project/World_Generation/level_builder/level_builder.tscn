@@ -1,9 +1,12 @@
-[gd_scene load_steps=17 format=3 uid="uid://hva1em7ponql"]
+[gd_scene load_steps=25 format=3 uid="uid://hva1em7ponql"]
 
 [ext_resource type="Script" path="res://World_Generation/level_builder/Level_Builder.gd" id="1_18iqu"]
 [ext_resource type="Script" path="res://World_Generation/level_builder/Level_Builder_UI.gd" id="2_efsya"]
 [ext_resource type="Script" path="res://World_Generation/level_builder/brush.gd" id="2_vq7n1"]
 [ext_resource type="Theme" uid="uid://55r57hveyxd8" path="res://Assets/Themes/editor_theme.tres" id="2_xkd2y"]
+[ext_resource type="Script" path="res://World_Generation/level_builder/pause_menu.gd" id="4_l01yd"]
+[ext_resource type="Script" path="res://World_Generation/level_builder/off_thread_save.gd" id="5_p8rfu"]
+[ext_resource type="Script" path="res://World_Generation/level_builder/save_menu.gd" id="5_tvwvp"]
 [ext_resource type="Script" path="res://World_Generation/level_builder/Editor_Cam_controller.gd" id="6_f37vi"]
 
 [sub_resource type="Environment" id="Environment_xl1fn"]
@@ -12,10 +15,49 @@ background_color = Color(0, 0, 0, 0)
 ambient_light_source = 2
 ambient_light_color = Color(0.996078, 0.996078, 0.996078, 1)
 
+[sub_resource type="StyleBoxFlat" id="StyleBoxFlat_odnxd"]
+bg_color = Color(0, 0, 0, 0.47451)
+
+[sub_resource type="StyleBoxFlat" id="StyleBoxFlat_1fq0e"]
+bg_color = Color(0.487965, 0.193, 0.488218, 0.486275)
+border_width_left = 3
+border_width_top = 3
+border_width_right = 3
+border_width_bottom = 3
+border_color = Color(0.472033, 0.199117, 0.0737875, 1)
+corner_radius_top_left = 35
+corner_radius_top_right = 35
+corner_radius_bottom_right = 35
+corner_radius_bottom_left = 35
+corner_detail = 2
+shadow_size = 7
+shadow_offset = Vector2(3, 3)
+
+[sub_resource type="StyleBoxFlat" id="StyleBoxFlat_0xsy3"]
+bg_color = Color(0, 0, 0, 0.203922)
+
+[sub_resource type="StyleBoxFlat" id="StyleBoxFlat_sj2au"]
+bg_color = Color(0.486275, 0.192157, 0.486275, 0.784314)
+border_width_left = 3
+border_width_top = 3
+border_width_right = 3
+border_width_bottom = 3
+border_color = Color(0.472033, 0.199117, 0.0737875, 1)
+corner_radius_top_left = 35
+corner_radius_top_right = 35
+corner_radius_bottom_right = 35
+corner_radius_bottom_left = 35
+corner_detail = 2
+shadow_size = 7
+shadow_offset = Vector2(3, 3)
+
+[sub_resource type="StyleBoxFlat" id="StyleBoxFlat_dfx1u"]
+bg_color = Color(0.0383972, 0.0383972, 0.0383971, 1)
+
 [sub_resource type="Gradient" id="Gradient_c7l3w"]
 interpolation_mode = 2
 offsets = PackedFloat32Array(0.5, 1)
-colors = PackedColorArray(1, 1, 1, 1, 1, 1, 1, 0)
+colors = PackedColorArray(1, 1, 1, 0.282353, 1, 1, 1, 0)
 
 [sub_resource type="GradientTexture2D" id="GradientTexture2D_5lyek"]
 gradient = SubResource("Gradient_c7l3w")
@@ -94,9 +136,10 @@ size = Vector2(5000, 5000)
 
 [node name="Level_Builder" type="Node3D"]
 script = ExtResource("1_18iqu")
-default_map_path = "res://Assets/Levels/default_map"
+map_size = 500
 
 [node name="UI" type="Control" parent="."]
+process_mode = 3
 layout_mode = 3
 anchors_preset = 15
 anchor_right = 1.0
@@ -128,8 +171,8 @@ environment = SubResource("Environment_xl1fn")
 [node name="edit_mode_panel" type="PanelContainer" parent="UI"]
 layout_mode = 1
 anchors_preset = -1
-anchor_right = 0.091
-anchor_bottom = 0.303
+anchor_right = 0.151
+anchor_bottom = 0.198
 offset_right = -62.72
 offset_bottom = -261.24
 
@@ -163,6 +206,7 @@ text = "Environent"
 layout_mode = 2
 mouse_filter = 1
 theme = ExtResource("2_xkd2y")
+alignment = 1
 item_count = 2
 selected = 0
 popup/item_0/text = "Editor view"
@@ -185,6 +229,12 @@ anchor_right = 1.0
 anchor_bottom = 1.0
 grow_horizontal = 2
 grow_vertical = 2
+
+[node name="VSeparator7" type="VSeparator" parent="UI/Brush_Panel/HBoxContainer"]
+modulate = Color(1, 1, 1, 0)
+layout_mode = 2
+size_flags_horizontal = 3
+size_flags_stretch_ratio = 0.25
 
 [node name="Brush_Strength" type="Panel" parent="UI/Brush_Panel/HBoxContainer"]
 layout_mode = 2
@@ -394,7 +444,7 @@ anchor_bottom = 1.0
 grow_horizontal = 2
 grow_vertical = 2
 mouse_filter = 1
-value = 12.0
+value = 7.0
 
 [node name="value" type="RichTextLabel" parent="UI/Brush_Panel/HBoxContainer/World_Water_Level"]
 layout_mode = 1
@@ -450,6 +500,12 @@ popup/item_0/id = 0
 popup/item_1/text = "Smooth"
 popup/item_1/id = 1
 
+[node name="VSeparator6" type="VSeparator" parent="UI/Brush_Panel/HBoxContainer"]
+modulate = Color(1, 1, 1, 0)
+layout_mode = 2
+size_flags_horizontal = 3
+size_flags_stretch_ratio = 0.25
+
 [node name="Ground_Brush_Panel" type="Panel" parent="UI"]
 visible = false
 layout_mode = 1
@@ -466,6 +522,12 @@ anchor_right = 1.0
 anchor_bottom = 1.0
 grow_horizontal = 2
 grow_vertical = 2
+
+[node name="VSeparator6" type="VSeparator" parent="UI/Ground_Brush_Panel/HBoxContainer"]
+modulate = Color(1, 1, 1, 0)
+layout_mode = 2
+size_flags_horizontal = 3
+size_flags_stretch_ratio = 0.25
 
 [node name="Brush_Strength" type="Panel" parent="UI/Ground_Brush_Panel/HBoxContainer"]
 layout_mode = 2
@@ -636,45 +698,78 @@ grow_horizontal = 2
 grow_vertical = 2
 alignment = 1
 
+[node name="VSeparator" type="VSeparator" parent="UI/Ground_Brush_Panel/HBoxContainer"]
+modulate = Color(1, 1, 1, 0)
+layout_mode = 2
+size_flags_horizontal = 3
+size_flags_stretch_ratio = 0.25
+
 [node name="Place_Obj_Panel" type="Panel" parent="UI"]
 visible = false
 layout_mode = 1
 anchors_preset = -1
-anchor_left = 0.767
+anchor_left = 0.575
 anchor_top = 0.9
 anchor_right = 1.0
-anchor_bottom = 1.011
+anchor_bottom = 1.0
+grow_horizontal = 0
+grow_vertical = 0
 
 [node name="HBoxContainer" type="HBoxContainer" parent="UI/Place_Obj_Panel"]
 layout_mode = 1
-anchors_preset = -1
+anchors_preset = 15
 anchor_right = 1.0
 anchor_bottom = 1.0
 grow_horizontal = 2
 grow_vertical = 2
 alignment = 1
 
-[node name="Item_Box2" type="Panel" parent="UI/Place_Obj_Panel/HBoxContainer"]
+[node name="Decorations" type="Panel" parent="UI/Place_Obj_Panel/HBoxContainer"]
 layout_mode = 2
 size_flags_horizontal = 3
 mouse_filter = 2
 
-[node name="label" type="RichTextLabel" parent="UI/Place_Obj_Panel/HBoxContainer/Item_Box2"]
+[node name="label" type="RichTextLabel" parent="UI/Place_Obj_Panel/HBoxContainer/Decorations"]
+visible = false
 layout_mode = 1
 anchors_preset = 15
 anchor_right = 1.0
 anchor_bottom = 1.0
-offset_top = 33.155
-offset_right = -0.47998
-offset_bottom = -42.485
 grow_horizontal = 2
 grow_vertical = 2
 mouse_filter = 2
 theme_override_font_sizes/normal_font_size = 30
 bbcode_enabled = true
-text = "[center]Game Objects[/center]"
+text = "[center]Gameplay Objects[/center]"
 
-[node name="MenuButton" type="MenuButton" parent="UI/Place_Obj_Panel/HBoxContainer/Item_Box2"]
+[node name="MenuButton" type="MenuButton" parent="UI/Place_Obj_Panel/HBoxContainer/Decorations"]
+layout_mode = 1
+anchors_preset = 15
+anchor_right = 1.0
+anchor_bottom = 1.0
+grow_horizontal = 2
+grow_vertical = 2
+theme_override_font_sizes/font_size = 30
+text = "Decorations"
+
+[node name="Item_Box3" type="Panel" parent="UI/Place_Obj_Panel/HBoxContainer"]
+layout_mode = 2
+size_flags_horizontal = 3
+mouse_filter = 2
+
+[node name="label" type="RichTextLabel" parent="UI/Place_Obj_Panel/HBoxContainer/Item_Box3"]
+layout_mode = 1
+anchors_preset = 15
+anchor_right = 1.0
+anchor_bottom = 1.0
+grow_horizontal = 2
+grow_vertical = 2
+mouse_filter = 2
+theme_override_font_sizes/normal_font_size = 30
+bbcode_enabled = true
+text = "[center]Gameplay Objects[/center]"
+
+[node name="MenuButton" type="MenuButton" parent="UI/Place_Obj_Panel/HBoxContainer/Item_Box3"]
 layout_mode = 1
 anchors_preset = 15
 anchor_right = 1.0
@@ -682,6 +777,9 @@ anchor_bottom = 1.0
 grow_horizontal = 2
 grow_vertical = 2
 theme_override_font_sizes/font_size = 52
+item_count = 1
+popup/item_0/text = "Base Spawn"
+popup/item_0/id = 0
 
 [node name="World_Objects" type="Panel" parent="UI/Place_Obj_Panel/HBoxContainer"]
 layout_mode = 2
@@ -698,14 +796,418 @@ offset_bottom = -3.32001
 grow_horizontal = 2
 grow_vertical = 2
 theme_override_font_sizes/font_size = 30
-text = "World Objects"
-item_count = 3
+text = "Resources"
+text_overrun_behavior = 1
+item_count = 2
 popup/item_0/text = "Forest"
 popup/item_0/id = 1
-popup/item_1/text = "Stone Deposit"
-popup/item_1/id = 2
-popup/item_2/text = "Crtystal Deposit"
-popup/item_2/id = 3
+popup/item_1/text = "Crystal Deposit"
+popup/item_1/id = 3
+
+[node name="VSeparator" type="VSeparator" parent="UI/Place_Obj_Panel/HBoxContainer"]
+modulate = Color(1, 1, 1, 0)
+layout_mode = 2
+size_flags_horizontal = 3
+size_flags_stretch_ratio = 0.25
+
+[node name="pause_curtain" type="Panel" parent="UI"]
+visible = false
+z_as_relative = false
+layout_mode = 1
+anchors_preset = 15
+anchor_right = 1.0
+anchor_bottom = 1.0
+grow_horizontal = 2
+grow_vertical = 2
+theme_override_styles/panel = SubResource("StyleBoxFlat_odnxd")
+
+[node name="pause_menu" type="Panel" parent="UI"]
+process_mode = 3
+visible = false
+layout_mode = 1
+anchors_preset = -1
+anchor_left = 0.5
+anchor_right = 0.5
+anchor_bottom = 1.0
+offset_left = -200.0
+offset_top = 200.0
+offset_right = 200.0
+offset_bottom = -200.0
+grow_horizontal = 2
+grow_vertical = 2
+theme_override_styles/panel = SubResource("StyleBoxFlat_1fq0e")
+script = ExtResource("4_l01yd")
+
+[node name="VBoxContainer" type="VBoxContainer" parent="UI/pause_menu"]
+layout_mode = 1
+anchors_preset = -1
+anchor_left = 0.1
+anchor_top = 0.025
+anchor_right = 0.9
+anchor_bottom = 0.95
+grow_horizontal = 2
+grow_vertical = 2
+
+[node name="paused_label" type="RichTextLabel" parent="UI/pause_menu/VBoxContainer"]
+layout_mode = 2
+size_flags_vertical = 3
+size_flags_stretch_ratio = 0.41
+bbcode_enabled = true
+text = "[center]Paused[/center]"
+
+[node name="HSeparator" type="HSeparator" parent="UI/pause_menu/VBoxContainer"]
+modulate = Color(1, 1, 1, 0)
+layout_mode = 2
+
+[node name="save_map" type="Button" parent="UI/pause_menu/VBoxContainer"]
+layout_mode = 2
+size_flags_vertical = 3
+text = "Save Map"
+
+[node name="HSeparator2" type="HSeparator" parent="UI/pause_menu/VBoxContainer"]
+modulate = Color(1, 1, 1, 0)
+layout_mode = 2
+
+[node name="load_heightmap" type="Button" parent="UI/pause_menu/VBoxContainer"]
+layout_mode = 2
+size_flags_vertical = 3
+disabled = true
+text = "Load Heightmap"
+
+[node name="HSeparator3" type="HSeparator" parent="UI/pause_menu/VBoxContainer"]
+modulate = Color(1, 1, 1, 0)
+layout_mode = 2
+
+[node name="close" type="Button" parent="UI/pause_menu/VBoxContainer"]
+layout_mode = 2
+size_flags_vertical = 3
+text = "Close Menu"
+
+[node name="HSeparator5" type="HSeparator" parent="UI/pause_menu/VBoxContainer"]
+modulate = Color(1, 1, 1, 0)
+layout_mode = 2
+
+[node name="exit" type="Button" parent="UI/pause_menu/VBoxContainer"]
+layout_mode = 2
+size_flags_vertical = 3
+text = "Exit"
+
+[node name="exit_menu" type="Panel" parent="UI"]
+process_mode = 3
+visible = false
+layout_mode = 1
+anchors_preset = -1
+anchor_left = 0.5
+anchor_right = 0.5
+anchor_bottom = 1.0
+offset_left = -200.0
+offset_top = 300.0
+offset_right = 200.0
+offset_bottom = -300.0
+grow_horizontal = 2
+grow_vertical = 2
+theme_override_styles/panel = SubResource("StyleBoxFlat_1fq0e")
+
+[node name="VBoxContainer" type="VBoxContainer" parent="UI/exit_menu"]
+layout_mode = 1
+anchors_preset = -1
+anchor_left = 0.1
+anchor_top = 0.025
+anchor_right = 0.9
+anchor_bottom = 0.95
+grow_horizontal = 2
+grow_vertical = 2
+
+[node name="exit_label" type="RichTextLabel" parent="UI/exit_menu/VBoxContainer"]
+layout_mode = 2
+size_flags_vertical = 3
+size_flags_stretch_ratio = 0.62
+theme_override_font_sizes/normal_font_size = 40
+bbcode_enabled = true
+text = "[center]Exit[/center]"
+
+[node name="Panel" type="Panel" parent="UI/exit_menu/VBoxContainer"]
+layout_mode = 2
+size_flags_vertical = 3
+size_flags_stretch_ratio = 0.67
+theme_override_styles/panel = SubResource("StyleBoxFlat_0xsy3")
+
+[node name="exit_label2" type="RichTextLabel" parent="UI/exit_menu/VBoxContainer/Panel"]
+layout_mode = 1
+anchors_preset = -1
+anchor_top = 0.03
+anchor_right = 1.0
+anchor_bottom = 1.0
+grow_horizontal = 2
+grow_vertical = 2
+size_flags_vertical = 3
+size_flags_stretch_ratio = 0.39
+theme_override_font_sizes/normal_font_size = 20
+bbcode_enabled = true
+text = "[center]Are you sure you want to exit, all unsaved progress will be lost![/center]"
+
+[node name="HSeparator5" type="HSeparator" parent="UI/exit_menu/VBoxContainer"]
+modulate = Color(1, 1, 1, 0)
+layout_mode = 2
+
+[node name="Return" type="Button" parent="UI/exit_menu/VBoxContainer"]
+layout_mode = 2
+size_flags_vertical = 3
+text = "Return to Editing"
+
+[node name="HSeparator6" type="HSeparator" parent="UI/exit_menu/VBoxContainer"]
+modulate = Color(1, 1, 1, 0)
+layout_mode = 2
+
+[node name="exit" type="Button" parent="UI/exit_menu/VBoxContainer"]
+layout_mode = 2
+size_flags_vertical = 3
+text = "Exit to Main Menu"
+
+[node name="HSeparator4" type="HSeparator" parent="UI/exit_menu/VBoxContainer"]
+modulate = Color(1, 1, 1, 0)
+layout_mode = 2
+
+[node name="close2" type="Button" parent="UI/exit_menu/VBoxContainer"]
+layout_mode = 2
+size_flags_vertical = 3
+text = "Exit to Desktop"
+
+[node name="save_menu" type="Panel" parent="UI"]
+visible = false
+layout_mode = 1
+anchors_preset = -1
+anchor_left = 0.3
+anchor_top = 0.1
+anchor_right = 0.7
+anchor_bottom = 0.625
+grow_horizontal = 2
+grow_vertical = 2
+theme_override_styles/panel = SubResource("StyleBoxFlat_1fq0e")
+script = ExtResource("5_tvwvp")
+
+[node name="VBoxContainer" type="VBoxContainer" parent="UI/save_menu"]
+layout_mode = 1
+anchors_preset = -1
+anchor_left = 0.03
+anchor_top = 0.029
+anchor_right = 0.97
+anchor_bottom = 0.971
+grow_horizontal = 2
+grow_vertical = 2
+
+[node name="title_label" type="RichTextLabel" parent="UI/save_menu/VBoxContainer"]
+layout_mode = 2
+size_flags_vertical = 3
+theme_override_font_sizes/normal_font_size = 40
+bbcode_enabled = true
+text = "[center]Save[/center]"
+
+[node name="HSeparator4" type="HSeparator" parent="UI/save_menu/VBoxContainer"]
+layout_mode = 2
+
+[node name="level_name" type="TextEdit" parent="UI/save_menu/VBoxContainer"]
+layout_mode = 2
+size_flags_vertical = 3
+placeholder_text = "Map Name"
+
+[node name="HSeparator2" type="HSeparator" parent="UI/save_menu/VBoxContainer"]
+layout_mode = 2
+
+[node name="RichTextLabel" type="RichTextLabel" parent="UI/save_menu/VBoxContainer"]
+layout_mode = 2
+size_flags_vertical = 3
+text = "Starting date:"
+
+[node name="HSeparator3" type="HSeparator" parent="UI/save_menu/VBoxContainer"]
+layout_mode = 2
+
+[node name="start_date" type="HBoxContainer" parent="UI/save_menu/VBoxContainer"]
+layout_mode = 2
+size_flags_vertical = 3
+
+[node name="yr_label" type="RichTextLabel" parent="UI/save_menu/VBoxContainer/start_date"]
+layout_mode = 2
+size_flags_horizontal = 3
+size_flags_stretch_ratio = 0.58
+text = "Year"
+
+[node name="year" type="TextEdit" parent="UI/save_menu/VBoxContainer/start_date"]
+layout_mode = 2
+size_flags_horizontal = 3
+size_flags_vertical = 3
+size_flags_stretch_ratio = 0.72
+text = "642"
+placeholder_text = "0"
+
+[node name="month_label" type="RichTextLabel" parent="UI/save_menu/VBoxContainer/start_date"]
+layout_mode = 2
+size_flags_horizontal = 3
+size_flags_stretch_ratio = 0.54
+bbcode_enabled = true
+text = "[right]Month[/right]"
+
+[node name="OptionButton" type="OptionButton" parent="UI/save_menu/VBoxContainer/start_date"]
+layout_mode = 2
+size_flags_horizontal = 3
+alignment = 1
+item_count = 12
+selected = 1
+popup/item_0/text = "Lidrasin Bor"
+popup/item_0/id = 0
+popup/item_1/text = "Speran Mal"
+popup/item_1/id = 1
+popup/item_2/text = "Lidras Veil"
+popup/item_2/id = 2
+popup/item_3/text = "Sultaran Bor"
+popup/item_3/id = 3
+popup/item_4/text = "Dariusun Fil"
+popup/item_4/id = 4
+popup/item_5/text = "Sultas Veil"
+popup/item_5/id = 5
+popup/item_6/text = "Althuran Bor"
+popup/item_6/id = 6
+popup/item_7/text = "Corvusan Mal"
+popup/item_7/id = 7
+popup/item_8/text = "Althurs Veil"
+popup/item_8/id = 8
+popup/item_9/text = "Arcfeian Bor"
+popup/item_9/id = 9
+popup/item_10/text = "Nilisin Fil"
+popup/item_10/id = 10
+popup/item_11/text = "Freias Veil"
+popup/item_11/id = 11
+
+[node name="yr_label3" type="RichTextLabel" parent="UI/save_menu/VBoxContainer/start_date"]
+layout_mode = 2
+size_flags_horizontal = 3
+size_flags_stretch_ratio = 0.32
+text = "Day"
+
+[node name="year3" type="TextEdit" parent="UI/save_menu/VBoxContainer/start_date"]
+layout_mode = 2
+size_flags_horizontal = 3
+size_flags_vertical = 3
+size_flags_stretch_ratio = 0.36
+text = "1"
+placeholder_text = "0"
+
+[node name="HSeparator" type="HSeparator" parent="UI/save_menu/VBoxContainer"]
+layout_mode = 2
+
+[node name="CheckBox" type="CheckBox" parent="UI/save_menu/VBoxContainer"]
+layout_mode = 2
+size_flags_vertical = 3
+text = "Use Random Spawns"
+
+[node name="HSeparator5" type="HSeparator" parent="UI/save_menu/VBoxContainer"]
+modulate = Color(1, 1, 1, 0)
+layout_mode = 2
+size_flags_vertical = 3
+size_flags_stretch_ratio = 2.56
+
+[node name="HBoxContainer" type="HBoxContainer" parent="UI/save_menu/VBoxContainer"]
+layout_mode = 2
+size_flags_vertical = 3
+
+[node name="cancel" type="Button" parent="UI/save_menu/VBoxContainer/HBoxContainer"]
+layout_mode = 2
+size_flags_horizontal = 3
+text = "Cancel"
+
+[node name="save" type="Button" parent="UI/save_menu/VBoxContainer/HBoxContainer"]
+layout_mode = 2
+size_flags_horizontal = 3
+text = "Save"
+
+[node name="overwrite_menu" type="Panel" parent="UI"]
+visible = false
+layout_mode = 1
+anchors_preset = -1
+anchor_left = 0.3
+anchor_top = 0.549
+anchor_right = 0.7
+anchor_bottom = 0.725
+grow_horizontal = 2
+grow_vertical = 2
+theme_override_styles/panel = SubResource("StyleBoxFlat_sj2au")
+
+[node name="RichTextLabel" type="RichTextLabel" parent="UI/overwrite_menu"]
+layout_mode = 1
+anchors_preset = -1
+anchor_left = 0.05
+anchor_top = 0.1
+anchor_right = 0.95
+anchor_bottom = 0.45
+grow_horizontal = 2
+theme_override_font_sizes/normal_font_size = 23
+bbcode_enabled = true
+text = "[center]Do you want to Overwrite the existing map with this name?[/center]"
+
+[node name="HBoxContainer" type="HBoxContainer" parent="UI/overwrite_menu"]
+layout_mode = 1
+anchors_preset = -1
+anchor_left = 0.05
+anchor_top = 0.5
+anchor_right = 0.95
+anchor_bottom = 0.95
+grow_horizontal = 2
+grow_vertical = 2
+
+[node name="cancel" type="Button" parent="UI/overwrite_menu/HBoxContainer"]
+layout_mode = 2
+size_flags_horizontal = 3
+text = "Cancel"
+
+[node name="VSeparator" type="VSeparator" parent="UI/overwrite_menu/HBoxContainer"]
+modulate = Color(1, 1, 1, 0)
+layout_mode = 2
+size_flags_horizontal = 3
+size_flags_stretch_ratio = 0.37
+
+[node name="overwrite" type="Button" parent="UI/overwrite_menu/HBoxContainer"]
+layout_mode = 2
+size_flags_horizontal = 3
+text = "Overwrite"
+
+[node name="load_cover" type="Panel" parent="UI"]
+visible = false
+top_level = true
+layout_mode = 1
+anchors_preset = 15
+anchor_right = 1.0
+anchor_bottom = 1.0
+grow_horizontal = 2
+grow_vertical = 2
+theme_override_styles/panel = SubResource("StyleBoxFlat_dfx1u")
+
+[node name="saving_icon" type="Panel" parent="UI"]
+visible = false
+layout_mode = 1
+anchors_preset = -1
+anchor_left = 0.4
+anchor_top = 0.01
+anchor_right = 0.6
+anchor_bottom = 0.055
+offset_left = -20.0
+offset_right = 20.0
+offset_bottom = 40.0
+grow_horizontal = 2
+
+[node name="RichTextLabel" type="RichTextLabel" parent="UI/saving_icon"]
+layout_mode = 1
+anchors_preset = 15
+anchor_right = 1.0
+anchor_bottom = 1.0
+grow_horizontal = 2
+grow_vertical = 2
+bbcode_enabled = true
+text = "[center]Saving...
+Do Not Close Game[/center]"
+
+[node name="off_thread_save" type="Node" parent="."]
+process_mode = 3
+script = ExtResource("5_p8rfu")
 
 [node name="editor_cursor" type="Node3D" parent="."]
 script = ExtResource("2_vq7n1")
@@ -788,3 +1290,16 @@ mesh = SubResource("PlaneMesh_yro6c")
 [connection signal="item_selected" from="UI/Ground_Brush_Panel/HBoxContainer/Texture/OptionButton" to="UI" method="_texture_changed"]
 [connection signal="mouse_entered" from="UI/Place_Obj_Panel" to="UI" method="_mouse_entered_toolbar"]
 [connection signal="mouse_exited" from="UI/Place_Obj_Panel" to="UI" method="_mouse_exited_toolbar"]
+[connection signal="pressed" from="UI/pause_menu/VBoxContainer/save_map" to="UI/pause_menu" method="_save_map"]
+[connection signal="pressed" from="UI/pause_menu/VBoxContainer/close" to="UI/pause_menu" method="hide_pause_menu"]
+[connection signal="pressed" from="UI/pause_menu/VBoxContainer/exit" to="UI/pause_menu" method="_show_exit_menu"]
+[connection signal="pressed" from="UI/exit_menu/VBoxContainer/Return" to="UI/pause_menu" method="_hide_exit_menu"]
+[connection signal="pressed" from="UI/exit_menu/VBoxContainer/exit" to="UI/pause_menu" method="return_to_main_menu"]
+[connection signal="pressed" from="UI/exit_menu/VBoxContainer/close2" to="UI/pause_menu" method="_exit_game"]
+[connection signal="text_changed" from="UI/save_menu/VBoxContainer/start_date/year" to="UI/save_menu" method="year_update"]
+[connection signal="text_changed" from="UI/save_menu/VBoxContainer/start_date/year3" to="UI/save_menu" method="_day_updated"]
+[connection signal="toggled" from="UI/save_menu/VBoxContainer/CheckBox" to="UI/save_menu" method="_toggle_random_spawns"]
+[connection signal="pressed" from="UI/save_menu/VBoxContainer/HBoxContainer/cancel" to="UI/save_menu" method="close_save_menu"]
+[connection signal="pressed" from="UI/save_menu/VBoxContainer/HBoxContainer/save" to="UI/save_menu" method="_save"]
+[connection signal="pressed" from="UI/overwrite_menu/HBoxContainer/cancel" to="UI/save_menu" method="_hide_overwrite_menu"]
+[connection signal="pressed" from="UI/overwrite_menu/HBoxContainer/overwrite" to="UI/save_menu" method="_save" binds= [true]]

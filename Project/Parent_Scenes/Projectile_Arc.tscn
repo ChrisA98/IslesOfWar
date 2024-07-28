@@ -43,7 +43,9 @@ scale_curve = SubResource("CurveTexture_g6r53")
 transparency = 1
 cull_mode = 2
 albedo_texture = ExtResource("2_3tscj")
+uv1_scale = Vector3(-1, 1, 1)
 billboard_keep_scale = true
+point_size = 84.5
 
 [sub_resource type="PlaneMesh" id="PlaneMesh_40ens"]
 material = SubResource("StandardMaterial3D_jkxxg")

@@ -14,8 +14,10 @@ func _ready():
 	generate_time = 3
 	if(resource == "stone"):
 		type = "Mine_stone"
+		building_model.find_child("stone").visible = true
 	else:
 		type = "Mine_crystal"
+		building_model.find_child("crystal").visible = true
 		
 
 
@@ -31,6 +33,8 @@ func generate_resource():
 
 func make_valid():
 	super()
+	if type == "Mine_stone":
+		return
 	for i in $Detection_Area.get_overlapping_areas():
 		if i.get_parent().name.contains(targ_zone):
 			return

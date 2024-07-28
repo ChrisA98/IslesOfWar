@@ -1,0 +1,933 @@
+[gd_scene load_steps=22 format=3 uid="uid://hva1em7ponql"]
+
+[ext_resource type="Script" path="res://World_Generation/level_builder/Level_Builder.gd" id="1_18iqu"]
+[ext_resource type="Script" path="res://World_Generation/level_builder/Level_Builder_UI.gd" id="2_efsya"]
+[ext_resource type="Script" path="res://World_Generation/level_builder/brush.gd" id="2_vq7n1"]
+[ext_resource type="Theme" uid="uid://55r57hveyxd8" path="res://Assets/Themes/editor_theme.tres" id="2_xkd2y"]
+[ext_resource type="Script" path="res://World_Generation/level_builder/pause_menu.gd" id="4_l01yd"]
+[ext_resource type="Script" path="res://World_Generation/level_builder/off_thread_save.gd" id="5_p8rfu"]
+[ext_resource type="Script" path="res://World_Generation/level_builder/Editor_Cam_controller.gd" id="6_f37vi"]
+
+[sub_resource type="Environment" id="Environment_xl1fn"]
+background_mode = 1
+background_color = Color(0, 0, 0, 0)
+ambient_light_source = 2
+ambient_light_color = Color(0.996078, 0.996078, 0.996078, 1)
+
+[sub_resource type="StyleBoxFlat" id="StyleBoxFlat_odnxd"]
+bg_color = Color(0, 0, 0, 0.47451)
+
+[sub_resource type="StyleBoxFlat" id="StyleBoxFlat_1fq0e"]
+bg_color = Color(0.487965, 0.193, 0.488218, 0.486275)
+border_width_left = 3
+border_width_top = 3
+border_width_right = 3
+border_width_bottom = 3
+border_color = Color(0.472033, 0.199117, 0.0737875, 1)
+corner_radius_top_left = 35
+corner_radius_top_right = 35
+corner_radius_bottom_right = 35
+corner_radius_bottom_left = 35
+corner_detail = 2
+shadow_size = 7
+shadow_offset = Vector2(3, 3)
+
+[sub_resource type="StyleBoxFlat" id="StyleBoxFlat_dfx1u"]
+bg_color = Color(0.0383972, 0.0383972, 0.0383971, 1)
+
+[sub_resource type="Gradient" id="Gradient_c7l3w"]
+interpolation_mode = 2
+offsets = PackedFloat32Array(0.5, 1)
+colors = PackedColorArray(1, 1, 1, 0.282353, 1, 1, 1, 0)
+
+[sub_resource type="GradientTexture2D" id="GradientTexture2D_5lyek"]
+gradient = SubResource("Gradient_c7l3w")
+width = 500
+height = 500
+fill = 1
+fill_from = Vector2(0.5, 0.5)
+fill_to = Vector2(0.5, 0.1)
+
+[sub_resource type="Gradient" id="Gradient_8qlg3"]
+interpolation_mode = 2
+offsets = PackedFloat32Array(0.5, 1)
+colors = PackedColorArray(1, 1, 1, 0.0470588, 1, 1, 1, 0)
+
+[sub_resource type="GradientTexture2D" id="GradientTexture2D_abga6"]
+gradient = SubResource("Gradient_8qlg3")
+width = 500
+height = 500
+fill = 1
+fill_from = Vector2(0.5, 0.5)
+fill_to = Vector2(0.5, 0.1)
+
+[sub_resource type="ProceduralSkyMaterial" id="ProceduralSkyMaterial_46wwo"]
+sky_horizon_color = Color(0.647059, 0.654902, 0.670588, 1)
+sun_curve = 0.310578
+
+[sub_resource type="Sky" id="Sky_4kxja"]
+sky_material = SubResource("ProceduralSkyMaterial_46wwo")
+
+[sub_resource type="Environment" id="Environment_2nffg"]
+background_mode = 2
+sky = SubResource("Sky_4kxja")
+ambient_light_source = 3
+ambient_light_color = Color(0, 0.847059, 0.678431, 1)
+ambient_light_sky_contribution = 0.75
+ambient_light_energy = 0.4
+reflected_light_source = 2
+tonemap_mode = 2
+tonemap_exposure = 1.8
+tonemap_white = 2.0
+ssao_light_affect = 0.78
+ssil_radius = 8.03
+ssil_intensity = 0.08
+ssil_sharpness = 0.0
+sdfgi_use_occlusion = true
+glow_enabled = true
+glow_intensity = 0.7
+glow_strength = 0.59
+glow_bloom = 0.17
+glow_blend_mode = 1
+glow_hdr_threshold = 1.14
+glow_hdr_scale = 1.28
+fog_aerial_perspective = 1.0
+fog_height = 720.0
+fog_height_density = 0.029
+volumetric_fog_density = 0.1466
+volumetric_fog_albedo = Color(0.254902, 0.254902, 0.254902, 1)
+volumetric_fog_emission = Color(0.411765, 0.411765, 0.411765, 1)
+volumetric_fog_gi_inject = 0.0
+volumetric_fog_detail_spread = 0.933033
+volumetric_fog_sky_affect = 0.656
+volumetric_fog_temporal_reprojection_amount = 0.89
+adjustment_enabled = true
+adjustment_brightness = 1.2
+adjustment_saturation = 1.5
+
+[sub_resource type="Environment" id="Environment_h4cl6"]
+
+[sub_resource type="StandardMaterial3D" id="StandardMaterial3D_ek57q"]
+shading_mode = 0
+albedo_color = Color(0, 0, 0, 1)
+
+[sub_resource type="PlaneMesh" id="PlaneMesh_yro6c"]
+material = SubResource("StandardMaterial3D_ek57q")
+size = Vector2(5000, 5000)
+
+[node name="Level_Builder" type="Node3D"]
+script = ExtResource("1_18iqu")
+default_map_path = "res://Assets/Levels/default_map"
+
+[node name="UI" type="Control" parent="."]
+layout_mode = 3
+anchors_preset = 15
+anchor_right = 1.0
+anchor_bottom = 1.0
+grow_horizontal = 2
+grow_vertical = 2
+size_flags_horizontal = 3
+size_flags_vertical = 3
+mouse_filter = 2
+theme = ExtResource("2_xkd2y")
+script = ExtResource("2_efsya")
+
+[node name="editor_overlay_viewport" type="SubViewportContainer" parent="UI"]
+layout_mode = 0
+offset_right = 1920.0
+offset_bottom = 1080.0
+
+[node name="SubViewport" type="SubViewport" parent="UI/editor_overlay_viewport"]
+transparent_bg = true
+handle_input_locally = false
+size = Vector2i(1920, 1080)
+render_target_update_mode = 4
+
+[node name="editor_overlay" type="Camera3D" parent="UI/editor_overlay_viewport/SubViewport"]
+transform = Transform3D(1, 0, 0, 0, 0.707107, 0.707107, 0, -0.707107, 0.707107, 0, 0, 0)
+cull_mask = 32
+environment = SubResource("Environment_xl1fn")
+
+[node name="edit_mode_panel" type="PanelContainer" parent="UI"]
+layout_mode = 1
+anchors_preset = -1
+anchor_right = 0.151
+anchor_bottom = 0.198
+offset_right = -62.72
+offset_bottom = -261.24
+
+[node name="edit_options" type="VBoxContainer" parent="UI/edit_mode_panel"]
+layout_mode = 2
+theme = ExtResource("2_xkd2y")
+
+[node name="edit_terrain_button" type="Button" parent="UI/edit_mode_panel/edit_options"]
+layout_mode = 2
+mouse_filter = 1
+theme = ExtResource("2_xkd2y")
+text = "Edit Terrain"
+
+[node name="edit_ground_button" type="Button" parent="UI/edit_mode_panel/edit_options"]
+layout_mode = 2
+mouse_filter = 1
+theme = ExtResource("2_xkd2y")
+text = "Edit Ground"
+
+[node name="place_objects_button" type="Button" parent="UI/edit_mode_panel/edit_options"]
+layout_mode = 2
+mouse_filter = 1
+text = "Place Objects"
+
+[node name="edit_atmosphere" type="Button" parent="UI/edit_mode_panel/edit_options"]
+layout_mode = 2
+mouse_filter = 1
+text = "Environent"
+
+[node name="camera_view" type="OptionButton" parent="UI/edit_mode_panel/edit_options"]
+layout_mode = 2
+mouse_filter = 1
+theme = ExtResource("2_xkd2y")
+alignment = 1
+item_count = 2
+selected = 0
+popup/item_0/text = "Editor view"
+popup/item_0/id = 0
+popup/item_1/text = "Play view"
+popup/item_1/id = 1
+
+[node name="Brush_Panel" type="Panel" parent="UI"]
+layout_mode = 1
+anchors_preset = -1
+anchor_top = 0.9
+anchor_right = 1.0
+anchor_bottom = 1.011
+theme = ExtResource("2_xkd2y")
+
+[node name="HBoxContainer" type="HBoxContainer" parent="UI/Brush_Panel"]
+layout_mode = 1
+anchors_preset = 15
+anchor_right = 1.0
+anchor_bottom = 1.0
+grow_horizontal = 2
+grow_vertical = 2
+
+[node name="Brush_Strength" type="Panel" parent="UI/Brush_Panel/HBoxContainer"]
+layout_mode = 2
+size_flags_horizontal = 3
+mouse_filter = 2
+
+[node name="label" type="RichTextLabel" parent="UI/Brush_Panel/HBoxContainer/Brush_Strength"]
+layout_mode = 1
+anchors_preset = 15
+anchor_right = 1.0
+anchor_bottom = 1.0
+grow_horizontal = 2
+grow_vertical = 2
+mouse_filter = 2
+bbcode_enabled = true
+text = "[center]Brush Strength[/center]"
+
+[node name="Slider" type="HSlider" parent="UI/Brush_Panel/HBoxContainer/Brush_Strength"]
+layout_mode = 1
+anchors_preset = 15
+anchor_right = 1.0
+anchor_bottom = 1.0
+grow_horizontal = 2
+grow_vertical = 2
+mouse_filter = 1
+value = 50.0
+
+[node name="value" type="RichTextLabel" parent="UI/Brush_Panel/HBoxContainer/Brush_Strength"]
+layout_mode = 1
+anchors_preset = -1
+anchor_top = 0.5
+anchor_right = 1.0
+anchor_bottom = 1.0
+offset_left = 0.1008
+offset_top = 0.179993
+offset_right = -0.199982
+offset_bottom = -0.640015
+grow_horizontal = 2
+grow_vertical = 2
+mouse_filter = 2
+bbcode_enabled = true
+text = "[center]50[/center]
+"
+
+[node name="VSeparator" type="VSeparator" parent="UI/Brush_Panel/HBoxContainer"]
+layout_mode = 2
+
+[node name="Brush_Elevation" type="Panel" parent="UI/Brush_Panel/HBoxContainer"]
+layout_mode = 2
+size_flags_horizontal = 3
+mouse_filter = 2
+
+[node name="label" type="RichTextLabel" parent="UI/Brush_Panel/HBoxContainer/Brush_Elevation"]
+layout_mode = 1
+anchors_preset = 15
+anchor_right = 1.0
+anchor_bottom = 1.0
+grow_horizontal = 2
+grow_vertical = 2
+mouse_filter = 2
+bbcode_enabled = true
+text = "[center]Elevation[/center]"
+
+[node name="Slider" type="HSlider" parent="UI/Brush_Panel/HBoxContainer/Brush_Elevation"]
+layout_mode = 1
+anchors_preset = 15
+anchor_right = 1.0
+anchor_bottom = 1.0
+grow_horizontal = 2
+grow_vertical = 2
+mouse_filter = 1
+value = 50.0
+
+[node name="value" type="RichTextLabel" parent="UI/Brush_Panel/HBoxContainer/Brush_Elevation"]
+layout_mode = 1
+anchors_preset = -1
+anchor_top = 0.5
+anchor_right = 1.0
+anchor_bottom = 1.0
+offset_left = 0.1008
+offset_top = 0.179993
+offset_right = -0.199982
+offset_bottom = -0.640015
+grow_horizontal = 2
+grow_vertical = 2
+mouse_filter = 2
+bbcode_enabled = true
+text = "[center]50[/center]"
+
+[node name="VSeparator2" type="VSeparator" parent="UI/Brush_Panel/HBoxContainer"]
+layout_mode = 2
+
+[node name="Brush_Radius" type="Panel" parent="UI/Brush_Panel/HBoxContainer"]
+layout_mode = 2
+size_flags_horizontal = 3
+mouse_filter = 2
+
+[node name="label" type="RichTextLabel" parent="UI/Brush_Panel/HBoxContainer/Brush_Radius"]
+layout_mode = 1
+anchors_preset = 15
+anchor_right = 1.0
+anchor_bottom = 1.0
+grow_horizontal = 2
+grow_vertical = 2
+mouse_filter = 2
+bbcode_enabled = true
+text = "[center]Brush Radius[/center]"
+
+[node name="Slider" type="HSlider" parent="UI/Brush_Panel/HBoxContainer/Brush_Radius"]
+layout_mode = 1
+anchors_preset = 15
+anchor_right = 1.0
+anchor_bottom = 1.0
+grow_horizontal = 2
+grow_vertical = 2
+mouse_filter = 1
+min_value = 10.0
+value = 50.0
+
+[node name="value" type="RichTextLabel" parent="UI/Brush_Panel/HBoxContainer/Brush_Radius"]
+layout_mode = 1
+anchors_preset = -1
+anchor_top = 0.5
+anchor_right = 1.0
+anchor_bottom = 1.0
+offset_left = 0.1008
+offset_top = 0.179993
+offset_right = -0.199982
+offset_bottom = -0.640015
+grow_horizontal = 2
+grow_vertical = 2
+mouse_filter = 2
+bbcode_enabled = true
+text = "[center]50[/center]
+"
+
+[node name="VSeparator3" type="VSeparator" parent="UI/Brush_Panel/HBoxContainer"]
+layout_mode = 2
+
+[node name="Brush_Falloff" type="Panel" parent="UI/Brush_Panel/HBoxContainer"]
+layout_mode = 2
+size_flags_horizontal = 3
+mouse_filter = 2
+
+[node name="label" type="RichTextLabel" parent="UI/Brush_Panel/HBoxContainer/Brush_Falloff"]
+layout_mode = 1
+anchors_preset = 15
+anchor_right = 1.0
+anchor_bottom = 1.0
+grow_horizontal = 2
+grow_vertical = 2
+mouse_filter = 2
+bbcode_enabled = true
+text = "[center]Brush Falloff[/center]"
+
+[node name="Slider" type="HSlider" parent="UI/Brush_Panel/HBoxContainer/Brush_Falloff"]
+layout_mode = 1
+anchors_preset = 15
+anchor_right = 1.0
+anchor_bottom = 1.0
+grow_horizontal = 2
+grow_vertical = 2
+mouse_filter = 1
+max_value = 99.0
+value = 50.0
+
+[node name="value" type="RichTextLabel" parent="UI/Brush_Panel/HBoxContainer/Brush_Falloff"]
+layout_mode = 1
+anchors_preset = -1
+anchor_top = 0.5
+anchor_right = 1.0
+anchor_bottom = 1.0
+offset_left = 0.1008
+offset_top = 0.179993
+offset_right = -0.199982
+offset_bottom = -0.640015
+grow_horizontal = 2
+grow_vertical = 2
+mouse_filter = 2
+bbcode_enabled = true
+text = "[center]50[/center]"
+
+[node name="VSeparator4" type="VSeparator" parent="UI/Brush_Panel/HBoxContainer"]
+layout_mode = 2
+
+[node name="World_Water_Level" type="Panel" parent="UI/Brush_Panel/HBoxContainer"]
+layout_mode = 2
+size_flags_horizontal = 3
+mouse_filter = 2
+
+[node name="label" type="RichTextLabel" parent="UI/Brush_Panel/HBoxContainer/World_Water_Level"]
+layout_mode = 1
+anchors_preset = 15
+anchor_right = 1.0
+anchor_bottom = 1.0
+grow_horizontal = 2
+grow_vertical = 2
+mouse_filter = 2
+bbcode_enabled = true
+text = "[center]Water Level[/center]"
+
+[node name="Slider" type="HSlider" parent="UI/Brush_Panel/HBoxContainer/World_Water_Level"]
+layout_mode = 1
+anchors_preset = 15
+anchor_right = 1.0
+anchor_bottom = 1.0
+grow_horizontal = 2
+grow_vertical = 2
+mouse_filter = 1
+value = 7.0
+
+[node name="value" type="RichTextLabel" parent="UI/Brush_Panel/HBoxContainer/World_Water_Level"]
+layout_mode = 1
+anchors_preset = -1
+anchor_top = 0.5
+anchor_right = 1.0
+anchor_bottom = 1.0
+offset_left = 0.1008
+offset_top = 0.179993
+offset_right = -0.199982
+offset_bottom = -0.640015
+grow_horizontal = 2
+grow_vertical = 2
+mouse_filter = 2
+bbcode_enabled = true
+text = "[center]7[/center]"
+
+[node name="VSeparator5" type="VSeparator" parent="UI/Brush_Panel/HBoxContainer"]
+layout_mode = 2
+
+[node name="brush_Mode" type="Panel" parent="UI/Brush_Panel/HBoxContainer"]
+layout_mode = 2
+size_flags_horizontal = 3
+mouse_filter = 2
+
+[node name="Brush_Mode" type="RichTextLabel" parent="UI/Brush_Panel/HBoxContainer/brush_Mode"]
+layout_mode = 1
+anchors_preset = 15
+anchor_right = 1.0
+anchor_bottom = 1.0
+grow_horizontal = 2
+grow_vertical = 2
+mouse_filter = 2
+theme_override_font_sizes/normal_font_size = 30
+bbcode_enabled = true
+text = "[center]Brush mode[/center]"
+
+[node name="MenuButton" type="MenuButton" parent="UI/Brush_Panel/HBoxContainer/brush_Mode"]
+layout_mode = 1
+anchors_preset = 15
+anchor_right = 1.0
+anchor_bottom = 1.0
+offset_top = 52.0
+grow_horizontal = 2
+grow_vertical = 2
+mouse_filter = 1
+theme = ExtResource("2_xkd2y")
+theme_type_variation = &"Lower_bar_button"
+text = "Draw"
+item_count = 2
+popup/item_0/text = "Draw"
+popup/item_0/id = 0
+popup/item_1/text = "Smooth"
+popup/item_1/id = 1
+
+[node name="Ground_Brush_Panel" type="Panel" parent="UI"]
+visible = false
+layout_mode = 1
+anchors_preset = -1
+anchor_top = 0.9
+anchor_right = 1.0
+anchor_bottom = 1.011
+theme = ExtResource("2_xkd2y")
+
+[node name="HBoxContainer" type="HBoxContainer" parent="UI/Ground_Brush_Panel"]
+layout_mode = 1
+anchors_preset = 15
+anchor_right = 1.0
+anchor_bottom = 1.0
+grow_horizontal = 2
+grow_vertical = 2
+
+[node name="Brush_Strength" type="Panel" parent="UI/Ground_Brush_Panel/HBoxContainer"]
+layout_mode = 2
+size_flags_horizontal = 3
+mouse_filter = 2
+
+[node name="label" type="RichTextLabel" parent="UI/Ground_Brush_Panel/HBoxContainer/Brush_Strength"]
+layout_mode = 1
+anchors_preset = 15
+anchor_right = 1.0
+anchor_bottom = 1.0
+grow_horizontal = 2
+grow_vertical = 2
+mouse_filter = 2
+bbcode_enabled = true
+text = "[center]Brush Strength[/center]"
+
+[node name="Slider" type="HSlider" parent="UI/Ground_Brush_Panel/HBoxContainer/Brush_Strength"]
+layout_mode = 1
+anchors_preset = 15
+anchor_right = 1.0
+anchor_bottom = 1.0
+grow_horizontal = 2
+grow_vertical = 2
+mouse_filter = 1
+value = 50.0
+
+[node name="value" type="RichTextLabel" parent="UI/Ground_Brush_Panel/HBoxContainer/Brush_Strength"]
+layout_mode = 1
+anchors_preset = -1
+anchor_top = 0.5
+anchor_right = 1.0
+anchor_bottom = 1.0
+offset_left = 0.1008
+offset_top = 0.179993
+offset_right = -0.199982
+offset_bottom = -0.640015
+grow_horizontal = 2
+grow_vertical = 2
+mouse_filter = 2
+bbcode_enabled = true
+text = "[center]50[/center]
+"
+
+[node name="VSeparator2" type="VSeparator" parent="UI/Ground_Brush_Panel/HBoxContainer"]
+layout_mode = 2
+
+[node name="Brush_Radius" type="Panel" parent="UI/Ground_Brush_Panel/HBoxContainer"]
+layout_mode = 2
+size_flags_horizontal = 3
+mouse_filter = 2
+
+[node name="label" type="RichTextLabel" parent="UI/Ground_Brush_Panel/HBoxContainer/Brush_Radius"]
+layout_mode = 1
+anchors_preset = 15
+anchor_right = 1.0
+anchor_bottom = 1.0
+grow_horizontal = 2
+grow_vertical = 2
+mouse_filter = 2
+bbcode_enabled = true
+text = "[center]Brush Radius[/center]"
+
+[node name="Slider" type="HSlider" parent="UI/Ground_Brush_Panel/HBoxContainer/Brush_Radius"]
+layout_mode = 1
+anchors_preset = 15
+anchor_right = 1.0
+anchor_bottom = 1.0
+grow_horizontal = 2
+grow_vertical = 2
+mouse_filter = 1
+min_value = 10.0
+value = 50.0
+
+[node name="value" type="RichTextLabel" parent="UI/Ground_Brush_Panel/HBoxContainer/Brush_Radius"]
+layout_mode = 1
+anchors_preset = -1
+anchor_top = 0.5
+anchor_right = 1.0
+anchor_bottom = 1.0
+offset_left = 0.1008
+offset_top = 0.179993
+offset_right = -0.199982
+offset_bottom = -0.640015
+grow_horizontal = 2
+grow_vertical = 2
+mouse_filter = 2
+bbcode_enabled = true
+text = "[center]50[/center]
+"
+
+[node name="VSeparator3" type="VSeparator" parent="UI/Ground_Brush_Panel/HBoxContainer"]
+layout_mode = 2
+
+[node name="Brush_Falloff" type="Panel" parent="UI/Ground_Brush_Panel/HBoxContainer"]
+layout_mode = 2
+size_flags_horizontal = 3
+mouse_filter = 2
+
+[node name="label" type="RichTextLabel" parent="UI/Ground_Brush_Panel/HBoxContainer/Brush_Falloff"]
+layout_mode = 1
+anchors_preset = 15
+anchor_right = 1.0
+anchor_bottom = 1.0
+grow_horizontal = 2
+grow_vertical = 2
+mouse_filter = 2
+bbcode_enabled = true
+text = "[center]Brush Falloff[/center]"
+
+[node name="Slider" type="HSlider" parent="UI/Ground_Brush_Panel/HBoxContainer/Brush_Falloff"]
+layout_mode = 1
+anchors_preset = 15
+anchor_right = 1.0
+anchor_bottom = 1.0
+grow_horizontal = 2
+grow_vertical = 2
+mouse_filter = 1
+max_value = 99.0
+value = 50.0
+
+[node name="value" type="RichTextLabel" parent="UI/Ground_Brush_Panel/HBoxContainer/Brush_Falloff"]
+layout_mode = 1
+anchors_preset = -1
+anchor_top = 0.5
+anchor_right = 1.0
+anchor_bottom = 1.0
+offset_left = 0.1008
+offset_top = 0.179993
+offset_right = -0.199982
+offset_bottom = -0.640015
+grow_horizontal = 2
+grow_vertical = 2
+mouse_filter = 2
+bbcode_enabled = true
+text = "[center]50[/center]"
+
+[node name="VSeparator4" type="VSeparator" parent="UI/Ground_Brush_Panel/HBoxContainer"]
+layout_mode = 2
+
+[node name="VSeparator5" type="VSeparator" parent="UI/Ground_Brush_Panel/HBoxContainer"]
+layout_mode = 2
+
+[node name="Texture" type="Panel" parent="UI/Ground_Brush_Panel/HBoxContainer"]
+layout_mode = 2
+size_flags_horizontal = 3
+mouse_filter = 2
+
+[node name="Brush_Mode" type="RichTextLabel" parent="UI/Ground_Brush_Panel/HBoxContainer/Texture"]
+layout_mode = 1
+anchors_preset = 15
+anchor_right = 1.0
+anchor_bottom = 1.0
+grow_horizontal = 2
+grow_vertical = 2
+mouse_filter = 2
+theme_override_font_sizes/normal_font_size = 30
+bbcode_enabled = true
+text = "[center]Draw Texture[/center]"
+
+[node name="OptionButton" type="OptionButton" parent="UI/Ground_Brush_Panel/HBoxContainer/Texture"]
+layout_mode = 1
+anchors_preset = -1
+anchor_top = 0.34
+anchor_right = 1.0
+anchor_bottom = 1.0
+grow_horizontal = 2
+grow_vertical = 2
+alignment = 1
+
+[node name="Place_Obj_Panel" type="Panel" parent="UI"]
+visible = false
+layout_mode = 1
+anchors_preset = -1
+anchor_left = 0.767
+anchor_top = 0.9
+anchor_right = 1.0
+anchor_bottom = 1.011
+
+[node name="HBoxContainer" type="HBoxContainer" parent="UI/Place_Obj_Panel"]
+layout_mode = 1
+anchors_preset = -1
+anchor_right = 1.0
+anchor_bottom = 1.0
+grow_horizontal = 2
+grow_vertical = 2
+alignment = 1
+
+[node name="Item_Box2" type="Panel" parent="UI/Place_Obj_Panel/HBoxContainer"]
+layout_mode = 2
+size_flags_horizontal = 3
+mouse_filter = 2
+
+[node name="label" type="RichTextLabel" parent="UI/Place_Obj_Panel/HBoxContainer/Item_Box2"]
+layout_mode = 1
+anchors_preset = 15
+anchor_right = 1.0
+anchor_bottom = 1.0
+grow_horizontal = 2
+grow_vertical = 2
+mouse_filter = 2
+theme_override_font_sizes/normal_font_size = 30
+bbcode_enabled = true
+text = "[center]Gameplay Objects[/center]"
+
+[node name="MenuButton" type="MenuButton" parent="UI/Place_Obj_Panel/HBoxContainer/Item_Box2"]
+layout_mode = 1
+anchors_preset = 15
+anchor_right = 1.0
+anchor_bottom = 1.0
+grow_horizontal = 2
+grow_vertical = 2
+theme_override_font_sizes/font_size = 52
+item_count = 1
+popup/item_0/text = "Base Spawn"
+popup/item_0/id = 0
+
+[node name="World_Objects" type="Panel" parent="UI/Place_Obj_Panel/HBoxContainer"]
+layout_mode = 2
+size_flags_horizontal = 3
+mouse_filter = 2
+
+[node name="world_objects_list" type="MenuButton" parent="UI/Place_Obj_Panel/HBoxContainer/World_Objects"]
+layout_mode = 1
+anchors_preset = 15
+anchor_right = 1.0
+anchor_bottom = 1.0
+offset_top = -3.32001
+offset_bottom = -3.32001
+grow_horizontal = 2
+grow_vertical = 2
+theme_override_font_sizes/font_size = 30
+text = "Resources"
+text_overrun_behavior = 1
+item_count = 2
+popup/item_0/text = "Forest"
+popup/item_0/id = 1
+popup/item_1/text = "Crystal Deposit"
+popup/item_1/id = 3
+
+[node name="pause_curtain" type="Panel" parent="UI"]
+visible = false
+z_as_relative = false
+layout_mode = 1
+anchors_preset = 15
+anchor_right = 1.0
+anchor_bottom = 1.0
+grow_horizontal = 2
+grow_vertical = 2
+theme_override_styles/panel = SubResource("StyleBoxFlat_odnxd")
+
+[node name="pause_menu" type="Panel" parent="UI"]
+process_mode = 3
+visible = false
+layout_mode = 1
+anchors_preset = -1
+anchor_left = 0.5
+anchor_right = 0.5
+anchor_bottom = 1.0
+offset_left = -200.0
+offset_top = 200.0
+offset_right = 200.0
+offset_bottom = -200.0
+grow_horizontal = 2
+grow_vertical = 2
+theme_override_styles/panel = SubResource("StyleBoxFlat_1fq0e")
+script = ExtResource("4_l01yd")
+
+[node name="VBoxContainer" type="VBoxContainer" parent="UI/pause_menu"]
+layout_mode = 1
+anchors_preset = -1
+anchor_left = 0.1
+anchor_top = 0.025
+anchor_right = 0.9
+anchor_bottom = 0.95
+grow_horizontal = 2
+grow_vertical = 2
+
+[node name="paused_label" type="RichTextLabel" parent="UI/pause_menu/VBoxContainer"]
+layout_mode = 2
+size_flags_vertical = 3
+size_flags_stretch_ratio = 0.41
+bbcode_enabled = true
+text = "[center]Paused[/center]"
+
+[node name="HSeparator" type="HSeparator" parent="UI/pause_menu/VBoxContainer"]
+modulate = Color(1, 1, 1, 0)
+layout_mode = 2
+
+[node name="save_map" type="Button" parent="UI/pause_menu/VBoxContainer"]
+layout_mode = 2
+size_flags_vertical = 3
+text = "Save Map"
+
+[node name="HSeparator2" type="HSeparator" parent="UI/pause_menu/VBoxContainer"]
+modulate = Color(1, 1, 1, 0)
+layout_mode = 2
+
+[node name="load_heightmap" type="Button" parent="UI/pause_menu/VBoxContainer"]
+layout_mode = 2
+size_flags_vertical = 3
+text = "Load Heightmap"
+
+[node name="HSeparator3" type="HSeparator" parent="UI/pause_menu/VBoxContainer"]
+modulate = Color(1, 1, 1, 0)
+layout_mode = 2
+
+[node name="close" type="Button" parent="UI/pause_menu/VBoxContainer"]
+layout_mode = 2
+size_flags_vertical = 3
+text = "Close Menu"
+
+[node name="HSeparator5" type="HSeparator" parent="UI/pause_menu/VBoxContainer"]
+modulate = Color(1, 1, 1, 0)
+layout_mode = 2
+
+[node name="exit" type="Button" parent="UI/pause_menu/VBoxContainer"]
+layout_mode = 2
+size_flags_vertical = 3
+text = "Return to Main Menu"
+
+[node name="HSeparator4" type="HSeparator" parent="UI/pause_menu/VBoxContainer"]
+modulate = Color(1, 1, 1, 0)
+layout_mode = 2
+
+[node name="close2" type="Button" parent="UI/pause_menu/VBoxContainer"]
+layout_mode = 2
+size_flags_vertical = 3
+text = "Exit to Desktop"
+
+[node name="save_menu" type="Panel" parent="UI"]
+visible = false
+layout_mode = 1
+anchors_preset = -1
+anchor_left = 0.3
+anchor_top = 0.2
+anchor_right = 0.7
+anchor_bottom = 0.8
+grow_horizontal = 2
+grow_vertical = 2
+theme_override_styles/panel = SubResource("StyleBoxFlat_1fq0e")
+
+[node name="load_cover" type="Panel" parent="UI"]
+visible = false
+top_level = true
+layout_mode = 1
+anchors_preset = 15
+anchor_right = 1.0
+anchor_bottom = 1.0
+grow_horizontal = 2
+grow_vertical = 2
+theme_override_styles/panel = SubResource("StyleBoxFlat_dfx1u")
+
+[node name="off_thread_save" type="Node" parent="."]
+process_priority = 5
+script = ExtResource("5_p8rfu")
+
+[node name="editor_cursor" type="Node3D" parent="."]
+script = ExtResource("2_vq7n1")
+
+[node name="editor_cursor_display" type="Decal" parent="editor_cursor"]
+transform = Transform3D(1, 0, 0, 0, 1000, 0, 0, 0, 1, 0, 0, 0)
+layers = 262145
+size = Vector3(300, 500, 300)
+texture_albedo = SubResource("GradientTexture2D_5lyek")
+upper_fade = 0.0147109
+lower_fade = 318.034
+cull_mask = 262146
+
+[node name="editor_cursor_drawer" type="Decal" parent="editor_cursor"]
+transform = Transform3D(1, 0, 0, 0, 1000, 0, 0, 0, 1, 0, 0, 0)
+visible = false
+size = Vector3(300, 500, 300)
+texture_albedo = SubResource("GradientTexture2D_abga6")
+upper_fade = 0.0147109
+lower_fade = 318.034
+cull_mask = 2
+
+[node name="editor_environment" type="WorldEnvironment" parent="."]
+environment = SubResource("Environment_xl1fn")
+
+[node name="play_environment" type="WorldEnvironment" parent="."]
+environment = SubResource("Environment_2nffg")
+
+[node name="Sun" type="DirectionalLight3D" parent="."]
+transform = Transform3D(2.21801e-08, 0.200172, 0.979761, -1.29113e-07, -0.979761, 0.200172, 1, -1.3094e-07, 4.11361e-09, 0, 0, 0)
+light_cull_mask = 4294967279
+shadow_enabled = true
+shadow_bias = 0.04
+shadow_reverse_cull_face = true
+shadow_blur = 2.275
+directional_shadow_mode = 0
+
+[node name="Editor_Cam" type="Node3D" parent="."]
+transform = Transform3D(0.999536, -0.0304687, 0, 0.0304687, 0.999536, 0, 0, 0, 1, 194.238, 68.3703, 116.083)
+script = ExtResource("6_f37vi")
+
+[node name="editor_preview" type="Camera3D" parent="Editor_Cam"]
+transform = Transform3D(1, 0, 0, 0, 0.707107, 0.707107, 0, -0.707107, 0.707107, 0, 0, 0)
+environment = SubResource("Environment_xl1fn")
+
+[node name="environment_prev" type="Camera3D" parent="Editor_Cam"]
+transform = Transform3D(1, 0, 0, 0, 0.707107, 0.707107, 0, -0.707107, 0.707107, 0, 0, 0)
+visible = false
+environment = SubResource("Environment_h4cl6")
+
+[node name="visual_ground" type="Node3D" parent="."]
+
+[node name="level" type="Node3D" parent="."]
+
+[node name="bottom_curtain" type="MeshInstance3D" parent="."]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, -50, 0)
+mesh = SubResource("PlaneMesh_yro6c")
+
+[connection signal="brush_changed" from="UI" to="." method="brush_mode_changed"]
+[connection signal="object_added" from="UI" to="." method="add_world_object"]
+[connection signal="mouse_entered" from="UI/edit_mode_panel" to="UI" method="_mouse_entered_toolbar"]
+[connection signal="mouse_exited" from="UI/edit_mode_panel" to="UI" method="_mouse_exited_toolbar"]
+[connection signal="pressed" from="UI/edit_mode_panel/edit_options/edit_terrain_button" to="UI" method="edit_terrain_pressed"]
+[connection signal="pressed" from="UI/edit_mode_panel/edit_options/edit_ground_button" to="UI" method="edit_ground_pressed"]
+[connection signal="pressed" from="UI/edit_mode_panel/edit_options/place_objects_button" to="UI" method="place_objects_pressed"]
+[connection signal="pressed" from="UI/edit_mode_panel/edit_options/edit_atmosphere" to="UI" method="edit_atmosphere_pressed"]
+[connection signal="item_selected" from="UI/edit_mode_panel/edit_options/camera_view" to="." method="_change_view"]
+[connection signal="mouse_entered" from="UI/Brush_Panel" to="UI" method="_mouse_entered_toolbar"]
+[connection signal="mouse_exited" from="UI/Brush_Panel" to="UI" method="_mouse_exited_toolbar"]
+[connection signal="value_changed" from="UI/Brush_Panel/HBoxContainer/Brush_Strength/Slider" to="UI" method="strength_slider_used"]
+[connection signal="value_changed" from="UI/Brush_Panel/HBoxContainer/Brush_Elevation/Slider" to="UI" method="elevation_slider_used"]
+[connection signal="value_changed" from="UI/Brush_Panel/HBoxContainer/Brush_Radius/Slider" to="UI" method="radius_slider_used"]
+[connection signal="value_changed" from="UI/Brush_Panel/HBoxContainer/Brush_Falloff/Slider" to="UI" method="falloff_slider_used"]
+[connection signal="value_changed" from="UI/Brush_Panel/HBoxContainer/World_Water_Level/Slider" to="UI" method="water_level_slider_used"]
+[connection signal="mouse_entered" from="UI/Ground_Brush_Panel" to="UI" method="_mouse_entered_toolbar"]
+[connection signal="mouse_exited" from="UI/Ground_Brush_Panel" to="UI" method="_mouse_exited_toolbar"]
+[connection signal="value_changed" from="UI/Ground_Brush_Panel/HBoxContainer/Brush_Strength/Slider" to="UI" method="strength_slider_used"]
+[connection signal="value_changed" from="UI/Ground_Brush_Panel/HBoxContainer/Brush_Radius/Slider" to="UI" method="radius_slider_used"]
+[connection signal="value_changed" from="UI/Ground_Brush_Panel/HBoxContainer/Brush_Falloff/Slider" to="UI" method="falloff_slider_used"]
+[connection signal="item_selected" from="UI/Ground_Brush_Panel/HBoxContainer/Texture/OptionButton" to="UI" method="_texture_changed"]
+[connection signal="mouse_entered" from="UI/Place_Obj_Panel" to="UI" method="_mouse_entered_toolbar"]
+[connection signal="mouse_exited" from="UI/Place_Obj_Panel" to="UI" method="_mouse_exited_toolbar"]
+[connection signal="pressed" from="UI/pause_menu/VBoxContainer/close" to="UI/pause_menu" method="hide_pause_menu"]
+[connection signal="pressed" from="UI/pause_menu/VBoxContainer/exit" to="UI/pause_menu" method="return_to_main_menu" flags=3]
+[connection signal="pressed" from="UI/pause_menu/VBoxContainer/close2" to="UI/pause_menu" method="hide_pause_menu"]

@@ -1,0 +1,22 @@
+[remap]
+
+importer="wavefront_obj"
+importer_version=1
+type="Mesh"
+uid="uid://ck3vlabqpd5r7"
+path="res://.godot/imported/Blocked_Zone.obj-e98b9155d7359c11f1144a684dbca40b.mesh"
+
+[deps]
+
+files=["res://.godot/imported/Blocked_Zone.obj-e98b9155d7359c11f1144a684dbca40b.mesh"]
+
+source_file="res://Assets/Models/Editor_Meshes/Blocked_Zone.obj"
+dest_files=["res://.godot/imported/Blocked_Zone.obj-e98b9155d7359c11f1144a684dbca40b.mesh", "res://.godot/imported/Blocked_Zone.obj-e98b9155d7359c11f1144a684dbca40b.mesh"]
+
+[params]
+
+generate_tangents=true
+scale_mesh=Vector3(1, 1, 1)
+offset_mesh=Vector3(0, 0, 0)
+optimize_mesh=true
+force_disable_mesh_compression=false

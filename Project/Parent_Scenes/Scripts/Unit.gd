@@ -178,6 +178,7 @@ var visible_allies := []
 @onready var main_attack_manager = get_node("Main_Attack_Manager")
 
 '''### Built-In Methods ###'''
+#region Built-Ins
 func _ready():
 	call_deferred("_prepare_nav_agent")
 	
@@ -191,6 +192,7 @@ func _ready():
 			ai_methods["attack_commanded"] = Callable(_locked_targeted_attack)
 	main_attack_manager.call_deferred("init",main_attack_type, ranged_atk_sprd, melee_dmg_var, damage_type)
 	call_deferred("_connect_signals")
+	@warning_ignore("integer_division")  nav_agent.max_speed = max_speed/10
 	
 
 func _physics_process(delta):
@@ -211,11 +213,14 @@ func _connect_signals():
 	atk_timer.timeout.connect(_attack)
 	screen_notify.screen_entered.connect(_make_visible.bind(true))
 	screen_notify.screen_exited.connect(_make_visible.bind(false))
-
+	
+#endregion
 
 '''### Public Methods ###'''
 '''-------------------------------------------------------------------------------------'''
 ''' Startup Methods Start '''
+
+#region Startup Methods
 ## Load data from owning building
 func load_data(data, model_masters, id):
 	unit_id = id
@@ -242,10 +247,6 @@ func load_data(data, model_masters, id):
 	
 	if (actor_owner.actor_ID == 0):
 		_is_visible = true
-		for m in $UnitModels.get_children():
-			if(m.name.contains("Mesh")):
-				if m.mesh.material != null:
-					m.mesh.material.albedo_color = Color.BLUE
 		det_area.set_collision_mask_value(5,false)
 	else:
 		## Non_player units need not clear fog
@@ -288,31 +289,43 @@ func _prepare_nav_agent():
 		if travel_type[t]:
 			nav_agent.set_navigation_layers(t+1)
 
+#endregion
 
 ''' Startup Methods End '''
 '''-------------------------------------------------------------------------------------'''
 ''' Movement Methods Start '''
+
+#region Movement Methods
 ## Set target move location
 ##
 ## Called by outside functions
-func set_mov_target(mov_tar: Vector3, clear:= true):
+func set_mov_target(mov_tar = null, clear:= true):
 	if is_locked_down:
 		call_deferred("delayed_unlock")
 		await move_unlocked
 		ai_mode = "traveling_basic"
 		_set_target_position(mov_tar,clear)
 		return
+	
+	## If mov_tar is null, then go to queued position
+	if mov_tar==null:
+		mov_tar = queued_move_target
+		queued_move_target = Vector3.ZERO
+	## if queued move target is zero, its not supposed to happen
+	if mov_tar == Vector3.ZERO:
+		return
+	
 	ai_mode = "traveling_basic"
 	_set_target_position(mov_tar,clear)
 
 
 ## Queue a movement to be caclulated
 func queue_move(pos:Vector3):
-	queued_move_target = Vector3.ZERO
+	queued_move_target = pos
 	##if position.distance_to(pos) > 500:
 	##	queued_move_target = pos
 	##	pos = position - (500*position.direction_to(pos))
-	actor_owner.add_unit_tracking(self,Callable(set_mov_target.bind(pos)))
+	actor_owner.add_unit_tracking(self,Callable(set_mov_target))
 
 
 # Get gound depth at certain point
@@ -334,19 +347,13 @@ func set_garrison_target(bldg:Building):
 	_set_target_position(bldg.position,true)
 	ai_mode = "garrison"
 
+#endregion
 
 ''' Movement Methods End '''
-
-## Call to see if purchasable
-func can_afford(builder_res):
-	for res in builder_res:
-		if builder_res[res] < res_cost[res] :
-			return false
-	return true
-
-
 '''-------------------------------------------------------------------------------------'''
 ''' Player Input Methods Start '''
+
+#region Player Input Methods
 ## Unit is selected and make selection visible
 func select(state : bool = true):
 	is_selected = state
@@ -356,10 +363,22 @@ func select(state : bool = true):
 func _on_input_event(_camera, event, _position, _normal, _shape_idx):
 	if event is InputEventMouseButton and Input.is_action_just_released("lmb"):
 		selected.emit(self, event)
+		
+
+## Call to see if purchasable
+func can_afford(builder_res):
+	for res in builder_res:
+		if builder_res[res] < res_cost[res] :
+			return false
+	return true
+
+#endregion
 
 ''' Player Input Methods End '''
 '''-------------------------------------------------------------------------------------'''
 ''' Combat Methods Start '''
+
+#region Combat Methods
 ## Damage dealt
 ##
 ## returns true if killed or false if survived
@@ -380,10 +399,13 @@ func declare_enemy(unit):
 	ai_mode = "attack_commanded"
 	target_enemy = unit
 
+#endregion
 
 ''' Combat Methods End '''
 '''-------------------------------------------------------------------------------------'''
 ''' Destroy Unit Methods Start '''
+
+#region Destroy Unit Methods
 ## Signal from target dying
 func target_killed():
 	target_enemy = null
@@ -402,11 +424,14 @@ func delayed_delete():
 	await get_tree().physics_frame
 	queue_free()
 
+#endregion
 
 ''' Destroy Unit Methods End '''
 '''-------------------------------------------------------------------------------------'''
 '''### Private Methods ###'''
 ''' Movement Methods Start '''
+
+#region Movement Methods
 ## Check target position for other units
 func _check_pos(pos, mod = 1):
 	if mod > 200:
@@ -418,7 +443,6 @@ func _check_pos(pos, mod = 1):
 			formation_end_position = i.formation_end_position+1
 			return _check_pos(i.formation_core_position+actor_owner.formation_pos(self,formation_end_position),mod+1)
 	return pos
-
 
 
 ## set target move location 
@@ -466,7 +490,10 @@ func _det_area_exited(area):
 
 ## Add enemies to sight array
 func _vision_body_entered(body):
-	if body.has_meta("owner_id") and body.get_meta("owner_id") != actor_owner.actor_ID:
+	if body.has_meta("owner_id") and body.get_meta("owner_id") != actor_owner.actor_ID:		
+		if body.get_parent() is Building:
+			visible_enemies.push_back(body.get_parent())
+			return
 		visible_enemies.push_back(body)
 
 
@@ -474,6 +501,8 @@ func _vision_body_entered(body):
 func _vision_body_exited(body):
 	if visible_enemies.has(body):
 		visible_enemies.erase(body)
+	if visible_enemies.has(body.get_parent()):
+		visible_enemies.erase(body.get_parent())
 
 
 ## Add buildings to sight array
@@ -494,10 +523,13 @@ func _make_visible(state = null):
 	if state != null:
 		_is_visible = state
 	unit_models.rendered = _is_visible
+#endregion
 
 ''' Movement Methods end '''
 '''-------------------------------------------------------------------------------------'''
 ''' Combat Methods Start '''
+
+#region Combat Methods
 ## Attack function
 func _attack():
 	# Attack targeting
@@ -505,7 +537,7 @@ func _attack():
 		ai_mode = "idle_aggressive"
 		return
 	
-	if (position.distance_to(target_enemy.position) > target_atk_rng) and !target_enemy.has_meta("show_base_radius"):
+	if !target_enemy.has_meta("show_base_radius") and position.distance_to(target_enemy.position)-target_enemy.unit_radius > target_atk_rng :
 		return
 	
 	if target_enemy.has_meta("show_base_radius") and (position.distance_to(target_enemy.position)-target_enemy.bldg_radius > target_atk_rng):
@@ -517,25 +549,59 @@ func _attack():
 	atk_timer.start(base_atk_spd)
 	main_attack_manager.attack(position, target_enemy, current_atk_str)
 	attacked.emit()
+#endregionda
 
 ''' Combat Methods End '''
 '''-------------------------------------------------------------------------------------'''
 ''' AI Processes Methods Start '''
+
+#region AI Process Methods
 ## Has a target set by player
 func _targeted_attack(delta):
 	# Attack targeting
 	if !is_instance_valid(target_enemy):
 		ai_mode = "idle_aggressive"
 		return
-	
+		
 	## Handle tracking target
-	if(position.distance_to(target_enemy.position) < target_atk_rng*.65):
-		if nav_agent.is_navigation_finished():
-			unit_models.face_target(target_enemy.position)
-			return
-		_set_target_position(position)
-	else:
-		__find_target(target_enemy,target_enemy.position,true)
+	var trg_position
+	var _atk_range
+	if main_attack_type == attack_type.RANGE_PROJ or main_attack_type == attack_type.RANGE_BEAM or main_attack_type == attack_type.RANGE_AREA:
+		## Attack from distance
+		_atk_range = target_atk_rng
+		## Get pseudo random attack location
+		trg_position = target_enemy.position + Vector3(_atk_range*cos(unit_id),0,_atk_range*sin(unit_id)) ## Goal location
+		
+		if(position.distance_to(target_enemy.position) < _atk_range):
+			if nav_agent.is_navigation_finished():
+				unit_models.face_target(target_enemy.position)
+				return
+			_set_target_position(position)
+		else:
+			__find_target(target_enemy,target_enemy.position,true)
+	else:		## Target is melee
+		if target_enemy is Building:
+			## Attacking building so needs to use building edge to walk to
+			_atk_range = target_atk_rng+(target_enemy.bldg_radius/2)
+			trg_position = target_enemy.position + Vector3(_atk_range*cos(unit_id),0,_atk_range*sin(unit_id))
+			## Check if unit is near attack point
+			if(position.distance_to(trg_position) < 5):
+				if nav_agent.is_navigation_finished():
+					unit_models.face_target(target_enemy.position)
+					return
+				_set_target_position(position)
+			else:
+				__find_target(target_enemy,trg_position,true)
+		else:
+			## Attacking unit so needs to use unit radius edge to walk to
+			_atk_range = target_atk_rng+(target_enemy.unit_radius/2)		
+			trg_position = target_enemy.position + Vector3(_atk_range*cos(unit_id),0,_atk_range*sin(unit_id))
+			if(position.distance_to(trg_position) < 5):
+				if nav_agent.is_navigation_finished():
+					unit_models.face_target(target_enemy.position)
+					return
+			else:
+				__find_target(target_enemy,trg_position,true)
 	
 	travel_function.call(delta)
 
@@ -610,14 +676,15 @@ func _travel(delta):
 		
 	_update_velocity(delta)
 
+#endregion
 
 ''' AI Processes Methods End '''
 '''-------------------------------------------------------------------------------------'''
 ''' AI Processes Helper Methods Start '''
 
-
+#region AI Processes Helper Methods
 ## Locked targeted attack
-## Update navigation target to target enemy
+## Add enemy to be tracked
 func __find_target(trgt, pos:Vector3, __is_visible:bool):
 	if(target_enemy != trgt):
 		return
@@ -628,13 +695,22 @@ func __find_target(trgt, pos:Vector3, __is_visible:bool):
 func _on_navigation_agent_3d_navigation_finished():
 	if ai_mode.contains("wandering"):
 		return
+	
+	## unit shouldn't stop walking since queued movement not reached
+	if(queued_move_target != Vector3.ZERO):
+		return
+	
 	nav_agent.avoidance_enabled = false
-	## Don't stop on other units if not attacking
+	## Switch to idle if not trying to attack
 	if(!ai_mode.contains("attack")):
-		var targ = _check_pos(position)
-		if(targ != position):
-			set_mov_target(targ,false)
-			return
+		## Don't stop on other units if not attacking
+		## Old Code that was meant to stop units from stacking ontop of eachother,
+		## but all cases of that should be fixed now
+		#var targ = _check_pos(position)
+		#if(targ != position):
+		#	set_mov_target(targ,false)
+		#	return
+		## Set non-players to aggressive, set player to passive
 		if actor_owner.actor_ID != 0:
 			ai_mode = "idle_aggressive"
 		else:
@@ -651,11 +727,11 @@ func _on_navigation_agent_3d_navigation_finished():
 
 
 
-func _on_NavigationAgent_velocity_computed(safe_velocity):
-	velocity = safe_velocity
+func _on_NavigationAgent_velocity_computed(safe_velocity: Vector3):
+	velocity = velocity + (safe_velocity*0.07)
 	if velocity.length() <= 0.1:
 		return
-	global_transform.origin = global_transform.origin+velocity
+	global_transform.origin += velocity
 	unit_models.move_models(velocity)
 
 
@@ -673,6 +749,7 @@ func _update_velocity(delta):
 	new_velocity = new_velocity.normalized()* target_speed * delta
 	
 	nav_agent.set_velocity(new_velocity)
+	velocity = new_velocity
 
 
 ## Set locked travel state
@@ -691,3 +768,4 @@ func delayed_unlock():
 	await get_tree().create_timer(unit_lockdown_time).timeout
 	if !is_locked_down:
 		_lock_position(false)
+#endregion

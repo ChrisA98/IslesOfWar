@@ -55,7 +55,7 @@ var ready_to_load = false
 @onready var UI_controller = $UI_Node
 @onready var player_controller = $Player
 @onready var faction_data = [preload("res://Faction_Resources/Amerulf_Resource.json"),
-preload("res://Faction_Resources/Amerulf_Resource.json")]
+preload("res://Faction_Resources/Amerulf_Resource.json"),preload("res://Faction_Resources/Amerulf_Resource.json")]
 @onready var game_actors = [$Player]
 @onready var player_fog_manager = get_node("Player/Fog_drawer")
 @onready var enemy_marker_manager = get_node("UI_Node/Minimap/Enemy_minimap_markers")
@@ -66,27 +66,13 @@ preload("res://Faction_Resources/Amerulf_Resource.json")]
 
 ## Called when the node enters the scene tree for the first time.
 func _init():
-	Global_Vars.load_text = ("loading game")
-	# Load level
-	var lvl_file = load("res://Assets/Levels/test/level.scn")
-	Global_Vars.load_text = ("Loaded game")
-	Global_Vars.load_text = ("Instancing level")
-	var lvl = lvl_file.instantiate()
-	lvl.init(self)
-	Global_Vars.load_text = ("Instanced level")
-	world = lvl
-	world.name = "level"
-	
-	lvl.loaded.connect(_loaded_signal)
-	
-	add_child(lvl)
-	
-	ready_to_load = true
+	pass
 
 func _ready():	
 	## Transfer level material to visual ground
 	var world_material = world.find_child("Visual_Ground").mesh.get_material()	
 	player_controller.find_child("Visual_Ground").mesh.set_material(world_material)
+	$UI_Node/Minimap/Minimap_Container/SubViewport/Visual_Ground.mesh.set_material(world_material)
 
 
 func _loaded_signal():
@@ -118,6 +104,15 @@ func _update_sky():
 ## on player input event
 func _input(event):
 	if event.is_action_pressed("select_all_units"):
+		var wtr_nav_region = world.get_child(-1)
+		wtr_nav_region.navigation_mesh.set_filter_baking_aabb(AABB(Vector3(-750,world.water_table-2.5,-750),Vector3(1500,10,1500)))
+		wtr_nav_region.navigation_mesh.set_sample_partition_type(1)
+		wtr_nav_region.navigation_mesh.agent_height = 60
+		wtr_nav_region.navigation_mesh.edge_max_error = 0.7
+		wtr_nav_region.navigation_mesh.filter_walkable_low_height_spans  = true
+		wtr_nav_region.navigation_mesh.region_merge_size = 200
+		wtr_nav_region.navigation_mesh.agent_max_climb = 0
+		wtr_nav_region.update_navigation_mesh()
 		for u in player_controller.units:
 			player_controller.select_unit(u,false,false)
 		player_controller.group_selected_units()
@@ -242,6 +237,40 @@ func select_from_list(units):
 
 
 #region Prep Game and World Management Region
+
+## Load game world from filepath
+func load_world(world_path: String):	
+	Global_Vars.load_text = ("loading game")
+	# Load level
+	var lvl_file = load(world_path)
+	
+	Global_Vars.load_text = ("Loaded game")
+	Global_Vars.load_text = ("Instancing level")
+	var lvl = lvl_file.instantiate(0)
+	var lvl_grnd_tex = lvl.get_ground_tex()
+	var lvl_hm_dir = lvl.heightmap_dir
+	var water_table = lvl.water_table
+	var yr = lvl.year
+	var day = lvl.year_day
+	var rndm_spawns = lvl.use_random_base_spawns
+	lvl.set_script(load("res://World_Generation/Level_Controller.gd"))
+	lvl.set_ground_tex(lvl_grnd_tex)
+	lvl.heightmap_dir = lvl_hm_dir
+	lvl.water_table = water_table
+	lvl.year = yr	
+	lvl.year_day = day
+	lvl.use_random_base_spawns = rndm_spawns
+	lvl.init(self)
+	Global_Vars.load_text = ("Instanced level")
+	world = lvl
+	world.name = "level"
+	
+	lvl.loaded.connect(_loaded_signal)
+	
+	add_child(lvl)
+	
+	ready_to_load = true
+
 func _prepare_game():
 	await get_tree().physics_frame
 	# Connect ground signals
@@ -265,6 +294,7 @@ func _prepare_game():
 		game_actors.push_back(e)
 		add_child(e)
 		e.building_added.connect(world.building_added)
+		print("loaded player - "+str(i))
 	player_controller.building_added.connect(world.building_added)
 	
 	# Get building buttons UI element ref
@@ -288,15 +318,26 @@ func _prepare_game():
 	
 	set_process_mode(PROCESS_MODE_PAUSABLE)
 	
+	$"Player/Player_camera/Grass Scatter".process_material.set_shader_parameter("_coverage_altitude", world.water_table*3 + 0.5)
+	$"Player/Player_camera/StoneScater".process_material.set_shader_parameter("_coverage_altitude", world.water_table*3 + 4)
+	
 	call_deferred("prepare_bases")
 	call_deferred("custom_nav_setup")
+	world.call_deferred("_prepare_water")
 
 
 ## Load building data from JSON
 func _load_buildings(fac, res_bldgs, mil_bldgs, gen_bldgs):
+	var ext : String	
+	## Account for remap extension
+	if OS.has_feature("editor"):
+		ext = ".tscn"
+	else:
+		ext = ".tscn.remap"
+		
 	for b in faction_data[fac].data.buildings:
 		#check for file and load if exists
-		if(FileAccess.file_exists ("res://Buildings/"+b+".tscn")):
+		if(FileAccess.file_exists("res://Buildings/"+b+ext)):
 			loaded_buildings[fac][b] = load("res://Buildings/"+b+".tscn")
 		else:
 			loaded_buildings[fac][b] = null
@@ -361,6 +402,7 @@ func prepare_bases():
 func custom_nav_setup():
 	#create navigation map
 	var map: RID = NavigationServer3D.map_create()
+	Global_Vars.nav_map = map
 	NavigationServer3D.map_set_up(map, Vector3.UP)
 	NavigationServer3D.map_set_cell_size(map,.35)
 	NavigationServer3D.map_set_active(map, true)
@@ -404,9 +446,9 @@ func prep_player_building(id, menu):
 		preview_building = null
 	var new_build
 	if(menu != null):
-		new_build = loaded_buildings[0][menu_buildings[menu.get_item_text(id)]].instantiate(1)
+		new_build = loaded_buildings[0][menu_buildings[menu.get_item_text(id)]].instantiate(0)
 	else:
-		new_build = loaded_buildings[0]["Base"].instantiate(1)
+		new_build = loaded_buildings[0]["Base"].instantiate(0)
 	new_build.actor_owner = player_controller
 	add_child(new_build)
 	new_build.init(position, building_snap, player_controller)
@@ -419,7 +461,7 @@ func prep_player_building(id, menu):
 
 ##  Prepare new building for other actors
 func prep_other_building(actor, bldg_name):
-	var new_build = loaded_buildings[actor.actor_ID][bldg_name].instantiate(1)
+	var new_build = loaded_buildings[actor.actor_ID][bldg_name].instantiate(0)
 	new_build.actor_owner = actor
 	add_child(new_build)
 	new_build.init(position, 0, actor)
@@ -440,6 +482,7 @@ func building_pressed(building):
 			return
 		
 		activated_building = building #pass activated building to gamescene
+		building.show_menu()
 		click_mode = "menu"
 	if Input.is_action_just_released("rmb"):
 		if !player_controller.owns_building(building):
@@ -450,6 +493,7 @@ func building_pressed(building):
 				player_controller.clear_selection()
 			_:
 				activated_building = building #pass activated building to gamescene
+				building.show_menu()
 				click_mode = "menu"
 
 
@@ -544,9 +588,10 @@ func click_mod_update(old, new):
 ## Minimap clicked signal recieved
 func _minimap_Clicked(command : String, pos : Vector2):
 	var world_pos = Vector3()
-	world_pos.x = pos.x
-	world_pos.y = world.heightmap.get_pixel(int(pos.x)+500,int(pos.y)+500).r*world.terrain_amplitude + player_controller.cam.zoom
-	world_pos.z = pos.y 
+	var edge_buffer = 5
+	world_pos.x = clamp(pos.x,-(world.heightmap.get_width()/2)+edge_buffer,(world.heightmap.get_width()/2)-edge_buffer)
+	world_pos.z = clamp(pos.y,-(world.heightmap.get_width()/2)+edge_buffer,(world.heightmap.get_width()/2)-edge_buffer)
+	world_pos.y = world.get_loc_height(world_pos) + player_controller.cam.zoom
 	match command:
 		"move_cam":
 			player_controller.cam.position = world_pos

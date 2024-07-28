@@ -17,7 +17,18 @@ signal revealed
 @export var building_height: float = 1
 
 @export_group("Appearance")
-@export var hide_grass : bool = true
+## Control what channels are drawn to on the building_locs texture
+## Building should generally always be active, this hides trees and ground scatter
+## Elevation suggests the ground should be lowered and draw road tex
+@export_flags("Building","Elevation") var ground_drawing : int
+## Tells how far ground_drawing elevation flag should lower the elevation
+## leave as 0 to just draw roads
+@export var elevation_drop:float = 0
+## Shape Cleared on ground for elevation drop
+@export_enum("Square","Circle")var draw_shape : String = "Circle"
+## Size of shape cleared on ground
+## Leave as 0 to use building radius
+@export var draw_shape_size:float = 0
 @export var fog_rev_radius : float = 50
 @export var menu_pages = {"units": "","sec_units": "","research": "","page_4": ""}
 @export_flags("Land","Naval","Aerial") var garrison_unit_type
@@ -69,6 +80,7 @@ var _is_visible : bool:
 var is_valid = false
 var is_building : bool = false:
 	set(value):
+		is_building = value
 		if value:
 			process_functions.push_back(Callable(_build))
 			return
@@ -135,6 +147,7 @@ var trained_squad := Squad.new()
 
 
 '''### Built-In Methods ###'''
+
 func _ready():
 	prev_mat = prev_mat.duplicate(true)
 	build_shader = build_shader.duplicate(true)
@@ -158,6 +171,8 @@ func _ready():
 		det_area.area_exited.connect(_detection_area_exited)
 		hide_from_mouse()
 	
+	$StaticBody3D.set_meta("owner_id",actor_owner.actor_ID)
+	
 
 
 func _process(delta):
@@ -168,13 +183,13 @@ func _process(delta):
 ## Build Building
 func _build(delta):
 	if !is_instance_valid(parent_base) and parent_building != null:
-			return
+		return
 	if parent_base.building_child != null and parent_base.building_child != self:
 		return
 	parent_base.building_child = self
 	build_timer-=delta
-	var prog = ((build_time-build_timer)/build_time)*building_height
-	build_particles.position.y = prog
+	var prog = ((build_time-build_timer)/build_time)
+	build_particles.position.y = prog*building_height+ building_height*.01
 	building_model.set_override_shader_parameter("progress",prog)
 	if prog > 1:
 		finish_building()
@@ -202,7 +217,7 @@ func init(_pos, snap: int, actor: Node):
 	if actor_owner.actor_ID == 0:
 		_is_visible = true
 	
-	building_model.init(actor_owner.actor_color)
+	building_model.call_deferred("init",actor_owner.actor_color)
 	
 	building_model.set_material_override(prev_mat)
 	building_model.transparency = .55
@@ -263,8 +278,10 @@ func set_pos(pos, wait = false):
 	transform = base_transform
 	rotate_y(rot)
 	position = pos
-	align_to_ground()
-	position = pos
+	## Align to ground code
+	if building_model.grnd_align:
+		align_to_ground()
+		position = pos
 	snap_to_ground()
 	det_area.force_update_transform()
 	
@@ -314,8 +331,7 @@ func place():
 	var _build_shader = ShaderMaterial.new()
 	_build_shader.set_shader(build_shader)
 	
-	building_model.set_material_override(_build_shader)
-	building_model.set_override_shader_parameter("magic_color", magic_color)
+	building_model.build(_build_shader,magic_color)
 	# Start building
 	is_building = true
 	if(discovered):
@@ -387,7 +403,7 @@ func in_water():
 	var corners = static_body.find_children("Corner*")
 	for c in corners:
 		c.force_raycast_update()
-		if(picker.get_collider() != null and picker.get_collider().get_groups().size() == 0):
+		if(picker.get_collider() != null and picker.get_collider().get_groups().size() > 1):
 			return false	
 	return true
 
@@ -455,6 +471,7 @@ func finish_building():
 	await get_tree().physics_frame
 	is_building = false
 	build_particles.visible = false
+	build_particles.queue_free()
 	building_model.transparency = 0
 	fog_reg.fog_break_radius = fog_rev_radius
 	update_fog.emit(self, true)
@@ -483,6 +500,16 @@ func _detection_area_exited(area):
 func damage(amt: float, _type: String):
 	health.damage(amt,_type)
 	## DIE
+	
+	if (health.health <= health.max_health*.25):
+		building_model.burn(3)
+	elif(health.health <= health.max_health*.5):
+		building_model.burn(2)
+	elif(health.health <= health.max_health*.75):
+		building_model.burn(1)
+	else:
+		building_model.burn(0)
+			
 	if(health.health <= 0):
 		died.emit()
 		delayed_delete()
@@ -527,11 +554,10 @@ func distance_sort(a, b):
 '''-------------------------------------------------------------------------------------'''
 ''' User Input Start '''
 ## Pass press to signal activate signal
-func _on_static_body_3d_input_event(_camera, event, _position, _normal, _shape_idx):
-	if event is InputEventMouseButton:
-		pressed.emit(self)
-		if(actor_owner.actor_ID == 0 and !is_building):
-			show_menu()
+func _on_static_body_3d_input_event(_camera, _event, _position, _normal, _shape_idx):	
+	if(is_building):
+		return
+	pressed.emit(self)
 
 
 ## Show buildings menu

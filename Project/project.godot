@@ -11,10 +11,12 @@ config_version=5
 [application]
 
 config/name="Isles Of War"
-run/main_scene="res://World_Generation/level_builder/level_builder.tscn"
+run/main_scene="res://Menu_Scenes/main_menu.tscn"
+config/use_custom_user_dir=true
+config/custom_user_dir_name="Holiday/Is"
 config/features=PackedStringArray("4.2", "Forward Plus")
 boot_splash/bg_color=Color(0.67451, 0.870588, 0.988235, 1)
-boot_splash/image="res://Icon.png"
+boot_splash/image="res://Assets/UI_Elements/IconNew2.png"
 config/icon="res://icon.svg"
 
 [autoload]
@@ -24,13 +26,14 @@ Global_Vars="*res://global_vars.gd"
 [debug]
 
 settings/profiler/max_functions=32678
+shapes/navigation/geometry_face_color=Color(0.501961, 1, 1, 0.192157)
 shader_language/log_path="D:\\Holder\\GameDev\\IslesOfWar\\log"
+file_logging/profiler/max_functions=49062
 
 [display]
 
 window/size/viewport_width=1920
 window/size/viewport_height=1080
-window/size/initial_position_type=2
 window/size/initial_screen=1
 mouse_cursor/custom_image="res://Assets/UI_Elements/Cursor_Main.png"
 
@@ -129,6 +132,7 @@ editor_cam_rotate_l={
 [layer_names]
 
 3d_render/layer_2="Ground"
+3d_render/layer_3="Units"
 3d_render/layer_5="Fog_of_War"
 3d_render/layer_6="L_E_preview"
 3d_render/layer_19="Terrain_Preview"
@@ -153,7 +157,7 @@ common/max_physics_steps_per_frame=4
 
 heightmap_tex_size={
 "type": "vec2",
-"value": Vector2(1000, 1000)
+"value": Vector2(1500, 1500)
 }
 fog_darkness={
 "type": "float",
@@ -177,9 +181,13 @@ water_depth={
 }
 heightmap_tex={
 "type": "sampler2D",
-"value": "res://Assets/Levels/test/master.exr"
+"value": "res://Assets/Levels/Cliffs_and_Coasts/master.exr"
 }
 ground_tex_main={
 "type": "sampler2D",
 "value": "res://Assets/Terrain_Textures/grass_01.tres"
+}
+world_windiness={
+"type": "float",
+"value": 1.0
 }

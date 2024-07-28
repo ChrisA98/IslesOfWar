@@ -1,6 +1,6 @@
 [gd_scene load_steps=6 format=3 uid="uid://bkct877jtmifh"]
 
-[ext_resource type="Script" path="res://World_Objects/Editor_Objects/World_object_edtor_container.gd" id="1_q63y3"]
+[ext_resource type="Script" path="res://World_Objects/Editor_Objects/Oject_edtor_container.gd" id="1_cljtf"]
 
 [sub_resource type="SphereShape3D" id="SphereShape3D_tq6po"]
 radius = 15.368
@@ -9,13 +9,18 @@ radius = 15.368
 transparency = 1
 shading_mode = 0
 albedo_color = Color(0.196078, 0.203922, 1, 0.917647)
+billboard_keep_scale = true
+grow_amount = -1.024
+point_size = 8.5
+proximity_fade_distance = 0.05
+distance_fade_max_distance = 224.69
 
 [sub_resource type="SphereMesh" id="SphereMesh_qg06b"]
 material = SubResource("StandardMaterial3D_bir7a")
-radius = 5.0
-height = 10.0
-radial_segments = 6
-rings = 6
+radius = 1.5
+height = 3.0
+radial_segments = 10
+rings = 10
 
 [sub_resource type="CapsuleMesh" id="CapsuleMesh_nej4x"]
 material = SubResource("StandardMaterial3D_bir7a")
@@ -24,9 +29,9 @@ height = 7.21
 radial_segments = 4
 rings = 1
 
-[node name="World_object_edtor_container" type="Node3D" groups=["editor_object"]]
+[node name="Object_edtor_container" type="Node3D" groups=["editor_object"]]
 editor_description = "Parent Scene for creating placebale objects in the level editor"
-script = ExtResource("1_q63y3")
+script = ExtResource("1_cljtf")
 
 [node name="controller_Handle" type="StaticBody3D" parent="."]
 collision_mask = 0

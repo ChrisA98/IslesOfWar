@@ -30,6 +30,11 @@ var UVs = PackedVector2Array()
 var normals = PackedVector3Array()
 var map_offset: float
 
+## Local stored copy of the building_loc texture
+## r = building - hides trees and ground scatter
+## g = elevation - lower ground  
+## b = 
+## format - RGBF
 var building_locations = Image.new()
 
 var gamescene: Node3D
@@ -37,7 +42,7 @@ var gamescene: Node3D
 @onready var moon = $Moon
 var noise_image: Image = Image.new()
 var chunk_size = 500
-var chunks
+var chunks: int
 var nav_manager
 @onready var ground: MeshInstance3D = get_node("../Player/Visual_Ground")
 @onready var water = get_node("../Player/Visual_Ground/Water")
@@ -47,18 +52,22 @@ var editor_version = true
 
 
 func init(_gamescene):
+	print("using new script")
 	editor_version = false
 	gamescene = _gamescene
 	Global_Vars.load_text = ("loading level")
 	fog_material.set_shader(load("res://Materials/fog_of_war_overlay.gdshader"))
 	
 	Global_Vars.load_text = ("loaded shader")
-	chunks = sqrt(find_files())
-	heightmap = load(heightmap_dir+"master"+".exr").get_image()
+	@warning_ignore("integer_division") chunks = sqrt(find_files())
+	heightmap = Image.load_from_file(heightmap_dir+"master.png")
+	if heightmap.is_compressed():
+		heightmap.decompress()
 	Global_Vars.heightmap = heightmap
 	RenderingServer.global_shader_parameter_set("heightmap_tex",ImageTexture.create_from_image(heightmap))
 	Global_Vars.heightmap_size = chunks*500
 	Global_Vars.load_text = ("loaded heightmap _ chunks = "+str(chunks))
+	
 	##Set up buildings tex
 	building_locations = Image.create(chunks*chunk_size,chunks*chunk_size,false,Image.FORMAT_RGBF)
 	Global_Vars.load_text = "Loaded Buildings Texture"
@@ -66,15 +75,17 @@ func init(_gamescene):
 	RenderingServer.global_shader_parameter_set("building_locs",ImageTexture.create_from_image(building_locations))
 	Global_Vars.load_text = ("Loading map")
 	nav_manager = load("res://World_Generation/NavMeshManager.gd")
-	map_offset = (chunk_size*chunks)/2
-	## Prepare chunks
+	@warning_ignore("integer_division") map_offset = (chunk_size*chunks)/2
+	
+	## Prepare collision chunks
 	for y in range(0,chunks):
 		for x in range(0,chunks):
 			var _img = Image.new()
-			var __img = load(heightmap_dir+"chunk_"+str(y)+"_"+str(x)+".exr")
-			_img = __img.get_image()
+			var __img = Image.load_from_file(heightmap_dir+"chunk_"+str(y)+"_"+str(x)+".png")
+			_img = __img
 			chunk_size = _img.get_width()
-			build_map(_img, Vector3(x-1,0,y),Vector2i(x,y))
+			build_map(_img, Vector3(x,0,y),Vector2i(x,y))
+	
 	
 	## Assign Regions to terrain mesh chunks
 	for i in get_children():
@@ -90,65 +101,83 @@ func init(_gamescene):
 	## Set fog global data
 	RenderingServer.global_shader_parameter_set("fog_darkness",fog_darkness)
 	RenderingServer.global_shader_parameter_set("heightmap_tex_size",Vector2(heightmap.get_width(),heightmap.get_width()))
+	Global_Vars.load_text = ("heightmap size =  = "+str(heightmap.get_width()))
 	
 	## Set water Height Data
 	RenderingServer.global_shader_parameter_set("water_depth",water_table)
+	Global_Vars.water_elevation = water_table
+	
 	
 	call_deferred("_build_fog_war")
 
 func _ready():
 	if editor_version:
-		heightmap = load(heightmap_dir+"master"+".exr").get_image()
+		heightmap = Image.load_from_file(heightmap_dir+"master"+".png").get_image()
 		Global_Vars.heightmap = heightmap
 		return
 		
 	RenderingServer.global_shader_parameter_set("ground_tex_main",$Visual_Ground.mesh.surface_get_material(0).get_shader_parameter("grass_alb_tex"))
 	
-	$Water/StaticBody3D.input_event.connect(gamescene.ground_click.bind($Water/StaticBody3D)) 
 	Global_Vars.load_text = ("loading sun")
 	# Set Sun and moon in place
 	$Sun.rotation_degrees = Vector3(0,90,-180)
 	$Moon.rotation_degrees = Vector3(0,90,-180)
 	loaded.emit()
 	get_parent().call_deferred("_prepare_game")
-	_prepare_water()
 
 #region initializing Functions
 
 ## Prepare water navigation
 func _prepare_water():
+	await get_tree().create_timer(5).timeout ## Small timer to give ground locations to get into the generation queue first
 	Global_Vars.load_text = ("loading water")
-	
-	var wtr_nav_region = NavigationRegion3D.new()
-	wtr_nav_region.set_script(nav_manager)
-	wtr_nav_region.finished_baking.connect(gamescene._navmesh_updated)
-	wtr_nav_region.starting_baking.connect(gamescene._navmesh_update_start)
-	wtr_nav_region.agent_max_slope = 10
-	wtr_nav_region.agent_radius = 10
-	wtr_nav_region.add_to_group("water")
-	#add to world
-	add_child(wtr_nav_region)
-	get_child(-1).set_name("water_navigation")	
-	wtr_nav_region.set_nav_region()
-	wtr_nav_region.navigation_mesh.set_filter_baking_aabb(AABB(Vector3(-chunk_size,-2.5,-chunk_size),Vector3(chunks*chunk_size,10,chunks*chunk_size)))
-	wtr_nav_region.update_navigation_mesh()
-	wtr_nav_region.use_edge_connections = false
-	wtr_nav_region.set_navigation_layer_value(1, false)
-	wtr_nav_region.set_navigation_layer_value(2, true)
-	
+	var water_template = $Water/StaticBody3D
+	#$Water/StaticBody3D/CollisionShape3D.shape.size = Vector3(Global_Vars.heightmap_size,1,Global_Vars.heightmap_size)
+	$Water/StaticBody3D.position.y = water_table
+	for y in range(0,chunks):
+		for x in range(0,chunks):
+			var region_mesh = find_child(StringName("Region_"+str(x) +"_"+ str(y)),false,false).get_child(0)
+			var wtr_chunk = water_template.duplicate()
+			region_mesh.add_child(wtr_chunk)
+			wtr_chunk.input_event.connect(gamescene.ground_click.bind(wtr_chunk))
+			## Offset to enter
+			@warning_ignore("integer_division") wtr_chunk.position.z = -chunk_size/2
+			@warning_ignore("integer_division") wtr_chunk.position.x = chunk_size/2
+			## prepare Navigation Region
+			var wtr_nav_region = NavigationRegion3D.new()
+			wtr_nav_region.set_script(nav_manager)
+			wtr_nav_region.finished_baking.connect(gamescene._navmesh_updated)
+			wtr_nav_region.starting_baking.connect(gamescene._navmesh_update_start)
+			wtr_nav_region.agent_max_slope = 10
+			wtr_nav_region.add_to_group("water")
+			#add to world
+			region_mesh.add_child(wtr_nav_region)
+			region_mesh.get_child(-1).set_name("water_navigation_"+str(x) +"_"+ str(y))	
+			wtr_nav_region.set_nav_region()
+			@warning_ignore("integer_division")
+			wtr_nav_region.navigation_mesh.set_filter_baking_aabb(AABB(Vector3(0,water_table-2.5,-500),Vector3(chunk_size,10,chunk_size)))
+			wtr_nav_region.navigation_mesh.agent_height = 6
+			wtr_nav_region.navigation_mesh.agent_max_climb = 0
+			wtr_nav_region.navigation_mesh.set_sample_partition_type(0)
+			wtr_nav_region.update_navigation_mesh()
+			wtr_nav_region.use_edge_connections = true
+			wtr_nav_region.set_navigation_layer_value(1, false)
+			wtr_nav_region.set_navigation_layer_value(2, true)
+	$Water/StaticBody3D.queue_free()
+			
 	## Prepare Ground with level info
 	ground.mesh.surface_get_material(0).set_shader_parameter("t_height", terrain_amplitude)
 	## Prepare Water with level info
 	water.mesh.surface_get_material(0).set_shader_parameter("t_height", terrain_amplitude)
-	$Water.position.y = water_table
 
 
 func _build_fog_war():
+	return
 	## Fog of war walls
-	var fog_wall_size = ((chunk_size*chunks)/65)+1	#gets length of walls
+	@warning_ignore("integer_division") var fog_wall_size = ((chunk_size*chunks)/65)+1	#gets length of walls
 	var base_fog_wall = $Great_Fog_Wall.find_children("Fog*","Node",false)[-1]
-	base_fog_wall.position.x = ((chunk_size*chunks)/2) + 65
-	base_fog_wall.position.z = ((chunk_size*chunks*-1)/2) - 65
+	@warning_ignore("integer_division") base_fog_wall.position.x = ((chunk_size*chunks)/2) + 65
+	@warning_ignore("integer_division") base_fog_wall.position.z = ((chunk_size*chunks*-1)/2) - 65
 	for j in range(fog_wall_size):
 		var te = base_fog_wall.duplicate()
 		te.position.x -= 65*j
@@ -160,20 +189,20 @@ func _build_fog_war():
 	for j in range(fog_wall_size+1):
 		var te = base_fog_wall.duplicate()
 		te.position.x -= 65*j
-		te.position.z = (chunk_size*chunks/2)+65
+		@warning_ignore("integer_division") te.position.z = (chunk_size*chunks/2)+65
 		$Great_Fog_Wall.add_child(te)
 	for j in range(fog_wall_size+1):
 		var te = base_fog_wall.duplicate()
 		te.position.z += 65*j
-		te.position.x = -((chunk_size*chunks/2)+65)
+		@warning_ignore("integer_division") te.position.x = -((chunk_size*chunks/2)+65)
 		$Great_Fog_Wall.add_child(te)
 	
 	
 	## Fog of war explorable
 	var fog_explor_range = (chunk_size*chunks)/25	#gets length of walls
 	var base_fog = $Explorable_Fog.find_children("Fog*","Node",false)[-1]
-	base_fog.position.x = ((chunk_size*chunks)/2) - 25
-	base_fog.position.z = ((chunk_size*chunks*-1)/2) + 25
+	@warning_ignore("integer_division") base_fog.position.x = ((chunk_size*chunks)/2) - 25
+	@warning_ignore("integer_division") base_fog.position.z = ((chunk_size*chunks*-1)/2) + 25
 	var picker = $Explorable_Fog/RayCast3D
 	for i in range(fog_explor_range):
 		for j in range(fog_explor_range):
@@ -203,7 +232,7 @@ func _build_fog_war():
 	picker.queue_free()
 	
 
-## Check if .exr files exist in target path
+## Check if .png files exist in target path
 func find_files():
 	var dir = DirAccess.open(heightmap_dir)
 	var cnt = -1
@@ -211,7 +240,7 @@ func find_files():
 		dir.list_dir_begin()
 		var file_name = dir.get_next()
 		while file_name != "":
-			if file_name.get_extension() == "exr":
+			if file_name.get_extension() == "png":
 				cnt+=1
 			file_name = dir.get_next()
 	else:
@@ -251,8 +280,11 @@ func build_map(img, pos, adj):
 	mesh.create_trimesh_collision()
 	mesh.add_to_group(grp)
 	mesh.add_to_group("water")
+	mesh.get_child(0).add_to_group(grp)
+	mesh.get_child(0).add_to_group("water")
 	
-	mesh.position = pos*chunk_size - Vector3(adj.x,0,adj.y)
+	mesh.position = pos*chunk_size - Vector3(map_offset + adj.x,0,adj.y)
+	mesh.position.z -= (map_offset-chunk_size)
 	
 	var scale_ratio = chunk_size / float(img.get_width())
 	mesh.scale *= scale_ratio
@@ -358,44 +390,98 @@ func get_loc_height(pos:Vector3):
 #region Building Texture Interactions
 
 ## Update tree scatter avoidance texture
-func building_added(pos: Vector3, hide_grass: bool, bldg_radius: float, road_target: Vector3):
+func building_added(pos: Vector3, building:Building, bldg_radius: float, road_target: Vector3):
 	var circle_size := bldg_radius * 15
 	
 	var cntr = Vector2(pos.x,pos.z)
-	##Make 10x10 square around buildings in tex to hide trees
-	_draw_circle_to_buildings_tex(circle_size, Vector2(pos.x,pos.z), hide_grass)
 	
 	##Build road to base
 	if road_target != Vector3.ZERO:
 		for i in range(circle_size/2.8, cntr.distance_to(Vector2(road_target.x,road_target.z))):
 			var p = cntr + (i * cntr.direction_to(Vector2(road_target.x,road_target.z)))
-			_draw_circle_to_buildings_tex(14, Vector2(p.x,p.y), true, .45)
+			_draw_circle_to_buildings_tex(14, Vector2(p.x,p.y), 3, .45)
 	
+	##Make circle around buildings in tex to hide trees
+	if building.draw_shape_size == 0:
+		_draw_circle_to_buildings_tex(circle_size, Vector2(pos.x,pos.z), building.ground_drawing)
+	if building.draw_shape == "Square":
+		_draw_square_to_buildings_tex(building.draw_shape_size, Vector2(pos.x,pos.z), building.ground_drawing, building.elevation_drop)
+	else:
+		_draw_circle_to_buildings_tex(building.draw_shape_size, Vector2(pos.x,pos.z), building.ground_drawing,.125, building.elevation_drop)
+		
 	## Write to global dsharer parameter
 	RenderingServer.global_shader_parameter_set("building_locs",ImageTexture.create_from_image(building_locations))
+	
+	_update_forests()
+	
+## Update Forest Avoidance areas
+func _update_forests():
+	for nod in get_children():
+		if nod is forest:
+			nod.hide_avoidance_zones_under_buildings(building_locations,map_offset)
 
+## Draw to buildic_locations tex
 
-func _draw_circle_to_buildings_tex(circle_size, pos, hide_grass,lighten_offset:float = .125):
+func _draw_circle_to_buildings_tex(circle_size, pos, channel_bitfield: int ,lighten_offset:float = .125, intensity = 1, max_intensity = 100):
 	var pix = Vector2((pos.x+map_offset-(circle_size/2)),(pos.y+map_offset-(circle_size/2)))
 	var cntr = Vector2((pos.x+map_offset),(pos.y+map_offset))
 	for y in range(circle_size):
+		if pix.y+y > building_locations.get_width():
+			continue
 		for x in range(circle_size):
+			if pix.x+x > building_locations.get_width():
+				continue
+			var b_map = channel_bitfield
 			var p =Vector2(pix.x+x,pix.y+y)
-			if p.distance_to(cntr) <= circle_size/2:
-				var col = building_locations.get_pixel(p.x,p.y)
-				var n_col = Color.BLACK
+			var col = building_locations.get_pixel(p.x,p.y)
+			var n_col = Color.BLACK
+			## Go through bitmap
+			##red
+			if (b_map >= 4):
+				b_map -= 4
+				col.b = clamp(n_col.b,col.b,max_intensity)
+			##green
+			if (b_map >= 2):	
+				b_map -= 2
+				n_col.g += 1 - (p.distance_to(cntr)/(circle_size/2)) - lighten_offset
+				if (n_col.g < 0.25):
+					n_col.g *= randf_range(0.25,1.25)
+				col.g = clamp(n_col.g,col.g,max_intensity)
+			elif(p.distance_to(cntr) <= circle_size/4):
+				col.g = 0
+			##blue
+			if (b_map >= 1):
 				n_col.r += 1-(p.distance_to(cntr)/(circle_size/2)) - lighten_offset
-				#n_col.r += n_col.r * randf_range(-0.5,0.5)
-				col.r = clamp(n_col.r,col.r,1)
-				col.b = clamp(n_col.b,col.b,1)
-				if(hide_grass):
-					n_col.g += 1 - (p.distance_to(cntr)/(circle_size/2)) - lighten_offset
-					if (n_col.g < 0.25):
-						n_col.g *= randf_range(0.25,1.25)
-					col.g = clamp(n_col.g,col.g,1)
-				elif(p.distance_to(cntr) <= circle_size/4):
-					col.g = 0
-				building_locations.set_pixel(p.x,p.y,col)
+				col.r = clamp(n_col.r,col.r,max_intensity)
+			building_locations.set_pixel(p.x,p.y,col)
+
+## Channel bitfield
+## 4 - Red
+## 2 - Green
+## 1 - Blue
+func _draw_square_to_buildings_tex(square_size, pos,channel_bitfield = 7, intensity = 1, max_intensity = 100):
+	var pix = Vector2((pos.x+map_offset-(square_size/2)),(pos.y+map_offset-(square_size/2)))
+	var cntr = Vector2((pos.x+map_offset),(pos.y+map_offset))
+	for y in range(square_size):
+		if y > building_locations.get_width():
+			continue
+		for x in range(square_size):
+			if x > building_locations.get_width():
+				continue
+			var b_map = channel_bitfield
+			var p =Vector2(pix.x+x,pix.y+y)
+			var col = building_locations.get_pixel(p.x,p.y)
+			var n_col = Color(intensity,(2-p.distance_to(cntr)/(square_size/2))*intensity,intensity)
+			## Go through bitmap
+			if (b_map >= 4):
+				col.b = clamp(n_col.b,col.b,max_intensity)
+				b_map-=4
+			if (b_map >= 2):
+				b_map-=2
+				col.g = clamp(n_col.g,col.g,max_intensity)
+			if (b_map >= 1):
+				col.r = clamp(n_col.r,col.r,max_intensity)
+			building_locations.set_pixel(p.x,p.y,col)
 
 #endregion
 

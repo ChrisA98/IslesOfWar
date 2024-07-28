@@ -1,0 +1,22 @@
+[remap]
+
+importer="wavefront_obj"
+importer_version=1
+type="Mesh"
+uid="uid://idwcaaxt40i3"
+path="res://.godot/imported/Amerulf_LumberMill.obj-ed1e7832e4f75cba54e602b4ec21ba50.mesh"
+
+[deps]
+
+files=["res://.godot/imported/Amerulf_LumberMill.obj-ed1e7832e4f75cba54e602b4ec21ba50.mesh"]
+
+source_file="res://Assets/Models/Amerulf/base_models/Amerulf_LumberMill.obj"
+dest_files=["res://.godot/imported/Amerulf_LumberMill.obj-ed1e7832e4f75cba54e602b4ec21ba50.mesh", "res://.godot/imported/Amerulf_LumberMill.obj-ed1e7832e4f75cba54e602b4ec21ba50.mesh"]
+
+[params]
+
+generate_tangents=true
+scale_mesh=Vector3(0.18, 0.18, 0.18)
+offset_mesh=Vector3(0, 0, 0)
+optimize_mesh=true
+force_disable_mesh_compression=false

@@ -4,12 +4,12 @@ class_name world_object
 
 #REF vars
 @onready var local_area = get_node("Affected_Area")
-@onready var area_shape = get_node("Affected_Area/CollisionShape3D")
+@onready var area_shape : CollisionShape3D = get_node("Affected_Area/CollisionShape3D")
 @onready var editor_display_mesh = get_node("Editor_Mesh")
 
 var heightmap
 
-var radius: float = 50:
+@export var radius: float = 50:
 	get:
 		return radius
 	set(value):
@@ -21,7 +21,11 @@ var radius: float = 50:
 func _ready():
 	editor_display_mesh.hide()
 	
+	area_shape.shape = area_shape.shape.duplicate()
+	
 	update_heightmap()
+	
+	_set_shape_radius(radius)
 	
 	if(target_meta == null):
 		local_area.monitoring = false
@@ -29,7 +33,8 @@ func _ready():
 
 ## Only should be called by radius setter
 func _set_shape_radius(value):
-	area_shape.shape.radius = value
+	if is_node_ready():
+		area_shape.shape.radius = value
 
 
 ## Object collides with area, checks for meta and returns if false

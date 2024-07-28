@@ -39,7 +39,7 @@ var troop_train_patience = .1
 var build_patience = .1
 var res_search_patience = 5
 var enemy_search_patience = 5
-var speed_of_thought = 4
+var speed_of_thought = 16
 var few_troops_threshold = 2
 var min_troop_attack = 10
 var goal_hierarchy = [
@@ -50,6 +50,8 @@ var goal_hierarchy = [
 ''' onready vars '''
 @onready var rng = RandomNumberGenerator.new()
 @onready var global = get_node("/root/Global_Vars")
+
+
 '''### BUILT-IN METHODS ###'''
 ## Called when the node enters the scene tree for the first time.
 func _ready():
@@ -71,6 +73,8 @@ func _ready():
 	resource_locations["Lumber_mill"] = []
 	resource_locations["Mine_stone"] = []
 	resource_locations["Mine_crystal"] = []
+
+
 '''### Private METHODS ###'''
 
 
@@ -82,7 +86,7 @@ func build_enemy_list():
 	while focused_enemy == self:
 		focused_enemy = gamescene.game_actors\
 		[rng.randi_range(0,gamescene.game_actors.size()-1)]
-		
+
 
 ''' Decision Making start '''
 
@@ -111,6 +115,8 @@ func _think():
 		_:
 			ponder()
 	think_timer.start(speed_of_thought)
+
+
 ## Consider next plan after goals queue finished
 ##
 ## Return false if think not called

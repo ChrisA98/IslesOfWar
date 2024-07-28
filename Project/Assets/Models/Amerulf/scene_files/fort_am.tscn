@@ -7,7 +7,7 @@
 [ext_resource type="Texture2D" uid="uid://dwejmjvt754e" path="res://Assets/Models/Amerulf/Tex/Stone_01.png" id="4_snm75"]
 [ext_resource type="Texture2D" uid="uid://berexigqyo63g" path="res://Assets/Models/Amerulf/Tex/Stone_01_Normal_Map.png" id="5_6k3g4"]
 [ext_resource type="Shader" uid="uid://vlnudqa1d4vl" path="res://Assets/Models/Materials/building_shader_no_culling.tres" id="7_7wn1n"]
-[ext_resource type="Texture2D" uid="uid://dwxfb3jgbc0yo" path="res://Assets/Models/Units/textures/Amerulfian_flag.png" id="8_i6jfy"]
+[ext_resource type="PackedScene" uid="uid://clibifjykfro" path="res://Assets/Models/misc/Amerulfian_Flag.tscn" id="8_2nk52"]
 
 [sub_resource type="ShaderMaterial" id="ShaderMaterial_jv1b3"]
 render_priority = 0
@@ -78,10 +78,9 @@ shader_parameter/metallic = 0.177
 shader_parameter/normal_scale = 0.963001
 shader_parameter/uv1_scale = Vector3(1, 1, 1)
 shader_parameter/uv2_scale = Vector3(1, 1, 1)
-shader_parameter/use_player_albedo = null
+shader_parameter/use_player_albedo = false
 shader_parameter/player_albedo = null
-shader_parameter/color_albedo = Color(1, 1, 1, 1)
-shader_parameter/texture_albedo = ExtResource("8_i6jfy")
+shader_parameter/color_albedo = Color(1, 1, 1, 0)
 
 [sub_resource type="ArrayMesh" id="ArrayMesh_pub1k"]
 resource_local_to_scene = true
@@ -248,3 +247,16 @@ _surfaces = [{
 [node name="MeshInstance3D" parent="." index="0"]
 transform = Transform3D(-4.37114e-08, 0, -1, 0, 1, 0, 1, 0, -4.37114e-08, 0, 0, 0)
 mesh = SubResource("ArrayMesh_pub1k")
+
+[node name="MeshInstance3D2" parent="." index="1" instance=ExtResource("8_2nk52")]
+transform = Transform3D(0.25, 0, 0, 0, -1.09278e-08, -0.25, 0, 0.25, -1.09278e-08, 0, 1.25293, 0)
+metadata/hide = false
+
+[node name="Damage" parent="Damage" index="0"]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, -1.04557, -0.130151, 1.02382)
+
+[node name="Damage2" parent="Damage" index="1"]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, -0.310393, -0.861358, -0.951467)
+
+[node name="Damage3" parent="Damage" index="2"]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0.0380761, 0.822083, 0.000391769)

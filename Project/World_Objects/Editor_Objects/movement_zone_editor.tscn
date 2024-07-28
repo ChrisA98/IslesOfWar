@@ -1,0 +1,5 @@
+[gd_scene load_steps=2 format=3 uid="uid://c1w3bmd5r7urw"]
+
+[ext_resource type="PackedScene" uid="uid://bkct877jtmifh" path="res://World_Objects/Editor_Objects/object_edtor_container.tscn" id="1_n3nfb"]
+
+[node name="Object_edtor_container" instance=ExtResource("1_n3nfb")]

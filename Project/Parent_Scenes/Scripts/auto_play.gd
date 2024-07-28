@@ -1,4 +1,5 @@
 extends AnimationPlayer
+## Simple script to make animation players start loop
 
 @export var default_anim : String
 @export var loop : bool
@@ -9,4 +10,4 @@ func _ready():
 		animation_finished.connect(loop_anim)
 
 func loop_anim(anim_name):
-	play(default_anim)
+	play(anim_name)

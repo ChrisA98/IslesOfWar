@@ -2,7 +2,7 @@ shader_type spatial;
 
 
 global uniform sampler2D fog_tex;
-global uniform vec2 heightmap_tex_size = vec2(1000.0,1000.0);
+global uniform vec2 heightmap_tex_size;
 global uniform float fog_darkness;
 varying vec2 pos_uv;
 

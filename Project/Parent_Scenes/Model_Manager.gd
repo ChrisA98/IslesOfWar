@@ -135,8 +135,9 @@ func reorder_units(master, old_id, new_id):
 
 ## Get target modle master from list
 func _assign_model_master(mod_name:String):
+	mod_name = mod_name.substr(0,mod_name.length()-3)
 	for i in range(0,model_masters.size()):
-		if mod_name.contains(model_masters[i].model_name):
+		if model_masters[i].model_name.contains(mod_name):
 			return i
 	return 0
 

@@ -10,12 +10,13 @@ global uniform sampler2D fog_tex;
 global uniform vec2 heightmap_tex_size = vec2(1000.0,1000.0);
 global uniform float fog_darkness;
 global uniform sampler2D building_locs;
+global uniform float world_windiness;
 varying vec2 pos_uv;
 
 uniform float sway_intensity: hint_range(0,0.2);
-uniform float red_variance : hint_range(0,25);
-uniform float green_variance : hint_range(0,25);
-uniform float blue_variance : hint_range(0,25);
+uniform float red_variance : hint_range(-25,25);
+uniform float green_variance : hint_range(-25,25);
+uniform float blue_variance : hint_range(-25,25);
 uniform vec4 albedo : source_color;
 uniform float roughness : hint_range(0,1);
 uniform sampler2D texture_metallic : hint_default_white,filter_linear_mipmap,repeat_enable;
@@ -40,8 +41,8 @@ void vertex() {
 	}else{
 		float wave = sin(2.0 * PI * TIME + (VERTEX.z+VERTEX.x)*0.8);
 		float wave2 = sin(2.0 * PI * (TIME + VERTEX.z+VERTEX.x)*2.0);
-		VERTEX.x += (wave+wave2 *0.4) *sway_intensity;
-		VERTEX.z -= (wave-wave2 *0.4)*sway_intensity;
+		VERTEX.x += (wave+wave2 *0.4) *sway_intensity * world_windiness;
+		VERTEX.z -= (wave-wave2 *0.4)*sway_intensity * world_windiness;
 		UV=UV*uv1_scale.xy+uv1_offset.xy;
 		id = float(INSTANCE_CUSTOM.x);
 	}
@@ -51,9 +52,9 @@ void vertex() {
 void fragment() {
 	vec2 base_uv = UV;
 	ALBEDO = albedo.rgb;
-	ALBEDO.r += cos(id)/(26.0-red_variance);
-	ALBEDO.g += sin(id)/(26.0-green_variance);
-	ALBEDO.b += sin(id)/(26.0-blue_variance);
+	ALBEDO.r += abs(cos(id))*(red_variance/10.0);
+	ALBEDO.g += abs(sin(id))*(green_variance/10.0);
+	ALBEDO.b += abs(sin(id+pos_uv.x))*(blue_variance/10.0);
 	float metallic_tex = dot(texture(texture_metallic,base_uv),metallic_texture_channel);
 	METALLIC = metallic_tex * metallic;
 	vec4 roughness_texture_channel = vec4(1.0,0.0,0.0,0.0);

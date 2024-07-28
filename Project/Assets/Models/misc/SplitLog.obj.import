@@ -1,0 +1,22 @@
+[remap]
+
+importer="wavefront_obj"
+importer_version=1
+type="Mesh"
+uid="uid://wyih6b6hr2ay"
+path="res://.godot/imported/SplitLog.obj-f0aed85170ce507217cf7a7ceffe1041.mesh"
+
+[deps]
+
+files=["res://.godot/imported/SplitLog.obj-f0aed85170ce507217cf7a7ceffe1041.mesh"]
+
+source_file="res://Assets/Models/misc/SplitLog.obj"
+dest_files=["res://.godot/imported/SplitLog.obj-f0aed85170ce507217cf7a7ceffe1041.mesh", "res://.godot/imported/SplitLog.obj-f0aed85170ce507217cf7a7ceffe1041.mesh"]
+
+[params]
+
+generate_tangents=true
+scale_mesh=Vector3(0.18, 0.18, 0.18)
+offset_mesh=Vector3(0, 0, 0)
+optimize_mesh=true
+force_disable_mesh_compression=false

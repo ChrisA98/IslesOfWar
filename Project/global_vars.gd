@@ -5,7 +5,7 @@ signal updated_heightmap
 #Global Vars
 @onready var months = {
 	0: "Lidrasin Bor",
-	1: "Sperran Mal",
+	1: "Speran Mal",
 	2: "Lidras Veil",
 	3: "Sultaran Bor",
 	4: "Dariusun Fil",
@@ -24,6 +24,7 @@ const NIGHT_LENGTH : int = 46
 
 var navmesh_baking : NavigationRegion3D
 var queued_nav_bakes: Array
+var nav_map : RID
 
 var load_text = "Loading Something":
 	set(value):
@@ -60,6 +61,40 @@ func month_to_string(yr_day: int, yr: int) -> String:
 	return out
 
 
+## Take String month and day of month to return day of year
+func get_year_day(month:String, day:int):
+	var out_day := 0
+	match month:
+		"Lidrasin Bor":
+			out_day=0
+		"Sperran Mal":
+			out_day=29
+		"Lidras Veil":
+			out_day=56
+		"Sultaran Bor":
+			out_day=84
+		"Dariusun Fil":
+			out_day=112
+		"Sultas Veil":
+			out_day=140
+		"Althuran Bor":
+			out_day=168
+		"Corvusan Mal":
+			out_day=196
+		"Althurs Veil":
+			out_day=224
+		"Arcfeian Bor":
+			out_day=252
+		"Nilisin Fil":
+			out_day=280
+		"Freias Veil":
+			out_day=308
+		"Lidrasin Bor":
+			out_day=336
+	out_day += day
+	return out_day
+
+
 func push_nav_queue(nr : NavigationRegion3D):
 	navmesh_baking = nr
 
@@ -67,3 +102,8 @@ func push_nav_queue(nr : NavigationRegion3D):
 func pop_nav_queue(nr : NavigationRegion3D):
 	navmesh_baking = null
 	queued_nav_bakes.erase(nr)
+
+
+func clear_nav_queue():
+	navmesh_baking = null
+	queued_nav_bakes.clear()

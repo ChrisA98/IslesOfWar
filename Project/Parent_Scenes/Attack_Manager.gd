@@ -79,11 +79,11 @@ func add_collision_exception(ex):
 ''' Combat Methods Start '''
 ## Ranged projectile attack callable
 func __ranged_proj_attack(position, target_enemy, current_atk_str):
-	var dis = position.distance_to(target_enemy.position)
 	var shot = projectile_manager.instantiate()
 	shot.proj_data = projectile_data
 	shot.collision_exceptions = collision_exceptions
 	var variance = Vector3(randf_range(-ranged_atk_sprd,ranged_atk_sprd),0,randf_range(-ranged_atk_sprd,ranged_atk_sprd))
+	var dis = (position+Vector3.UP*vertical_fire_offset).distance_to(target_enemy.position+variance)
 	add_child(shot)
 	shot.fire(position+Vector3.UP*vertical_fire_offset, target_enemy.position+variance, dis, current_atk_str, damage_type)
 

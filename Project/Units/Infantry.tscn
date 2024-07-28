@@ -1,6 +1,7 @@
-[gd_scene load_steps=13 format=3 uid="uid://cu6vdd5mb4t0"]
+[gd_scene load_steps=10 format=3 uid="uid://cu6vdd5mb4t0"]
 
 [ext_resource type="PackedScene" uid="uid://cs2p3v3o53aki" path="res://Parent_Scenes/Unit_Base.tscn" id="1_3ybrw"]
+[ext_resource type="Shader" path="res://Parent_Scenes/res/health_bar.gdshader" id="2_k2l7s"]
 
 [sub_resource type="CylinderShape3D" id="CylinderShape3D_fxkcp"]
 resource_local_to_scene = true
@@ -12,20 +13,18 @@ radius = 2.0
 [sub_resource type="CylinderMesh" id="CylinderMesh_x3dbf"]
 material = SubResource("StandardMaterial3D_8bnbe")
 
-[sub_resource type="StandardMaterial3D" id="StandardMaterial3D_mxah8"]
+[sub_resource type="ShaderMaterial" id="ShaderMaterial_kh08j"]
+resource_local_to_scene = true
+render_priority = 0
+shader = ExtResource("2_k2l7s")
+shader_parameter/health_amount = 0.99
+shader_parameter/health_bar_color = Color(0.152941, 0.121569, 0.698039, 1)
 
-[sub_resource type="CylinderMesh" id="CylinderMesh_xy87p"]
-material = SubResource("StandardMaterial3D_mxah8")
-
-[sub_resource type="StandardMaterial3D" id="StandardMaterial3D_fd3no"]
-
-[sub_resource type="CylinderMesh" id="CylinderMesh_d4gf5"]
-material = SubResource("StandardMaterial3D_fd3no")
-
-[sub_resource type="StandardMaterial3D" id="StandardMaterial3D_8u225"]
-
-[sub_resource type="CylinderMesh" id="CylinderMesh_154op"]
-material = SubResource("StandardMaterial3D_8u225")
+[sub_resource type="PlaneMesh" id="PlaneMesh_a32xm"]
+resource_local_to_scene = true
+material = SubResource("ShaderMaterial_kh08j")
+size = Vector2(0.235, 4)
+orientation = 2
 
 [sub_resource type="SphereShape3D" id="SphereShape3D_umiqv"]
 resource_local_to_scene = true
@@ -38,48 +37,33 @@ radius = 2.0
 [node name="Infantry" instance=ExtResource("1_3ybrw")]
 unit_name = "Infantry"
 travel_terrain = 1
-base_atk_spd = 10.0
 base_health = 50.0
+base_atk_spd = 10.0
 base_atk_str = 1.0
 main_attack_type = 3
 damage_type = "Physical"
 target_atk_rng = 20
 unit_lockdown_time = 10
 
-[node name="CollisionShape3D" parent="." index="0"]
+[node name="CollisionShape3D" parent="." index="1"]
 shape = SubResource("CylinderShape3D_fxkcp")
 
-[node name="UnitModels" parent="." index="1"]
+[node name="UnitModels" parent="." index="2"]
 transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, 1, 0)
 
 [node name="MeshInstance3D" type="MeshInstance3D" parent="UnitModels" index="0"]
-transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, -0.962, 0, -0.791)
+transform = Transform3D(-4.37114e-08, -1, 0, 1, -4.37114e-08, 0, 0, 0, 1, 0, 0, 0)
 mesh = SubResource("CylinderMesh_x3dbf")
 skeleton = NodePath("../..")
 
-[node name="MeshInstance3D2" type="MeshInstance3D" parent="UnitModels" index="1"]
-transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0.236, 0, -1.325)
-mesh = SubResource("CylinderMesh_xy87p")
-skeleton = NodePath("../..")
-
-[node name="MeshInstance3D3" type="MeshInstance3D" parent="UnitModels" index="2"]
-transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, -0.407, 0, 0.941)
-mesh = SubResource("CylinderMesh_d4gf5")
-skeleton = NodePath("../..")
-
-[node name="MeshInstance3D4" type="MeshInstance3D" parent="UnitModels" index="3"]
-transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 1.115, 0, 0.026)
-mesh = SubResource("CylinderMesh_154op")
-skeleton = NodePath("../..")
-
-[node name="NavigationAgent3D" parent="." index="2"]
+[node name="NavigationAgent3D" parent="." index="3"]
 navigation_layers = 0
+
+[node name="Health_Bar" parent="." index="4"]
+mesh = SubResource("PlaneMesh_a32xm")
 
 [node name="CollisionShape3D" parent="Fog_Breaker/Area3D" index="0"]
 shape = SubResource("SphereShape3D_umiqv")
-
-[node name="Detection_Area" parent="." index="7"]
-collision_mask = 16
 
 [node name="CollisionShape3D" parent="Detection_Area" index="0"]
 shape = SubResource("CylinderShape3D_xwf7k")

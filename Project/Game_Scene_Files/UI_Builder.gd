@@ -61,6 +61,11 @@ func _ready():
 		i.mouse_exited.disconnect(_mouse_on_menu)
 	
 	$Viewport_Sectons/Center.mouse_entered.connect(reset_mouse_menu_counter)
+	
+	## Update minimap size
+	$Minimap/Minimap_Container/SubViewport/Camera3D.size = Global_Vars.heightmap_size
+	$Minimap/Minimap_Container/SubViewport/Water.mesh.size = Vector2i(Global_Vars.heightmap_size,Global_Vars.heightmap_size)
+	$Minimap/Minimap_Container/SubViewport/Visual_Ground.mesh.size = Vector2i(Global_Vars.heightmap_size,Global_Vars.heightmap_size)
 
 
 ## Called every frame. 'delta' is the elapsed time since the previous frame.
@@ -199,8 +204,8 @@ func update_clock():
 
 ## Minimap input event
 func minimap_Input(event):
-	if (typeof(event) == typeof(InputEventJoypadMotion)):
-		return
+	world_width = Global_Vars.heightmap_size
+	mtw_ratio = world_width/$Minimap/Minimap_Container.size.x
 	var world_pos = (event.position * mtw_ratio)
 	world_pos.x -= world_width/2
 	world_pos.y -= world_width/2

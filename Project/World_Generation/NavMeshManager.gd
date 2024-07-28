@@ -24,7 +24,7 @@ func set_nav_region():
 		return
 	navigation_mesh = NavigationMesh.new()
 	navigation_mesh.set_parsed_geometry_type(NavigationMesh.PARSED_GEOMETRY_STATIC_COLLIDERS)
-	navigation_mesh.set_source_geometry_mode(NavigationMesh.SOURCE_GEOMETRY_GROUPS_WITH_CHILDREN)
+	navigation_mesh.set_source_geometry_mode(NavigationMesh.SOURCE_GEOMETRY_GROUPS_EXPLICIT)
 	navigation_mesh.region_min_size = min_size
 	navigation_mesh.cell_size = cell_size
 	navigation_mesh.set_cell_height(cell_height)
@@ -50,7 +50,7 @@ func queue_bake():
 	global.push_nav_queue(self)
 	var on_thread: bool = true	
 	bake_navigation_mesh(on_thread)
-	
+
 
 func open_queue():
 	finished_baking.emit()
@@ -59,3 +59,8 @@ func open_queue():
 		global.queued_nav_bakes[-1].update_navigation_mesh()
 	else:
 		queue_cleared.emit()
+
+
+func _exit_tree():
+	global.clear_nav_queue()
+	

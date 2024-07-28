@@ -1,4 +1,4 @@
-[gd_scene load_steps=108 format=3 uid="uid://iltms2ck0v33"]
+[gd_scene load_steps=114 format=3 uid="uid://iltms2ck0v33"]
 
 [ext_resource type="Script" path="res://Game_Scene_Files/GameScene.gd" id="1_7pjje"]
 [ext_resource type="Script" path="res://Game_Scene_Files/UI_Builder.gd" id="2_wj4ul"]
@@ -17,7 +17,13 @@
 [ext_resource type="Script" path="res://Actor_Classes/GameCamera.gd" id="10_jjfcj"]
 [ext_resource type="Shader" uid="uid://cmyeclhrvhn2o" path="res://World_Generation/Foliage_Shader.tres" id="10_l3sfk"]
 [ext_resource type="Shader" path="res://World_Generation/level_builder/EditorTerrain.gdshader" id="12_dyv5q"]
+[ext_resource type="Theme" uid="uid://55r57hveyxd8" path="res://Assets/Themes/editor_theme.tres" id="14_7xyic"]
+[ext_resource type="Shader" path="res://test.gdshader" id="15_4si7i"]
+[ext_resource type="Texture2D" uid="uid://cr22jyi6v64cy" path="res://Assets/Import_Textures/Stone_02.png" id="16_mvfg0"]
+[ext_resource type="Texture2D" uid="uid://bkvdw014cibfd" path="res://Assets/Terrain_Texture_Maps/Stone_02_Normal.png" id="17_ftrqk"]
+[ext_resource type="Texture2D" uid="uid://dpaa87nypm68x" path="res://Assets/Terrain_Textures/Sand_01.tres" id="17_wynnn"]
 [ext_resource type="Shader" uid="uid://c7cshf4c8prbl" path="res://Assets/Models/Materials/grass.tres" id="18_6wvy4"]
+[ext_resource type="Texture2D" uid="uid://cmfucaggluqw4" path="res://Assets/Terrain_Textures/Stone_02.tres" id="18_hkmi4"]
 
 [sub_resource type="Theme" id="Theme_8omj6"]
 default_font_size = 11
@@ -279,8 +285,8 @@ shader_parameter/sand_norm_tex = SubResource("NoiseTexture2D_8e7yg")
 [sub_resource type="PlaneMesh" id="PlaneMesh_ct43f"]
 material = SubResource("ShaderMaterial_rie7d")
 size = Vector2(1000, 1000)
-subdivide_width = 50
-subdivide_depth = 50
+subdivide_width = 25
+subdivide_depth = 25
 
 [sub_resource type="Theme" id="Theme_y65pn"]
 default_font_size = 15
@@ -319,39 +325,45 @@ hue_variation_min = -0.05
 hue_variation_max = 0.05
 hue_variation_curve = SubResource("CurveTexture_n0c2i")
 
-[sub_resource type="Gradient" id="Gradient_ggo6d"]
-interpolation_mode = 2
-colors = PackedColorArray(0.442911, 0.442911, 0.442909, 1, 0.929412, 0.945098, 1, 1)
+[sub_resource type="StyleBoxFlat" id="StyleBoxFlat_0xhin"]
+bg_color = Color(0.487965, 0.193, 0.488218, 0.486275)
+border_width_left = 3
+border_width_top = 3
+border_width_right = 3
+border_width_bottom = 3
+border_color = Color(0.472033, 0.199117, 0.0737875, 1)
+corner_radius_top_left = 35
+corner_radius_top_right = 35
+corner_radius_bottom_right = 35
+corner_radius_bottom_left = 35
+corner_detail = 2
+shadow_size = 7
+shadow_offset = Vector2(3, 3)
 
-[sub_resource type="FastNoiseLite" id="FastNoiseLite_gpdbl"]
-noise_type = 4
-frequency = 0.015
-fractal_type = 2
-fractal_octaves = 3
-fractal_lacunarity = 2.416
-fractal_gain = 0.239
-fractal_weighted_strength = 1.0
-fractal_ping_pong_strength = 2.037
-domain_warp_enabled = true
-domain_warp_amplitude = 30.168
-domain_warp_frequency = 0.032
-domain_warp_fractal_octaves = 1
-domain_warp_fractal_lacunarity = 6.086
+[sub_resource type="StyleBoxFlat" id="StyleBoxFlat_qmsko"]
+bg_color = Color(0.487965, 0.193, 0.488218, 0.486275)
+border_width_left = 3
+border_width_top = 3
+border_width_right = 3
+border_width_bottom = 3
+border_color = Color(0.472033, 0.199117, 0.0737875, 1)
+corner_radius_top_left = 35
+corner_radius_top_right = 35
+corner_radius_bottom_right = 35
+corner_radius_bottom_left = 35
+corner_detail = 2
+shadow_size = 7
+shadow_offset = Vector2(3, 3)
 
-[sub_resource type="NoiseTexture2D" id="NoiseTexture2D_hn25n"]
-width = 1000
-height = 1000
-seamless = true
-color_ramp = SubResource("Gradient_ggo6d")
-noise = SubResource("FastNoiseLite_gpdbl")
+[sub_resource type="StyleBoxFlat" id="StyleBoxFlat_jmt3j"]
+bg_color = Color(0, 0, 0, 0.203922)
 
-[sub_resource type="NoiseTexture2D" id="NoiseTexture2D_fcitg"]
-width = 1000
-height = 1000
-seamless = true
-as_normal_map = true
-bump_strength = 10.8
-noise = SubResource("FastNoiseLite_gpdbl")
+[sub_resource type="ShaderMaterial" id="ShaderMaterial_0h1xs"]
+shader = ExtResource("15_4si7i")
+shader_parameter/progress = null
+
+[sub_resource type="PlaceholderTexture2D" id="PlaceholderTexture2D_70g5j"]
+size = Vector2(2500, 2500)
 
 [sub_resource type="Gradient" id="Gradient_8q5nl"]
 colors = PackedColorArray(0, 0.260467, 0, 1, 0.305169, 0.557647, 0.256383, 1)
@@ -390,13 +402,6 @@ colors = PackedColorArray(0.859586, 0.873469, 0.643777, 1, 0.550264, 0.542165, 0
 
 [sub_resource type="FastNoiseLite" id="FastNoiseLite_1e82f"]
 
-[sub_resource type="NoiseTexture2D" id="NoiseTexture2D_x1bul"]
-width = 1000
-height = 1000
-seamless = true
-color_ramp = SubResource("Gradient_kdm6n")
-noise = SubResource("FastNoiseLite_1e82f")
-
 [sub_resource type="NoiseTexture2D" id="NoiseTexture2D_23uga"]
 width = 1000
 height = 1000
@@ -415,9 +420,9 @@ shader_parameter/min_rock_slope = 0.156
 shader_parameter/max_grass_slope = 0.362
 shader_parameter/grass_alb_tex = SubResource("NoiseTexture2D_p0d1b")
 shader_parameter/grass_norm_tex = SubResource("NoiseTexture2D_e22tc")
-shader_parameter/cliff_alb_tex = SubResource("NoiseTexture2D_hn25n")
-shader_parameter/cliff_norm_tex = SubResource("NoiseTexture2D_fcitg")
-shader_parameter/sand_alb_tex = SubResource("NoiseTexture2D_x1bul")
+shader_parameter/cliff_alb_tex = ExtResource("18_hkmi4")
+shader_parameter/cliff_norm_tex = ExtResource("17_ftrqk")
+shader_parameter/sand_alb_tex = ExtResource("17_wynnn")
 shader_parameter/sand_norm_tex = SubResource("NoiseTexture2D_23uga")
 
 [sub_resource type="PlaneMesh" id="PlaneMesh_ssghn"]
@@ -491,13 +496,14 @@ subdivide_depth = 200
 [sub_resource type="FastNoiseLite" id="FastNoiseLite_3s8wm"]
 
 [sub_resource type="NoiseTexture2D" id="NoiseTexture2D_b82qj"]
+generate_mipmaps = false
 noise = SubResource("FastNoiseLite_3s8wm")
 
 [sub_resource type="ShaderMaterial" id="ShaderMaterial_qfdoi"]
 shader = ExtResource("10_l3sfk")
-shader_parameter/instance_rows = 275.0
-shader_parameter/instance_rot_randomize = 64.325
-shader_parameter/instance_spacing = 0.416
+shader_parameter/instance_rows = 460.0
+shader_parameter/instance_rot_randomize = 64.36
+shader_parameter/instance_spacing = 0.267
 shader_parameter/instance_scale_x = 0.5
 shader_parameter/instance_scale_y = 1.095
 shader_parameter/instance_scale_z = 0.5
@@ -505,15 +511,14 @@ shader_parameter/instance_scale_randomize = 1.0
 shader_parameter/instance_pos_randomize = 33.031
 shader_parameter/instance_scale_min = 0.95
 shader_parameter/instance_scale_max = 1.05
-shader_parameter/_coverage_altitude = 10.0
-shader_parameter/_coverage_range = 100.0
-shader_parameter/_slope_coverage = 0.404
+shader_parameter/_coverage_altitude = -13.695
+shader_parameter/_coverage_range = 99.31
+shader_parameter/_slope_coverage = 0.03
 shader_parameter/clumping_strength = 0.0
 shader_parameter/terrain_normal_basis = null
 shader_parameter/instance_orient_to_normal = true
 shader_parameter/instance_orientation_influence = 1.0
 shader_parameter/__terrain_amplitude = 100.0
-shader_parameter/map_heightmap_size = Vector2(1000, 1000)
 shader_parameter/map_clumpmap = SubResource("NoiseTexture2D_b82qj")
 
 [sub_resource type="ShaderMaterial" id="ShaderMaterial_yl7q8"]
@@ -523,7 +528,7 @@ shader_parameter/sway_intensity = 0.098
 shader_parameter/red_variance = 5.032
 shader_parameter/green_variance = 25.0
 shader_parameter/blue_variance = 25.0
-shader_parameter/albedo = Color(0.32549, 0.698039, 0, 1)
+shader_parameter/albedo = Color(0.148418, 0.34759, 0, 1)
 shader_parameter/roughness = 0.29
 shader_parameter/metallic_texture_channel = null
 shader_parameter/specular = null
@@ -561,16 +566,16 @@ noise = SubResource("FastNoiseLite_oe4h0")
 [sub_resource type="ShaderMaterial" id="ShaderMaterial_nyfku"]
 shader = ExtResource("10_l3sfk")
 shader_parameter/instance_rows = 50.0
-shader_parameter/instance_rot_randomize = 2.5
-shader_parameter/instance_spacing = 3.391
+shader_parameter/instance_rot_randomize = 16.225
+shader_parameter/instance_spacing = 3.44
 shader_parameter/instance_scale_x = 1.0
-shader_parameter/instance_scale_y = 0.567
+shader_parameter/instance_scale_y = 1.0
 shader_parameter/instance_scale_z = 1.0
-shader_parameter/instance_scale_randomize = 0.878
+shader_parameter/instance_scale_randomize = 0.595
 shader_parameter/instance_pos_randomize = 2.0
-shader_parameter/instance_scale_min = 0.407
-shader_parameter/instance_scale_max = 1.374
-shader_parameter/_coverage_altitude = 21.666
+shader_parameter/instance_scale_min = 0.533
+shader_parameter/instance_scale_max = 1.74
+shader_parameter/_coverage_altitude = 25.0
 shader_parameter/_coverage_range = 100.0
 shader_parameter/_slope_coverage = 0.645
 shader_parameter/clumping_strength = 66.341
@@ -578,7 +583,6 @@ shader_parameter/terrain_normal_basis = null
 shader_parameter/instance_orient_to_normal = true
 shader_parameter/instance_orientation_influence = 0.45
 shader_parameter/__terrain_amplitude = 100.0
-shader_parameter/map_heightmap_size = Vector2(1000, 1000)
 shader_parameter/map_clumpmap = SubResource("NoiseTexture2D_tx7g1")
 
 [sub_resource type="FastNoiseLite" id="FastNoiseLite_0o6lj"]
@@ -592,6 +596,7 @@ noise = SubResource("FastNoiseLite_0o6lj")
 [sub_resource type="StandardMaterial3D" id="StandardMaterial3D_imlts"]
 vertex_color_use_as_albedo = true
 albedo_color = Color(0.635294, 0.635294, 0.635294, 1)
+albedo_texture = ExtResource("16_mvfg0")
 metallic = 0.49
 metallic_specular = 0.45
 roughness = 0.87
@@ -603,21 +608,28 @@ normal_texture = SubResource("NoiseTexture2D_h43gd")
 rim_enabled = true
 clearcoat = 0.28
 clearcoat_roughness = 0.59
-heightmap_enabled = true
 heightmap_scale = 3.414
 heightmap_texture = SubResource("NoiseTexture2D_h43gd")
 proximity_fade_distance = 0.0
-distance_fade_mode = 1
+distance_fade_mode = 2
 distance_fade_min_distance = 150.0
-distance_fade_max_distance = 140.0
+distance_fade_max_distance = 110.0
 
-[sub_resource type="SphereMesh" id="SphereMesh_e6pgl"]
-material = SubResource("StandardMaterial3D_imlts")
-radius = 0.529
-height = 1.057
-radial_segments = 10
-rings = 4
-is_hemisphere = true
+[sub_resource type="ArrayMesh" id="ArrayMesh_2bd1v"]
+_surfaces = [{
+"aabb": AABB(-1.66527, -1.03418, -1.08427, 2.78694, 2.23343, 2.21118),
+"attribute_data": PackedByteArray(106, 84, 195, 227, 88, 53, 210, 211, 100, 91, 153, 212, 85, 140, 167, 225, 21, 142, 31, 245, 255, 127, 215, 235, 116, 89, 18, 193, 192, 220, 154, 217, 159, 222, 130, 206, 110, 240, 2, 216, 14, 137, 147, 204, 192, 108, 122, 202, 210, 208, 135, 192, 228, 204, 71, 210, 203, 190, 249, 193, 129, 196, 125, 157, 52, 206, 244, 165, 144, 164, 197, 183, 162, 127, 11, 160, 224, 127, 155, 179, 61, 106, 163, 172, 242, 171, 121, 157, 126, 151, 239, 156, 250, 162, 246, 134, 116, 213, 65, 142, 57, 41, 54, 188, 25, 25, 67, 211, 246, 36, 163, 218, 231, 226, 76, 165, 76, 60, 81, 154, 209, 69, 17, 135, 18, 77, 194, 159, 151, 64, 174, 177, 36, 58, 15, 166, 78, 87, 75, 177, 240, 122, 90, 190, 254, 168, 86, 199, 86, 147, 189, 197, 104, 227, 112, 184, 22, 221, 136, 195, 14, 20, 40, 174, 72, 37, 218, 165, 148, 186, 29, 219, 143, 255, 238, 214, 92, 244, 136, 195, 68, 173, 57, 232, 171, 195, 55, 237, 238, 233, 214, 238, 45, 250, 195, 225, 241, 98, 174, 229, 124, 55, 44, 231, 73, 181, 134, 247, 39, 153, 147, 232, 41, 33, 245, 152, 38, 19, 46, 142, 75, 116, 244, 134, 200, 107, 195, 152, 69, 87, 76, 165, 162, 203, 195, 225, 26, 93, 195, 245, 201, 48, 111, 248, 25, 37, 162, 239),
+"format": 34896613399,
+"index_count": 222,
+"index_data": PackedByteArray(0, 0, 1, 0, 2, 0, 3, 0, 4, 0, 5, 0, 2, 0, 1, 0, 6, 0, 7, 0, 8, 0, 9, 0, 10, 0, 3, 0, 11, 0, 12, 0, 13, 0, 14, 0, 15, 0, 16, 0, 17, 0, 18, 0, 19, 0, 20, 0, 21, 0, 22, 0, 23, 0, 21, 0, 17, 0, 22, 0, 24, 0, 16, 0, 15, 0, 25, 0, 1, 0, 26, 0, 26, 0, 1, 0, 27, 0, 28, 0, 16, 0, 24, 0, 29, 0, 30, 0, 31, 0, 31, 0, 32, 0, 33, 0, 34, 0, 32, 0, 31, 0, 19, 0, 35, 0, 20, 0, 17, 0, 36, 0, 37, 0, 12, 0, 38, 0, 39, 0, 12, 0, 16, 0, 38, 0, 25, 0, 40, 0, 41, 0, 25, 0, 32, 0, 1, 0, 37, 0, 35, 0, 19, 0, 37, 0, 10, 0, 35, 0, 37, 0, 3, 0, 10, 0, 14, 0, 36, 0, 17, 0, 13, 0, 36, 0, 14, 0, 36, 0, 13, 0, 42, 0, 38, 0, 8, 0, 39, 0, 43, 0, 9, 0, 44, 0, 2, 0, 6, 0, 11, 0, 3, 0, 5, 0, 11, 0, 45, 0, 36, 0, 42, 0, 42, 0, 46, 0, 45, 0, 7, 0, 9, 0, 47, 0, 9, 0, 48, 0, 47, 0, 9, 0, 43, 0, 48, 0, 11, 0, 49, 0, 2, 0, 49, 0, 0, 0, 2, 0, 27, 0, 1, 0, 50, 0, 51, 0, 45, 0, 46, 0, 3, 0, 52, 0, 4, 0, 39, 0, 8, 0, 12, 0, 12, 0, 8, 0, 13, 0, 7, 0, 13, 0, 8, 0, 10, 0, 11, 0, 35, 0, 32, 0, 6, 0, 1, 0, 40, 0, 25, 0, 26, 0, 53, 0, 41, 0, 54, 0, 54, 0, 41, 0, 40, 0, 32, 0, 25, 0, 33, 0, 17, 0, 19, 0, 22, 0, 55, 0, 18, 0, 56, 0, 20, 0, 56, 0, 18, 0, 28, 0, 38, 0, 16, 0, 11, 0, 6, 0, 35, 0, 35, 0, 6, 0, 20, 0, 31, 0, 33, 0, 29, 0, 34, 0, 31, 0, 57, 0, 44, 0, 9, 0, 38, 0, 38, 0, 9, 0, 8, 0, 6, 0, 34, 0, 20, 0, 37, 0, 19, 0, 17, 0, 16, 0, 12, 0, 14, 0, 14, 0, 17, 0, 16, 0, 34, 0, 6, 0, 32, 0, 52, 0, 3, 0, 36, 0, 36, 0, 3, 0, 37, 0, 58, 0, 46, 0, 42, 0, 42, 0, 13, 0, 58, 0, 59, 0, 0, 0, 49, 0, 60, 0, 61, 0, 27, 0, 27, 0, 50, 0, 60, 0),
+"material": SubResource("StandardMaterial3D_imlts"),
+"name": "Icosphere",
+"primitive": 3,
+"uv_scale": Vector4(0, 0, 0, 0),
+"vertex_count": 62,
+"vertex_data": PackedByteArray(124, 215, 164, 14, 135, 152, 195, 185, 150, 189, 48, 65, 213, 217, 203, 156, 216, 249, 211, 51, 239, 135, 204, 192, 170, 171, 118, 18, 17, 48, 249, 243, 95, 163, 0, 0, 183, 114, 172, 250, 102, 210, 247, 9, 116, 113, 145, 225, 171, 251, 80, 125, 34, 138, 233, 186, 48, 51, 184, 20, 217, 160, 212, 203, 224, 12, 138, 51, 165, 189, 216, 173, 196, 81, 119, 24, 3, 222, 186, 167, 28, 187, 33, 84, 58, 12, 219, 233, 103, 227, 162, 109, 108, 91, 156, 213, 230, 8, 144, 126, 101, 125, 49, 208, 94, 30, 125, 50, 1, 108, 64, 221, 24, 54, 167, 123, 13, 57, 90, 230, 252, 109, 244, 236, 207, 75, 65, 229, 159, 84, 100, 224, 114, 106, 124, 211, 80, 126, 27, 163, 206, 28, 119, 245, 244, 168, 128, 201, 115, 66, 168, 237, 222, 208, 68, 168, 163, 37, 202, 238, 129, 247, 97, 195, 129, 96, 163, 212, 252, 109, 244, 236, 207, 75, 223, 238, 244, 168, 128, 201, 115, 66, 13, 253, 92, 138, 4, 231, 39, 139, 45, 249, 92, 138, 4, 231, 39, 139, 219, 204, 170, 172, 218, 134, 143, 235, 83, 139, 38, 126, 33, 54, 255, 255, 77, 140, 14, 163, 114, 50, 17, 237, 158, 158, 144, 122, 167, 192, 20, 209, 248, 170, 142, 175, 255, 255, 14, 191, 248, 198, 92, 138, 4, 231, 39, 139, 143, 206, 2, 208, 80, 215, 205, 142, 190, 197, 169, 216, 0, 187, 202, 204, 121, 162, 30, 181, 18, 242, 142, 218, 108, 162, 254, 255, 128, 183, 89, 148, 94, 180, 24, 221, 96, 137, 62, 37, 48, 222, 11, 111, 154, 113, 124, 25, 140, 239, 88, 169, 37, 103, 0, 0, 152, 255, 153, 23, 233, 161, 249, 203, 189, 165, 0, 0, 173, 109, 212, 189, 5, 174, 144, 122, 167, 192, 20, 209, 226, 156, 30, 181, 18, 242, 142, 218, 44, 161, 174, 104, 63, 62, 82, 81, 243, 229, 38, 126, 33, 54, 255, 255, 213, 151, 144, 122, 167, 192, 20, 209, 41, 162, 65, 138, 205, 23, 178, 63, 151, 221, 176, 133, 17, 38, 85, 151, 96, 220, 176, 133, 17, 38, 85, 151, 142, 192, 14, 163, 114, 50, 17, 237, 124, 170, 102, 210, 247, 9, 116, 113, 80, 213, 124, 215, 164, 14, 135, 152, 82, 177, 95, 163, 0, 0, 183, 114, 18, 213, 65, 138, 205, 23, 178, 63, 161, 240, 142, 175, 255, 255, 14, 191, 83, 194, 92, 138, 4, 231, 39, 139, 76, 191, 92, 138, 4, 231, 39, 139, 105, 237, 2, 208, 80, 215, 205, 142, 87, 223, 129, 247, 97, 195, 129, 96, 53, 207, 48, 51, 184, 20, 217, 160, 253, 230, 95, 163, 0, 0, 183, 114, 91, 217, 95, 163, 0, 0, 183, 114, 198, 192, 176, 133, 17, 38, 85, 151, 176, 190, 177, 89, 204, 76, 129, 96, 12, 40, 135, 102, 146, 34, 197, 117, 122, 45, 203, 109, 252, 75, 154, 121, 51, 50, 81, 117, 54, 16, 43, 45, 63, 201, 221, 73, 82, 224, 178, 30, 215, 198, 106, 130, 163, 24, 101, 117, 169, 23, 171, 134, 222, 235, 222, 81, 211, 233, 95, 125, 152, 246, 121, 156, 79, 195, 101, 153, 139, 194, 45, 137, 90, 225, 212, 183, 8, 20, 102, 163, 13, 10, 236, 168, 174, 14, 17, 138, 39, 205, 220, 75, 201, 10, 2, 129, 131, 190, 235, 175, 213, 169, 137, 188, 176, 26, 138, 37, 92, 159, 122, 63, 105, 81, 164, 156, 34, 171, 86, 220, 169, 58, 89, 222, 255, 53, 195, 207, 78, 62, 183, 163, 47, 36, 217, 225, 220, 75, 20, 165, 214, 28, 44, 133, 241, 11, 34, 117, 230, 255, 167, 124, 195, 6, 237, 171, 197, 191, 12, 124, 240, 241, 180, 215, 12, 184, 237, 227, 68, 102, 197, 73, 12, 237, 178, 23, 0, 221, 207, 233, 121, 193, 73, 76, 255, 236, 91, 55, 60, 234, 245, 37, 195, 186, 238, 9, 200, 59, 48, 96, 186, 59, 95, 64, 200, 79, 83, 52, 15, 226, 91, 188, 178, 237, 44, 206, 165, 149, 200, 219, 126, 150, 78, 205, 154, 22, 238, 190, 66, 13, 237, 180, 109, 52, 5, 62, 218, 240, 207, 81, 99, 93, 170, 28, 112, 126, 43, 26, 72, 139)
+}]
+blend_shape_mode = 0
 
 [sub_resource type="Gradient" id="Gradient_eofwo"]
 offsets = PackedFloat32Array(0)
@@ -647,6 +659,26 @@ width = 1
 [node name="GameScene" type="Node3D"]
 process_mode = 3
 script = ExtResource("1_7pjje")
+
+[node name="unitViewport" type="SubViewportContainer" parent="."]
+self_modulate = Color(1, 1, 1, 0.466667)
+light_mask = 0
+anchors_preset = 15
+anchor_right = 1.0
+anchor_bottom = 1.0
+grow_horizontal = 2
+grow_vertical = 2
+mouse_filter = 2
+
+[node name="unitsCam" type="SubViewport" parent="unitViewport"]
+transparent_bg = true
+handle_input_locally = false
+size = Vector2i(1920, 1080)
+render_target_update_mode = 4
+
+[node name="units_cam" type="Camera3D" parent="unitViewport/unitsCam"]
+cull_mask = 4
+fov = 37.8
 
 [node name="UI_Node" type="Control" parent="."]
 layout_mode = 3
@@ -795,7 +827,7 @@ metadata/_edit_use_anchors_ = true
 self_modulate = Color(1, 1, 1, 0.490196)
 show_behind_parent = true
 position = Vector2(102, 357)
-amount = 80
+amount = 160
 process_material = SubResource("ParticleProcessMaterial_g3xjd")
 texture = SubResource("GradientTexture2D_y3exv")
 lifetime = 10.0
@@ -985,6 +1017,8 @@ anchor_bottom = 0.785901
 offset_right = 15.0
 offset_bottom = 26.0
 pivot_offset = Vector2(87.5, 87)
+focus_mode = 0
+mouse_filter = 0
 stretch = true
 metadata/_edit_use_anchors_ = true
 
@@ -1017,7 +1051,7 @@ transform = Transform3D(1, 0, 0, 0, -4.37114e-08, 1, 0, -1, -4.37114e-08, 0, 404
 cull_mask = 2
 attributes = SubResource("CameraAttributesPractical_g3y50")
 projection = 1
-size = 1000.0
+size = 500.0
 
 [node name="Water" type="MeshInstance3D" parent="UI_Node/Minimap/Minimap_Container/SubViewport"]
 transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, 7, 0)
@@ -1244,6 +1278,162 @@ speed_scale = 0.5
 randomness = 0.5
 visibility_rect = Rect2(-100, -100, 200, 400)
 
+[node name="pause_menu" type="Panel" parent="UI_Node"]
+process_mode = 3
+visible = false
+layout_mode = 1
+anchors_preset = -1
+anchor_left = 0.5
+anchor_right = 0.5
+anchor_bottom = 1.0
+offset_left = -200.0
+offset_top = 200.0
+offset_right = 200.0
+offset_bottom = -200.0
+grow_horizontal = 2
+grow_vertical = 2
+theme = ExtResource("14_7xyic")
+theme_override_styles/panel = SubResource("StyleBoxFlat_0xhin")
+
+[node name="VBoxContainer" type="VBoxContainer" parent="UI_Node/pause_menu"]
+layout_mode = 1
+anchors_preset = -1
+anchor_left = 0.1
+anchor_top = 0.025
+anchor_right = 0.9
+anchor_bottom = 0.95
+grow_horizontal = 2
+grow_vertical = 2
+
+[node name="paused_label" type="RichTextLabel" parent="UI_Node/pause_menu/VBoxContainer"]
+layout_mode = 2
+size_flags_vertical = 3
+size_flags_stretch_ratio = 0.41
+bbcode_enabled = true
+text = "[center]Paused[/center]"
+
+[node name="HSeparator" type="HSeparator" parent="UI_Node/pause_menu/VBoxContainer"]
+modulate = Color(1, 1, 1, 0)
+layout_mode = 2
+
+[node name="save_map" type="Button" parent="UI_Node/pause_menu/VBoxContainer"]
+layout_mode = 2
+size_flags_vertical = 3
+text = "Continue"
+
+[node name="HSeparator2" type="HSeparator" parent="UI_Node/pause_menu/VBoxContainer"]
+modulate = Color(1, 1, 1, 0)
+layout_mode = 2
+
+[node name="load_heightmap" type="Button" parent="UI_Node/pause_menu/VBoxContainer"]
+layout_mode = 2
+size_flags_vertical = 3
+text = "Settings"
+
+[node name="HSeparator3" type="HSeparator" parent="UI_Node/pause_menu/VBoxContainer"]
+modulate = Color(1, 1, 1, 0)
+layout_mode = 2
+
+[node name="exit" type="Button" parent="UI_Node/pause_menu/VBoxContainer"]
+layout_mode = 2
+size_flags_vertical = 3
+text = "Exit Game"
+
+[node name="exit_menu" type="Panel" parent="UI_Node"]
+process_mode = 3
+visible = false
+layout_mode = 1
+anchors_preset = -1
+anchor_left = 0.5
+anchor_right = 0.5
+anchor_bottom = 1.0
+offset_left = -200.0
+offset_top = 300.0
+offset_right = 200.0
+offset_bottom = -300.0
+grow_horizontal = 2
+grow_vertical = 2
+theme = ExtResource("14_7xyic")
+theme_override_styles/panel = SubResource("StyleBoxFlat_qmsko")
+
+[node name="VBoxContainer" type="VBoxContainer" parent="UI_Node/exit_menu"]
+layout_mode = 1
+anchors_preset = -1
+anchor_left = 0.1
+anchor_top = 0.025
+anchor_right = 0.9
+anchor_bottom = 0.95
+grow_horizontal = 2
+grow_vertical = 2
+
+[node name="exit_label" type="RichTextLabel" parent="UI_Node/exit_menu/VBoxContainer"]
+layout_mode = 2
+size_flags_vertical = 3
+size_flags_stretch_ratio = 0.62
+theme_override_font_sizes/normal_font_size = 40
+bbcode_enabled = true
+text = "[center]Exit[/center]"
+
+[node name="Panel" type="Panel" parent="UI_Node/exit_menu/VBoxContainer"]
+visible = false
+layout_mode = 2
+size_flags_vertical = 3
+size_flags_stretch_ratio = 0.67
+theme_override_styles/panel = SubResource("StyleBoxFlat_jmt3j")
+
+[node name="exit_label2" type="RichTextLabel" parent="UI_Node/exit_menu/VBoxContainer/Panel"]
+layout_mode = 1
+anchors_preset = -1
+anchor_top = 0.03
+anchor_right = 1.0
+anchor_bottom = 1.0
+grow_horizontal = 2
+grow_vertical = 2
+size_flags_vertical = 3
+size_flags_stretch_ratio = 0.39
+theme_override_font_sizes/normal_font_size = 20
+bbcode_enabled = true
+text = "[center]Are you sure you want to exit, all unsaved progress will be lost![/center]"
+
+[node name="HSeparator5" type="HSeparator" parent="UI_Node/exit_menu/VBoxContainer"]
+modulate = Color(1, 1, 1, 0)
+layout_mode = 2
+
+[node name="Return" type="Button" parent="UI_Node/exit_menu/VBoxContainer"]
+layout_mode = 2
+size_flags_vertical = 3
+text = "Return to Game"
+
+[node name="HSeparator6" type="HSeparator" parent="UI_Node/exit_menu/VBoxContainer"]
+modulate = Color(1, 1, 1, 0)
+layout_mode = 2
+
+[node name="exit" type="Button" parent="UI_Node/exit_menu/VBoxContainer"]
+layout_mode = 2
+size_flags_vertical = 3
+text = "Exit to Main Menu"
+
+[node name="HSeparator4" type="HSeparator" parent="UI_Node/exit_menu/VBoxContainer"]
+modulate = Color(1, 1, 1, 0)
+layout_mode = 2
+
+[node name="close2" type="Button" parent="UI_Node/exit_menu/VBoxContainer"]
+layout_mode = 2
+size_flags_vertical = 3
+text = "Exit to Desktop"
+
+[node name="building_loc" type="TextureRect" parent="."]
+visible = false
+material = SubResource("ShaderMaterial_0h1xs")
+anchors_preset = -1
+anchor_right = 0.36
+anchor_bottom = 0.546
+offset_right = 71.8
+offset_bottom = 190.32
+texture = SubResource("PlaceholderTexture2D_70g5j")
+expand_mode = 1
+stretch_mode = 4
+
 [node name="Sun" type="DirectionalLight3D" parent="."]
 transform = Transform3D(2.21801e-08, 0.200172, 0.979761, -1.29113e-07, -0.979761, 0.200172, 1, -1.3094e-07, 4.11361e-09, 152.776, 73.2984, 103.079)
 light_cull_mask = 4294967279
@@ -1286,7 +1476,7 @@ fov = 37.8493
 
 [node name="Grass Scatter" type="GPUParticles3D" parent="Player/Player_camera"]
 transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, 0, -15)
-amount = 60000
+amount = 200000
 lifetime = 0.09
 explosiveness = 1.0
 visibility_aabb = AABB(-62.3046, -32.3354, -55.5563, 124.609, 64.6707, 111.113)
@@ -1294,13 +1484,13 @@ process_material = SubResource("ShaderMaterial_qfdoi")
 draw_pass_1 = SubResource("ArrayMesh_m204w")
 
 [node name="StoneScater" type="GPUParticles3D" parent="Player/Player_camera"]
-transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, 0, -15)
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, 0, -24.91)
 amount = 2500
 lifetime = 0.01
 explosiveness = 1.0
 visibility_aabb = AABB(-62.3046, -32.3354, -55.5563, 124.609, 64.6707, 111.113)
 process_material = SubResource("ShaderMaterial_nyfku")
-draw_pass_1 = SubResource("SphereMesh_e6pgl")
+draw_pass_1 = SubResource("ArrayMesh_2bd1v")
 
 [node name="Fog_drawer" type="SubViewport" parent="Player"]
 world_3d = SubResource("World3D_s03bo")
@@ -1321,7 +1511,7 @@ script = ExtResource("3_vc5fr")
 
 [node name="Selection_square" type="Decal" parent="Player"]
 visible = false
-layers = 2
+layers = 6
 size = Vector3(1, 500, 1)
 texture_albedo = SubResource("NoiseTexture2D_p3d2n")
 upper_fade = 1e-05

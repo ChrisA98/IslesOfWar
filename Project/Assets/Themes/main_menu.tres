@@ -1,8 +1,79 @@
-[gd_resource type="Theme" load_steps=2 format=3 uid="uid://c7f8s3w636ohq"]
+[gd_resource type="Theme" load_steps=13 format=3 uid="uid://c7f8s3w636ohq"]
 
 [ext_resource type="FontFile" uid="uid://dcn5vab6wtpdo" path="res://Assets/Fonts/Qhoc.ttf" id="1_3ypdm"]
 
+[sub_resource type="Gradient" id="Gradient_geef8"]
+offsets = PackedFloat32Array(0, 0.2, 0.8, 1)
+colors = PackedColorArray(0.403713, 0, 0.0066946, 1, 0.945884, 0.299059, 0.205981, 1, 0.945098, 0.298039, 0.207843, 1, 0.403713, 0, 0.0066946, 1)
+
+[sub_resource type="GradientTexture2D" id="GradientTexture2D_7trau"]
+gradient = SubResource("Gradient_geef8")
+fill_to = Vector2(0, 1)
+
+[sub_resource type="StyleBoxTexture" id="StyleBoxTexture_10nly"]
+texture = SubResource("GradientTexture2D_7trau")
+
+[sub_resource type="Gradient" id="Gradient_x5tqb"]
+offsets = PackedFloat32Array(0, 0.2, 0.8, 1)
+colors = PackedColorArray(0.403713, 0, 0.0066946, 1, 0.843137, 0.223529, 0.137255, 1, 0.843137, 0.223529, 0.137255, 1, 0.403713, 0, 0.0066946, 1)
+
+[sub_resource type="GradientTexture2D" id="GradientTexture2D_7ln02"]
+gradient = SubResource("Gradient_x5tqb")
+fill_to = Vector2(0, 1)
+
+[sub_resource type="StyleBoxTexture" id="StyleBoxTexture_qth88"]
+texture = SubResource("GradientTexture2D_7ln02")
+
+[sub_resource type="Gradient" id="Gradient_17t8q"]
+offsets = PackedFloat32Array(0, 0.2, 0.8, 1)
+colors = PackedColorArray(0.403713, 0, 0.0066946, 1, 1, 0.494118, 0.435294, 1, 0.999938, 0.493414, 0.434491, 1, 0.403713, 0, 0.0066946, 1)
+
+[sub_resource type="GradientTexture2D" id="GradientTexture2D_fnria"]
+gradient = SubResource("Gradient_17t8q")
+fill_to = Vector2(0, 1)
+
+[sub_resource type="StyleBoxTexture" id="StyleBoxTexture_ghnup"]
+texture = SubResource("GradientTexture2D_fnria")
+
+[sub_resource type="StyleBoxFlat" id="StyleBoxFlat_4eovl"]
+bg_color = Color(0, 0, 0, 0.254902)
+border_width_left = 3
+border_width_top = 3
+border_width_right = 3
+border_width_bottom = 3
+border_color = Color(0.472033, 0.199117, 0.0737875, 1)
+corner_radius_top_left = 35
+corner_radius_top_right = 35
+corner_radius_bottom_right = 35
+corner_radius_bottom_left = 35
+corner_detail = 2
+shadow_size = 7
+shadow_offset = Vector2(3, 3)
+
+[sub_resource type="StyleBoxFlat" id="StyleBoxFlat_dfj1i"]
+bg_color = Color(0, 0, 0, 0.254902)
+border_width_left = 3
+border_width_top = 3
+border_width_right = 3
+border_width_bottom = 3
+border_color = Color(0.472033, 0.199117, 0.0737875, 1)
+corner_radius_top_left = 35
+corner_radius_top_right = 35
+corner_radius_bottom_right = 35
+corner_radius_bottom_left = 35
+corner_detail = 2
+shadow_size = 7
+shadow_offset = Vector2(3, 3)
+
 [resource]
+Button/colors/font_color = Color(1, 1, 1, 1)
+Button/colors/font_outline_color = Color(0.454902, 0.0941176, 0.0470588, 1)
+Button/colors/icon_hover_color = Color(1, 1, 1, 0)
+Button/styles/hover = SubResource("StyleBoxTexture_10nly")
+Button/styles/normal = SubResource("StyleBoxTexture_qth88")
+Button/styles/pressed = SubResource("StyleBoxTexture_ghnup")
+Panel/styles/holder = SubResource("StyleBoxFlat_4eovl")
+Panel/styles/panel = SubResource("StyleBoxFlat_dfj1i")
 RichTextLabel/colors/default_color = Color(0.843137, 0.223529, 0.137255, 1)
 RichTextLabel/colors/font_outline_color = Color(0.456626, 0.0954771, 0.045487, 1)
 RichTextLabel/constants/outline_size = 10

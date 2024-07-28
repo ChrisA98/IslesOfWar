@@ -43,13 +43,13 @@ var stored_paint_data : PackedByteArray
 
 
 func load_ground_tex():
-	ground_tex = mesh.material.get_shader_parameter("grass_alb_tex").get_image()
+	ground_tex = mesh.material.get_shader_parameter("grass_alb_tex").get_image().duplicate()
 	_prepare_rendering_device()
 
 
 func _prepare_rendering_device():
 	await get_tree().physics_frame
-	shader_spirv= shader_file.get_spirv()
+	shader_spirv = shader_file.get_spirv()
 	shader = rd.shader_create_from_spirv(shader_spirv)
 	
 	# Create format for the paint.
@@ -70,6 +70,12 @@ func _prepare_rendering_device():
 	
 	pipeline = rd.compute_pipeline_create(shader)
 
+
+## Set a given image file as the new ground texture
+func set_ground_tex(new_img: Image):
+	ground_tex = new_img
+	mesh.material.set_shader_parameter("grass_alb_tex",ImageTexture.create_from_image(new_img))
+
 """ Paint Brush Interactions """
 
 
@@ -78,7 +84,7 @@ func _prepare_rendering_device():
 func paint_brush_to_terrain(pos:Vector3, brush: Image, tex: Image):
 	var local_pos = _convert_pos_to_local(pos, tex.get_width())
 	var _brush:Image = brush.duplicate()
-	_brush.resize(brush.get_width()*2,brush.get_width()*2)
+	_brush.resize(brush.get_width()*4,brush.get_width()*4)
 	## Resize Painted texture to stretch to ground texture size
 	tex.resize(ground_tex.get_width(),ground_tex.get_width())
 	
@@ -258,7 +264,7 @@ func _smooth_brush(pos,brush):
 	var sample_img = level_builder_controller.heightmap.get_region(Rect2i(pos.x,pos.y,size,size))
 	var fill_color = _get_avg_color(sample_img)
 	var fill_mean = Image.create(size,size,false,Image.FORMAT_RGBA8)
-	fill_mean.fill(Color(fill_color,fill_color,fill_color,_str))
+	fill_mean.fill(Color(fill_color,fill_color,fill_color,_str/10))
 	level_builder_controller.heightmap.blend_rect_mask(fill_mean,brush_tex,Rect2i(0,0,size,size),pos)
 
 
@@ -267,10 +273,15 @@ func _get_avg_color(img):
 	var size = img.get_size().x
 	var tot = 0
 	var cnt = 0
+	
 	for x in range(size/10):
 		for y in range(size/10):
-			cnt += 1
-			tot += img.get_pixel(x*10,y*10).r
+			var p = img.get_pixel(x*10,y*10).r
+			if p == 0:
+				continue
+			tot += p
+			cnt += clamp(tot,0,.75)
+	
 	return tot/cnt
 
 
@@ -315,6 +326,7 @@ func _generate_collision_shape():
 	hm.set_map_depth(height)
 	
 	var height_data = Array(hm.get_map_data())
+	
 	
 	var id = 0
 	for x in range(width):
